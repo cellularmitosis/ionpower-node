@@ -1,0 +1,15 @@
+{
+  "name": "ionpower-node",
+  "version": "0.1.0",
+  "description": "Node-compatible JS runtime on PPC Tiger",
+  "authors": ["anonymous hacker"],
+  "targets": {
+    "G3": { "cpu": "750", "tested": false },
+    "G4": { "cpu": "7450", "tested": false },
+    "G5": { "cpu": "970", "tested": true }
+  },
+  "dependencies": {
+    "runtime": ["SpiderMonkey 45", "TenFourFox IonPower JIT"],
+    "build": ["gcc 4.9.4", "autoconf 2.13", "python 2.7.18"]
+  }
+}
