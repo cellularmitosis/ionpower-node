@@ -1,33 +1,51 @@
+---
+title: Hello from PowerPC
+author: ionpower-node
+date: 2026-04-22
+---
+
 # Hello from PowerPC
 
-This site was built by `ionpower-node` on a real **Power Macintosh G5**
+This page was built by `ionpower-node` on a real **Power Macintosh G5**
 running Mac OS X 10.4 Tiger. The build pipeline is:
 
-1. Read `*.md` files with `fs.readdirSync` + `fs.readFileSync`.
-2. Parse markdown through [`marked`](https://github.com/markedjs/marked) 4.3.0.
-3. Wrap in a [`handlebars`](https://handlebarsjs.com/) 4.7.8 template.
-4. Write HTML via `fs.writeFileSync`.
+1. YAML frontmatter via `js-yaml` — sets title, author, date.
+2. Markdown body through `markdown-it` 13.
+3. Fenced code blocks highlighted by `prism.js` 1.29.
+4. HTML wrapped in a `handlebars` template.
+5. Slug from the title via `slugify`.
+6. `fs.writeFileSync` writes the final `.html`.
 
-Every step runs through [TenFourFox](https://github.com/classilla/tenfourfox)'s
-IonPower JIT for 32-bit PowerPC — the same JIT that once powered real
-Firefox browsing on machines like this one.
+All seven libraries ([see the compat matrix](../../docs/compat.md))
+run unmodified on IonPower — TenFourFox's 32-bit PowerPC JIT.
 
-## Why this is interesting
-
-- No native Node binary — PowerPC Tiger was dropped from Node support
-  before npm was even a thing.
-- No transpilation — marked and handlebars load as their own UMD
-  bundles and run as-is.
-- Everything is synchronous — no event loop, no async/await path.
-- The JIT really is doing work: IonPower compiles regex state
-  machines and dynamic `new Function()` calls into native PPC code.
-
-## Tests
-
-> This blockquote, that **bold**, and some `inline code` all
-> exercise marked's parsing. They should all come through intact.
+## Syntax-highlighted code
 
 ```js
-// And code fences with language tags become <pre><code class="language-js">.
-function f(n) { return n < 2 ? n : f(n-1) + f(n-2); }
+// Recursive fib is an Ion-compiler sweet spot: pure arithmetic,
+// tight call graph, no allocations after warmup.
+function fib(n) {
+    if (n < 2) return n;
+    return fib(n - 1) + fib(n - 2);
+}
+console.log(fib(32));    // 2178309
 ```
+
+```css
+body {
+    font-family: "Lucida Grande", sans-serif;
+    max-width: 42em;
+    margin: 2em auto;
+}
+```
+
+## A blockquote
+
+> This blockquote, some *italic*, and a bit of `inline code`
+> all exercise markdown-it's parsing. They should all come
+> through cleanly.
+
+## That's all
+
+The [TenFourFox](https://github.com/classilla/tenfourfox) IonPower
+backend at `js/src/jit/osxppc/` made this possible.
