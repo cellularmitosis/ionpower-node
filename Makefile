@@ -70,6 +70,7 @@ test: $(BIN)
 	./$(BIN) test/nm_resolution_smoke.js
 	./$(BIN) test/fs_smoke.js
 	./$(BIN) test/fs_dirs_smoke.js
+	./$(BIN) test/fs_extras_smoke.js
 	./$(BIN) test/timers_smoke.js
 	./$(BIN) test/console_formatting.js
 	./$(BIN) test/cores_smoke.js

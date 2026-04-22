@@ -328,6 +328,134 @@ static bool FsRmdirSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     return true;
 }
 
+// Append data to path. Creates the file if missing.
+static bool FsAppendFileSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 2) {
+        JS_ReportError(cx, "fs.appendFileSync: path and data required");
+        return false;
+    }
+    JS::RootedString pathStr(cx, JS::ToString(cx, args[0]));
+    if (!pathStr) return false;
+    JSAutoByteString path(cx, pathStr);
+    if (!path) return false;
+
+    const uint8_t* data = nullptr;
+    size_t len = 0;
+    JSAutoByteString strBytes;
+    if (args[1].isString()) {
+        JS::RootedString s(cx, args[1].toString());
+        if (!strBytes.encodeUtf8(cx, s)) return false;
+        data = (const uint8_t*)strBytes.ptr();
+        len = strlen(strBytes.ptr());
+    } else if (args[1].isObject() && JS_IsUint8Array(&args[1].toObject())) {
+        JS::RootedObject u8(cx, &args[1].toObject());
+        len = JS_GetTypedArrayByteLength(u8);
+        JS::AutoCheckCannotGC nogc;
+        bool sharedDummy;
+        data = JS_GetUint8ArrayData(u8, &sharedDummy, nogc);
+    } else {
+        JS::RootedString s(cx, JS::ToString(cx, args[1]));
+        if (!s) return false;
+        if (!strBytes.encodeUtf8(cx, s)) return false;
+        data = (const uint8_t*)strBytes.ptr();
+        len = strlen(strBytes.ptr());
+    }
+
+    int fd = open(path.ptr(), O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (fd < 0) {
+        JS_ReportError(cx, "fs.appendFileSync: open %s: %s",
+                       path.ptr(), strerror(errno));
+        return false;
+    }
+    size_t off = 0;
+    while (off < len) {
+        ssize_t w = write(fd, data + off, len - off);
+        if (w < 0) {
+            if (errno == EINTR) continue;
+            close(fd);
+            JS_ReportError(cx, "fs.appendFileSync: write: %s", strerror(errno));
+            return false;
+        }
+        off += (size_t)w;
+    }
+    close(fd);
+    args.rval().setUndefined();
+    return true;
+}
+
+static bool FsCopyFileSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 2) {
+        JS_ReportError(cx, "fs.copyFileSync: src and dest required");
+        return false;
+    }
+    JS::RootedString srcS(cx, JS::ToString(cx, args[0]));
+    JS::RootedString dstS(cx, JS::ToString(cx, args[1]));
+    if (!srcS || !dstS) return false;
+    JSAutoByteString src(cx, srcS), dst(cx, dstS);
+    if (!src || !dst) return false;
+
+    int sfd = open(src.ptr(), O_RDONLY);
+    if (sfd < 0) {
+        JS_ReportError(cx, "fs.copyFileSync: open %s: %s",
+                       src.ptr(), strerror(errno));
+        return false;
+    }
+    int dfd = open(dst.ptr(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (dfd < 0) {
+        close(sfd);
+        JS_ReportError(cx, "fs.copyFileSync: open %s: %s",
+                       dst.ptr(), strerror(errno));
+        return false;
+    }
+    char buf[64 * 1024];
+    for (;;) {
+        ssize_t r = read(sfd, buf, sizeof buf);
+        if (r == 0) break;
+        if (r < 0) {
+            if (errno == EINTR) continue;
+            close(sfd); close(dfd);
+            JS_ReportError(cx, "fs.copyFileSync: read: %s", strerror(errno));
+            return false;
+        }
+        ssize_t off = 0;
+        while (off < r) {
+            ssize_t w = write(dfd, buf + off, (size_t)(r - off));
+            if (w < 0) {
+                if (errno == EINTR) continue;
+                close(sfd); close(dfd);
+                JS_ReportError(cx, "fs.copyFileSync: write: %s", strerror(errno));
+                return false;
+            }
+            off += w;
+        }
+    }
+    close(sfd); close(dfd);
+    args.rval().setUndefined();
+    return true;
+}
+
+static bool FsChmodSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 2) {
+        JS_ReportError(cx, "fs.chmodSync: path and mode required");
+        return false;
+    }
+    JS::RootedString pathS(cx, JS::ToString(cx, args[0]));
+    if (!pathS) return false;
+    JSAutoByteString path(cx, pathS);
+    if (!path) return false;
+    uint32_t mode = 0;
+    if (!JS::ToUint32(cx, args[1], &mode)) return false;
+    if (chmod(path.ptr(), (mode_t)(mode & 07777)) != 0) {
+        JS_ReportError(cx, "fs.chmodSync: %s: %s", path.ptr(), strerror(errno));
+        return false;
+    }
+    args.rval().setUndefined();
+    return true;
+}
+
 static bool FsRenameSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
     if (args.length() < 2) {
@@ -357,7 +485,10 @@ static const JSFunctionSpec kFsFuncs[] = {
     JS_FN("unlinkSync",    FsUnlinkSync,    1, 0),
     JS_FN("mkdirSync",     FsMkdirSync,     2, 0),
     JS_FN("rmdirSync",     FsRmdirSync,     1, 0),
-    JS_FN("renameSync",    FsRenameSync,    2, 0),
+    JS_FN("renameSync",     FsRenameSync,     2, 0),
+    JS_FN("appendFileSync", FsAppendFileSync, 2, 0),
+    JS_FN("copyFileSync",   FsCopyFileSync,   2, 0),
+    JS_FN("chmodSync",      FsChmodSync,      2, 0),
     JS_FS_END
 };
 
