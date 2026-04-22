@@ -81,6 +81,14 @@ Driven by what failed or almost-failed:
 - **`fflate.unzipSync` fails on PPC** with "invalid length/literal".
   Suspected big-endian assumption in fflate's bit-packing. pako is the
   recommended alternative on PPC — all its round-trips pass.
+- **SM45 destructuring-default scope bug.** `var x = 10; var { y = x } = {}`
+  inside a function throws `ReferenceError: x is not defined` — as if
+  the sibling binding isn't in scope during the default expression.
+  Reproduces in the stock SM45 `js` shell, so it's a VM bug, not a
+  bridge bug. `eval()`'d form works. Blocks `cli-table3` (which uses
+  `const { wordWrap = tableWordWrap } = this.options;`) and likely
+  other libs that adopted this ES2015 idiom. Repro at
+  [test/sm45_destructuring_defaults_repro.js](../test/sm45_destructuring_defaults_repro.js).
 
 ## What hasn't worked yet (and why)
 
