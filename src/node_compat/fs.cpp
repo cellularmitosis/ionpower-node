@@ -262,6 +262,92 @@ static bool FsUnlinkSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     return true;
 }
 
+// Create `base/[a/[b/...]]`. Used by mkdirSync in { recursive: true } mode.
+static int MkdirRecursive(const char* path) {
+    if (!*path) return 0;
+    char buf[PATH_MAX];
+    size_t n = strlen(path);
+    if (n >= sizeof buf) { errno = ENAMETOOLONG; return -1; }
+    memcpy(buf, path, n + 1);
+    // Iterate each '/' boundary and mkdir the prefix.
+    for (size_t i = 1; i <= n; ++i) {
+        if (buf[i] == '/' || buf[i] == '\0') {
+            char saved = buf[i];
+            buf[i] = 0;
+            if (mkdir(buf, 0755) != 0 && errno != EEXIST) return -1;
+            buf[i] = saved;
+        }
+    }
+    return 0;
+}
+
+static bool FsMkdirSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 1) {
+        JS_ReportError(cx, "fs.mkdirSync: path required");
+        return false;
+    }
+    JS::RootedString pathStr(cx, JS::ToString(cx, args[0]));
+    if (!pathStr) return false;
+    JSAutoByteString path(cx, pathStr);
+    if (!path) return false;
+
+    bool recursive = false;
+    if (args.length() >= 2 && args[1].isObject()) {
+        JS::RootedObject opts(cx, &args[1].toObject());
+        JS::RootedValue v(cx);
+        if (!JS_GetProperty(cx, opts, "recursive", &v)) return false;
+        if (v.isBoolean()) recursive = v.toBoolean();
+    }
+
+    int rc = recursive ? MkdirRecursive(path.ptr())
+                       : mkdir(path.ptr(), 0755);
+    if (rc != 0) {
+        JS_ReportError(cx, "fs.mkdirSync: %s: %s", path.ptr(), strerror(errno));
+        return false;
+    }
+    args.rval().setUndefined();
+    return true;
+}
+
+static bool FsRmdirSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 1) {
+        JS_ReportError(cx, "fs.rmdirSync: path required");
+        return false;
+    }
+    JS::RootedString pathStr(cx, JS::ToString(cx, args[0]));
+    if (!pathStr) return false;
+    JSAutoByteString path(cx, pathStr);
+    if (!path) return false;
+    if (rmdir(path.ptr()) != 0) {
+        JS_ReportError(cx, "fs.rmdirSync: %s: %s", path.ptr(), strerror(errno));
+        return false;
+    }
+    args.rval().setUndefined();
+    return true;
+}
+
+static bool FsRenameSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 2) {
+        JS_ReportError(cx, "fs.renameSync: oldPath and newPath required");
+        return false;
+    }
+    JS::RootedString oldStr(cx, JS::ToString(cx, args[0]));
+    JS::RootedString newStr(cx, JS::ToString(cx, args[1]));
+    if (!oldStr || !newStr) return false;
+    JSAutoByteString oldP(cx, oldStr), newP(cx, newStr);
+    if (!oldP || !newP) return false;
+    if (rename(oldP.ptr(), newP.ptr()) != 0) {
+        JS_ReportError(cx, "fs.renameSync: %s -> %s: %s",
+                       oldP.ptr(), newP.ptr(), strerror(errno));
+        return false;
+    }
+    args.rval().setUndefined();
+    return true;
+}
+
 static const JSFunctionSpec kFsFuncs[] = {
     JS_FN("readFileSync",  FsReadFileSync,  2, 0),
     JS_FN("writeFileSync", FsWriteFileSync, 3, 0),
@@ -269,6 +355,9 @@ static const JSFunctionSpec kFsFuncs[] = {
     JS_FN("readdirSync",   FsReaddirSync,   1, 0),
     JS_FN("statSync",      FsStatSync,      1, 0),
     JS_FN("unlinkSync",    FsUnlinkSync,    1, 0),
+    JS_FN("mkdirSync",     FsMkdirSync,     2, 0),
+    JS_FN("rmdirSync",     FsRmdirSync,     1, 0),
+    JS_FN("renameSync",    FsRenameSync,    2, 0),
     JS_FS_END
 };
 

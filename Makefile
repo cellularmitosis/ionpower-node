@@ -64,10 +64,22 @@ test: $(BIN)
 	./$(BIN) test/hello.js
 	./$(BIN) test/require_chain.js
 	./$(BIN) test/fs_smoke.js
+	./$(BIN) test/fs_dirs_smoke.js
 	./$(BIN) test/timers_smoke.js
 	./$(BIN) test/console_formatting.js
 	./$(BIN) test/integration.js
 	./$(BIN) test/fibonacci.js
 	./$(BIN) test/jit_smoke.js
 
-.PHONY: all clean check-mozjs test
+test-libs: $(BIN)
+	./$(BIN) test/marked_smoke.js
+	./$(BIN) test/acorn_smoke.js
+	./$(BIN) test/handlebars_smoke.js
+	./$(BIN) test/lodash_smoke.js
+	./$(BIN) test/semver_smoke.js
+	./$(BIN) test/prettier_smoke.js
+	./$(BIN) test/typescript_smoke.js
+
+test-all: test test-libs
+
+.PHONY: all clean check-mozjs test test-libs test-all

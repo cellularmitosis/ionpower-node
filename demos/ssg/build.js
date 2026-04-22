@@ -19,11 +19,8 @@ var outDir   = path.join(root, "output");
 var tplPath  = path.join(root, "template.hbs");
 
 if (!fs.existsSync(outDir)) {
-    // fs.mkdirSync isn't in our bridge; fall back to system mkdir via
-    // process.env.SHELL... no, just require the dir already exists from
-    // checkout. The repo ships output/ pre-created.
-    console.error("output directory missing:", outDir);
-    process.exit(2);
+    fs.mkdirSync(outDir, { recursive: true });
+    console.log("created:", outDir);
 }
 
 var tpl = Handlebars.compile(fs.readFileSync(tplPath, "utf8"));
