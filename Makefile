@@ -118,6 +118,16 @@ test-libs: $(BIN)
 	./$(BIN) test/showdown_smoke.js
 	./$(BIN) test/object_hash_smoke.js
 	./$(BIN) test/minimatch_smoke.js
+	./$(BIN) test/validator_smoke.js
+	./$(BIN) test/qrcode_smoke.js
+	./$(BIN) test/tweetnacl_smoke.js
+	./$(BIN) test/big_smoke.js
+	./$(BIN) test/mime_types_smoke.js
+	./$(BIN) test/markdown_it_smoke.js
+	./$(BIN) test/sax_smoke.js
+	./$(BIN) test/xml2js_smoke.js
+	./$(BIN) test/prism_smoke.js
+	./$(BIN) test/immer_smoke.js
 	./$(BIN) test/sm45_destructuring_defaults_repro.js
 
 test-all: test test-libs
