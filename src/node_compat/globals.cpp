@@ -177,6 +177,55 @@ static const char kBootstrapJS[] =
     "  if (typeof globalThis !== 'undefined') { globalThis.crypto = crypto; }\n"
     "  this.crypto = crypto;\n"   // also pin on global in case globalThis missing
 
+    // --- buffer (reexport the Buffer global as a core module) ---
+    "  var buffer = { Buffer: Buffer, constants: {}, kMaxLength: 0x7fffffff };\n"
+
+    // --- string_decoder — minimal, no partial-sequence buffering ---
+    "  function StringDecoder(encoding) { this.encoding = encoding || 'utf8'; }\n"
+    "  StringDecoder.prototype.write = function (buf) {\n"
+    "    if (!buf) return '';\n"
+    "    if (typeof buf === 'string') return buf;\n"
+    "    // Uint8Array path: decode using Buffer.toString if enc is utf8,\n"
+    "    // else latin1.\n"
+    "    if (typeof buf.toString === 'function') return buf.toString(this.encoding);\n"
+    "    return '';\n"
+    "  };\n"
+    "  StringDecoder.prototype.end = function () { return ''; };\n"
+    "  var string_decoder = { StringDecoder: StringDecoder };\n"
+
+    // --- assert (node:assert) — minimal throwing assertions ---
+    "  function AssertionError(msg) {\n"
+    "    this.name = 'AssertionError'; this.message = msg || '';\n"
+    "  }\n"
+    "  AssertionError.prototype = Object.create(Error.prototype);\n"
+    "  AssertionError.prototype.constructor = AssertionError;\n"
+    "  function _assert(cond, msg) { if (!cond) throw new AssertionError(msg || 'assert failed'); }\n"
+    "  _assert.ok               = _assert;\n"
+    "  _assert.equal            = function (a, b, m) { if (a != b) throw new AssertionError(m || (a + ' != ' + b)); };\n"
+    "  _assert.strictEqual      = function (a, b, m) { if (a !== b) throw new AssertionError(m || (a + ' !== ' + b)); };\n"
+    "  _assert.notEqual         = function (a, b, m) { if (a == b) throw new AssertionError(m || (a + ' == ' + b)); };\n"
+    "  _assert.notStrictEqual   = function (a, b, m) { if (a === b) throw new AssertionError(m || (a + ' === ' + b)); };\n"
+    "  _assert.deepEqual        = function (a, b, m) { if (JSON.stringify(a) != JSON.stringify(b)) throw new AssertionError(m || 'deepEqual failed'); };\n"
+    "  _assert.deepStrictEqual  = _assert.deepEqual;\n"
+    "  _assert.throws           = function (fn, m) { var t = null; try { fn(); } catch (e) { t = e; } if (!t) throw new AssertionError(m || 'did not throw'); };\n"
+    "  _assert.doesNotThrow     = function (fn, m) { try { fn(); } catch (e) { throw new AssertionError(m || ('threw: ' + e)); } };\n"
+    "  _assert.fail             = function (m) { throw new AssertionError(m || 'fail'); };\n"
+    "  _assert.AssertionError   = AssertionError;\n"
+
+    // --- stream (pass-through stub — only the class shape) ---
+    "  function _StreamStub(name) { events.EventEmitter.call(this); this._name = name; }\n"
+    "  util.inherits(_StreamStub, events.EventEmitter);\n"
+    "  _StreamStub.prototype.pipe    = function (d) { return d; };\n"
+    "  _StreamStub.prototype.write   = function () { return true; };\n"
+    "  _StreamStub.prototype.end     = function () { return this; };\n"
+    "  var stream = {\n"
+    "    Readable:  _StreamStub,\n"
+    "    Writable:  _StreamStub,\n"
+    "    Duplex:    _StreamStub,\n"
+    "    Transform: _StreamStub,\n"
+    "    Stream:    _StreamStub\n"
+    "  };\n"
+
     // --- Seed core modules into require cache. ---
     "  __require_cache__['fs']            = fs;\n"
     "  __require_cache__['path']          = path;\n"
@@ -185,6 +234,10 @@ static const char kBootstrapJS[] =
     "  __require_cache__['child_process'] = child_process;\n"
     "  __require_cache__['os']            = os;\n"
     "  __require_cache__['crypto']        = crypto;\n"
+    "  __require_cache__['buffer']         = buffer;\n"
+    "  __require_cache__['string_decoder'] = string_decoder;\n"
+    "  __require_cache__['assert']         = _assert;\n"
+    "  __require_cache__['stream']         = stream;\n"
 
     // Re-wrap __make_require__ so bare specifiers check the cache first.
     "  var origMake = __make_require__;\n"

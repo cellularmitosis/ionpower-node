@@ -267,9 +267,19 @@ static bool LoadModuleFile(JSContext* cx, JS::HandleObject global,
     JS::CompileOptions opts(cx);
     opts.setFileAndLine(abs_path, 0);
 
-    JS::RootedValue wrapped(cx);
-    bool ok = JS::Evaluate(cx, opts, wsrc, wlen, &wrapped);
+    // Compile as UTF-8 instead of Latin-1. Evaluate's `const char*` overload
+    // interprets bytes as Latin-1 — which is fine for ASCII source but breaks
+    // any non-ASCII char in a string literal (e.g. 'Héllo' became 6 chars).
+    // Convert to UTF-16 up front and feed the char16_t* overload.
+    size_t u16len = 0;
+    JS::UTF8Chars u8((const char*)wsrc, wlen);
+    char16_t* u16 = JS::UTF8CharsToNewTwoByteCharsZ(cx, u8, &u16len).get();
     free(wsrc);
+    if (!u16) return false;   // exception already pending on cx
+
+    JS::RootedValue wrapped(cx);
+    bool ok = JS::Evaluate(cx, opts, u16, u16len, &wrapped);
+    free(u16);
     if (!ok) return false;
     if (!wrapped.isObject() || !JS_ObjectIsFunction(cx, &wrapped.toObject())) {
         JS_ReportError(cx, "require: wrapper did not evaluate to a function");
