@@ -110,11 +110,22 @@ static bool BufferToString(JSContext* cx, unsigned argc, JS::Value* vp) {
     return true;
 }
 
+static bool BufferIsBuffer(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    bool is = false;
+    if (args.length() >= 1 && args[0].isObject()) {
+        is = JS_IsUint8Array(&args[0].toObject());
+    }
+    args.rval().setBoolean(is);
+    return true;
+}
+
 bool InstallBuffer(JSContext* cx, JS::HandleObject global) {
     JS::RootedObject bufCtor(cx, JS_NewObject(cx, nullptr));
     if (!bufCtor) return false;
     if (!JS_DefineFunction(cx, bufCtor, "from",  BufferFrom,  2, JSPROP_ENUMERATE)) return false;
     if (!JS_DefineFunction(cx, bufCtor, "alloc", BufferAlloc, 1, JSPROP_ENUMERATE)) return false;
+    if (!JS_DefineFunction(cx, bufCtor, "isBuffer", BufferIsBuffer, 1, JSPROP_ENUMERATE)) return false;
     if (!JS_DefineProperty(cx, global, "Buffer", bufCtor, JSPROP_ENUMERATE))
         return false;
 

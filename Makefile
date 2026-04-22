@@ -107,6 +107,18 @@ test-libs: $(BIN)
 	./$(BIN) test/cryptojs_smoke.js
 	./$(BIN) test/ajv_smoke.js
 	./$(BIN) test/pegjs_smoke.js
+	./$(BIN) test/nanoid_smoke.js
+	./$(BIN) test/ms_smoke.js
+	./$(BIN) test/strip_ansi_smoke.js
+	./$(BIN) test/deepmerge_smoke.js
+	./$(BIN) test/fast_deep_equal_smoke.js
+	./$(BIN) test/color_convert_smoke.js
+	./$(BIN) test/lunr_smoke.js
+	./$(BIN) test/moment_smoke.js
+	./$(BIN) test/showdown_smoke.js
+	./$(BIN) test/object_hash_smoke.js
+	./$(BIN) test/minimatch_smoke.js
+	./$(BIN) test/sm45_destructuring_defaults_repro.js
 
 test-all: test test-libs
 
