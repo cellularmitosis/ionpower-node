@@ -60,6 +60,15 @@ if ! grep -q 'IONPOWER_TIGER_NOSETNAME' "$NSPRFILE"; then
         "$NSPRFILE" || true
 fi
 
+# See G3 script / docs/g3-g4-builds.md for rationale. Idempotent.
+VENVFILE="$SRC/python/mozbuild/mozbuild/virtualenv.py"
+if ! grep -q 'IONPOWER_VENV_FLAGS' "$VENVFILE"; then
+    /opt/perl-5.36.0/bin/perl -i -pe '
+        s|^(        args = \[sys.executable, self.virtualenv_script_path,)|        # IONPOWER_VENV_FLAGS: pip-6.0.6 wheel in virtualenv_support is buggy.\n\1|;
+        s|^(            self.virtualenv_root\])|            "--system-site-packages", "--no-pip", "--no-setuptools",\n\1|' \
+        "$VENVFILE"
+fi
+
 cd "$SRC/js/src"
 autoconf213 || true
 

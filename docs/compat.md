@@ -3,7 +3,7 @@
 Libraries test-fit through ionpower-node. Each entry is a real
 package running unmodified (within its own JS-version constraints).
 
-## Currently passing (56 libraries as of 2026-04-22)
+## Currently passing (80 libraries as of 2026-04-22)
 
 | # | Library | Version | Size | Workload | Notes |
 |--|---|---|---|---|---|
@@ -62,7 +62,31 @@ package running unmodified (within its own JS-version constraints).
 | 53 | [chance](https://chancejs.com/)                     | 1.1.11 | 211 KB | random data generator             | seeded reproducibility |
 | 54 | [ini](https://github.com/npm/ini)                   | 1.3.8 | 5 KB   | INI config parser                 | section round-trip |
 | 55 | [slugify](https://github.com/simov/slugify)         | 1.6.6 | 9 KB   | string -> slug                    | needs normalize polyfill |
-| 56 | (placeholder; running count to match commit N)      |       |        |                                   |   |
+| 56 | [mitt](https://github.com/developit/mitt)           | 3.0.1 | 200 B  | pub/sub event emitter             | — |
+| 57 | [ramda](https://ramdajs.com/)                       | 0.29.1 | ... KB | functional utilities              | — |
+| 58 | [pluralize](https://github.com/plurals/pluralize)   | 8.0.0 | 5 KB   | English pluralization             | — |
+| 59 | [debug](https://github.com/debug-js/debug)          | 4.3.4 | 5 KB   | logger (via nm tree)              | needs tty + ms |
+| 60 | [base-x](https://github.com/cryptocoinjs/base-x)    | 4.0.0 | 2 KB   | configurable base encoder         | — |
+| 61 | [moo](https://github.com/no-context/moo)            | 0.5.2 | 10 KB  | fast lexer                        | — |
+| 62 | [clone](https://github.com/pvorb/clone)             | 2.1.2 | 4 KB   | deep clone utility                | — |
+| 63 | [ejs](https://ejs.co/)                              | 3.1.10 | 21 KB | embedded JS templates             | — |
+| 64 | [dequal](https://github.com/lukeed/dequal)          | 2.0.3 | 1 KB   | deep equal (Map, Set, etc.)       | — |
+| 65 | [dotenv](https://github.com/motdotla/dotenv)        | 16.3.1 | 3 KB  | .env file loader                  | — |
+| 66 | [sprintf-js](https://github.com/alexei/sprintf.js)  | 1.1.3 | 5 KB   | printf-style formatting           | — |
+| 67 | [iconv-lite](https://github.com/ashtuchkin/iconv-lite) | 0.6.3 | ... KB | text encoding conversion       | required Buffer ucs2/latin1 upgrade |
+| 68 | [nearley](https://nearley.js.org/)                  | 2.20.1 | 20 KB | parser combinator engine          | runtime-only (no lexer) |
+| 69 | [bignumber.js](https://mikemcl.github.io/bignumber.js/) | 9.1.2 | 89 KB | arbitrary-precision decimal  | different API style than big.js |
+| 70 | [decimal.js](https://mikemcl.github.io/decimal.js/) | 10.4.3 | 135 KB | arbitrary-precision decimal      | sqrt/ln precision ops |
+| 71 | [camelcase](https://github.com/sindresorhus/camelcase) | 6.3.0 | 3 KB | case conversion                | transpiled via babel fallback (uses \\p{Lu}) |
+| 72 | [pretty-bytes](https://github.com/sindresorhus/pretty-bytes) | 5.6.0 | 2 KB | human-readable byte sizes | — |
+| 73 | [figlet](https://github.com/patorjk/figlet.js)      | 1.7.0 | 43 KB | ASCII banner fonts               | ships Standard.flf alongside |
+| 74 | [fecha](https://github.com/taylorhakes/fecha)       | 4.2.3 | 15 KB  | small date format/parse          | alt to dayjs/moment |
+| 75 | [randomcolor](https://github.com/davidmerfield/randomColor) | 0.6.2 | 12 KB | seeded pleasant color gen | — |
+| 76 | [classnames](https://github.com/JedWatson/classnames) | 2.3.2 | 1 KB | conditional CSS class joining    | — |
+| 77 | [tiny-emitter](https://github.com/scottcorgan/tiny-emitter) | 2.1.0 | 200 B | event emitter | alt to mitt |
+| 78 | [fast-json-stable-stringify](https://github.com/epoberezkin/fast-json-stable-stringify) | 2.1.0 | 2 KB | deterministic JSON | — |
+| 79 | [uniq](https://github.com/mikolalysenko/uniq)       | 1.0.1 | 1 KB   | array deduplication              | — |
+| 80 | [JSZip](https://stuk.github.io/jszip/)              | 3.10.1 | 97 KB  | in-memory zip read/write         | Promises resolve sync for our single-threaded runtime |
 
 ## Composition demos
 
@@ -129,6 +153,14 @@ Driven by what failed or almost-failed:
 | postcss                         | multi-file, needs node_modules resolution |
 | tape                            | 22 transitive deps, needs node_modules |
 | pegjs raw CJS                   | multi-file (used the UMD browser bundle instead) |
+| luxon                           | requires Intl, which we built `--without-intl-api` |
+| date-fns                        | imports `@babel/runtime/helpers/interopRequireDefault` |
+| node-html-parser                | multi-file TS output with many `require('./nodes/...')` |
+| color-string                    | requires color-name + simple-swizzle (transitively) |
+| hyperid                         | requires `./uuid-node` (multi-file) |
+| isemail                         | requires `punycode` (not shipped) |
+| object-sizeof                   | requires `./byte_size` + `buffer/` (multi-file) |
+| json-stable-stringify           | pulls isarray, object-keys, call-bind (multi-file) |
 
 ## JIT measurement, one more time
 
