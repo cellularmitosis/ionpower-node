@@ -60,7 +60,7 @@ assert(util.inspect(42) === "42",             "inspect number");
 assert(util.inspect("a") === "'a'",            "inspect string");
 assert(util.inspect(null) === "null",          "inspect null");
 assert(util.inspect(undefined) === "undefined","inspect undefined");
-assert(util.inspect([1,2]) === "[1,2]",        "inspect array");
+assert(util.inspect([1,2]) === "[ 1, 2 ]",     "inspect array");
 console.log("ok: util.inspect");
 
 // 7. os

@@ -73,6 +73,7 @@ test: $(BIN)
 	./$(BIN) test/fs_extras_smoke.js
 	./$(BIN) test/timers_smoke.js
 	./$(BIN) test/console_formatting.js
+	./$(BIN) test/util_inspect_smoke.js
 	./$(BIN) test/cores_smoke.js
 	./$(BIN) test/integration.js
 	./$(BIN) test/fibonacci.js
