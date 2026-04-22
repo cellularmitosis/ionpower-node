@@ -145,6 +145,19 @@ test-libs: $(BIN)
 	./$(BIN) test/sm45_destructuring_defaults_repro.js
 	./$(BIN) test/babel_fallback_smoke.js
 	./$(BIN) test/iconv_smoke.js
+	./$(BIN) test/nearley_smoke.js
+	./$(BIN) test/bignumber_smoke.js
+	./$(BIN) test/decimal_smoke.js
+	./$(BIN) test/camelcase_smoke.js
+	./$(BIN) test/pretty_bytes_smoke.js
+	./$(BIN) test/figlet_smoke.js
+	./$(BIN) test/fecha_smoke.js
+	./$(BIN) test/randomcolor_smoke.js
+	./$(BIN) test/classnames_smoke.js
+	./$(BIN) test/tiny_emitter_smoke.js
+	./$(BIN) test/stable_stringify_smoke.js
+	./$(BIN) test/uniq_smoke.js
+	./$(BIN) test/jszip_smoke.js
 
 test-all: test test-libs
 

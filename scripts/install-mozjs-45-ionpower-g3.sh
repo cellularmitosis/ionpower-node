@@ -7,7 +7,9 @@ version=g3
 upstream_source=https://github.com/classilla/tenfourfox
 
 set -e -o pipefail
-PATH=/opt/autoconf-2.13/bin:/opt/python2-2.7.18/bin:/opt/tigersh-deps-0.1/bin:$PATH
+# make-4.3 matters because Mozilla's Makefile.in rejects GNU make < 3.81;
+# Tiger ships 3.80 at /usr/bin/make.
+PATH=/opt/make-4.3/bin:/opt/autoconf-2.13/bin:/opt/python2-2.7.18/bin:/opt/tigersh-deps-0.1/bin:$PATH
 export PATH
 SCRATCH=/Users/macuser/tmp
 
