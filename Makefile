@@ -67,6 +67,7 @@ test: $(BIN)
 	./$(BIN) test/fs_dirs_smoke.js
 	./$(BIN) test/timers_smoke.js
 	./$(BIN) test/console_formatting.js
+	./$(BIN) test/cores_smoke.js
 	./$(BIN) test/integration.js
 	./$(BIN) test/fibonacci.js
 	./$(BIN) test/jit_smoke.js
@@ -79,6 +80,12 @@ test-libs: $(BIN)
 	./$(BIN) test/semver_smoke.js
 	./$(BIN) test/prettier_smoke.js
 	./$(BIN) test/typescript_smoke.js
+	./$(BIN) test/minimist_smoke.js
+	./$(BIN) test/json5_smoke.js
+	./$(BIN) test/mustache_smoke.js
+	./$(BIN) test/jsyaml_smoke.js
+	./$(BIN) test/kleur_smoke.js
+	./$(BIN) test/commander_smoke.js
 
 test-all: test test-libs
 
