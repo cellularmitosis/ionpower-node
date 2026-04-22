@@ -90,6 +90,22 @@ test-libs: $(BIN)
 	./$(BIN) test/jsyaml_smoke.js
 	./$(BIN) test/kleur_smoke.js
 	./$(BIN) test/commander_smoke.js
+	./$(BIN) test/qs_smoke.js
+	./$(BIN) test/diff_smoke.js
+	./$(BIN) test/esprima_smoke.js
+	./$(BIN) test/dayjs_smoke.js
+	./$(BIN) test/beautify_smoke.js
+	./$(BIN) test/babel_smoke.js
+	./$(BIN) test/uuid_smoke.js
+	./$(BIN) test/papaparse_smoke.js
+	./$(BIN) test/tinycolor_smoke.js
+	./$(BIN) test/spark_md5_smoke.js
+	./$(BIN) test/fflate_smoke.js
+	./$(BIN) test/pako_smoke.js
+	./$(BIN) test/he_smoke.js
+	./$(BIN) test/cryptojs_smoke.js
+	./$(BIN) test/ajv_smoke.js
+	./$(BIN) test/pegjs_smoke.js
 
 test-all: test test-libs
 
