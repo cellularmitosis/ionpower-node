@@ -61,7 +61,8 @@ static int RunMain(JSContext* cx, int argc, char** argv)
     JS_FireOnNewGlobalObject(cx, global);
 
     if (argc < 2) {
-        fprintf(stderr, "usage: ionpower-node <script.js> [args...]\n");
+        fprintf(stderr, "usage: %s <script.js> [args...]\n",
+                argc >= 1 ? argv[0] : "node");
         return 2;
     }
 
