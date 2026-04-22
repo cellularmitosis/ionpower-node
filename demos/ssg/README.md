@@ -8,7 +8,7 @@ PowerPC Tiger.
 
 ```bash
 cd demos/ssg
-../../ionpower-node build.js
+../../node build.js
 ```
 
 Reads every `*.md` in `input/`, renders through marked, wraps in

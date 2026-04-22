@@ -76,7 +76,7 @@ ssh imacg52 'nohup /Users/macuser/tmp/build-mozjs.sh > /Users/macuser/tmp/build-
 ssh imacg52 'cd ~/tmp/ionpower-node && make'
 
 # 5) Run:
-ssh imacg52 'cd ~/tmp/ionpower-node && ./ionpower-node test/hello.js'
+ssh imacg52 'cd ~/tmp/ionpower-node && ./node test/hello.js'
 ```
 
 ## Scope limits

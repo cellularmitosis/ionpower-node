@@ -39,7 +39,10 @@ SRCS = src/main.cpp \
 
 OBJS = $(SRCS:.cpp=.o)
 
-BIN = ionpower-node
+# Binary is named `node` so that scripts with `#!/usr/bin/env node`
+# just work. The project is still called ionpower-node; only the
+# on-disk executable is named node.
+BIN = node
 
 all: $(BIN)
 

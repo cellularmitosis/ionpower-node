@@ -153,6 +153,15 @@ static bool LoadModuleFile(JSContext* cx, JS::HandleObject global,
         return false;
     }
 
+    // Strip a leading UNIX shebang line so scripts can start with
+    // `#!/usr/bin/env node`. Replace the shebang with spaces (not remove)
+    // so that line/column numbers in error messages stay aligned with the
+    // source file.
+    if (srcLen >= 2 && src[0] == '#' && src[1] == '!') {
+        size_t i = 0;
+        while (i < srcLen && src[i] != '\n') { src[i] = ' '; ++i; }
+    }
+
     // Wrap in a function so local `var`s are scoped and `module`/`exports`/
     // `require`/`__filename`/`__dirname` are real parameters.
     // The leading newline keeps line numbers in errors aligned.

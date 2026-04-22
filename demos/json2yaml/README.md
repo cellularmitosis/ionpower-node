@@ -11,15 +11,15 @@ A tiny CLI tool demo. Shows off:
 ## Run
 
 ```bash
-../../ionpower-node j2y.js sample.json
-../../ionpower-node j2y.js -r sample.yaml
-../../ionpower-node j2y.js -o sample.yaml sample.json
+../../node j2y.js sample.json
+../../node j2y.js -r sample.yaml
+../../node j2y.js -o sample.yaml sample.json
 ```
 
 ## Example output
 
 ```
-$ ionpower-node demos/json2yaml/j2y.js demos/json2yaml/sample.json
+$ node demos/json2yaml/j2y.js demos/json2yaml/sample.json
 name: ionpower-node
 version: 0.1.0
 description: Node-compatible JS runtime on PPC Tiger
