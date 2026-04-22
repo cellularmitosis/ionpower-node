@@ -3,106 +3,120 @@
 Libraries test-fit through ionpower-node. Each entry is a real
 package running unmodified (within its own JS-version constraints).
 
-## Currently passing
+## Currently passing (29 libraries)
 
-| Library | Version | Size | Workload stressed | Status |
-|---|---|---|---|---|
-| [marked](https://github.com/markedjs/marked) | 4.3.0 | 50 KB | regex state machine, markdown→HTML | all assertions pass, 46 ms/doc |
-| [acorn](https://github.com/acornjs/acorn) | 8.11.3 | 226 KB | Pratt parser, AST, error throwing | self-parses in 1.7 s |
-| [handlebars](https://github.com/handlebars-lang/handlebars.js) | 4.7.8 | 86 KB | `new Function()`, eval-path JIT | all 6 assertions pass |
-| [lodash](https://github.com/lodash/lodash) | 4.17.21 | 71 KB | stdlib breadth, `_.template()` | 35/35 assertions pass |
-| [typescript](https://www.typescriptlang.org/) | 3.9.10 | 8.3 MB | compiler, visitor patterns, checker | 2 transpiles correct, 530 ms each |
-| [semver](https://github.com/npm/node-semver) | 5.7.2 | 41 KB | range parsing, regex-heavy | 22/22 assertions pass |
-| [prettier](https://prettier.io/) | 1.19.1 | 1.0 MB | parse + pretty-print | 246 ms to reformat a fibonacci block |
+| # | Library | Version | Size | Workload | Notes |
+|--|---|---|---|---|---|
+| 1  | [marked](https://github.com/markedjs/marked)        | 4.3.0 | 50 KB  | regex state machine; markdown → HTML | 46 ms/doc |
+| 2  | [acorn](https://github.com/acornjs/acorn)           | 8.11.3 | 226 KB | Pratt parser, AST                 | self-parses in 1.7 s |
+| 3  | [handlebars](https://handlebarsjs.com/)             | 4.7.8 | 86 KB  | `new Function()` JIT              | 6/6 |
+| 4  | [lodash](https://lodash.com/)                       | 4.17.21 | 71 KB | stdlib breadth + `_.template()`   | 35/35 |
+| 5  | [typescript](https://www.typescriptlang.org/)       | 3.9.10 | 8.3 MB | full compiler                    | transpile ~500 ms/call |
+| 6  | [semver](https://github.com/npm/node-semver)        | 5.7.2 | 41 KB  | range math, regex                 | 22/22 |
+| 7  | [prettier](https://prettier.io/)                    | 1.19.1 | 1.0 MB | parse + pretty-print              | 246 ms fibonacci reformat |
+| 8  | [minimist](https://github.com/minimistjs/minimist)  | 1.2.8 | 6 KB   | argv parser                       | 9/9 |
+| 9  | [json5](https://json5.org/)                         | 2.2.3 | 57 KB  | lenient JSON                      | 10/10 |
+| 10 | [mustache](https://mustache.github.io/)             | 4.2.0 | 12 KB  | simpler template engine           | 8/8 |
+| 11 | [js-yaml](https://github.com/nodeca/js-yaml)        | 3.14.1 | 42 KB  | YAML parse/emit                   | 9/9 |
+| 12 | [kleur](https://github.com/lukeed/kleur)            | 4.1.5 | 3 KB   | terminal colors                   | respects isTTY |
+| 13 | [commander](https://github.com/tj/commander.js)     | 2.20.3 | 27 KB  | CLI framework                     | needs events + util.inherits |
+| 14 | [qs](https://github.com/ljharb/qs)                  | 6.11.2 | 70 KB  | querystring                       | 11/11; inner browserify-require works |
+| 15 | [diff](https://github.com/kpdecker/jsdiff)          | 5.1.0 | 50 KB  | edit-distance / patch             | 11/11 |
+| 16 | [esprima](https://esprima.org/)                     | 4.0.1 | 284 KB | alternative JS parser             | self-parses in 1.6 s |
+| 17 | [dayjs](https://day.js.org/)                        | 1.11.10 | 7 KB  | date lib                          | 14/14 |
+| 18 | [js-beautify](https://beautifier.io/)               | 1.14.11 | 150 KB | JS formatter (pre-prettier)      | idempotent |
+| 19 | [@babel/standalone](https://babeljs.io/)            | 7.23.9 | 2.8 MB | transpiler                       | closes ES2020+ gap |
+| 20 | [uuid](https://github.com/uuidjs/uuid)              | 8.3.2 | 8 KB   | UUID generators                   | v3/v4/v5 all work; v4 via crypto shim |
+| 21 | [PapaParse](https://www.papaparse.com/)             | 5.4.1 | 19 KB  | CSV parser                        | 7/7 |
+| 22 | [tinycolor2](https://github.com/bgrins/TinyColor)   | 1.6.0 | 38 KB  | color manipulation                | 5/5 |
+| 23 | [spark-md5](https://github.com/satazor/js-spark-md5) | 3.0.2 | 10 KB  | MD5 hash                         | RFC 1321 vectors pass |
+| 24 | [fflate](https://github.com/101arrowz/fflate)       | 0.8.1 | 32 KB  | zlib/gzip                         | short inputs + magic bytes; **unzip fails on PPC** |
+| 25 | [pako](https://github.com/nodeca/pako)              | 2.1.0 | 47 KB  | zlib port                         | all round-trips pass; use this instead of fflate on PPC |
+| 26 | [he](https://github.com/mathiasbynens/he)           | 1.2.0 | 101 KB | HTML entities                     | 8/8 |
+| 27 | [crypto-js](https://github.com/brix/crypto-js)      | 4.2.0 | 219 KB | SHA/MD5/AES pure JS               | RFC 6234 vectors + AES round-trip |
+| 28 | [ajv](https://ajv.js.org/)                          | 6.12.6 | 122 KB | JSON Schema validator             | compiles schemas to functions |
+| 29 | [PEG.js](https://pegjs.org/)                        | 0.10.0 | 105 KB | parser generator                  | generates working parser from grammar |
 
-## Composition demo
+## Composition demos
 
-[demos/ssg/](../demos/ssg/) is a minimal static site generator that
-composes `marked` + `handlebars` + `fs` + `path`. Reads `input/*.md`,
-renders through marked, wraps in a handlebars template, writes
-`output/*.html`. Three content pages build in 205 ms on imacg52.
+- [demos/ssg/](../demos/ssg/) — static site generator: marked + handlebars + fs + path
+- [demos/json2yaml/](../demos/json2yaml/) — CLI tool: commander + js-yaml + kleur + fs
 
 ## JS-version ceiling (empirical)
 
-SpiderMonkey 45 is Firefox 45 ESR (April 2016). It supports most
-of ES2015 and ES2016. The features we've observed breaking:
+SpiderMonkey 45 = Firefox 45 ESR (April 2016). ES2015 + most of ES2016.
 
-| Feature | First blocked at | Symptom |
-|---|---|---|
-| Optional chaining `?.` | ES2020 / TS 4.0 | `SyntaxError: expected expression, got '?'` |
-| Nullish coalescing `??` | ES2020 | same |
-| Optional catch binding `catch {}` | ES2019 / prettier 2.x | `SyntaxError: missing ( before catch` |
-| Private class fields `#name` | ES2022 | not tested, will fail parse |
-| Logical assignment `??=` `&&=` `\|\|=` | ES2021 | not tested, will fail parse |
-| Top-level await | ES2022 modules | N/A (we're CJS-only) |
+| Feature | First blocked at | Symptom | Workaround |
+|---|---|---|---|
+| Optional chaining `?.` | ES2020 / TS 4.0 | `SyntaxError: expected expression, got '?'` | @babel/standalone → ES5 |
+| Nullish coalescing `??` | ES2020 | same | same |
+| Optional catch binding `catch {}` | ES2019 / prettier 2.x | `SyntaxError: missing ( before catch` | same |
+| Private class fields `#name` | ES2022 | parse fails | same |
+| Logical assignment `??=` etc. | ES2021 | parse fails | same |
 
-**Practical rule**: pick the last library version released before
-October 2019 for problem-free loading. Everything after that has
-a nonzero chance of using ES2020 syntax in its bundled form.
+**Practical rule**: library versions released before October 2019
+parse cleanly. Later versions often require transpilation via
+@babel/standalone.
 
-Workaround for modern versions: transpile the bundle through
-TypeScript first (we run TS 3.9.10 natively), targeting `es2018`.
-Untested but should work — would let us load marked 12 / lodash 5
-if we want to stay current.
+## Bridge surface extended in response to libraries
 
-## Pattern for adding a new target
+Driven by what failed or almost-failed:
 
-1. Pick a library with a self-contained UMD / standalone bundle at
-   `https://unpkg.com/<name>@<ver>/...`. Multi-file CJS packages
-   need `node_modules` resolution that we don't have yet.
-2. `curl -fsSL <unpkg url> -o test/vendor/<name>.js`.
-3. Write `test/<name>_smoke.js` with real assertions (don't just
-   call `require` — exercise at least 3–5 distinct API calls).
-4. Rsync the vendor file and the smoke test to imacg52, run, iterate.
-5. On success, commit as `Add <name> (<what>) as Nth compatibility
-   target`. The commit message should say what workload it stresses
-   that the previous ones didn't.
-
-## What we haven't tried yet
-
-High-value but not yet attempted:
-
-- **prettier 2.x** — pure JS, CPU-bound, formats JS. Probably works.
-- **@babel/standalone 7.x** — Babel with all plugins inlined. Very
-  heavy; might need heap bump.
-- **esprima / espree** — alternative JS parsers, good comparisons
-  against acorn.
-- **semver** — tiny, should be trivial.
-- **yaml (eemeli/yaml)** — YAML parser; file-I/O-capable real task.
+| Library that forced it | Bridge addition |
+|---|---|
+| kleur | `process.stdout/stderr` with `.fd`/`.isTTY`/`.columns`/`.rows` |
+| commander | `events.EventEmitter` (with lazy `_events`) + `util.inherits` + `util.format` + `util.inspect` |
+| commander | `os` module stubs (platform/arch/tmpdir/homedir/cpus/EOL) |
+| commander | `child_process` stubs that throw on use |
+| uuid | `crypto.randomBytes` + `crypto.getRandomValues` via `/dev/urandom` |
+| ssg demo | `fs.readFileSync(path, 'utf8')` UTF-8 decode (was Latin-1) |
+| ssg demo | `fs.mkdirSync` (with `{ recursive: true }`) |
+| ssg demo | `fs.rmdirSync`, `fs.renameSync` |
+| `#!/usr/bin/env node` | strip shebang line in require loader |
 
 ## Bugs found through real-library testing
 
-- **`fs.readFileSync(path, "utf8")` returned mojibake.** Caught by the
-  ssg demo: em-dashes (`—`, U+2014) rendered as `â` in the generated
-  HTML. Root cause: JS_NewStringCopyN interprets bytes as ISO-Latin-1.
-  Fixed by routing through `JS::UTF8CharsToNewTwoByteCharsZ`
-  (js/CharacterEncoding.h) to decode UTF-8 → UTF-16 before building the
-  JS string. Commit 09397fd.
+- **`fs.readFileSync(path, "utf8")` mojibake** — caught by ssg's em-dash
+  rendering. Fixed by routing through `JS::UTF8CharsToNewTwoByteCharsZ`.
+- **`fflate.unzipSync` fails on PPC** with "invalid length/literal".
+  Suspected big-endian assumption in fflate's bit-packing. pako is the
+  recommended alternative on PPC — all its round-trips pass.
 
-Known to fail without bridge work (not yet attempted):
+## What hasn't worked yet (and why)
 
-- **mocha / jest / vitest** — need event loop.
-- **axios / node-fetch / got** — need http.
-- **express / fastify / koa** — need http + event loop.
-- **pg / mongoose / mysql2** — need sockets + event loop.
-- **sharp / bcrypt / better-sqlite3** — need native addons (no
-  path to this on ppc32 Tiger).
-- **tape** — might work if the test doesn't use real async. Not
-  confirmed.
+| Library | Why |
+|---|---|
+| express / fastify / koa / nestjs | need event loop + HTTP |
+| axios / node-fetch / got        | need HTTP client |
+| mocha / jest / vitest           | need event loop |
+| prisma / mongoose / pg          | need sockets + event loop |
+| sharp / bcrypt / better-sqlite3 / esbuild | native addons (no ppc32 path) |
+| postcss                         | multi-file, needs node_modules resolution |
+| tape                            | 22 transitive deps, needs node_modules |
+| pegjs raw CJS                   | multi-file (used the UMD browser bundle instead) |
 
-## JIT effect, measured
+## JIT measurement, one more time
 
-One direct IonPower-on-vs-off comparison we've run (the tight
-integer loop from test/verify_jit.js, executed via stock `js`
-shell):
+Confirmed on 2026-04-21 on imacg52 (G5 2.0 GHz):
 
-| mode | wall time |
+| mode | wall time for tight integer loop (5M iter) |
 |---|---|
 | `--ion-eager` (IonPower on) | 0.122 s |
 | `--no-ion --no-baseline` (interpreter) | 2.223 s |
 
-**13.7× speedup** on a pure arithmetic loop. On the library
-workloads above, the speedup is smaller — parsers/regex/string
-ops don't get the same multiplier as hot integer loops — but
-every library we've tested runs in a human-scale time budget
-because of the JIT.
+13.7× speedup. On library workloads — parsers, regex, object walking —
+the speedup is smaller but every library above runs in a human-scale
+time budget because the JIT is active by default.
+
+## Pattern for adding a new target
+
+1. Pick a self-contained UMD / browser-standalone bundle at
+   `https://unpkg.com/<pkg>@<ver>/...`. Multi-file CJS packages
+   need `node_modules` resolution that we don't have.
+2. `curl -fsSL <url> -o test/vendor/<name>.js`.
+3. Write `test/<name>_smoke.js` with real assertions — exercise at
+   least 3-5 distinct API calls, not just `require`.
+4. Rsync to imacg52, run, iterate on failures.
+5. Commit as "Add <name> (<what>) as compat target N".
+6. If the library exposes a bridge gap, fix it in `src/node_compat/`
+   with a test that demonstrates the gap closed.
