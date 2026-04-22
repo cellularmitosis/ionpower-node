@@ -91,8 +91,15 @@ static const char kBootstrapJS[] =
     "  };\n"
     "  EventEmitter.prototype.setMaxListeners = function (n) { this._maxListeners = n; return this; };\n"
     "  EventEmitter.prototype.getMaxListeners = function () { return this._maxListeners; };\n"
-    "  var events = { EventEmitter: EventEmitter };\n"
-    "  events.EventEmitter.EventEmitter = EventEmitter;\n"
+    // Node-compat: require('events') IS the EventEmitter constructor
+    // itself (with a .EventEmitter property pointing back to itself for
+    // destructuring consumers). Libraries like xml2js do
+    //   events = require('events');
+    //   (function(superClass) { ... })(events);     <-- uses the module
+    // and expect `events` to behave like the EventEmitter class directly.
+    // A wrapper object (`{ EventEmitter: fn }`) breaks that path.
+    "  var events = EventEmitter;\n"
+    "  events.EventEmitter = EventEmitter;\n"
 
     // --- util (inherits, format, inspect, inspect, promisify, deprecate) ---
     "  var util = {};\n"
@@ -238,6 +245,47 @@ static const char kBootstrapJS[] =
     "  __require_cache__['string_decoder'] = string_decoder;\n"
     "  __require_cache__['assert']         = _assert;\n"
     "  __require_cache__['stream']         = stream;\n"
+    "  __require_cache__['timers']         = {\n"
+    "    setImmediate:   (typeof setImmediate === 'function') ? setImmediate : null,\n"
+    "    clearImmediate: (typeof clearImmediate === 'function') ? clearImmediate : function(){},\n"
+    "    setTimeout:     (typeof setTimeout === 'function') ? setTimeout : null,\n"
+    "    clearTimeout:   (typeof clearTimeout === 'function') ? clearTimeout : function(){},\n"
+    "    setInterval:    (typeof setInterval === 'function') ? setInterval : null,\n"
+    "    clearInterval:  (typeof clearInterval === 'function') ? clearInterval : function(){}\n"
+    "  };\n"
+    // Minimal querystring: supports key=value pairs with URL-decoding.
+    "  __require_cache__['querystring']    = {\n"
+    "    parse: function (str) {\n"
+    "      var out = {};\n"
+    "      if (!str) return out;\n"
+    "      var pairs = str.split('&');\n"
+    "      for (var i = 0; i < pairs.length; ++i) {\n"
+    "        var eq = pairs[i].indexOf('=');\n"
+    "        var k = decodeURIComponent(eq < 0 ? pairs[i] : pairs[i].slice(0, eq));\n"
+    "        var v = eq < 0 ? '' : decodeURIComponent(pairs[i].slice(eq + 1));\n"
+    "        out[k] = v;\n"
+    "      }\n"
+    "      return out;\n"
+    "    },\n"
+    "    stringify: function (obj) {\n"
+    "      var parts = [];\n"
+    "      for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k)) {\n"
+    "        parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(obj[k]));\n"
+    "      }\n"
+    "      return parts.join('&');\n"
+    "    }\n"
+    "  };\n"
+    // URL: extremely lax parse, just enough for import-metadata-style consumers.
+    "  __require_cache__['url']            = {\n"
+    "    parse:  function (s) { return { href: s, pathname: s }; },\n"
+    "    format: function (u) { return u.href || String(u); }\n"
+    "  };\n"
+    // net: EventEmitter-shaped Socket stub. Throws on actual connect.
+    "  function _Socket() { events.EventEmitter.call(this); }\n"
+    "  util.inherits(_Socket, events.EventEmitter);\n"
+    "  _Socket.prototype.connect = function () { throw new Error('net.Socket.connect: no event loop on ionpower-node'); };\n"
+    "  _Socket.prototype.write   = function () { return false; };\n"
+    "  __require_cache__['net']            = { Socket: _Socket, createServer: function () { throw new Error('net.createServer: not supported'); } };\n"
 
     // Re-wrap __make_require__ so bare specifiers check the cache first.
     "  var origMake = __make_require__;\n"
