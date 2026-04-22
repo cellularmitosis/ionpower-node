@@ -67,6 +67,7 @@ check-mozjs:
 test: $(BIN)
 	./$(BIN) test/hello.js
 	./$(BIN) test/require_chain.js
+	./$(BIN) test/nm_resolution_smoke.js
 	./$(BIN) test/fs_smoke.js
 	./$(BIN) test/fs_dirs_smoke.js
 	./$(BIN) test/timers_smoke.js

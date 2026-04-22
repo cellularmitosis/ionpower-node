@@ -41,35 +41,116 @@ static bool DirExists(const char* path) {
     return stat(path, &st) == 0 && S_ISDIR(st.st_mode);
 }
 
+// Try "base" as a module path: "base", "base.js", "base/index.js", or
+// "base/<pkg.main>" if base/package.json exists with a "main" field.
+// Returns true and fills `out` on success.
+static bool TryModuleExtensions(const char* base, char* out, size_t outsz) {
+    if (FileExists(base)) {
+        strncpy(out, base, outsz); out[outsz - 1] = 0; return true;
+    }
+    char candidate[PATH_MAX];
+    // base + ".js"
+    snprintf(candidate, sizeof candidate, "%s.js", base);
+    if (FileExists(candidate)) {
+        strncpy(out, candidate, outsz); out[outsz - 1] = 0; return true;
+    }
+    // base + ".cjs"
+    snprintf(candidate, sizeof candidate, "%s.cjs", base);
+    if (FileExists(candidate)) {
+        strncpy(out, candidate, outsz); out[outsz - 1] = 0; return true;
+    }
+    // base + "/package.json" -> "main"
+    if (DirExists(base)) {
+        char pkg[PATH_MAX];
+        snprintf(pkg, sizeof pkg, "%s/package.json", base);
+        if (FileExists(pkg)) {
+            // Very forgiving "main" reader: look for "main":"<path>" or
+            // "main": "<path>". Avoid pulling in a full JSON parser here.
+            FILE* f = fopen(pkg, "rb");
+            if (f) {
+                char buf[4096];
+                size_t r = fread(buf, 1, sizeof(buf) - 1, f);
+                fclose(f);
+                buf[r] = 0;
+                const char* p = strstr(buf, "\"main\"");
+                if (p) {
+                    p = strchr(p, ':');
+                    if (p) {
+                        ++p;
+                        while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') ++p;
+                        if (*p == '"') {
+                            const char* start = p + 1;
+                            const char* end = strchr(start, '"');
+                            if (end) {
+                                char main_path[PATH_MAX];
+                                size_t n = (size_t)(end - start);
+                                if (n >= sizeof main_path) n = sizeof main_path - 1;
+                                memcpy(main_path, start, n);
+                                main_path[n] = 0;
+                                char full[PATH_MAX];
+                                snprintf(full, sizeof full, "%s/%s", base, main_path);
+                                // Recurse via TryModuleExtensions to handle
+                                // "./lib" / "./lib.js" / "./lib/index.js".
+                                if (TryModuleExtensions(full, out, outsz))
+                                    return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // base + "/index.js"
+        snprintf(candidate, sizeof candidate, "%s/index.js", base);
+        if (FileExists(candidate)) {
+            strncpy(out, candidate, outsz); out[outsz - 1] = 0; return true;
+        }
+        // base + "/index.cjs"
+        snprintf(candidate, sizeof candidate, "%s/index.cjs", base);
+        if (FileExists(candidate)) {
+            strncpy(out, candidate, outsz); out[outsz - 1] = 0; return true;
+        }
+    }
+    return false;
+}
+
 // Resolve module specifier `spec` relative to `from_dir` (absolute). Writes
 // the resolved absolute path into `out` (size PATH_MAX).
+//
+// Resolution rules (minimal Node-compat):
+//   - '/...'   absolute path; try extensions.
+//   - './...' or '../...'  relative to from_dir; try extensions.
+//   - bare 'foo' or 'foo/bar'  walk up from from_dir through parents,
+//     looking for '<ancestor>/node_modules/<spec>', try extensions on
+//     each candidate. Stop at /.
 static bool ResolveModule(const char* spec, const char* from_dir,
                           char* out, size_t outsz)
 {
     char base[PATH_MAX];
     if (spec[0] == '/') {
-        // absolute
         strncpy(base, spec, sizeof base); base[sizeof base - 1] = 0;
-    } else {
-        // Only './foo' and '../foo' are supported. Bare specs unsupported.
-        if (!(spec[0] == '.' && (spec[1] == '/' || (spec[1] == '.' && spec[2] == '/')))) {
-            return false;
-        }
+        return TryModuleExtensions(base, out, outsz);
+    }
+    if (spec[0] == '.' && (spec[1] == '/' ||
+                           (spec[1] == '.' && spec[2] == '/'))) {
         snprintf(base, sizeof base, "%s/%s", from_dir, spec);
+        return TryModuleExtensions(base, out, outsz);
     }
-    // Try: base, base+".js", base+"/index.js".
-    if (FileExists(base)) {
-        strncpy(out, base, outsz); out[outsz - 1] = 0; return true;
-    }
-    char candidate[PATH_MAX];
-    snprintf(candidate, sizeof candidate, "%s.js", base);
-    if (FileExists(candidate)) {
-        strncpy(out, candidate, outsz); out[outsz - 1] = 0; return true;
-    }
-    if (DirExists(base)) {
-        snprintf(candidate, sizeof candidate, "%s/index.js", base);
-        if (FileExists(candidate)) {
-            strncpy(out, candidate, outsz); out[outsz - 1] = 0; return true;
+    // Bare specifier: walk up looking in node_modules/.
+    char dir[PATH_MAX];
+    strncpy(dir, from_dir, sizeof dir); dir[sizeof dir - 1] = 0;
+    for (;;) {
+        snprintf(base, sizeof base, "%s/node_modules/%s", dir, spec);
+        if (TryModuleExtensions(base, out, outsz)) return true;
+        // Walk up.
+        if (dir[0] == 0 || (dir[0] == '/' && dir[1] == 0)) break;
+        char* slash = strrchr(dir, '/');
+        if (!slash) break;
+        if (slash == dir) {
+            // Parent is '/'.
+            dir[0] = '/';
+            dir[1] = 0;
+        } else {
+            *slash = 0;
         }
     }
     return false;
