@@ -1,0 +1,18 @@
+# The TenFourFox sparse checkout is a fetch target, not our source. Pull
+# it with scripts/fetch-tenfourfox.sh. Keeping it out of our history
+# keeps the repo tiny.
+external/
+
+# Build outputs (target-host builds happen under /Users/macuser/tmp/).
+*.o
+*.a
+*.dylib
+*.so
+ionpower-node
+src/*.o
+src/node_compat/*.o
+
+# Editor / OS scratch.
+.DS_Store
+*.swp
+*~
