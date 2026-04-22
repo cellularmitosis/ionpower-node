@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{title}} — ionpower-node blog</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<article>
+<header>
+<p><a href="../index.html">&larr; all posts</a></p>
+<h1>{{title}}</h1>
+<p class="meta">
+  {{#if author}}by {{author}}{{/if}}
+  {{#if date}} &middot; <time>{{date}}</time>{{/if}}
+  {{#if tags}} &middot; {{#each tags}}<span class="tag">{{this}}</span> {{/each}}{{/if}}
+</p>
+</header>
+{{{body}}}
+<nav class="pagenav">
+  {{#if prev}}<a class="prev" href="{{prev.href}}">&larr; {{prev.title}}</a>{{/if}}
+  {{#if next}}<a class="next" href="{{next.href}}">{{next.title}} &rarr;</a>{{/if}}
+</nav>
+</article>
+<footer>built by ionpower-node on PowerPC Tiger from <code>{{source}}</code></footer>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{siteTitle}}</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+<h1>{{siteTitle}}</h1>
+<p>{{siteSubtitle}}</p>
+<p><a href="rss.xml">RSS</a></p>
+</header>
+<ul class="posts">
+{{#each posts}}
+  <li>
+    <a href="{{href}}">{{title}}</a>
+    <span class="meta">{{date}}{{#if author}} &middot; {{author}}{{/if}}</span>
+  </li>
+{{/each}}
+</ul>
+<footer>{{count}} posts built by ionpower-node on PowerPC Tiger</footer>
+</body>
+</html>

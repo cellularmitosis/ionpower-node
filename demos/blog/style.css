@@ -1,0 +1,24 @@
+body { font-family: "Lucida Grande", sans-serif; max-width: 42em;
+       margin: 2em auto; padding: 0 1em; line-height: 1.5; color: #222; }
+h1, h2, h3 { line-height: 1.2; }
+a { color: #07a; }
+pre { background: #f4f4f4; padding: 0.8em; overflow-x: auto;
+      border-left: 3px solid #888; }
+code { background: #f4f4f4; padding: 0.1em 0.3em; }
+pre code { background: transparent; padding: 0; }
+blockquote { border-left: 3px solid #ccc; margin: 0; padding: 0.3em 1em;
+             color: #555; }
+.meta { color: #666; font-size: 0.85em; }
+.tag { background: #eef; border-radius: 3px; padding: 0 0.4em; color: #468; }
+.pagenav { display: flex; justify-content: space-between; margin-top: 2em; border-top: 1px solid #eee; padding-top: 1em; }
+.pagenav .prev, .pagenav .next { text-decoration: none; }
+.posts { list-style: none; padding: 0; }
+.posts li { margin: 0.4em 0; }
+.token.keyword    { color: #07a; font-weight: bold; }
+.token.function   { color: #d70; }
+.token.string     { color: #690; }
+.token.number     { color: #905; }
+.token.comment    { color: #888; font-style: italic; }
+.token.operator   { color: #900; }
+.token.punctuation{ color: #555; }
+footer { margin-top: 3em; color: #888; font-size: 0.85em; border-top: 1px solid #eee; padding-top: 1em; }
