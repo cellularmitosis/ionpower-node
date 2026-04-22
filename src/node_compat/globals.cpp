@@ -166,6 +166,17 @@ static const char kBootstrapJS[] =
     "    hostname: function () { return process.env.HOSTNAME || 'localhost'; }\n"
     "  };\n"
 
+    // --- crypto (randomBytes + web-style getRandomValues) ---
+    "  var nativeCrypto = __crypto_native__;\n"
+    "  var crypto = {\n"
+    "    randomBytes:     nativeCrypto.randomBytes,\n"
+    "    getRandomValues: nativeCrypto.getRandomValues,\n"
+    "    randomFillSync:  function (buf) { nativeCrypto.getRandomValues(buf); return buf; }\n"
+    "  };\n"
+    // Web Crypto lives on globalThis.crypto in browsers and Node 20+.
+    "  if (typeof globalThis !== 'undefined') { globalThis.crypto = crypto; }\n"
+    "  this.crypto = crypto;\n"   // also pin on global in case globalThis missing
+
     // --- Seed core modules into require cache. ---
     "  __require_cache__['fs']            = fs;\n"
     "  __require_cache__['path']          = path;\n"
@@ -173,6 +184,7 @@ static const char kBootstrapJS[] =
     "  __require_cache__['util']          = util;\n"
     "  __require_cache__['child_process'] = child_process;\n"
     "  __require_cache__['os']            = os;\n"
+    "  __require_cache__['crypto']        = crypto;\n"
 
     // Re-wrap __make_require__ so bare specifiers check the cache first.
     "  var origMake = __make_require__;\n"
@@ -196,6 +208,7 @@ bool InstallNodeCompatGlobals(JSContext* cx, JS::HandleObject global,
     if (!InstallBuffer(cx, global))        { fprintf(stderr, "InstallBuffer failed\n"); return false; }
     if (!InstallRequire(cx, global))       { fprintf(stderr, "InstallRequire failed\n"); return false; }
     if (!InstallTimers(cx, global))        { fprintf(stderr, "InstallTimers failed\n"); return false; }
+    if (!InstallCrypto(cx, global))        { fprintf(stderr, "InstallCrypto failed\n"); return false; }
 
     JS::CompileOptions opts(cx);
     opts.setFileAndLine("<ionpower-node bootstrap>", 1);

@@ -34,6 +34,7 @@ SRCS = src/main.cpp \
        src/node_compat/buffer.cpp \
        src/node_compat/require.cpp \
        src/node_compat/timers.cpp \
+       src/node_compat/crypto.cpp \
        src/node_compat/globals.cpp
 
 OBJS = $(SRCS:.cpp=.o)
