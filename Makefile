@@ -141,6 +141,7 @@ test-libs: $(BIN)
 	./$(BIN) test/ejs_smoke.js
 	./$(BIN) test/dequal_smoke.js
 	./$(BIN) test/sm45_destructuring_defaults_repro.js
+	./$(BIN) test/babel_fallback_smoke.js
 
 test-all: test test-libs
 

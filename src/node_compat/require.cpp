@@ -275,39 +275,108 @@ static bool LoadModuleFile(JSContext* cx, JS::HandleObject global,
     // The leading newline keeps line numbers in errors aligned.
     // Removing the trailing ';' leaves the wrapped source as a bare
     // ExpressionStatement whose completion value is the function expression
-    // itself — which JS::Evaluate then returns via `wrapped`. Leaving the ';'
-    // on would *still* evaluate to the function (ExpressionStatement
-    // completion rule), but the no-semicolon form is one less spec lookup
-    // for a future reader.
+    // itself — which JS::Evaluate then returns via `wrapped`.
     static const char kPrefix[] =
         "(function (exports, require, module, __filename, __dirname) {\n";
     static const char kSuffix[] = "\n})";
-    size_t wlen = sizeof(kPrefix) - 1 + srcLen + sizeof(kSuffix) - 1;
-    char* wsrc = (char*)malloc(wlen + 1);
-    if (!wsrc) { free(src); return false; }
-    memcpy(wsrc, kPrefix, sizeof(kPrefix) - 1);
-    memcpy(wsrc + sizeof(kPrefix) - 1, src, srcLen);
-    memcpy(wsrc + sizeof(kPrefix) - 1 + srcLen, kSuffix, sizeof(kSuffix) - 1);
-    wsrc[wlen] = 0;
-    free(src);
 
     JS::CompileOptions opts(cx);
     opts.setFileAndLine(abs_path, 0);
 
-    // Compile as UTF-8 instead of Latin-1. Evaluate's `const char*` overload
-    // interprets bytes as Latin-1 — which is fine for ASCII source but breaks
-    // any non-ASCII char in a string literal (e.g. 'Héllo' became 6 chars).
-    // Convert to UTF-16 up front and feed the char16_t* overload.
-    size_t u16len = 0;
-    JS::UTF8Chars u8((const char*)wsrc, wlen);
-    char16_t* u16 = JS::UTF8CharsToNewTwoByteCharsZ(cx, u8, &u16len).get();
-    free(wsrc);
-    if (!u16) return false;   // exception already pending on cx
+    // Closure: wrap (prefix+body+suffix), UTF-8 → UTF-16, Evaluate.
+    // Returns true + fills `wrapped` on success; otherwise leaves pending
+    // exception on cx and returns false.
+    auto wrapAndEval = [&](const char* body, size_t bodyLen,
+                           JS::MutableHandleValue wrapped) -> bool {
+        size_t wlen = sizeof(kPrefix) - 1 + bodyLen + sizeof(kSuffix) - 1;
+        char* wsrc = (char*)malloc(wlen + 1);
+        if (!wsrc) return false;
+        memcpy(wsrc, kPrefix, sizeof(kPrefix) - 1);
+        memcpy(wsrc + sizeof(kPrefix) - 1, body, bodyLen);
+        memcpy(wsrc + sizeof(kPrefix) - 1 + bodyLen,
+               kSuffix, sizeof(kSuffix) - 1);
+        wsrc[wlen] = 0;
+
+        size_t u16len = 0;
+        JS::UTF8Chars u8((const char*)wsrc, wlen);
+        char16_t* u16 = JS::UTF8CharsToNewTwoByteCharsZ(cx, u8, &u16len).get();
+        free(wsrc);
+        if (!u16) return false;
+
+        bool ev = JS::Evaluate(cx, opts, u16, u16len, wrapped);
+        free(u16);
+        return ev;
+    };
 
     JS::RootedValue wrapped(cx);
-    bool ok = JS::Evaluate(cx, opts, u16, u16len, &wrapped);
-    free(u16);
-    if (!ok) return false;
+    bool ok = wrapAndEval(src, srcLen, &wrapped);
+
+    // Parse-failure fallback: if the wrapped source didn't parse (pending
+    // SyntaxError), ask JS-side __try_babel_transpile__ for a lowered ES5
+    // version and re-evaluate that. Opt-out via IONPOWER_NO_BABEL=1.
+    if (!ok) {
+        JS::RootedValue savedExc(cx, JS::UndefinedValue());
+        bool hadExc = JS_GetPendingException(cx, &savedExc);
+        JS_ClearPendingException(cx);
+
+        JS::RootedValue hookV(cx);
+        if (JS_GetProperty(cx, global, "__try_babel_transpile__", &hookV)
+            && hookV.isObject() && JS_ObjectIsFunction(cx, &hookV.toObject())) {
+            // mtime in ms (same units as fs.statSync).
+            struct stat st;
+            double mtimeMs = 0.0;
+            if (stat(abs_path, &st) == 0)
+                mtimeMs = (double)st.st_mtime * 1000.0;
+
+            JS::RootedString pathS(cx, JS_NewStringCopyZ(cx, abs_path));
+            // Feed raw UTF-8 bytes through UTF-16 so non-ASCII survives.
+            size_t rawU16len = 0;
+            JS::UTF8Chars rawU8((const char*)src, srcLen);
+            char16_t* rawU16 =
+                JS::UTF8CharsToNewTwoByteCharsZ(cx, rawU8, &rawU16len).get();
+            JS::RootedString srcS(cx,
+                rawU16 ? JS_NewUCString(cx, rawU16, rawU16len) : nullptr);
+            if (!pathS || !srcS) {
+                // Can't even build args — restore original exception.
+                if (hadExc && !JS_IsExceptionPending(cx))
+                    JS_SetPendingException(cx, savedExc);
+                free(src);
+                return false;
+            }
+
+            JS::AutoValueArray<3> tArgs(cx);
+            tArgs[0].setString(pathS);
+            tArgs[1].setString(srcS);
+            tArgs[2].setNumber(mtimeMs);
+            JS::RootedValue tOut(cx);
+            bool called = JS::Call(cx, JS::UndefinedHandleValue, hookV,
+                                   tArgs, &tOut);
+            if (called && tOut.isString()) {
+                // Re-evaluate with transpiled body.
+                JS::RootedString outS(cx, tOut.toString());
+                JSAutoByteString outBytes;
+                if (outBytes.encodeUtf8(cx, outS)) {
+                    const char* outRaw = outBytes.ptr();
+                    size_t outLen = strlen(outRaw);
+                    ok = wrapAndEval(outRaw, outLen, &wrapped);
+                }
+            } else if (!called) {
+                // Hook itself threw. Drop that; restore original.
+                JS_ClearPendingException(cx);
+            }
+        }
+
+        if (!ok) {
+            // No transpile or transpiled code still didn't parse.
+            // Restore the original exception (babel wasn't able to help).
+            if (hadExc && !JS_IsExceptionPending(cx))
+                JS_SetPendingException(cx, savedExc);
+            free(src);
+            return false;
+        }
+    }
+
+    free(src);
     if (!wrapped.isObject() || !JS_ObjectIsFunction(cx, &wrapped.toObject())) {
         JS_ReportError(cx, "require: wrapper did not evaluate to a function");
         return false;
