@@ -163,6 +163,9 @@ test-libs: $(BIN)
 	./$(BIN) test/seedrandom_smoke.js
 	./$(BIN) test/alea_smoke.js
 	./$(BIN) test/escape_html_smoke.js
+	./$(BIN) test/rfc6902_smoke.js
+	./$(BIN) test/fast_memoize_smoke.js
+	./$(BIN) test/tiny_warning_smoke.js
 
 test-all: test test-libs
 

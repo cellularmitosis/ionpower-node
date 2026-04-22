@@ -3,7 +3,7 @@
 Libraries test-fit through ionpower-node. Each entry is a real
 package running unmodified (within its own JS-version constraints).
 
-## Currently passing (80 libraries as of 2026-04-22)
+## Currently passing (88 libraries as of 2026-04-22)
 
 | # | Library | Version | Size | Workload | Notes |
 |--|---|---|---|---|---|
@@ -87,6 +87,14 @@ package running unmodified (within its own JS-version constraints).
 | 78 | [fast-json-stable-stringify](https://github.com/epoberezkin/fast-json-stable-stringify) | 2.1.0 | 2 KB | deterministic JSON | — |
 | 79 | [uniq](https://github.com/mikolalysenko/uniq)       | 1.0.1 | 1 KB   | array deduplication              | — |
 | 80 | [JSZip](https://stuk.github.io/jszip/)              | 3.10.1 | 97 KB  | in-memory zip read/write         | Promises resolve sync for our single-threaded runtime |
+| 81 | [hashids](https://github.com/niieani/hashids.js)    | 2.3.0 | 5 KB   | obfuscated short IDs             | needed bootstrap `self=global` alias |
+| 82 | [jmespath](https://jmespath.org/)                   | 0.16.0 | 58 KB | JSON query language              | projections, filters, functions |
+| 83 | [seedrandom](https://github.com/davidbau/seedrandom) | 3.0.5 | 8 KB  | seeded PRNG (MT / ARC4)          | — |
+| 84 | [alea](https://github.com/coverslide/node-alea)     | 1.0.1 | 2 KB   | tiny fast seeded PRNG            | has .uint32() |
+| 85 | [escape-html](https://github.com/component/escape-html) | 1.0.3 | 1 KB | HTML entity escaper           | — |
+| 86 | [rfc6902](https://github.com/chbrown/rfc6902)       | 5.0.1 | 5 KB   | JSON Patch (create+apply diffs)  | — |
+| 87 | [fast-memoize](https://github.com/caiogondim/fast-memoize.js) | 2.5.2 | 3 KB | function memoization | arity-1 fast path + multi-arg |
+| 88 | [tiny-warning](https://github.com/alexreardon/tiny-warning) | 1.0.3 | 400 B | conditional console.warn | — |
 
 ## Composition demos
 
