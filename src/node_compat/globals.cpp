@@ -280,6 +280,13 @@ static const char kBootstrapJS[] =
     // --- buffer (reexport the Buffer global as a core module) ---
     "  var buffer = { Buffer: Buffer, constants: {}, kMaxLength: 0x7fffffff };\n"
 
+    // Browser UMD bundles often reach for `self` as the global object.
+    // Make it resolve to our global so those bundles don't ReferenceError.
+    "  if (typeof self === 'undefined') {\n"
+    "    if (typeof globalThis !== 'undefined') globalThis.self = globalThis;\n"
+    "    else this.self = this;\n"
+    "  }\n"
+
     // --- string_decoder — minimal, no partial-sequence buffering ---
     "  function StringDecoder(encoding) { this.encoding = encoding || 'utf8'; }\n"
     "  StringDecoder.prototype.write = function (buf) {\n"

@@ -158,6 +158,11 @@ test-libs: $(BIN)
 	./$(BIN) test/stable_stringify_smoke.js
 	./$(BIN) test/uniq_smoke.js
 	./$(BIN) test/jszip_smoke.js
+	./$(BIN) test/hashids_smoke.js
+	./$(BIN) test/jmespath_smoke.js
+	./$(BIN) test/seedrandom_smoke.js
+	./$(BIN) test/alea_smoke.js
+	./$(BIN) test/escape_html_smoke.js
 
 test-all: test test-libs
 
