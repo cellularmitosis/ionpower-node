@@ -12,6 +12,15 @@ package running unmodified (within its own JS-version constraints).
 | [handlebars](https://github.com/handlebars-lang/handlebars.js) | 4.7.8 | 86 KB | `new Function()`, eval-path JIT | all 6 assertions pass |
 | [lodash](https://github.com/lodash/lodash) | 4.17.21 | 71 KB | stdlib breadth, `_.template()` | 35/35 assertions pass |
 | [typescript](https://www.typescriptlang.org/) | 3.9.10 | 8.3 MB | compiler, visitor patterns, checker | 2 transpiles correct, 530 ms each |
+| [semver](https://github.com/npm/node-semver) | 5.7.2 | 41 KB | range parsing, regex-heavy | 22/22 assertions pass |
+| [prettier](https://prettier.io/) | 1.19.1 | 1.0 MB | parse + pretty-print | 246 ms to reformat a fibonacci block |
+
+## Composition demo
+
+[demos/ssg/](../demos/ssg/) is a minimal static site generator that
+composes `marked` + `handlebars` + `fs` + `path`. Reads `input/*.md`,
+renders through marked, wraps in a handlebars template, writes
+`output/*.html`. Three content pages build in 205 ms on imacg52.
 
 ## JS-version ceiling (empirical)
 
@@ -22,6 +31,7 @@ of ES2015 and ES2016. The features we've observed breaking:
 |---|---|---|
 | Optional chaining `?.` | ES2020 / TS 4.0 | `SyntaxError: expected expression, got '?'` |
 | Nullish coalescing `??` | ES2020 | same |
+| Optional catch binding `catch {}` | ES2019 / prettier 2.x | `SyntaxError: missing ( before catch` |
 | Private class fields `#name` | ES2022 | not tested, will fail parse |
 | Logical assignment `??=` `&&=` `\|\|=` | ES2021 | not tested, will fail parse |
 | Top-level await | ES2022 modules | N/A (we're CJS-only) |
@@ -59,6 +69,15 @@ High-value but not yet attempted:
   against acorn.
 - **semver** — tiny, should be trivial.
 - **yaml (eemeli/yaml)** — YAML parser; file-I/O-capable real task.
+
+## Bugs found through real-library testing
+
+- **`fs.readFileSync(path, "utf8")` returned mojibake.** Caught by the
+  ssg demo: em-dashes (`—`, U+2014) rendered as `â` in the generated
+  HTML. Root cause: JS_NewStringCopyN interprets bytes as ISO-Latin-1.
+  Fixed by routing through `JS::UTF8CharsToNewTwoByteCharsZ`
+  (js/CharacterEncoding.h) to decode UTF-8 → UTF-16 before building the
+  JS string. Commit 09397fd.
 
 Known to fail without bridge work (not yet attempted):
 
