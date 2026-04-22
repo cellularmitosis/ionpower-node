@@ -11,6 +11,7 @@ Reading order for someone picking this project up cold.
 | See what went wrong and how it was fixed during the actual build | [build-notes.md](build-notes.md) |
 | Know what to do after the SpiderMonkey build finishes | [post-build-checklist.md](post-build-checklist.md) |
 | Triage a build or link failure | [fallback-plans.md](fallback-plans.md) |
+| See which third-party libs work, and the JS-version ceiling | [compat.md](compat.md) |
 | See the current state of the project | [status-report.md](status-report.md) |
 | See what the parallel session B contributed | [status-report-session-B.md](status-report-session-B.md) |
 
