@@ -20,6 +20,7 @@
 #include "jsapi.h"
 #include "jsfriendapi.h"
 #include "js/Conversions.h"
+#include "js/CharacterEncoding.h"
 
 namespace ionpower {
 
@@ -75,8 +76,15 @@ static bool FsReadFileSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     }
 
     if (wantString) {
-        JS::RootedString s(cx, JS_NewStringCopyN(cx, (const char*)bytes, len));
+        // Node's fs.readFileSync(path, "utf8") decodes UTF-8. JS_NewStringCopyN
+        // takes Latin-1, which mangles anything > U+007F. Go through
+        // UTF8CharsToNewTwoByteCharsZ to produce a proper JS string.
+        size_t u16len = 0;
+        JS::UTF8Chars u8((const char*)bytes, len);
+        char16_t* u16 = JS::UTF8CharsToNewTwoByteCharsZ(cx, u8, &u16len).get();
         free(bytes);
+        if (!u16) return false;   // cx has the conversion error
+        JS::RootedString s(cx, JS_NewUCString(cx, u16, u16len));  // takes ownership
         if (!s) return false;
         args.rval().setString(s);
         return true;

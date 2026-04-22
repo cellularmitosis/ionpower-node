@@ -12,6 +12,9 @@ ionpower-node
 src/*.o
 src/node_compat/*.o
 
+# Generated demo output.
+demos/ssg/output/
+
 # Editor / OS scratch.
 .DS_Store
 *.swp
