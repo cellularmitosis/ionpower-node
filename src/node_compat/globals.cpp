@@ -28,6 +28,16 @@ namespace ionpower {
 
 static const char kBootstrapJS[] =
     "(function () {\n"
+    // ES2015 String.prototype.normalize requires ICU, which we built
+    // --without-intl-api. Libraries that call normalize (slugify, diff,
+    // some markdown parsers) blow up with 'is not a function'. Install a
+    // best-effort polyfill that's identity for ASCII and works
+    // approximately for Latin-1 accented chars: we return the string
+    // unchanged. This is wrong for true NFC/NFD but keeps most libs
+    // running on ASCII/Latin-1 inputs, which is the overwhelming case.
+    "  if (typeof String.prototype.normalize !== 'function') {\n"
+    "    String.prototype.normalize = function () { return String(this); };\n"
+    "  }\n"
 
     // --- fs (public shape wrapping the __fs_native__ bindings) ---
     "  var nativeFs = __fs_native__;\n"
