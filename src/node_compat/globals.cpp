@@ -296,6 +296,20 @@ static const char kBootstrapJS[] =
     "  _Socket.prototype.connect = function () { throw new Error('net.Socket.connect: no event loop on ionpower-node'); };\n"
     "  _Socket.prototype.write   = function () { return false; };\n"
     "  __require_cache__['net']            = { Socket: _Socket, createServer: function () { throw new Error('net.createServer: not supported'); } };\n"
+    // tty: isatty backed by our process.std*.isTTY; Stream stubs for
+    // consumers that `new tty.WriteStream(fd)` (we only support
+    // EventEmitter-shape listening, not actual reads/writes).
+    "  __require_cache__['tty']            = {\n"
+    "    isatty: function (fd) {\n"
+    "      if (fd === 1 && process.stdout) return !!process.stdout.isTTY;\n"
+    "      if (fd === 2 && process.stderr) return !!process.stderr.isTTY;\n"
+    "      return false;\n"
+    "    },\n"
+    "    ReadStream:  function () { events.EventEmitter.call(this); },\n"
+    "    WriteStream: function () { events.EventEmitter.call(this); }\n"
+    "  };\n"
+    "  util.inherits(__require_cache__['tty'].ReadStream,  events.EventEmitter);\n"
+    "  util.inherits(__require_cache__['tty'].WriteStream, events.EventEmitter);\n"
 
     // Re-wrap __make_require__ so bare specifiers check the cache first.
     "  var origMake = __make_require__;\n"
