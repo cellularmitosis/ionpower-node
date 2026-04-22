@@ -136,6 +136,34 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
     if (!JS_DefineProperty(cx, process, "pid", pidv, JSPROP_ENUMERATE))
         return false;
 
+    // process.stdout / process.stderr — minimal shim. Real Node exposes a
+    // Writable stream; we expose just enough for TTY detection (which is
+    // what most libraries check) plus a synchronous `.write()` that
+    // delegates to fputs. `.fd` is 1 / 2 for completeness.
+    auto makeStream = [&](int fd) -> JSObject* {
+        JS::RootedObject s(cx, JS_NewPlainObject(cx));
+        if (!s) return nullptr;
+        JS::RootedValue fdV(cx, JS::Int32Value(fd));
+        if (!JS_DefineProperty(cx, s, "fd", fdV, JSPROP_ENUMERATE)) return nullptr;
+        JS::RootedValue isttyV(cx, JS::BooleanValue(isatty(fd) != 0));
+        if (!JS_DefineProperty(cx, s, "isTTY", isttyV, JSPROP_ENUMERATE)) return nullptr;
+        // Columns / rows: unknown-but-non-zero when TTY, otherwise undefined.
+        // (We don't yet call TIOCGWINSZ.)
+        if (isatty(fd)) {
+            JS::RootedValue c(cx, JS::Int32Value(80));
+            JS::RootedValue r(cx, JS::Int32Value(24));
+            if (!JS_DefineProperty(cx, s, "columns", c, JSPROP_ENUMERATE)) return nullptr;
+            if (!JS_DefineProperty(cx, s, "rows",    r, JSPROP_ENUMERATE)) return nullptr;
+        }
+        return s;
+    };
+
+    JS::RootedObject stdoutObj(cx, makeStream(1));
+    JS::RootedObject stderrObj(cx, makeStream(2));
+    if (!stdoutObj || !stderrObj) return false;
+    if (!JS_DefineProperty(cx, process, "stdout", stdoutObj, JSPROP_ENUMERATE)) return false;
+    if (!JS_DefineProperty(cx, process, "stderr", stderrObj, JSPROP_ENUMERATE)) return false;
+
     return JS_DefineProperty(cx, global, "process", process, JSPROP_ENUMERATE);
 }
 
