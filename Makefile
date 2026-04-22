@@ -135,6 +135,11 @@ test-libs: $(BIN)
 	./$(BIN) test/ramda_smoke.js
 	./$(BIN) test/pluralize_smoke.js
 	./$(BIN) test/debug_smoke.js
+	./$(BIN) test/basex_smoke.js
+	./$(BIN) test/moo_smoke.js
+	./$(BIN) test/clone_smoke.js
+	./$(BIN) test/ejs_smoke.js
+	./$(BIN) test/dequal_smoke.js
 	./$(BIN) test/sm45_destructuring_defaults_repro.js
 
 test-all: test test-libs
