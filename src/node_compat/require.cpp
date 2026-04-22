@@ -234,6 +234,33 @@ static bool LoadModuleFile(JSContext* cx, JS::HandleObject global,
         return false;
     }
 
+    // JSON modules: if the path ends in .json, parse and return the value
+    // directly. No wrapping, no caching-as-exports subtleties — Node does
+    // this too.
+    size_t alen = strlen(abs_path);
+    if (alen >= 5 &&
+        abs_path[alen - 5] == '.' &&
+        abs_path[alen - 4] == 'j' &&
+        abs_path[alen - 3] == 's' &&
+        abs_path[alen - 2] == 'o' &&
+        abs_path[alen - 1] == 'n') {
+        size_t u16len = 0;
+        JS::UTF8Chars u8((const char*)src, srcLen);
+        char16_t* u16 = JS::UTF8CharsToNewTwoByteCharsZ(cx, u8, &u16len).get();
+        free(src);
+        if (!u16) return false;
+        JS::RootedValue parsed(cx);
+        bool ok = JS_ParseJSON(cx, u16, (uint32_t)u16len, &parsed);
+        free(u16);
+        if (!ok) return false;
+        if (parsed.isObject()) {
+            JS::RootedObject parsedObj(cx, &parsed.toObject());
+            if (!StoreCache(cx, global, abs_path, parsedObj)) return false;
+        }
+        rval.set(parsed);
+        return true;
+    }
+
     // Strip a leading UNIX shebang line so scripts can start with
     // `#!/usr/bin/env node`. Replace the shebang with spaces (not remove)
     // so that line/column numbers in error messages stay aligned with the
