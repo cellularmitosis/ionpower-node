@@ -14,6 +14,9 @@
 #include <sys/stat.h>
 extern char** environ;
 
+// Forward-declare the native write handler; installed per-stream below.
+static bool ProcessStreamWrite(JSContext* cx, unsigned argc, JS::Value* vp);
+
 #include "jsapi.h"
 #include "js/Conversions.h"
 
@@ -155,6 +158,11 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
             if (!JS_DefineProperty(cx, s, "columns", c, JSPROP_ENUMERATE)) return nullptr;
             if (!JS_DefineProperty(cx, s, "rows",    r, JSPROP_ENUMERATE)) return nullptr;
         }
+        // .write(data) — accepts a string or a Uint8Array. Returns true
+        // (Node says: whether the kernel buffer has room for more;
+        // we're synchronous and always drained, so always true).
+        if (!JS_DefineFunction(cx, s, "write", ProcessStreamWrite, 1, JSPROP_ENUMERATE))
+            return nullptr;
         return s;
     };
 
@@ -168,3 +176,68 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
 }
 
 } // namespace ionpower
+
+// Out-of-class so the declaration earlier can refer to it.
+#include "jsfriendapi.h"
+static bool ProcessStreamWrite(JSContext* cx, unsigned argc, JS::Value* vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 1) { args.rval().setBoolean(true); return true; }
+
+    // Figure out which fd this is. `this` is the stream object; read .fd.
+    int fd = 1;
+    if (args.thisv().isObject()) {
+        JS::RootedObject self(cx, &args.thisv().toObject());
+        JS::RootedValue fdV(cx);
+        if (JS_GetProperty(cx, self, "fd", &fdV) && fdV.isInt32())
+            fd = fdV.toInt32();
+    }
+
+    if (args[0].isString()) {
+        JS::RootedString s(cx, args[0].toString());
+        JSAutoByteString bytes;
+        if (!bytes.encodeUtf8(cx, s)) return false;
+        const char* p = bytes.ptr();
+        size_t n = strlen(p);
+        // Write in a loop so large strings go through cleanly.
+        while (n > 0) {
+            ssize_t w = write(fd, p, n);
+            if (w < 0) {
+                if (errno == EINTR) continue;
+                JS_ReportError(cx, "process.stdout.write: %s", strerror(errno));
+                return false;
+            }
+            p += w; n -= (size_t)w;
+        }
+    } else if (args[0].isObject() && JS_IsUint8Array(&args[0].toObject())) {
+        JS::RootedObject u8(cx, &args[0].toObject());
+        uint32_t len = JS_GetTypedArrayByteLength(u8);
+        JS::AutoCheckCannotGC nogc;
+        bool sharedDummy;
+        uint8_t* data = JS_GetUint8ArrayData(u8, &sharedDummy, nogc);
+        while (len > 0 && data) {
+            ssize_t w = write(fd, data, len);
+            if (w < 0) {
+                if (errno == EINTR) continue;
+                JS_ReportError(cx, "process.stdout.write: %s", strerror(errno));
+                return false;
+            }
+            data += w; len -= (uint32_t)w;
+        }
+    } else {
+        // Coerce to string as a last resort.
+        JS::RootedString s(cx, JS::ToString(cx, args[0]));
+        if (!s) return false;
+        JSAutoByteString bytes;
+        if (!bytes.encodeUtf8(cx, s)) return false;
+        size_t n = strlen(bytes.ptr());
+        const char* p = bytes.ptr();
+        while (n > 0) {
+            ssize_t w = write(fd, p, n);
+            if (w < 0) { if (errno == EINTR) continue; JS_ReportError(cx, "write: %s", strerror(errno)); return false; }
+            p += w; n -= (size_t)w;
+        }
+    }
+    args.rval().setBoolean(true);
+    return true;
+}
