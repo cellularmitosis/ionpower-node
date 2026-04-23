@@ -238,6 +238,10 @@ test-libs: $(BIN)
 	./$(BIN) test/atob_btoa_smoke.js
 	./$(BIN) test/urldecode_smoke.js
 	./$(BIN) test/safe_stable_stringify_smoke.js
+	./$(BIN) test/tinypreds_smoke.js
+	./$(BIN) test/buffer_crc32_smoke.js
+	./$(BIN) test/tsv_smoke.js
+	./$(BIN) test/object_assign_smoke.js
 
 test-all: test test-libs
 
