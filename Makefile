@@ -261,6 +261,12 @@ test-libs: $(BIN)
 	./$(BIN) test/inflection_smoke.js
 	./$(BIN) test/oauth_sign_smoke.js
 	./$(BIN) test/fromentries_smoke.js
+	./$(BIN) test/fast_equals_smoke.js
+	./$(BIN) test/diff2html_smoke.js
+	./$(BIN) test/hoopy_smoke.js
+	./$(BIN) test/fast_sort_smoke.js
+	./$(BIN) test/jsonparse_smoke.js
+	./$(BIN) test/pretty_compact_smoke.js
 
 test-all: test test-libs
 
