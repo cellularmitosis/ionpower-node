@@ -87,3 +87,94 @@ Sync only. No event loop yet, so no `setTimeout`, no async `fs`.
 No node_modules traversal; only relative paths for `require`. No
 native addons. No `http`/`net`/`dns`/`child_process`. See
 `docs/plan.md` for the explicit scope.
+
+## Node API implementation status
+
+A live accounting of which parts of the Node API the runtime
+implements, approximates, or explicitly stubs. Updated as each
+release lands.
+
+### Core modules
+
+| Module | Status | Notes |
+|---|---|---|
+| `fs` (sync) | ✅ Working | `readFileSync`, `writeFileSync`, `existsSync`, `readdirSync`, `statSync`, `lstatSync` (alias), `unlinkSync`, `mkdirSync` (+ recursive), `rmdirSync`, `appendFileSync`, `copyFileSync`, `chmodSync`, `renameSync`, `realpathSync` (passthrough). Errors carry Node-style `.code`/`.errno`/`.syscall`/`.path`. |
+| `fs` (async) | ❌ Missing | No event loop — all fs is synchronous. |
+| `fs.promises` | ❌ Missing | Ditto. |
+| `fs.createReadStream`/`WriteStream` | ❌ Missing | Would need real stream. |
+| `path` | ✅ Working | `join`, `resolve`, `normalize`, `dirname`, `basename`, `extname`, `relative`, `parse`, `format`, `sep`, `delimiter`, `isAbsolute`. |
+| `os` | 🟡 Partial | `platform` (`darwin`), `arch` (`ppc`), `homedir`, `tmpdir`, `hostname`, `cpus` (1-core stub), `type`, `release`, `endianness` (`BE`), `EOL`. No `networkInterfaces`, no `loadavg`. |
+| `events` | ✅ Working | `EventEmitter` with `on`/`once`/`off`/`emit`/`addListener`/`removeListener`/`removeAllListeners`/`listenerCount`/`listeners`/`prependListener`. |
+| `util` | 🟡 Partial | `format`, `inspect` (depth-limited, cycle-safe), `inherits`, `promisify` (+ `.custom` symbol), `callbackify`, `deprecate`, `types.*`, `isArray`/`isString`/`isNumber`/`isBoolean`/`isFunction`/`isObject`/`isNull`/`isUndefined`/`isNullOrUndefined`/`isError`/`isPrimitive`/`isBuffer`/`isDate`/`isRegExp`. No `parseArgs`, no `styleText`. |
+| `buffer` | ✅ Working | `Buffer` class: `from` (string/array/Buffer/ArrayBuffer), `alloc`, `allocUnsafe`, `isBuffer`, `concat`, `byteLength`, `compare`. Instance: `toString`, `slice`, `write`, `copy`, `fill`, `indexOf`, `includes`, `equals`, `.length`. |
+| `crypto` | 🟡 Partial | `randomBytes` (real entropy), `pseudoRandomBytes`, `randomUUID` (v4), `createHash` (md5/sha1/sha256/sha512), `createHmac` (sha1/sha256). No `createCipheriv`, no `pbkdf2`, no `sign`/`verify`, no `diffieHellman`. |
+| `http` | 🟡 Partial | Sync-only `getSync`/`requestSync` for simple GET. No `createServer`, no async request. |
+| `https` | ❌ Missing | Would need TLS + async. |
+| `net` | ❌ Missing | Would need sockets + event loop. |
+| `dns` | ❌ Missing | |
+| `child_process` | 🟡 Stub | `spawn`/`exec`/`execSync`/`fork` all throw. |
+| `stream` | 🟡 Stub | `Stream`/`Readable`/`Writable`/`Duplex`/`Transform`/`PassThrough` are an EE-based pass-through stub. `.pipe()` returns the destination; `.write()`/`.end()` no-op. Most CJS libs that "touch but don't stream" work; pipelines don't. |
+| `string_decoder` | ✅ Working | `StringDecoder` over Buffer-to-UTF-8. |
+| `querystring` | ✅ Working | `parse`/`stringify`. |
+| `assert` | ✅ Working | `equal`, `strictEqual`, `notEqual`, `notStrictEqual`, `deepEqual`, `deepStrictEqual`, `throws`, `doesNotThrow`, `fail`, `ok`, `AssertionError`. |
+| `timers` | 🟡 Synchronous | `setImmediate`/`setTimeout`/`setInterval` + clears. Under the sync runtime, `setTimeout(fn, N)` fires synchronously. |
+| `tty` | 🟡 Stub | `ReadStream`/`WriteStream` exported as EE-derived stubs. |
+| `module` | ❌ Missing | No `createRequire`, no `Module` class. |
+| `worker_threads` | ❌ Missing | |
+| `cluster` | ❌ Missing | |
+| `zlib` | ❌ Missing | |
+| `url` | 🟡 Via globals | `URL`/`URLSearchParams` available globally (tiny ~150-line polyfill); `require('url')` not seeded. |
+
+### Globals
+
+| Global | Status | Notes |
+|---|---|---|
+| `process` | ✅ Working | `argv`, `env`, `cwd`, `exit`, `exitCode`, `platform`, `arch`, `version`, `pid`, `stdout`/`stderr` (sync write, `.isTTY`, `.fd`, `.columns`/`.rows`), `nextTick` (synchronous), `umask`, event-emitter surface (`on`/`once`/`off`/`emit` including `'exit'` flush). No `stdin`. |
+| `Buffer` | ✅ Working | See `buffer` above. |
+| `console` | ✅ Working | `log`/`error`/`warn`/`info`/`debug`/`trace`/`dir`/`time`/`timeEnd`/`assert`. |
+| `Promise` | ✅ Polyfill | **Synchronous** Promise (no microtask queue): executor + `.then`/`.catch`/`.finally` chains run inline. `Promise.resolve`/`reject`/`all`/`race`/`allSettled`. |
+| `queueMicrotask` | ✅ Synchronous | Runs the callback immediately via `Promise.resolve().then(fn)`. |
+| `setTimeout`/`setInterval`/`setImmediate` | 🟡 Synchronous | Fire immediately. No actual scheduling. |
+| `TextEncoder`/`TextDecoder` | ✅ Working | UTF-8 only. |
+| `URL`/`URLSearchParams` | ✅ Polyfill | Covers protocol/host/hostname/port/pathname/search/hash/origin/href + username/password, plus search-params get/getAll/has/set/append/delete/forEach/keys/values/entries/toString/sort. Not spec-complete for IDN / non-special schemes / exotic relative resolution. |
+| `crypto` (WebCrypto) | 🟡 Partial | `crypto.getRandomValues`, `crypto.randomUUID`, `crypto.subtle` absent. |
+| `fetch` | ❌ Missing | No async. |
+| `AbortController`/`AbortSignal` | ❌ Missing | |
+| `atob`/`btoa` | ✅ Working | |
+| `Error.captureStackTrace` | ✅ Shim | Attaches `.stack` as an own property so error-ex / json-parse-even-better-errors work. |
+| `globalThis` / `global` / `window` / `self` | ✅ All aliased | Any of the four resolves to the global object. |
+| `Intl` | ❌ Missing | SM45 was built `--without-intl-api`. Blocks luxon, ICU-dependent date/number formatters. |
+| `Symbol`, `Map`, `Set`, `WeakMap`, `WeakSet`, `Proxy`, `Reflect`, typed arrays | ✅ Native | SpiderMonkey 45 provides these. |
+
+### CommonJS
+
+| Surface | Status | Notes |
+|---|---|---|
+| `require('./rel/path.js')` | ✅ Working | |
+| `require('./rel/path')` | ✅ Working | Tries `.js`, `.cjs`, then `<dir>/package.json` main. |
+| `require('./rel/data.json')` | ✅ Working | Parsed and returned. |
+| `require('bare-module')` node_modules walk | ✅ Working | Standard upward search. |
+| `require('bare-module')` vendor fallback | ✅ Working | If node_modules lookup fails, walks caller's dir up looking for `<ancestor>/<name>.js` or `<ancestor>/vendor/<name>.js`, plus global dirs (`cwd/test/vendor`, installed `share/ionpower-node/vendor`). Lets unpatched libraries' bare `require('chalk')` etc. resolve to vendored copies. |
+| `require('node:fs')` prefix | ✅ Stripped | `node:` prefix stripped before lookup. |
+| Seeded core modules | ✅ Working | `__require_cache__` pre-populated with fs / path / events / util / child_process / os / crypto / buffer / string_decoder / assert / stream / timers / querystring / supports-color / has-ansi / process. |
+| ESM `import`/`export` | 🟡 Via Babel | Bootstrap lazily loads `@babel/standalone` on parse failure and re-evaluates the ESM-lowered source. Handles `import X from "y"`, `export default`, `export { X }`. Does **not** handle top-level `await`, dynamic `import()`, or `import.meta`. Cached on disk at `~/.ionpower-cache/babel-v1/`. |
+| `import.meta` | ❌ Missing | |
+| Top-level `await` | ❌ Missing | No async context. |
+| Dynamic `import()` | ❌ Missing | |
+
+### Compat shims seeded as fake packages
+
+| Package | Provided | Why |
+|---|---|---|
+| `supports-color` | Built-in | Chalk family loads at runtime and reflects our `process.stdout.isTTY` + `TERM`. |
+| `has-ansi` | Built-in | Predicate for strings containing SGR sequences. |
+| `safe-buffer` | Built-in | Re-exports our Buffer (the real lib polyfills older Node). |
+| `cli-boxes` | Vendored JSON + shim | Data-only; the `.js` wrapper reads `cli-boxes.json`. |
+
+### Library count
+
+Running total of third-party libraries with a passing smoke test:
+**332** as of [v0.3](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.3)-plus.
+
+The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
+see each smoke for exactly which surface the library exercises.
