@@ -460,6 +460,9 @@ test-libs: $(BIN)
 	./$(BIN) test/crypto_expand_smoke.js
 	./$(BIN) test/csv_ndjson_smoke.js
 	./$(BIN) test/bcryptjs_smoke.js
+	./$(BIN) test/lodash_subs_smoke.js
+	./$(BIN) test/picocolors_smoke.js
+	./$(BIN) test/lines_and_columns_smoke.js
 
 test-all: test test-libs
 
