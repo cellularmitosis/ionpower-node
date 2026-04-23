@@ -3,7 +3,7 @@
 Libraries test-fit through ionpower-node. Each entry is a real
 package running unmodified (within its own JS-version constraints).
 
-## Currently passing (216 libraries as of 2026-04-22)
+## Currently passing (220 libraries as of 2026-04-22)
 
 | # | Library | Version | Size | Workload | Notes |
 |--|---|---|---|---|---|
