@@ -400,6 +400,10 @@ test-libs: $(BIN)
 	./$(BIN) test/number_is_integer_smoke.js
 	./$(BIN) test/lodash_defaults_smoke.js
 	./$(BIN) test/hooker_smoke.js
+	./$(BIN) test/dot_prop_smoke.js
+	./$(BIN) test/get_set_value_smoke.js
+	./$(BIN) test/tiny_queue_smoke.js
+	./$(BIN) test/linked_list_smoke.js
 
 test-all: test test-libs
 

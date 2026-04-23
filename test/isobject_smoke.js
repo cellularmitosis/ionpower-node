@@ -2,6 +2,9 @@
 // Small but gets pulled in by dozens of libs (extend, deep-extend, etc).
 
 var isObject = require("./vendor/isobject.js");
+// isobject was converted from ESM to CJS for consumer-friendliness
+// (so get-value's bare `require('isobject')` works). Keep the
+// .default guard for safety anyway.
 isObject = isObject.default || isObject;
 
 function assert(c, msg) { if (!c) { console.error("FAIL:", msg); process.exit(1); } }
