@@ -55,9 +55,8 @@ mkdir -p "$SRC/intl/icu/source/common" "$SRC/intl/icu/source/i18n"
 # Idempotent — skip if already patched.
 NSPRFILE="$SRC/js/src/vm/PosixNSPR.cpp"
 if ! grep -q 'IONPOWER_TIGER_NOSETNAME' "$NSPRFILE"; then
-    /opt/perl-5.36.0/bin/perl -i -pe '
-        s|^(PR_SetCurrentThreadName\(const char\* name\)\n\{)|${1}\n    // IONPOWER_TIGER_NOSETNAME: pthread_setname_np is Leopard-only.\n    (void)name;\n    return PR_SUCCESS;|' \
-        "$NSPRFILE" || true
+    /opt/perl-5.36.0/bin/perl -i -pe 's|^(    int result;)$|$1\n    // IONPOWER_TIGER_NOSETNAME: pthread_setname_np is Leopard-only\n    (void)name; return PR_SUCCESS;|' \
+        "$NSPRFILE"
 fi
 
 # See G3 script / docs/g3-g4-builds.md for rationale. Idempotent.

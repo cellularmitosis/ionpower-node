@@ -169,6 +169,19 @@ test-libs: $(BIN)
 	./$(BIN) test/crypto_hash_smoke.js
 	./$(BIN) test/htmlparser2_smoke.js
 	./$(BIN) test/jsonwebtoken_smoke.js
+	./$(BIN) test/eventemitter3_smoke.js
+	./$(BIN) test/indent_string_smoke.js
+	./$(BIN) test/safe_json_stringify_smoke.js
+	./$(BIN) test/leven_smoke.js
+	./$(BIN) test/strnum_smoke.js
+	./$(BIN) test/xregexp_smoke.js
+	./$(BIN) test/htmlescape_smoke.js
+	./$(BIN) test/qhash_smoke.js
+	./$(BIN) test/escape_regexp_smoke.js
+	./$(BIN) test/object_path_smoke.js
+	./$(BIN) test/currency_smoke.js
+	./$(BIN) test/arr_union_diff_smoke.js
+	./$(BIN) test/deep_extend_smoke.js
 
 test-all: test test-libs
 

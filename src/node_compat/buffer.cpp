@@ -576,7 +576,33 @@ bool InstallBuffer(JSContext* cx, JS::HandleObject global) {
         "    off += n;\n"
         "  }\n"
         "  return out;\n"
-        "};\n";
+        "};\n"
+        // Promote Buffer from a plain object into a constructible function,
+        // so `val instanceof Buffer` and `new Buffer(n)` work. Props carried
+        // over. Buffer.prototype stays Uint8Array.prototype so all
+        // Uint8Arrays pass `instanceof Buffer`.
+        "(function () {\n"
+        "  var _fn_from = Buffer.from;\n"
+        "  var _fn_alloc = Buffer.alloc;\n"
+        "  var _fn_isBuf = Buffer.isBuffer;\n"
+        "  var _fn_byteLen = Buffer.byteLength;\n"
+        "  var _fn_concat = Buffer.concat;\n"
+        "  function BufferCtor(arg, encOrOffset, length) {\n"
+        "    if (typeof arg === 'number') return _fn_alloc(arg);\n"
+        "    if (typeof arg === 'string') return _fn_from(arg, encOrOffset || 'utf8');\n"
+        "    return _fn_from(arg);\n"
+        "  }\n"
+        "  BufferCtor.from = _fn_from;\n"
+        "  BufferCtor.alloc = _fn_alloc;\n"
+        "  BufferCtor.allocUnsafe = _fn_alloc;\n"
+        "  BufferCtor.allocUnsafeSlow = _fn_alloc;\n"
+        "  BufferCtor.isBuffer = _fn_isBuf;\n"
+        "  BufferCtor.byteLength = _fn_byteLen;\n"
+        "  BufferCtor.concat = _fn_concat;\n"
+        "  BufferCtor.poolSize = 8192;\n"
+        "  BufferCtor.prototype = Uint8Array.prototype;\n"
+        "  this.Buffer = BufferCtor;\n"
+        "}).call(this);\n";
     JS::CompileOptions opts(cx);
     opts.setFileAndLine("<ionpower-node buffer patch>", 1);
     JS::RootedValue discard(cx);
