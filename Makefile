@@ -364,6 +364,9 @@ test-libs: $(BIN)
 	./$(BIN) test/xmldoc_smoke.js
 	./$(BIN) test/is_email_smoke.js
 	./$(BIN) test/color_hash_smoke.js
+	./$(BIN) test/case_lib_smoke.js
+	./$(BIN) test/twig_smoke.js
+	./$(BIN) test/p_limit_smoke.js
 
 test-all: test test-libs
 

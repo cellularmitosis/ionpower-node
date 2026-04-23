@@ -1,5 +1,7 @@
 'use strict';
-const Queue = require('yocto-queue');
+const QueueMod = require('./yocto-queue.js');
+// yocto-queue is vendored as ESM; after babel it's module.exports.default.
+const Queue = QueueMod.default || QueueMod;
 
 const pLimit = concurrency => {
 	if (!((Number.isInteger(concurrency) || concurrency === Infinity) && concurrency > 0)) {
