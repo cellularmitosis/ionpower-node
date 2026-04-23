@@ -430,6 +430,9 @@ test-libs: $(BIN)
 	./$(BIN) test/content_disposition_smoke.js
 	./$(BIN) test/dequal_lite_smoke.js
 	./$(BIN) test/rrule_smoke.js
+	./$(BIN) test/string_transforms_smoke.js
+	./$(BIN) test/is_json_smoke.js
+	./$(BIN) test/iso8601_duration_smoke.js
 
 test-all: test test-libs
 
