@@ -417,6 +417,11 @@ test-libs: $(BIN)
 	./$(BIN) test/log_symbols_smoke.js
 	./$(BIN) test/is_unicode_supported_smoke.js
 	./$(BIN) test/strip_final_newline_smoke.js
+	./$(BIN) test/cli_spinners_smoke.js
+	./$(BIN) test/env_paths_smoke.js
+	./$(BIN) test/just_suite_smoke.js
+	./$(BIN) test/iota_array_smoke.js
+	./$(BIN) test/inline_style_parser_smoke.js
 
 test-all: test test-libs
 
