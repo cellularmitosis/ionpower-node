@@ -285,6 +285,10 @@ test-libs: $(BIN)
 	./$(BIN) test/deep_clone_smoke.js
 	./$(BIN) test/spacetime_smoke.js
 	./$(BIN) test/cli_width_smoke.js
+	./$(BIN) test/array_union_smoke.js
+	./$(BIN) test/is_directory_smoke.js
+	./$(BIN) test/eventemitter2_smoke.js
+	./$(BIN) test/deep_diff_smoke.js
 
 test-all: test test-libs
 

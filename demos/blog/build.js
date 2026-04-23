@@ -39,7 +39,7 @@ function walk(dir, relFromInput) {
         var abs  = path.join(dir, name);
         var rel  = relFromInput ? path.join(relFromInput, name) : name;
         var st   = fs.statSync(abs);
-        if (st.isDirectory) {
+        if (st.isDirectory()) {
             var sub = walk(abs, rel);
             for (var j = 0; j < sub.length; ++j) out.push(sub[j]);
         } else if (name.slice(-3) === ".md") {

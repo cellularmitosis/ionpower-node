@@ -11,7 +11,7 @@ const back = fs.readFileSync(tmp, "utf8");
 console.log("readback length:", back.length, "match:", back === body);
 
 const st = fs.statSync(tmp);
-console.log("size:", st.size, "isFile:", st.isFile, "isDir:", st.isDirectory);
+console.log("size:", st.size, "isFile:", st.isFile(), "isDir:", st.isDirectory());
 
 const entries = fs.readdirSync("/tmp");
 console.log("/tmp has", entries.length, "entries (sample:",

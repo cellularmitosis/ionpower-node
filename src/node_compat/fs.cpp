@@ -237,8 +237,15 @@ static bool FsStatSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     if (!defineNum("size",  (double)st.st_size))  return false;
     if (!defineNum("mtime", (double)st.st_mtime * 1000.0)) return false;
     if (!defineNum("mode",  (double)st.st_mode))  return false;
+    // Also keep boolean shorthand (earlier consumers of our shim did
+    // st.isFile as a bool). Node returns these as predicate functions,
+    // though, so we install the functions below in the JS bootstrap.
     if (!defineBoolProp("isFile",      S_ISREG(st.st_mode))) return false;
     if (!defineBoolProp("isDirectory", S_ISDIR(st.st_mode))) return false;
+    // Also add _mode bits so the bootstrap can wrap them as fn() style.
+    if (!defineBoolProp("_isFile",      S_ISREG(st.st_mode))) return false;
+    if (!defineBoolProp("_isDirectory", S_ISDIR(st.st_mode))) return false;
+    if (!defineBoolProp("_isSymbolicLink", S_ISLNK(st.st_mode))) return false;
 
     args.rval().setObject(*out);
     return true;

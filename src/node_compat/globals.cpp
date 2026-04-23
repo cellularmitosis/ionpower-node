@@ -98,13 +98,29 @@ static const char kBootstrapJS[] =
 
     // --- fs (public shape wrapping the __fs_native__ bindings) ---
     "  var nativeFs = __fs_native__;\n"
+    // statSync in Node returns a Stats object whose isFile / isDirectory /
+    // isSymbolicLink are METHODS, not bool properties. Our native shim
+    // returns them as bools AND also exposes _isFile/_isDirectory/
+    // _isSymbolicLink. Wrap to expose the method shape so libraries that
+    // call st.isFile() don't TypeError.
+    "  function _wrapStats(nativeFn) {\n"
+    "    return function () {\n"
+    "      var st = nativeFn.apply(this, arguments);\n"
+    "      if (!st) return st;\n"
+    "      var f = !!st._isFile, d = !!st._isDirectory, l = !!st._isSymbolicLink;\n"
+    "      st.isFile          = function () { return f; };\n"
+    "      st.isDirectory     = function () { return d; };\n"
+    "      st.isSymbolicLink  = function () { return l; };\n"
+    "      return st;\n"
+    "    };\n"
+    "  }\n"
     "  var fs = {\n"
     "    readFileSync:   nativeFs.readFileSync,\n"
     "    writeFileSync:  nativeFs.writeFileSync,\n"
     "    existsSync:     nativeFs.existsSync,\n"
     "    readdirSync:    nativeFs.readdirSync,\n"
-    "    statSync:       nativeFs.statSync,\n"
-    "    lstatSync:      nativeFs.statSync,\n"
+    "    statSync:       _wrapStats(nativeFs.statSync),\n"
+    "    lstatSync:      _wrapStats(nativeFs.statSync),\n"
     "    unlinkSync:     nativeFs.unlinkSync,\n"
     "    mkdirSync:      nativeFs.mkdirSync,\n"
     "    rmdirSync:      nativeFs.rmdirSync,\n"
