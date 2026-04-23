@@ -468,6 +468,7 @@ test-libs: $(BIN)
 	./$(BIN) test/express_utils_smoke.js
 	./$(BIN) test/express_more_smoke.js
 	./$(BIN) test/batch_big_smoke.js
+	./$(BIN) test/batch_more_smoke.js
 
 test-all: test test-libs
 
