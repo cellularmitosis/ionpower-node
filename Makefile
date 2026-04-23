@@ -257,6 +257,10 @@ test-libs: $(BIN)
 	./$(BIN) test/case_smoke.js
 	./$(BIN) test/tslib_smoke.js
 	./$(BIN) test/anchorme_smoke.js
+	./$(BIN) test/numeral_smoke.js
+	./$(BIN) test/inflection_smoke.js
+	./$(BIN) test/oauth_sign_smoke.js
+	./$(BIN) test/fromentries_smoke.js
 
 test-all: test test-libs
 
