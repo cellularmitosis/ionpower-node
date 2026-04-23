@@ -197,6 +197,11 @@ test-libs: $(BIN)
 	./$(BIN) test/jsbn_smoke.js
 	./$(BIN) test/crc32_smoke.js
 	./$(BIN) test/fastest_levenshtein_smoke.js
+	./$(BIN) test/flatten_smoke.js
+	./$(BIN) test/fnv_plus_smoke.js
+	./$(BIN) test/left_pad_smoke.js
+	./$(BIN) test/just_smoke.js
+	./$(BIN) test/format_util_smoke.js
 
 test-all: test test-libs
 
