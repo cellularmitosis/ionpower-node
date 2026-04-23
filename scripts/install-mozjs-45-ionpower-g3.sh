@@ -51,11 +51,13 @@ mkdir -p "$SRC/intl/icu/source/common" "$SRC/intl/icu/source/i18n"
 
 NSPRFILE="$SRC/js/src/vm/PosixNSPR.cpp"
 if ! grep -q 'IONPOWER_TIGER_NOSETNAME' "$NSPRFILE"; then
-    # Inject a short-circuit right after "    int result;" inside
-    # PR_SetCurrentThreadName's body (pthread_setname_np is Leopard-only).
-    # perl -pe is line-oriented; the marker line is unique enough for
-    # single-line matching without slurp mode.
+    # Two fixes needed on Tiger: short-circuit the function entry (so we
+    # don't leak fallback fallthrough) AND replace the actual
+    # pthread_setname_np call under XP_DARWIN (the symbol isn't declared
+    # on 10.4 so even dead code fails to compile).
     /opt/perl-5.36.0/bin/perl -i -pe 's|^(    int result;)$|$1\n    // IONPOWER_TIGER_NOSETNAME: pthread_setname_np is Leopard-only\n    (void)name; return PR_SUCCESS;|' \
+        "$NSPRFILE"
+    /opt/perl-5.36.0/bin/perl -i -pe 's|^(    )result = pthread_setname_np\(name\);|${1}result = 0; // IONPOWER_TIGER_NOSETNAME: Leopard-only|' \
         "$NSPRFILE"
 fi
 

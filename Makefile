@@ -184,6 +184,13 @@ test-libs: $(BIN)
 	./$(BIN) test/arr_union_diff_smoke.js
 	./$(BIN) test/deep_extend_smoke.js
 	./$(BIN) test/http_smoke.js
+	./$(BIN) test/cookie_smoke.js
+	./$(BIN) test/cookie_signature_smoke.js
+	./$(BIN) test/bytes_smoke.js
+	./$(BIN) test/content_type_smoke.js
+	./$(BIN) test/base64js_smoke.js
+	./$(BIN) test/json_logic_smoke.js
+	./$(BIN) test/is_plain_obj_smoke.js
 
 test-all: test test-libs
 
