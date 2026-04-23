@@ -208,6 +208,14 @@ test-libs: $(BIN)
 	./$(BIN) test/bit_buffer_smoke.js
 	./$(BIN) test/clsx_smoke.js
 	./$(BIN) test/tiny_invariant_smoke.js
+	./$(BIN) test/diff_match_patch_smoke.js
+	./$(BIN) test/circular_json_smoke.js
+	./$(BIN) test/flatted_smoke.js
+	./$(BIN) test/big_integer_smoke.js
+	./$(BIN) test/diff_sequences_smoke.js
+	./$(BIN) test/reselect_smoke.js
+	./$(BIN) test/array_move_smoke.js
+	./$(BIN) test/split_on_first_smoke.js
 
 test-all: test test-libs
 
