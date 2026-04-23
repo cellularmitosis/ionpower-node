@@ -74,6 +74,22 @@ static int RunMain(JSContext* cx, int argc, char** argv)
         if (JS_IsExceptionPending(cx))
             JS_ReportPendingException(cx);
     }
+
+    // Run any 'exit' handlers the script registered via process.on('exit', ...).
+    // tape is the canonical reason: it registers an exit hook and only then
+    // runs its queued test functions. Ignore failures here.
+    {
+        JS::RootedValue flushV(cx);
+        if (JS_GetProperty(cx, global, "__process_flush_exit__", &flushV)
+            && flushV.isObject() && JS_ObjectIsFunction(cx, &flushV.toObject())) {
+            JS::RootedValue rv(cx);
+            (void)JS::Call(cx, JS::UndefinedHandleValue, flushV,
+                           JS::HandleValueArray::empty(), &rv);
+            if (JS_IsExceptionPending(cx))
+                JS_ReportPendingException(cx);
+        }
+    }
+
     return ok ? 0 : 1;
 }
 
