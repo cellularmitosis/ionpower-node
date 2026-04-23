@@ -600,6 +600,17 @@ bool InstallBuffer(JSContext* cx, JS::HandleObject global) {
         "  BufferCtor.byteLength = _fn_byteLen;\n"
         "  BufferCtor.concat = _fn_concat;\n"
         "  BufferCtor.poolSize = 8192;\n"
+        // Buffer.isEncoding: returns true if the name is one of
+        // Node's known encodings. Used by buffer-from and others.
+        "  BufferCtor.isEncoding = function (enc) {\n"
+        "    if (typeof enc !== 'string') return false;\n"
+        "    var e = enc.toLowerCase();\n"
+        "    return e === 'utf8'   || e === 'utf-8'   ||\n"
+        "           e === 'ascii'  || e === 'binary'  ||\n"
+        "           e === 'base64' || e === 'base64url' ||\n"
+        "           e === 'hex'    || e === 'latin1'  ||\n"
+        "           e === 'utf16le'|| e === 'ucs2'    || e === 'ucs-2';\n"
+        "  };\n"
         "  BufferCtor.prototype = Uint8Array.prototype;\n"
         "  this.Buffer = BufferCtor;\n"
         // is-buffer et al. call `obj.constructor.isBuffer(obj)`. Since our
