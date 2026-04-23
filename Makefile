@@ -441,6 +441,10 @@ test-libs: $(BIN)
 	./$(BIN) test/make_error_smoke.js
 	./$(BIN) test/prr_smoke.js
 	./$(BIN) test/mnemonist_set_smoke.js
+	./$(BIN) test/valid_url_smoke.js
+	./$(BIN) test/throttle_debounce_smoke.js
+	./$(BIN) test/property_expr_smoke.js
+	./$(BIN) test/filename_helpers_smoke.js
 
 test-all: test test-libs
 
