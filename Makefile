@@ -404,6 +404,10 @@ test-libs: $(BIN)
 	./$(BIN) test/get_set_value_smoke.js
 	./$(BIN) test/tiny_queue_smoke.js
 	./$(BIN) test/linked_list_smoke.js
+	./$(BIN) test/mime_smoke.js
+	./$(BIN) test/text_table_smoke.js
+	./$(BIN) test/utils_merge_smoke.js
+	./$(BIN) test/uniqid_smoke.js
 
 test-all: test test-libs
 
