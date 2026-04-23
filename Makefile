@@ -377,6 +377,12 @@ test-libs: $(BIN)
 	./$(BIN) test/error_ex_smoke.js
 	./$(BIN) test/astring_smoke.js
 	./$(BIN) test/escape_string_regexp_smoke.js
+	./$(BIN) test/p_try_smoke.js
+	./$(BIN) test/remove_accents_smoke.js
+	./$(BIN) test/url_utils_smoke.js
+	./$(BIN) test/yargs_parser_smoke.js
+	./$(BIN) test/delay_smoke.js
+	./$(BIN) test/widest_line_smoke.js
 
 test-all: test test-libs
 
