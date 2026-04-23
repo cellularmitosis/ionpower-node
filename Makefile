@@ -254,6 +254,9 @@ test-libs: $(BIN)
 	./$(BIN) test/jwt_decode_smoke.js
 	./$(BIN) test/color_utils_smoke.js
 	./$(BIN) test/base64_smoke.js
+	./$(BIN) test/case_smoke.js
+	./$(BIN) test/tslib_smoke.js
+	./$(BIN) test/anchorme_smoke.js
 
 test-all: test test-libs
 
