@@ -450,6 +450,7 @@ test-libs: $(BIN)
 	./$(BIN) test/mixin_deep_smoke.js
 	./$(BIN) test/is_negative_zero_smoke.js
 	./$(BIN) test/md5_hex_smoke.js
+	./$(BIN) test/batch24_smoke.js
 
 test-all: test test-libs
 
