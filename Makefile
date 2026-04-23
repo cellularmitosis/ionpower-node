@@ -446,6 +446,9 @@ test-libs: $(BIN)
 	./$(BIN) test/property_expr_smoke.js
 	./$(BIN) test/filename_helpers_smoke.js
 	./$(BIN) test/tiny_utils_smoke.js
+	./$(BIN) test/pad_lr_smoke.js
+	./$(BIN) test/mixin_deep_smoke.js
+	./$(BIN) test/is_negative_zero_smoke.js
 
 test-all: test test-libs
 
