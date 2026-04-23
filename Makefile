@@ -225,6 +225,9 @@ test-libs: $(BIN)
 	./$(BIN) test/longest_streak_smoke.js
 	./$(BIN) test/zero_fill_smoke.js
 	./$(BIN) test/ua_parser_smoke.js
+	./$(BIN) test/preact_smoke.js
+	./$(BIN) test/extend_smoke.js
+	./$(BIN) test/dot_smoke.js
 
 test-all: test test-libs
 
