@@ -13,7 +13,8 @@ CC           := /opt/gcc-4.9.4/bin/gcc-4.9
 #   make MOZJS_PREFIX=/opt/mozjs-45-ionpower-g4 CPU_FLAGS='-mcpu=7450 -mtune=7450'
 CPU_FLAGS ?= -mcpu=G5 -D_PPC970_
 
-CXXFLAGS = -m32 -mmacosx-version-min=10.4 $(CPU_FLAGS) -force_cpusubtype_ALL \
+MACOSX_SDK ?= /Developer/SDKs/MacOSX10.4u.sdk
+CXXFLAGS = -m32 -mmacosx-version-min=10.4 -isysroot $(MACOSX_SDK) $(CPU_FLAGS) -force_cpusubtype_ALL \
            -std=gnu++0x -fpermissive -fno-exceptions -fno-rtti \
            -O2 -g \
            -I src -I $(MOZJS_PREFIX)/include/mozjs-45
@@ -26,6 +27,7 @@ LD_SEARCH := $(shell test -x /opt/ld64-97.17-tigerbrew/bin/ld && \
                      echo -B /opt/ld64-97.17-tigerbrew/bin/)
 
 LDFLAGS  = -L $(MOZJS_PREFIX)/lib -m32 -mmacosx-version-min=10.4 \
+           -isysroot $(MACOSX_SDK) \
            -force_cpusubtype_ALL $(LD_SEARCH)
 # Mozilla's install renames libjs_static.a to lib${JS_LIBRARY_NAME}.a
 # (= libmozjs-45.a), but some standalone configurations skip the rename.
@@ -433,6 +435,7 @@ test-libs: $(BIN)
 	./$(BIN) test/string_transforms_smoke.js
 	./$(BIN) test/is_json_smoke.js
 	./$(BIN) test/iso8601_duration_smoke.js
+	./$(BIN) test/process_smoke.js
 
 test-all: test test-libs
 

@@ -990,6 +990,67 @@ static const char kBootstrapJS[] =
     "  if (typeof process.umask !== 'function') {\n"
     "    process.umask = function (_mask) { return 18; };\n"  // 0o022 = 18
     "  }\n"
+    // process.hrtime: high-resolution timer (Node's historical API).
+    // Returns [seconds, nanoseconds] relative to an arbitrary origin
+    // (or since `prev` if passed). We synthesize from Date.now(), so
+    // resolution is ms-level — good enough for libraries that use
+    // hrtime() as a "is monotonic, return a pair" marker.
+    "  if (typeof process.hrtime !== 'function') {\n"
+    "    var _hrtimeOrigin = Date.now();\n"
+    "    process.hrtime = function (prev) {\n"
+    "      var ms = Date.now() - _hrtimeOrigin;\n"
+    "      var s  = Math.floor(ms / 1000);\n"
+    "      var ns = (ms % 1000) * 1e6;\n"
+    "      if (prev && Array.isArray(prev)) {\n"
+    "        s  -= prev[0];\n"
+    "        ns -= prev[1];\n"
+    "        if (ns < 0) { s -= 1; ns += 1e9; }\n"
+    "      }\n"
+    "      return [s, ns];\n"
+    "    };\n"
+    // bigint variant: returns ns-since-origin as a plain number (SM45
+    // doesn't have BigInt). Libraries that check `typeof result ===\n"
+    // 'bigint'` will see 'number', but most just use arithmetic.
+    "    process.hrtime.bigint = function () {\n"
+    "      return (Date.now() - _hrtimeOrigin) * 1e6;\n"
+    "    };\n"
+    "  }\n"
+    // process.memoryUsage: stub. We can't actually introspect V8 heap
+    // from SM, but the shape matters to `node --inspect`-ish tools.
+    "  if (typeof process.memoryUsage !== 'function') {\n"
+    "    process.memoryUsage = function () {\n"
+    "      return { rss: 0, heapTotal: 0, heapUsed: 0, external: 0, arrayBuffers: 0 };\n"
+    "    };\n"
+    "    process.memoryUsage.rss = function () { return 0; };\n"
+    "  }\n"
+    // process.uptime: seconds since the script started.
+    "  if (typeof process.uptime !== 'function') {\n"
+    "    var _startMs = Date.now();\n"
+    "    process.uptime = function () { return (Date.now() - _startMs) / 1000; };\n"
+    "  }\n"
+    // process.title: Node lets you read+write; we ignore writes but
+    // return a stable identifier.
+    "  if (!('title' in process)) {\n"
+    "    Object.defineProperty(process, 'title', {\n"
+    "      get: function () { return 'ionpower-node'; },\n"
+    "      set: function (_) { /* no-op */ },\n"
+    "      configurable: true, enumerable: true\n"
+    "    });\n"
+    "  }\n"
+    // process.versions: { node, v8, ... }. Many libraries probe
+    // process.versions.node for feature flags.
+    "  if (typeof process.versions !== 'object' || process.versions === null) {\n"
+    "    process.versions = {\n"
+    "      node:      '14.0.0',\n"  // lie that we're a LTS node for feature-gate purposes
+    "      ionpower:  process.version.replace(/^ionpower-node-/, ''),\n"
+    "      spidermonkey: '45',\n"
+    "      v8:        '8.4.0'\n"  // also a lie — we're SM, but libs check v8
+    "    };\n"
+    "  }\n"
+    // process.release: { name, lts, ... }. Used by ci-detection libs.
+    "  if (typeof process.release !== 'object' || process.release === null) {\n"
+    "    process.release = { name: 'node', lts: 'ionpower-node' };\n"
+    "  }\n"
 
     // TextEncoder / TextDecoder: Web-standard string <-> UTF-8 Uint8Array.
     // Several libraries (murmurhash, modern base64 wrappers) reach for
