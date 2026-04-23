@@ -246,6 +246,11 @@ test-libs: $(BIN)
 	./$(BIN) test/simple_statistics_smoke.js
 	./$(BIN) test/heap_smoke.js
 	./$(BIN) test/tinydate_smoke.js
+	./$(BIN) test/sjcl_smoke.js
+	./$(BIN) test/number_to_words_smoke.js
+	./$(BIN) test/is_url_smoke.js
+	./$(BIN) test/humanize_duration_smoke.js
+	./$(BIN) test/slug_smoke.js
 
 test-all: test test-libs
 
