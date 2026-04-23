@@ -219,6 +219,12 @@ test-libs: $(BIN)
 	./$(BIN) test/url_parse_smoke.js
 	./$(BIN) test/ipaddr_smoke.js
 	./$(BIN) test/tinypure_smoke.js
+	./$(BIN) test/unorm_smoke.js
+	./$(BIN) test/glob_to_regexp_smoke.js
+	./$(BIN) test/assert_plus_smoke.js
+	./$(BIN) test/longest_streak_smoke.js
+	./$(BIN) test/zero_fill_smoke.js
+	./$(BIN) test/ua_parser_smoke.js
 
 test-all: test test-libs
 
