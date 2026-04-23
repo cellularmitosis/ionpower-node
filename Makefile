@@ -202,6 +202,12 @@ test-libs: $(BIN)
 	./$(BIN) test/left_pad_smoke.js
 	./$(BIN) test/just_smoke.js
 	./$(BIN) test/format_util_smoke.js
+	./$(BIN) test/jsonpointer_smoke.js
+	./$(BIN) test/traverse_smoke.js
+	./$(BIN) test/fraction_smoke.js
+	./$(BIN) test/bit_buffer_smoke.js
+	./$(BIN) test/clsx_smoke.js
+	./$(BIN) test/tiny_invariant_smoke.js
 
 test-all: test test-libs
 
