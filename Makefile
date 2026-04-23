@@ -428,6 +428,8 @@ test-libs: $(BIN)
 	./$(BIN) test/minipass_smoke.js
 	./$(BIN) test/eastasianwidth_smoke.js
 	./$(BIN) test/content_disposition_smoke.js
+	./$(BIN) test/dequal_lite_smoke.js
+	./$(BIN) test/rrule_smoke.js
 
 test-all: test test-libs
 
