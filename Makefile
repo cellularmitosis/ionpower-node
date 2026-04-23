@@ -466,6 +466,7 @@ test-libs: $(BIN)
 	./$(BIN) test/http_utils_smoke.js
 	./$(BIN) test/defu_iterall_smoke.js
 	./$(BIN) test/express_utils_smoke.js
+	./$(BIN) test/express_more_smoke.js
 
 test-all: test test-libs
 
