@@ -602,6 +602,12 @@ bool InstallBuffer(JSContext* cx, JS::HandleObject global) {
         "  BufferCtor.poolSize = 8192;\n"
         "  BufferCtor.prototype = Uint8Array.prototype;\n"
         "  this.Buffer = BufferCtor;\n"
+        // is-buffer et al. call `obj.constructor.isBuffer(obj)`. Since our
+        // Buffer instances inherit from Uint8Array.prototype, their
+        // .constructor is Uint8Array. Stamp isBuffer on Uint8Array itself.
+        "  if (typeof Uint8Array !== 'undefined' && !Uint8Array.isBuffer) {\n"
+        "    Uint8Array.isBuffer = _fn_isBuf;\n"
+        "  }\n"
         "}).call(this);\n";
     JS::CompileOptions opts(cx);
     opts.setFileAndLine("<ionpower-node buffer patch>", 1);

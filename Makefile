@@ -445,6 +445,7 @@ test-libs: $(BIN)
 	./$(BIN) test/throttle_debounce_smoke.js
 	./$(BIN) test/property_expr_smoke.js
 	./$(BIN) test/filename_helpers_smoke.js
+	./$(BIN) test/tiny_utils_smoke.js
 
 test-all: test test-libs
 
