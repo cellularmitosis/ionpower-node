@@ -277,6 +277,10 @@ test-libs: $(BIN)
 	./$(BIN) test/fast_copy_smoke.js
 	./$(BIN) test/is_promise_smoke.js
 	./$(BIN) test/fast_sha256_smoke.js
+	./$(BIN) test/graphlib_smoke.js
+	./$(BIN) test/dagre_smoke.js
+	./$(BIN) test/wordwrap_smoke.js
+	./$(BIN) test/tiny_typed_emitter_smoke.js
 
 test-all: test test-libs
 
