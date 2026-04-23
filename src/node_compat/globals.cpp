@@ -1617,6 +1617,11 @@ static const char kBootstrapJS[] =
     "  __require_cache__['stream']         = stream;\n"
     "  __require_cache__['supports-color'] = _supportsColor;\n"
     "  __require_cache__['has-ansi']       = _hasAnsi;\n"
+    // readable-stream + readable-stream/* are the npm package that
+    // shipped the core stream API as a userland install for older
+    // Node. Alias to our built-in stream module.
+    "  __require_cache__['readable-stream'] = stream;\n"
+    "  __require_cache__['inherits']        = util.inherits;\n"
     // `require('process')` (and `require('node:process')` which we
     // already strip) returns the process object itself.
     "  __require_cache__['process']        = process;\n"
