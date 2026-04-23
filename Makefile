@@ -383,6 +383,12 @@ test-libs: $(BIN)
 	./$(BIN) test/yargs_parser_smoke.js
 	./$(BIN) test/delay_smoke.js
 	./$(BIN) test/widest_line_smoke.js
+	./$(BIN) test/kind_of_smoke.js
+	./$(BIN) test/type_detect_smoke.js
+	./$(BIN) test/has_values_smoke.js
+	./$(BIN) test/onetime_smoke.js
+	./$(BIN) test/isobject_smoke.js
+	./$(BIN) test/pinkie_smoke.js
 
 test-all: test test-libs
 
