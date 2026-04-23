@@ -422,6 +422,12 @@ test-libs: $(BIN)
 	./$(BIN) test/just_suite_smoke.js
 	./$(BIN) test/iota_array_smoke.js
 	./$(BIN) test/inline_style_parser_smoke.js
+	./$(BIN) test/rgbcolor_smoke.js
+	./$(BIN) test/parse_duration_smoke.js
+	./$(BIN) test/fast_safe_stringify_smoke.js
+	./$(BIN) test/minipass_smoke.js
+	./$(BIN) test/eastasianwidth_smoke.js
+	./$(BIN) test/content_disposition_smoke.js
 
 test-all: test test-libs
 
