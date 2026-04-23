@@ -977,6 +977,52 @@ static const char kBootstrapJS[] =
     "    };\n"
     "    if (typeof globalThis !== 'undefined') globalThis.queueMicrotask = this.queueMicrotask;\n"
     "  }\n"
+    // Timer queue: setTimeout / setInterval / setImmediate enqueue
+    // into __timer_queue__ (populated by timers.cpp stubs that
+    // forward to __timer_enqueue__ below). Drained by
+    // __drain_timers__() which main.cpp calls after the entry
+    // script returns.
+    "  this.__timer_queue__ = [];\n"
+    "  var _timer_next_id = 1;\n"
+    "  this.__timer_enqueue__ = function (fn, delay, isInterval /*, ...args */) {\n"
+    "    var args = Array.prototype.slice.call(arguments, 3);\n"
+    "    var id = _timer_next_id++;\n"
+    "    var now = Date.now();\n"
+    "    var d = (typeof delay === 'number' && isFinite(delay) && delay > 0) ? delay : 0;\n"
+    "    __timer_queue__.push({\n"
+    "      id: id, fn: fn, args: args, isInterval: !!isInterval,\n"
+    "      delay: d, fireAt: now + d, cleared: false\n"
+    "    });\n"
+    "    return id;\n"
+    "  };\n"
+    "  this.__timer_clear__ = function (id) {\n"
+    "    for (var i = 0; i < __timer_queue__.length; ++i)\n"
+    "      if (__timer_queue__[i].id === id) __timer_queue__[i].cleared = true;\n"
+    "  };\n"
+    // __drain_timers__: pop the earliest fireAt record, invoke its fn.
+    // setInterval records re-queue themselves. Any uncaught throw
+    // bubbles up; main.cpp's error reporter shows it. We cap the
+    // drain at 100k iterations as a runaway guard.
+    "  this.__drain_timers__ = function () {\n"
+    "    var limit = 100000;\n"
+    "    while (__timer_queue__.length > 0 && limit-- > 0) {\n"
+    "      var earliestIdx = 0;\n"
+    "      for (var i = 1; i < __timer_queue__.length; ++i) {\n"
+    "        if (__timer_queue__[i].fireAt < __timer_queue__[earliestIdx].fireAt)\n"
+    "          earliestIdx = i;\n"
+    "      }\n"
+    "      var t = __timer_queue__[earliestIdx];\n"
+    "      __timer_queue__.splice(earliestIdx, 1);\n"
+    "      if (t.cleared) continue;\n"
+    "      try { t.fn.apply(null, t.args); }\n"
+    "      catch (e) { console.error('timer:', e && e.stack || e); }\n"
+    "      if (t.isInterval && !t.cleared) {\n"
+    "        t.fireAt = Date.now() + t.delay;\n"
+    "        __timer_queue__.push(t);\n"
+    "      }\n"
+    "    }\n"
+    "    if (limit <= 0) console.error('[ionpower] timer drain hit 100k iteration guard');\n"
+    "  };\n"
     // process.nextTick: Node-specific. With no event loop, run synchronously —
     // matches our Promise / queueMicrotask story. Libraries like tape queue
     // their test runs through nextTick, so without this the tests silently

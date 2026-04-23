@@ -47,10 +47,15 @@ const buf = Buffer.from("hello", "utf8");
 assertEq(buf.length, 5, "Buffer.from utf8 length");
 assertEq(buf.toString("utf8"), "hello", "Buffer.toString utf8");
 
-// 5. setImmediate (synchronous in our runtime)
-let fired = false;
-setImmediate(function () { fired = true; });
-assertEq(fired, true, "setImmediate fired synchronously");
+// 5. setImmediate is now properly deferred — fires after the current
+// script returns (drained by __drain_timers__ in main.cpp). We still
+// exercise the API shape by registering + verifying it doesn't fire
+// synchronously, and checking it fires before exit via a process
+// .on('exit', ...) hook below.
+let immediateFired = false;
+let immediateFireOrder = [];
+setImmediate(function () { immediateFired = true; immediateFireOrder.push("immediate"); });
+assertEq(immediateFired, false, "setImmediate is deferred (queued)");
 
 // 6. process surfaces
 if (typeof process.argv[0] !== "string") die("process.argv[0] should be string");

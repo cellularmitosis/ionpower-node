@@ -1,7 +1,6 @@
 // timers_smoke.js — exercises setImmediate / setTimeout / clearTimeout.
-// Ordering is synchronous in ionpower-node (we have no event loop), so
-// "after" prints BEFORE "main done", which is the *wrong* order in real
-// Node but matches our documented behavior.
+// Now that we have a real timer queue, setImmediate/setTimeout defer
+// until after the current script body returns.
 
 console.log("main start");
 
@@ -14,8 +13,13 @@ setTimeout(function () {
 }, 100);
 
 const id = setTimeout(function () {
-    console.log("this setTimeout should also fire (no real cancel)");
+    console.log("THIS SHOULD NOT PRINT — cleared");
 }, 100);
-clearTimeout(id);  // no-op in our impl; the line above will still print
+clearTimeout(id);  // now really cancels the timer
 
 console.log("main end");
+// Expected output order:
+//   main start
+//   main end
+//   setImmediate fired, args=  one two
+//   setTimeout fired
