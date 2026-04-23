@@ -150,6 +150,35 @@ the install script so dsymutil has nothing to process. That's a
 one-line change to `install-mozjs-45-ionpower-g{3,4}.sh`; pending
 validation.
 
+## G4 install artifacts (emac, 2026-04-23)
+
+After the Xcode 2.5 install unblocked `/usr/lib/crt1.o` +
+`/Developer/SDKs/MacOSX10.4u.sdk`, the G4 build ran to completion
+overnight on emac (1.42 GHz 7450, 1 GB RAM). Install at
+`/opt/mozjs-45-ionpower-g4/`:
+
+```
+bin/js                   9.5 MB, ppc
+bin/js-config
+lib/libjs_static.a     212 MB (renamed from libjs_static.ajs post-install;
+                              same Mozilla-install quirk as G3)
+lib/libmozglue.dylib   151 KB (cp'd from OBJDIR after install; see G3 note)
+include/mozjs-45/      16 headers
+```
+
+Smoke: `print(Math.sqrt(2))` → `1.4142135623730951`. JIT bench:
+5 M integer-sum loop in **47 ms** — fastest of the three targets:
+
+    G3 @ 700 MHz   254 ms
+    G5 @ 2.00 GHz  ~120 ms
+    G4 @ 1.42 GHz   47 ms
+
+The G4's ~2.5× advantage over the G5 at lower clock is the result we
+hoped for from `-mcpu=7450 -mtune=7450 -falign-*=16` (matching the
+G4's 32-byte cache-line design versus the G5's 128-byte setup that we
+over-aligned to in the G5 build's `-falign-*=32`). IonPower is happy
+on this shape.
+
 ## G3 install artifacts (imacg3, 2026-04-22)
 
 After the manual install step above:
