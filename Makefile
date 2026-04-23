@@ -228,6 +228,8 @@ test-libs: $(BIN)
 	./$(BIN) test/preact_smoke.js
 	./$(BIN) test/extend_smoke.js
 	./$(BIN) test/dot_smoke.js
+	./$(BIN) test/lz_string_smoke.js
+	./$(BIN) test/parse_ms_smoke.js
 
 test-all: test test-libs
 
