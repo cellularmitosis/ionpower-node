@@ -1105,6 +1105,9 @@ static const char kBootstrapJS[] =
     "  __require_cache__['stream']         = stream;\n"
     "  __require_cache__['supports-color'] = _supportsColor;\n"
     "  __require_cache__['has-ansi']       = _hasAnsi;\n"
+    // `require('process')` (and `require('node:process')` which we
+    // already strip) returns the process object itself.
+    "  __require_cache__['process']        = process;\n"
     "  __require_cache__['timers']         = {\n"
     "    setImmediate:   (typeof setImmediate === 'function') ? setImmediate : null,\n"
     "    clearImmediate: (typeof clearImmediate === 'function') ? clearImmediate : function(){},\n"

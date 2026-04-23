@@ -413,6 +413,10 @@ test-libs: $(BIN)
 	./$(BIN) test/chalk_smoke.js
 	./$(BIN) test/normalize_url_smoke.js
 	./$(BIN) test/file_url_smoke.js
+	./$(BIN) test/boxen_smoke.js
+	./$(BIN) test/log_symbols_smoke.js
+	./$(BIN) test/is_unicode_supported_smoke.js
+	./$(BIN) test/strip_final_newline_smoke.js
 
 test-all: test test-libs
 
