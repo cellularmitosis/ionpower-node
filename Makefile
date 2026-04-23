@@ -289,6 +289,7 @@ test-libs: $(BIN)
 	./$(BIN) test/is_directory_smoke.js
 	./$(BIN) test/eventemitter2_smoke.js
 	./$(BIN) test/deep_diff_smoke.js
+	./$(BIN) test/rambda_smoke.js
 
 test-all: test test-libs
 
