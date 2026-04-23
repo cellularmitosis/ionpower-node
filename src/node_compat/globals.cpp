@@ -560,6 +560,22 @@ static const char kBootstrapJS[] =
     "    parse:  function (s) { return { href: s, pathname: s }; },\n"
     "    format: function (u) { return u.href || String(u); }\n"
     "  };\n"
+    // http: blocking HTTP client via curl shell-out. Caveat emptor — not a
+    // real server/event-loop shape; getSync/postSync return the full
+    // response synchronously. Node's http.createServer / http.request are
+    // NOT implemented.
+    "  var _nativeHttp = __http_native__;\n"
+    "  var http = {\n"
+    "    getSync:  _nativeHttp.getSync,\n"
+    "    postSync: _nativeHttp.postSync,\n"
+    // Node-compat convenience: http.get(url, cb) => calls cb(res) synchronously
+    // with a response-shaped object. Real Node uses streams; we don't.
+    "    get: function (url, cb) { var r = _nativeHttp.getSync(url); if (cb) cb(r); return r; },\n"
+    "    request: function () { throw new Error('http.request: no event loop on ionpower-node; use http.getSync/postSync'); },\n"
+    "    createServer: function () { throw new Error('http.createServer: not supported'); }\n"
+    "  };\n"
+    "  __require_cache__['http']          = http;\n"
+    "  __require_cache__['https']         = http;\n"  // same impl (curl handles both)
     // net: EventEmitter-shaped Socket stub. Throws on actual connect.
     "  function _Socket() { events.EventEmitter.call(this); }\n"
     "  util.inherits(_Socket, events.EventEmitter);\n"
@@ -675,6 +691,7 @@ bool InstallNodeCompatGlobals(JSContext* cx, JS::HandleObject global,
     if (!InstallRequire(cx, global))       { fprintf(stderr, "InstallRequire failed\n"); return false; }
     if (!InstallTimers(cx, global))        { fprintf(stderr, "InstallTimers failed\n"); return false; }
     if (!InstallCrypto(cx, global))        { fprintf(stderr, "InstallCrypto failed\n"); return false; }
+    if (!InstallHttp(cx, global))          { fprintf(stderr, "InstallHttp failed\n"); return false; }
 
     JS::CompileOptions opts(cx);
     opts.setFileAndLine("<ionpower-node bootstrap>", 1);

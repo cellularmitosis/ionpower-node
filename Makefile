@@ -35,6 +35,7 @@ SRCS = src/main.cpp \
        src/node_compat/require.cpp \
        src/node_compat/timers.cpp \
        src/node_compat/crypto.cpp \
+       src/node_compat/http.cpp \
        src/node_compat/globals.cpp
 
 OBJS = $(SRCS:.cpp=.o)
@@ -182,6 +183,7 @@ test-libs: $(BIN)
 	./$(BIN) test/currency_smoke.js
 	./$(BIN) test/arr_union_diff_smoke.js
 	./$(BIN) test/deep_extend_smoke.js
+	./$(BIN) test/http_smoke.js
 
 test-all: test test-libs
 

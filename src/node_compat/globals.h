@@ -25,6 +25,7 @@ bool InstallBuffer(JSContext* cx, JS::HandleObject global);
 bool InstallRequire(JSContext* cx, JS::HandleObject global);
 bool InstallTimers(JSContext* cx, JS::HandleObject global);
 bool InstallCrypto(JSContext* cx, JS::HandleObject global);
+bool InstallHttp(JSContext* cx, JS::HandleObject global);
 
 } // namespace ionpower
 
