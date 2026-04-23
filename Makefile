@@ -235,6 +235,9 @@ test-libs: $(BIN)
 	./$(BIN) test/safer_buffer_smoke.js
 	./$(BIN) test/cookiejar_smoke.js
 	./$(BIN) test/arg_smoke.js
+	./$(BIN) test/atob_btoa_smoke.js
+	./$(BIN) test/urldecode_smoke.js
+	./$(BIN) test/safe_stable_stringify_smoke.js
 
 test-all: test test-libs
 
