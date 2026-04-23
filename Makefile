@@ -395,6 +395,11 @@ test-libs: $(BIN)
 	./$(BIN) test/escape_latex_smoke.js
 	./$(BIN) test/fuse_smoke.js
 	./$(BIN) test/wrap_ansi_smoke.js
+	./$(BIN) test/aproba_smoke.js
+	./$(BIN) test/deep_freeze_smoke.js
+	./$(BIN) test/number_is_integer_smoke.js
+	./$(BIN) test/lodash_defaults_smoke.js
+	./$(BIN) test/hooker_smoke.js
 
 test-all: test test-libs
 
