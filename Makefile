@@ -354,6 +354,11 @@ test-libs: $(BIN)
 	./$(BIN) test/shell_quote_smoke.js
 	./$(BIN) test/sort_keys_smoke.js
 	./$(BIN) test/hash_sum_smoke.js
+	./$(BIN) test/string_width_smoke.js
+	./$(BIN) test/indent_smoke.js
+	./$(BIN) test/pretty_ms_smoke.js
+	./$(BIN) test/pupa_smoke.js
+	./$(BIN) test/linkifyjs_smoke.js
 
 test-all: test test-libs
 

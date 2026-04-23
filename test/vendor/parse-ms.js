@@ -1,4 +1,4 @@
-export default function parseMilliseconds(milliseconds) {
+module.exports = function parseMilliseconds(milliseconds) {
 	if (typeof milliseconds !== 'number') {
 		throw new TypeError('Expected a number');
 	}
