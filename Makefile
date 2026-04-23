@@ -272,6 +272,11 @@ test-libs: $(BIN)
 	./$(BIN) test/yocto_queue_smoke.js
 	./$(BIN) test/cron_smoke.js
 	./$(BIN) test/string_similarity_smoke.js
+	./$(BIN) test/jwt_simple_smoke.js
+	./$(BIN) test/tweetnacl_util_smoke.js
+	./$(BIN) test/fast_copy_smoke.js
+	./$(BIN) test/is_promise_smoke.js
+	./$(BIN) test/fast_sha256_smoke.js
 
 test-all: test test-libs
 
