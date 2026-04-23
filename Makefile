@@ -340,6 +340,9 @@ test-libs: $(BIN)
 	./$(BIN) test/punycode_smoke.js
 	./$(BIN) test/small_batch_smoke.js
 	./$(BIN) test/html_tokenizer_smoke.js
+	./$(BIN) test/promise_utils_smoke.js
+	./$(BIN) test/mri_smoke.js
+	./$(BIN) test/dedent_smoke.js
 
 test-all: test test-libs
 
