@@ -707,6 +707,13 @@ static const char kBootstrapJS[] =
     "        catch (e) { console.error('exit handler:', e && e.stack || e); }\n"
     "    };\n"
     "  }\n"
+    // process.umask: Node uses libuv for the real umask. We don't have a\n"
+    // libuv, and nothing in our single-script runtime really cares about\n"
+    // the process umask. mkdirp-classic (and anything deriving file-mode\n"
+    // from the umask) needs this to exist, so return Node's default 0o022.\n"
+    "  if (typeof process.umask !== 'function') {\n"
+    "    process.umask = function (_mask) { return 18; };\n"  // 0o022 = 18
+    "  }\n"
 
     // TextEncoder / TextDecoder: Web-standard string <-> UTF-8 Uint8Array.
     // Several libraries (murmurhash, modern base64 wrappers) reach for

@@ -24,6 +24,77 @@
 
 namespace ionpower {
 
+// Translate errno to Node's SYS-level code string. Keep this short —
+// we only cover the codes libraries actually branch on.
+static const char* ErrnoToNodeCode(int e) {
+    switch (e) {
+        case ENOENT:    return "ENOENT";
+        case EEXIST:    return "EEXIST";
+        case EACCES:    return "EACCES";
+        case EISDIR:    return "EISDIR";
+        case ENOTDIR:   return "ENOTDIR";
+        case ENOTEMPTY: return "ENOTEMPTY";
+        case EPERM:     return "EPERM";
+        case EIO:       return "EIO";
+        case EMFILE:    return "EMFILE";
+        case ENAMETOOLONG: return "ENAMETOOLONG";
+        default:        return "UNKNOWN";
+    }
+}
+
+// Throw a Node-flavored fs error: Error object carrying `.code`,
+// `.errno`, `.syscall`, `.path` props. mkdirp-classic and friends
+// switch on err.code; the plain JS_ReportError path leaves `.code`
+// undefined and their recovery logic silently breaks.
+static bool ThrowFsError(JSContext* cx, int e, const char* syscall, const char* path) {
+    char msg[512];
+    snprintf(msg, sizeof(msg), "%s: %s, %s '%s'",
+             ErrnoToNodeCode(e), strerror(e), syscall, path ? path : "");
+
+    // Grab the global Error constructor.
+    JS::RootedObject global(cx, JS::CurrentGlobalOrNull(cx));
+    if (!global) { JS_ReportError(cx, "%s", msg); return false; }
+    JS::RootedValue ctorVal(cx);
+    if (!JS_GetProperty(cx, global, "Error", &ctorVal) || !ctorVal.isObject()) {
+        JS_ReportError(cx, "%s", msg); return false;
+    }
+    JS::RootedObject ctor(cx, &ctorVal.toObject());
+    JS::RootedString msgStr(cx, JS_NewStringCopyZ(cx, msg));
+    if (!msgStr) { JS_ReportError(cx, "%s", msg); return false; }
+    JS::AutoValueArray<1> ctorArgs(cx);
+    ctorArgs[0].setString(msgStr);
+    JS::RootedObject errObj(cx, JS_New(cx, ctor, ctorArgs));
+    if (!errObj) { JS_ReportError(cx, "%s", msg); return false; }
+
+    // Attach Node-style props. Drop failures silently; the Error itself
+    // still makes it up the stack.
+    JS::RootedString codeStr(cx, JS_NewStringCopyZ(cx, ErrnoToNodeCode(e)));
+    if (codeStr) {
+        JS::RootedValue v(cx, JS::StringValue(codeStr));
+        JS_DefineProperty(cx, errObj, "code", v, JSPROP_ENUMERATE);
+    }
+    if (syscall) {
+        JS::RootedString sysStr(cx, JS_NewStringCopyZ(cx, syscall));
+        if (sysStr) {
+            JS::RootedValue v(cx, JS::StringValue(sysStr));
+            JS_DefineProperty(cx, errObj, "syscall", v, JSPROP_ENUMERATE);
+        }
+    }
+    if (path) {
+        JS::RootedString pathStr(cx, JS_NewStringCopyZ(cx, path));
+        if (pathStr) {
+            JS::RootedValue v(cx, JS::StringValue(pathStr));
+            JS_DefineProperty(cx, errObj, "path", v, JSPROP_ENUMERATE);
+        }
+    }
+    JS::RootedValue errnoVal(cx, JS::Int32Value(-e));
+    JS_DefineProperty(cx, errObj, "errno", errnoVal, JSPROP_ENUMERATE);
+
+    JS::RootedValue errVal(cx, JS::ObjectValue(*errObj));
+    JS_SetPendingException(cx, errVal);
+    return false;
+}
+
 static bool ReadFileToBytes(const char* path, uint8_t** out, size_t* outLen)
 {
     FILE* f = fopen(path, "rb");
@@ -71,8 +142,7 @@ static bool FsReadFileSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     uint8_t* bytes = nullptr;
     size_t len = 0;
     if (!ReadFileToBytes(path.ptr(), &bytes, &len)) {
-        JS_ReportError(cx, "fs.readFileSync: %s: %s", path.ptr(), strerror(errno));
-        return false;
+        return ThrowFsError(cx, errno ? errno : ENOENT, "open", path.ptr());
     }
 
     if (wantString) {
@@ -220,8 +290,7 @@ static bool FsStatSync(JSContext* cx, unsigned argc, JS::Value* vp) {
 
     struct stat st;
     if (stat(path.ptr(), &st) != 0) {
-        JS_ReportError(cx, "fs.statSync: %s: %s", path.ptr(), strerror(errno));
-        return false;
+        return ThrowFsError(cx, errno, "stat", path.ptr());
     }
     JS::RootedObject out(cx, JS_NewPlainObject(cx));
     if (!out) return false;
@@ -262,8 +331,7 @@ static bool FsUnlinkSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     JSAutoByteString path(cx, pathStr);
     if (!path) return false;
     if (unlink(path.ptr()) != 0) {
-        JS_ReportError(cx, "fs.unlinkSync: %s: %s", path.ptr(), strerror(errno));
-        return false;
+        return ThrowFsError(cx, errno, "unlink", path.ptr());
     }
     args.rval().setUndefined();
     return true;
@@ -310,8 +378,7 @@ static bool FsMkdirSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     int rc = recursive ? MkdirRecursive(path.ptr())
                        : mkdir(path.ptr(), 0755);
     if (rc != 0) {
-        JS_ReportError(cx, "fs.mkdirSync: %s: %s", path.ptr(), strerror(errno));
-        return false;
+        return ThrowFsError(cx, errno, "mkdir", path.ptr());
     }
     args.rval().setUndefined();
     return true;
@@ -328,8 +395,7 @@ static bool FsRmdirSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     JSAutoByteString path(cx, pathStr);
     if (!path) return false;
     if (rmdir(path.ptr()) != 0) {
-        JS_ReportError(cx, "fs.rmdirSync: %s: %s", path.ptr(), strerror(errno));
-        return false;
+        return ThrowFsError(cx, errno, "rmdir", path.ptr());
     }
     args.rval().setUndefined();
     return true;
