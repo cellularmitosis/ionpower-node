@@ -477,6 +477,7 @@ test-libs: $(BIN)
 	./$(BIN) test/final_push_smoke.js
 	./$(BIN) test/v500_smoke.js
 	./$(BIN) test/milestone500_smoke.js
+	./$(BIN) test/lodash_getset_smoke.js
 
 test-all: test test-libs
 
