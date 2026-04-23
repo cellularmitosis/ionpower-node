@@ -230,6 +230,11 @@ test-libs: $(BIN)
 	./$(BIN) test/dot_smoke.js
 	./$(BIN) test/lz_string_smoke.js
 	./$(BIN) test/parse_ms_smoke.js
+	./$(BIN) test/ip_regex_smoke.js
+	./$(BIN) test/char_regex_smoke.js
+	./$(BIN) test/safer_buffer_smoke.js
+	./$(BIN) test/cookiejar_smoke.js
+	./$(BIN) test/arg_smoke.js
 
 test-all: test test-libs
 
