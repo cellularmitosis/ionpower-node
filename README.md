@@ -129,7 +129,7 @@ release lands.
 
 | Global | Status | Notes |
 |---|---|---|
-| `process` | ✅ Working | `argv`, `env`, `cwd`, `exit`, `exitCode`, `platform`, `arch`, `version`, `pid`, `stdout`/`stderr` (sync write, `.isTTY`, `.fd`, `.columns`/`.rows`), `nextTick` (synchronous), `umask`, event-emitter surface (`on`/`once`/`off`/`emit` including `'exit'` flush). No `stdin`. |
+| `process` | ✅ Working | `argv`, `env`, `cwd`, `exit`, `exitCode`, `platform`, `arch`, `version`, `versions` (`node`/`ionpower`/`spidermonkey`/`v8`), `release`, `pid`, `stdout`/`stderr` (sync write, `.isTTY`, `.fd`, `.columns`/`.rows`), `nextTick` (synchronous), `umask`, `hrtime` (+ `.bigint`), `uptime`, `title`, `memoryUsage` (zero-filled), event-emitter surface (`on`/`once`/`off`/`emit` including `'exit'` flush). No `stdin`. |
 | `Buffer` | ✅ Working | See `buffer` above. |
 | `console` | ✅ Working | `log`/`error`/`warn`/`info`/`debug`/`trace`/`dir`/`time`/`timeEnd`/`assert`. |
 | `Promise` | ✅ Polyfill | **Synchronous** Promise (no microtask queue): executor + `.then`/`.catch`/`.finally` chains run inline. `Promise.resolve`/`reject`/`all`/`race`/`allSettled`. |
@@ -174,7 +174,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**332** as of [v0.3](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.3)-plus.
+**340** as of [v0.4](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.4).
+Full suite: 1005 assertions across 300+ smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
