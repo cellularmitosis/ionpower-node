@@ -281,6 +281,10 @@ test-libs: $(BIN)
 	./$(BIN) test/dagre_smoke.js
 	./$(BIN) test/wordwrap_smoke.js
 	./$(BIN) test/tiny_typed_emitter_smoke.js
+	./$(BIN) test/natural_compare_smoke.js
+	./$(BIN) test/deep_clone_smoke.js
+	./$(BIN) test/spacetime_smoke.js
+	./$(BIN) test/cli_width_smoke.js
 
 test-all: test test-libs
 
