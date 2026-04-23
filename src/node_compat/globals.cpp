@@ -678,11 +678,15 @@ static const char kBootstrapJS[] =
     "  util.inherits(__require_cache__['tty'].ReadStream,  events.EventEmitter);\n"
     "  util.inherits(__require_cache__['tty'].WriteStream, events.EventEmitter);\n"
 
-    // Re-wrap __make_require__ so bare specifiers check the cache first.
+    // Re-wrap __make_require__ so bare specifiers check the cache first,
+    // and strip the `node:` prefix (Node ≥16 supports `require('node:path')`;
+    // some modern libs reach for it explicitly).
     "  var origMake = __make_require__;\n"
     "  __make_require__ = function(dir) {\n"
     "    var req = origMake(dir);\n"
     "    return function(spec) {\n"
+    "      if (typeof spec === 'string' && spec.indexOf('node:') === 0)\n"
+    "        spec = spec.slice(5);\n"
     "      if (__require_cache__.hasOwnProperty(spec)) return __require_cache__[spec];\n"
     "      return req(spec);\n"
     "    };\n"

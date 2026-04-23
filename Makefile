@@ -267,6 +267,10 @@ test-libs: $(BIN)
 	./$(BIN) test/fast_sort_smoke.js
 	./$(BIN) test/jsonparse_smoke.js
 	./$(BIN) test/pretty_compact_smoke.js
+	./$(BIN) test/path_libs_smoke.js
+	./$(BIN) test/ansi_escapes_smoke.js
+	./$(BIN) test/yocto_queue_smoke.js
+	./$(BIN) test/cron_smoke.js
 
 test-all: test test-libs
 
