@@ -552,6 +552,14 @@ static const char kBootstrapJS[] =
     "    if (typeof globalThis !== 'undefined') globalThis.window = globalThis;\n"
     "    else this.window = this;\n"
     "  }\n"
+    // `global` is Node's historical global-object name. Many libs
+    // test `typeof global !== 'undefined' ? global : window` or
+    // reference `global.foo`. Alias it to globalThis so those
+    // checks don't ReferenceError.
+    "  if (typeof global === 'undefined') {\n"
+    "    if (typeof globalThis !== 'undefined') globalThis.global = globalThis;\n"
+    "    else this.global = this;\n"
+    "  }\n"
 
     // Promise: SpiderMonkey 45 as built here (--without-intl-api
     // --disable-shared-js) doesn't expose `Promise` globally. Install a
