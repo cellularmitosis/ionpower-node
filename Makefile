@@ -389,6 +389,12 @@ test-libs: $(BIN)
 	./$(BIN) test/onetime_smoke.js
 	./$(BIN) test/isobject_smoke.js
 	./$(BIN) test/pinkie_smoke.js
+	./$(BIN) test/array_unique_smoke.js
+	./$(BIN) test/stable_sort_smoke.js
+	./$(BIN) test/split_lines_smoke.js
+	./$(BIN) test/escape_latex_smoke.js
+	./$(BIN) test/fuse_smoke.js
+	./$(BIN) test/wrap_ansi_smoke.js
 
 test-all: test test-libs
 
