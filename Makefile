@@ -470,6 +470,7 @@ test-libs: $(BIN)
 	./$(BIN) test/batch_big_smoke.js
 	./$(BIN) test/batch_more_smoke.js
 	./$(BIN) test/batch_mini_smoke.js
+	./$(BIN) test/p_utils_smoke.js
 
 test-all: test test-libs
 
