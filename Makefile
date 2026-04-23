@@ -271,6 +271,7 @@ test-libs: $(BIN)
 	./$(BIN) test/ansi_escapes_smoke.js
 	./$(BIN) test/yocto_queue_smoke.js
 	./$(BIN) test/cron_smoke.js
+	./$(BIN) test/string_similarity_smoke.js
 
 test-all: test test-libs
 
