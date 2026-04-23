@@ -290,6 +290,10 @@ test-libs: $(BIN)
 	./$(BIN) test/eventemitter2_smoke.js
 	./$(BIN) test/deep_diff_smoke.js
 	./$(BIN) test/rambda_smoke.js
+	./$(BIN) test/jshashes_smoke.js
+	./$(BIN) test/immutable_smoke.js
+	./$(BIN) test/string_hash_smoke.js
+	./$(BIN) test/punycode_smoke.js
 
 test-all: test test-libs
 
