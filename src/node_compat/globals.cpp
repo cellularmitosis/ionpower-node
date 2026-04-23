@@ -560,6 +560,31 @@ static const char kBootstrapJS[] =
     "    if (typeof globalThis !== 'undefined') globalThis.global = globalThis;\n"
     "    else this.global = this;\n"
     "  }\n"
+    // Error.captureStackTrace: V8-specific static. Node-land libraries
+    // (error-ex, json-parse-even-better-errors, ono, most custom-Error
+    // machinery) call it inside their constructor. SpiderMonkey fills
+    // Error.prototype.stack automatically on construction, so the
+    // shim is a no-op that just avoids the TypeError. Takes (err, ctor)
+    // in V8; we ignore the ctor arg.
+    "  if (typeof Error.captureStackTrace !== 'function') {\n"
+    "    Error.captureStackTrace = function (err, _ctor) {\n"
+    // Node/V8 semantics: attach `err.stack` as an own property (not
+    // on Error.prototype). error-ex calls Object.getOwnPropertyDescriptor
+    // and throws if `stack` lives on the prototype only. Force the
+    // stack string into an own data property.
+    "      if (!err) return;\n"
+    "      var s = '';\n"
+    "      try { s = new Error().stack || ''; } catch (e) {}\n"
+    "      try {\n"
+    "        Object.defineProperty(err, 'stack', {\n"
+    "          value: s,\n"
+    "          writable: true,\n"
+    "          enumerable: false,\n"
+    "          configurable: true\n"
+    "        });\n"
+    "      } catch (e) { try { err.stack = s; } catch (_) {} }\n"
+    "    };\n"
+    "  }\n"
 
     // Promise: SpiderMonkey 45 as built here (--without-intl-api
     // --disable-shared-js) doesn't expose `Promise` globally. Install a

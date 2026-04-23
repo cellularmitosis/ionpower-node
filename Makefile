@@ -369,6 +369,14 @@ test-libs: $(BIN)
 	./$(BIN) test/p_limit_smoke.js
 	./$(BIN) test/acorn_walk_smoke.js
 	./$(BIN) test/bn_js_smoke.js
+	./$(BIN) test/is_arrayish_smoke.js
+	./$(BIN) test/ansi_align_smoke.js
+	./$(BIN) test/cli_columns_smoke.js
+	./$(BIN) test/micro_memoize_smoke.js
+	./$(BIN) test/json_parse_better_smoke.js
+	./$(BIN) test/error_ex_smoke.js
+	./$(BIN) test/astring_smoke.js
+	./$(BIN) test/escape_string_regexp_smoke.js
 
 test-all: test test-libs
 
