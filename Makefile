@@ -455,6 +455,7 @@ test-libs: $(BIN)
 	./$(BIN) test/case_suite_smoke.js
 	./$(BIN) test/format_file_size_smoke.js
 	./$(BIN) test/streams_smoke.js
+	./$(BIN) test/async_fs_smoke.js
 
 test-all: test test-libs
 
