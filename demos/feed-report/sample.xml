@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>ionpower-node release notes</title>
+    <link>https://github.com/cellularmitosis/ionpower-node</link>
+    <description>PowerPC Tiger JS runtime built on SpiderMonkey 45 + IonPower</description>
+    <item>
+      <title>v0.1 lands on github -- triad (G3/G4/G5) all green</title>
+      <author>cellularmitosis</author>
+      <guid>v0.1</guid>
+      <pubDate>Mon, 21 Apr 2026 18:00:00 GMT</pubDate>
+      <description>First cut: Node-compat layer over SM45, 207 libraries, 756 ok.</description>
+    </item>
+    <item>
+      <title>Promise polyfill + process.on + nextTick for tape-class libs</title>
+      <author>cellularmitosis</author>
+      <guid>promise-fix</guid>
+      <pubDate>Tue, 22 Apr 2026 10:30:00 GMT</pubDate>
+      <description>Synchronous Promise polyfill; emit/on/once/off + exit flush.</description>
+    </item>
+    <item>
+      <title>fs errors now carry .code (Node-style): mkdirp-classic works</title>
+      <author>cellularmitosis</author>
+      <guid>fs-errcode</guid>
+      <pubDate>Wed, 22 Apr 2026 23:00:00 GMT</pubDate>
+      <description>ThrowFsError builds Error objects with .code/.errno/.syscall; libs that branch on err.code === 'ENOENT' now recover cleanly.</description>
+    </item>
+    <item>
+      <title>Library coverage climbs past 260 -- xmldoc + twig + color-hash</title>
+      <author>cellularmitosis</author>
+      <guid>libs-260</guid>
+      <pubDate>Thu, 23 Apr 2026 01:20:00 GMT</pubDate>
+      <description>XML parsing via pure-JS sax; Twig templates; deterministic color per string. Added global alias for Node-ish UMD bundles.</description>
+    </item>
+  </channel>
+</rss>
