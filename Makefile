@@ -408,6 +408,11 @@ test-libs: $(BIN)
 	./$(BIN) test/text_table_smoke.js
 	./$(BIN) test/utils_merge_smoke.js
 	./$(BIN) test/uniqid_smoke.js
+	./$(BIN) test/url_polyfill_smoke.js
+	./$(BIN) test/util_helpers_smoke.js
+	./$(BIN) test/chalk_smoke.js
+	./$(BIN) test/normalize_url_smoke.js
+	./$(BIN) test/file_url_smoke.js
 
 test-all: test test-libs
 
