@@ -191,6 +191,12 @@ test-libs: $(BIN)
 	./$(BIN) test/base64js_smoke.js
 	./$(BIN) test/json_logic_smoke.js
 	./$(BIN) test/is_plain_obj_smoke.js
+	./$(BIN) test/emoji_regex_smoke.js
+	./$(BIN) test/murmurhash_smoke.js
+	./$(BIN) test/xxhashjs_smoke.js
+	./$(BIN) test/jsbn_smoke.js
+	./$(BIN) test/crc32_smoke.js
+	./$(BIN) test/fastest_levenshtein_smoke.js
 
 test-all: test test-libs
 

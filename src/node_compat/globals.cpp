@@ -464,6 +464,30 @@ static const char kBootstrapJS[] =
     "    else this.self = this;\n"
     "  }\n"
 
+    // TextEncoder / TextDecoder: Web-standard string <-> UTF-8 Uint8Array.
+    // Several libraries (murmurhash, modern base64 wrappers) reach for
+    // these. We implement them on top of Buffer.from / Uint8Array.toString.
+    "  if (typeof TextEncoder === 'undefined') {\n"
+    "    function TextEncoder() { this.encoding = 'utf-8'; }\n"
+    "    TextEncoder.prototype.encode = function (str) {\n"
+    "      return Buffer.from(String(str || ''), 'utf8');\n"
+    "    };\n"
+    "    this.TextEncoder = TextEncoder;\n"
+    "    if (typeof globalThis !== 'undefined') globalThis.TextEncoder = TextEncoder;\n"
+    "  }\n"
+    "  if (typeof TextDecoder === 'undefined') {\n"
+    "    function TextDecoder(enc) {\n"
+    "      this.encoding = (enc || 'utf-8').toLowerCase();\n"
+    "    }\n"
+    "    TextDecoder.prototype.decode = function (u8) {\n"
+    "      if (!u8) return '';\n"
+    "      if (!(u8 instanceof Uint8Array)) u8 = new Uint8Array(u8);\n"
+    "      return u8.toString(this.encoding === 'utf-8' ? 'utf8' : this.encoding);\n"
+    "    };\n"
+    "    this.TextDecoder = TextDecoder;\n"
+    "    if (typeof globalThis !== 'undefined') globalThis.TextDecoder = TextDecoder;\n"
+    "  }\n"
+
     // --- string_decoder — minimal, no partial-sequence buffering ---
     "  function StringDecoder(encoding) { this.encoding = encoding || 'utf8'; }\n"
     "  StringDecoder.prototype.write = function (buf) {\n"
