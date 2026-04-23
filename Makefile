@@ -343,6 +343,9 @@ test-libs: $(BIN)
 	./$(BIN) test/promise_utils_smoke.js
 	./$(BIN) test/mri_smoke.js
 	./$(BIN) test/dedent_smoke.js
+	./$(BIN) test/mimic_fn_smoke.js
+	./$(BIN) test/tsscmp_smoke.js
+	./$(BIN) test/node_forge_smoke.js
 
 test-all: test test-libs
 

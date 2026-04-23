@@ -507,15 +507,23 @@ static const char kBootstrapJS[] =
 
     "  var nativeCrypto = __crypto_native__;\n"
     "  var crypto = {\n"
-    "    randomBytes:     nativeCrypto.randomBytes,\n"
-    "    getRandomValues: nativeCrypto.getRandomValues,\n"
-    "    randomFillSync:  function (buf) { nativeCrypto.getRandomValues(buf); return buf; },\n"
-    "    createHash:      function (alg) { return new Hash(alg); },\n"
-    "    createHmac:      function (alg, key) { return new Hmac(alg, key); },\n"
-    "    createSecretKey: createSecretKey,\n"
-    "    createPrivateKey: createPrivateKey,\n"
-    "    createPublicKey:  createPublicKey,\n"
-    "    KeyObject:       KeyObject,\n"
+    "    randomBytes:         nativeCrypto.randomBytes,\n"
+    // Deprecated pre-1.0 Node alias; still used by tsscmp and some others.
+    "    pseudoRandomBytes:   nativeCrypto.randomBytes,\n"
+    "    getRandomValues:     nativeCrypto.getRandomValues,\n"
+    "    randomFillSync:      function (buf) { nativeCrypto.getRandomValues(buf); return buf; },\n"
+    "    randomUUID:          function () {\n"
+    "      var b = nativeCrypto.randomBytes(16);\n"
+    "      b[6] = (b[6] & 0x0f) | 0x40; b[8] = (b[8] & 0x3f) | 0x80;\n"
+    "      function hex(s, e) { var r = ''; for (var i = s; i < e; ++i) r += ('0' + b[i].toString(16)).slice(-2); return r; }\n"
+    "      return hex(0,4)+'-'+hex(4,6)+'-'+hex(6,8)+'-'+hex(8,10)+'-'+hex(10,16);\n"
+    "    },\n"
+    "    createHash:          function (alg) { return new Hash(alg); },\n"
+    "    createHmac:          function (alg, key) { return new Hmac(alg, key); },\n"
+    "    createSecretKey:     createSecretKey,\n"
+    "    createPrivateKey:    createPrivateKey,\n"
+    "    createPublicKey:     createPublicKey,\n"
+    "    KeyObject:           KeyObject,\n"
     "    timingSafeEqual: function (a, b) {\n"
     "      if (a.length !== b.length) return false;\n"
     "      var r = 0;\n"
@@ -535,6 +543,14 @@ static const char kBootstrapJS[] =
     "  if (typeof self === 'undefined') {\n"
     "    if (typeof globalThis !== 'undefined') globalThis.self = globalThis;\n"
     "    else this.self = this;\n"
+    "  }\n"
+    // Some UMDs (node-forge, vanilla webpack bundles) are invoked with
+    // `window` as a pre-evaluated argument — `(function(...){ ... })(window, factory)`.
+    // The outer IIFE's body may branch to the Node export path, but `window`
+    // must at least exist as an identifier for the call expression to parse.
+    "  if (typeof window === 'undefined') {\n"
+    "    if (typeof globalThis !== 'undefined') globalThis.window = globalThis;\n"
+    "    else this.window = this;\n"
     "  }\n"
 
     // Promise: SpiderMonkey 45 as built here (--without-intl-api
