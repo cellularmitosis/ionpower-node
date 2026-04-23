@@ -80,6 +80,25 @@ $(BIN): $(OBJS)
 clean:
 	rm -f $(OBJS) $(BIN)
 
+# Install to $(PREFIX) (default /opt/ionpower-node-$(VERSION)).
+# Ships the `node` binary + babel.js fallback + README. Runtime still
+# depends on /opt/mozjs-45-ionpower* being present separately.
+VERSION ?= 0.1
+PREFIX  ?= /opt/ionpower-node-$(VERSION)
+install: $(BIN)
+	mkdir -p $(PREFIX)/bin $(PREFIX)/share/ionpower-node/vendor
+	cp $(BIN) $(PREFIX)/bin/ionpower-node
+	ln -sf ionpower-node $(PREFIX)/bin/node
+	cp test/vendor/babel.js $(PREFIX)/share/ionpower-node/vendor/
+	cp README.md LICENSE   $(PREFIX)/share/ionpower-node/ 2>/dev/null || true
+	@echo
+	@echo "installed ionpower-node $(VERSION) to $(PREFIX)"
+	@echo "  binary:   $(PREFIX)/bin/node (-> ionpower-node)"
+	@echo "  babel:    $(PREFIX)/share/ionpower-node/vendor/babel.js"
+	@echo "  mozjs:    expected at $(MOZJS_PREFIX)/"
+	@echo
+	@echo "Run:  $(PREFIX)/bin/node <script.js>"
+
 # Verify the mozjs install is where we expect before attempting a build.
 check-mozjs:
 	@test -e $(MOZJS_PREFIX)/include/mozjs-45/jsapi.h || \

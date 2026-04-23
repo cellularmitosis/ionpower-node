@@ -887,6 +887,16 @@ static const char kBootstrapJS[] =
     "    candidates.push(cwd + '/test/vendor/babel.js');\n"
     "    candidates.push(cwd + '/vendor/babel.js');\n"
     "    candidates.push(cwd + '/node_modules/@babel/standalone/babel.js');\n"
+    // Installed path: <exeDir>/../share/ionpower-node/vendor/babel.js.
+    // argv[0] in Node-compat is the interpreter; walk its directory up.
+    "    try {\n"
+    "      var exe = process.argv[0];\n"
+    "      if (exe && typeof exe === 'string') {\n"
+    "        var slash = exe.lastIndexOf('/');\n"
+    "        var exeDir = slash >= 0 ? exe.slice(0, slash) : '.';\n"
+    "        candidates.push(exeDir + '/../share/ionpower-node/vendor/babel.js');\n"
+    "      }\n"
+    "    } catch (e) { /* ignore */ }\n"
     "    for (var i = 0; i < candidates.length; ++i) {\n"
     "      try {\n"
     "        if (!fs.existsSync(candidates[i])) continue;\n"
