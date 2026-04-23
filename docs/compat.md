@@ -3,7 +3,7 @@
 Libraries test-fit through ionpower-node. Each entry is a real
 package running unmodified (within its own JS-version constraints).
 
-## Currently passing (88 libraries as of 2026-04-22)
+## Currently passing (153 libraries as of 2026-04-22)
 
 | # | Library | Version | Size | Workload | Notes |
 |--|---|---|---|---|---|
@@ -95,6 +95,71 @@ package running unmodified (within its own JS-version constraints).
 | 86 | [rfc6902](https://github.com/chbrown/rfc6902)       | 5.0.1 | 5 KB   | JSON Patch (create+apply diffs)  | — |
 | 87 | [fast-memoize](https://github.com/caiogondim/fast-memoize.js) | 2.5.2 | 3 KB | function memoization | arity-1 fast path + multi-arg |
 | 88 | [tiny-warning](https://github.com/alexreardon/tiny-warning) | 1.0.3 | 400 B | conditional console.warn | — |
+| 89 | [htmlparser2](https://github.com/fb55/htmlparser2) | 8.0.2 | ~150 KB | HTML parser (SAX + DOM) | via full nm tree (domhandler, domutils, domelementtype, entities, dom-serializer) |
+| 90 | [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) | 9.0.2 | ~100 KB | JWT sign+verify | forced createHmac + KeyObject + real Buffer function + path canonicalization |
+| 91 | [eventemitter3](https://github.com/primus/eventemitter3) | 4.0.7 | 10 KB | alt fast event emitter | — |
+| 92 | [indent-string](https://github.com/sindresorhus/indent-string) | 4.0.0 | 700 B | prefix every line with N indents | — |
+| 93 | [safe-json-stringify](https://github.com/debitoor/safe-json-stringify) | 1.2.0 | 1 KB | JSON.stringify that survives cycles | — |
+| 94 | [leven](https://github.com/sindresorhus/leven) | 3.1.0 | 2 KB | Levenshtein distance | — |
+| 95 | [strnum](https://github.com/NaturalIntelligence/strnum) | 1.0.5 | 5 KB | smart string-to-number coercion | — |
+| 96 | [XRegExp](https://xregexp.com/) | 5.1.1 | 400 KB | named groups, Unicode classes | — |
+| 97 | [htmlescape](https://github.com/zertosh/htmlescape) | 1.1.1 | 1 KB | JSON-in-script tag safe escape | — |
+| 98 | [qhash](https://github.com/andrasq/node-qhash) | 1.2.0 | 6 KB | dotted-path get/set + helpers | — |
+| 99 | [escape-regexp-component](https://github.com/mcollina/escape-regexp-component) | 1.0.2 | 300 B | escape regex specials | — |
+| 100 | [object-path](https://github.com/mariocasciaro/object-path) | 0.11.8 | 8 KB | dotted get/set/has/del + array indices | — |
+| 101 | [currency.js](https://currency.js.org/) | 2.0.4 | 7 KB | penny-safe money arithmetic | — |
+| 102 | [arr-union](https://github.com/jonschlinkert/arr-union) + [arr-diff](https://github.com/jonschlinkert/arr-diff) | 3.1 / 4.0 | ~1 KB | set-algebra helpers (one test, 2 libs) | — |
+| 103 | [deep-extend](https://github.com/unclechu/node-deep-extend) | 0.6.0 | 4 KB | recursive object merge | forced Buffer→real-function refactor (`val instanceof Buffer`) |
+| 104 | [cookie](https://github.com/jshttp/cookie) | 0.6.0 | 5 KB | HTTP cookie parse+serialize | — |
+| 105 | [cookie-signature](https://github.com/tj/node-cookie-signature) | 1.2.1 | 1 KB | HMAC-signed cookies | uses our crypto.createHmac |
+| 106 | [bytes](https://github.com/visionmedia/bytes.js) | 3.1.2 | 4 KB | parse/format byte sizes | — |
+| 107 | [content-type](https://github.com/jshttp/content-type) | 1.0.5 | 5 KB | HTTP Content-Type parse+format | — |
+| 108 | [base64-js](https://github.com/beatgammit/base64-js) | 1.5.1 | 4 KB | Uint8Array ↔ base64 string | — |
+| 109 | [json-logic-js](https://jsonlogic.com/) | 2.0.2 | 15 KB | nested-JSON rule engine | — |
+| 110 | [is-plain-obj](https://github.com/sindresorhus/is-plain-obj) + [is-regexp](https://github.com/sindresorhus/is-regexp) | 4.1 / 3.1 | — | type predicates; load via babel (ESM default) | one test, 2 libs |
+| 111 | [emoji-regex](https://github.com/mathiasbynens/emoji-regex) | 10.3.0 | 13 KB | detect emoji (incl. ZWJ) | — |
+| 112 | [murmurhash](https://github.com/perezd/node-murmurhash) | 2.0.1 | 4 KB | non-crypto fast hash | forced TextEncoder polyfill |
+| 113 | [xxhashjs](https://github.com/pierrec/js-xxhash) | 0.2.2 | 100 KB | xxHash32/64 pure JS; streaming | — |
+| 114 | [jsbn](https://github.com/andyperlitch/jsbn) | 1.1.0 | 42 KB | Tom Wu's BigInteger | — |
+| 115 | [crc-32](https://github.com/SheetJS/js-crc32) | 1.2.2 | 4 KB | classic CRC32 (RFC vector) | — |
+| 116 | [fastest-levenshtein](https://github.com/ka-weihe/fastest-levenshtein) | 1.0.16 | 4 KB | fast edit-distance + closest match | — |
+| 117 | [flatten](https://github.com/Two-Screen/flatten) | 1.0.3 | 500 B | flatten nested arrays to depth | — |
+| 118 | [fnv-plus](https://github.com/tjwebb/fnv-plus) | 1.3.1 | 180 KB | FNV-1a at 32/64/128/256/512/1024 bit | — |
+| 119 | [left-pad](https://github.com/left-pad/left-pad) | 1.3.0 | 1 KB | left-pad a string | :) |
+| 120 | [just-pick](https://github.com/angus-c/just) + just-omit + just-compare | 4.2/2.2/2.3 | — | tree-shakable helpers (1 test, 3 libs) | — |
+| 121 | [format-util](https://github.com/tmpfs/format-util) | 1.0.5 | 800 B | tiny printf-style formatter | — |
+| 122 | [jsonpointer](https://github.com/janl/node-jsonpointer) | 5.0.1 | 2 KB | RFC 6901 pointer get/set | — |
+| 123 | [traverse](https://github.com/ljharb/js-traverse) | 0.6.7 | 7 KB | walk/map nested structures | — |
+| 124 | [Fraction.js](https://www.xarg.org/category/projects/fractionjs/) | 4.3.7 | 6 KB | exact rationals | — |
+| 125 | [bit-buffer](https://github.com/inolen/bit-buffer) | 0.2.5 | 14 KB | packed-bit read/write on ArrayBuffer | — |
+| 126 | [clsx](https://github.com/lukeed/clsx) | 2.0.0 | 400 B | smaller/faster classnames | — |
+| 127 | [tiny-invariant](https://github.com/alexreardon/tiny-invariant) | 1.3.1 | 400 B | tiny throwing invariant | — |
+| 128 | [diff-match-patch](https://github.com/google/diff-match-patch) | 1.0.5 | 78 KB | Google's diff/patch engine | — |
+| 129 | [circular-json](https://github.com/WebReflection/circular-json) | 0.5.9 | 7 KB | JSON with ~ circular refs | — |
+| 130 | [flatted](https://github.com/WebReflection/flatted) | 3.2.9 | 3 KB | successor to circular-json | — |
+| 131 | [big-integer](https://github.com/peterolson/BigInteger.js) | 1.6.52 | 32 KB | arbitrary-precision int (100!, 2^256) | — |
+| 132 | [diff-sequences](https://github.com/facebook/jest/tree/main/packages/diff-sequences) | 29.6.3 | 27 KB | Jest's Myers-diff engine | — |
+| 133 | [reselect](https://reselect.js.org/) | 4.1.8 | 10 KB | memoized selectors (Redux) | — |
+| 134 | [array-move](https://github.com/sindresorhus/array-move) | 3.0.1 | 500 B | immutable from/to move | — |
+| 135 | [split-on-first](https://github.com/sindresorhus/split-on-first) | 3.0.0 | 500 B | split-first-occurrence helper | — |
+| 136 | [array-differ](https://github.com/sindresorhus/array-differ) | 4.0.0 | 200 B | array difference multi-source | needs Array#flat polyfill |
+| 137 | [arr-flatten](https://github.com/jonschlinkert/arr-flatten) | 1.1.0 | 400 B | recursive array flatten | — |
+| 138 | [requires-port](https://github.com/unshiftio/requires-port) | 1.0.0 | 800 B | explicit-port predicate | — |
+| 139 | [querystringify](https://github.com/unshiftio/querystringify) | 2.2.0 | 3 KB | tiny querystring parse/stringify | — |
+| 140 | [url-parse](https://github.com/unshiftio/url-parse) | 1.5.10 | 21 KB | browser-ish URL parser | nm walk to requires-port + querystringify |
+| 141 | [ipaddr.js](https://github.com/whitequark/ipaddr.js) | 2.1.0 | 34 KB | IPv4/IPv6 parse + range classify | — |
+| 142 | [unorm](https://github.com/walling/unorm) | 1.6.0 | 143 KB | pure-JS Unicode normalization | — |
+| 143 | [glob-to-regexp](https://github.com/fitzgen/glob-to-regexp) | 0.4.1 | 3 KB | glob → RegExp | — |
+| 144 | [assert-plus](https://github.com/mcavage/node-assert-plus) | 1.0.0 | 5 KB | type-aware assertion wrappers | — |
+| 145 | [longest-streak](https://github.com/wooorm/longest-streak) | 3.1.0 | 800 B | find longest repeating substring | — |
+| 146 | [zero-fill](https://github.com/feross/zero-fill) | 2.2.4 | 600 B | left-pad integer with zeros | — |
+| 147 | [ua-parser-js](https://github.com/faisalman/ua-parser-js) | 1.0.37 | 49 KB | UA → browser/os/cpu | IDs TenFourFox 45 on ppc/10.4 |
+| 148 | [preact](https://preactjs.com/) | 10.19.3 | 11 KB | 3KB React-alike | VDOM only (no DOM) |
+| 149 | [extend](https://github.com/justmoon/node-extend) | 3.0.2 | 3 KB | jQuery's shallow+deep merge | — |
+| 150 | [doT.js](https://github.com/olado/doT) | 2.0.0-beta.1 | 7 KB | fast small templating | — |
+| 151 | (counted under #150 just-pick/omit/compare) | | | | |
+| 152 | (counted under #110 is-plain-obj/is-regexp) | | | | |
+| 153 | (counted under #102 arr-union/arr-diff) | | | | |
 
 ## Composition demos
 
