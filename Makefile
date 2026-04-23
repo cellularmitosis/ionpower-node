@@ -7,12 +7,26 @@ MOZJS_PREFIX ?= /opt/mozjs-45-ionpower
 CXX          := /opt/gcc-4.9.4/bin/g++-4.9
 CC           := /opt/gcc-4.9.4/bin/gcc-4.9
 
-CXXFLAGS = -m32 -mmacosx-version-min=10.4 -mcpu=G5 -D_PPC970_ \
+# CPU tuning: default to the G5 flags for backward compatibility. Override
+# on the command line for the other fleet hosts:
+#   make MOZJS_PREFIX=/opt/mozjs-45-ionpower-g3 CPU_FLAGS='-mcpu=750 -mtune=750'
+#   make MOZJS_PREFIX=/opt/mozjs-45-ionpower-g4 CPU_FLAGS='-mcpu=7450 -mtune=7450'
+CPU_FLAGS ?= -mcpu=G5 -D_PPC970_
+
+CXXFLAGS = -m32 -mmacosx-version-min=10.4 $(CPU_FLAGS) -force_cpusubtype_ALL \
            -std=gnu++0x -fpermissive -fno-exceptions -fno-rtti \
            -O2 -g \
            -I src -I $(MOZJS_PREFIX)/include/mozjs-45
 
-LDFLAGS  = -L $(MOZJS_PREFIX)/lib -m32 -mmacosx-version-min=10.4
+# emac (and any Xcode-less host) has no /usr/bin/ld that groks modern
+# mach-o coalesced-section relocs in the mozjs static archive. If the
+# tigerbrew-era ld64 is installed at /opt/ld64-97.17-tigerbrew/, point
+# gcc's collect2 at it via -B. Auto-detected below.
+LD_SEARCH := $(shell test -x /opt/ld64-97.17-tigerbrew/bin/ld && \
+                     echo -B /opt/ld64-97.17-tigerbrew/bin/)
+
+LDFLAGS  = -L $(MOZJS_PREFIX)/lib -m32 -mmacosx-version-min=10.4 \
+           -force_cpusubtype_ALL $(LD_SEARCH)
 # Mozilla's install renames libjs_static.a to lib${JS_LIBRARY_NAME}.a
 # (= libmozjs-45.a), but some standalone configurations skip the rename.
 # Fall through to -ljs_static if -lmozjs-45 isn't found.
@@ -49,6 +63,16 @@ all: $(BIN)
 
 $(BIN): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $@ $(LDFLAGS) $(LDLIBS)
+	@# libmozglue.dylib on the per-CPU mozjs builds was linked with an
+	@# install_name of @executable_path/libmozglue.dylib, which only
+	@# works if the dylib lives next to our $(BIN). Rewrite to an
+	@# absolute path so the binary runs from any cwd. No-op on G5
+	@# (already absolute).
+	@if otool -L $(BIN) 2>/dev/null | grep -q '@executable_path/libmozglue.dylib'; then \
+	    echo "  [install_name_tool] @executable_path -> $(MOZJS_PREFIX)/lib"; \
+	    install_name_tool -change @executable_path/libmozglue.dylib \
+	        $(MOZJS_PREFIX)/lib/libmozglue.dylib $(BIN); \
+	fi
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<

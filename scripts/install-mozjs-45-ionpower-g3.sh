@@ -111,6 +111,21 @@ export AUTOCONF=/opt/autoconf-2.13/bin/autoconf213
 /usr/bin/time make $(tiger.sh -j)
 /usr/bin/time make install
 
+# Post-install fixes. Mozilla's js/src standalone install has a
+# couple of reliable papercuts:
+#   1. libjs_static.a is renamed to libjs_static.ajs (name-collision
+#      between the shell binary `js` and the lib); fix manually.
+#   2. libmozglue.dylib ends up under DIST/bin during build but is
+#      *not* copied by install; we do it here.
+if [ -f "$PREFIX/lib/libjs_static.ajs" ] && [ ! -f "$PREFIX/lib/libjs_static.a" ]; then
+    mv "$PREFIX/lib/libjs_static.ajs" "$PREFIX/lib/libjs_static.a"
+fi
+if [ ! -f "$PREFIX/lib/libmozglue.dylib" ]; then
+    cp "$OBJDIR/mozglue/build/libmozglue.dylib" "$PREFIX/lib/" 2>/dev/null || \
+    cp "$OBJDIR/dist/bin/libmozglue.dylib"      "$PREFIX/lib/" 2>/dev/null || \
+    true
+fi
+
 tiger.sh --linker-check $pkgspec 2>/dev/null || true
 tiger.sh --arch-check $pkgspec 2>/dev/null || true
 
