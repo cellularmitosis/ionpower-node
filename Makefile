@@ -436,6 +436,7 @@ test-libs: $(BIN)
 	./$(BIN) test/is_json_smoke.js
 	./$(BIN) test/iso8601_duration_smoke.js
 	./$(BIN) test/process_smoke.js
+	./$(BIN) test/string_template_smoke.js
 
 test-all: test test-libs
 
