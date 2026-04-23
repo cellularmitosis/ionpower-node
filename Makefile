@@ -452,6 +452,8 @@ test-libs: $(BIN)
 	./$(BIN) test/md5_hex_smoke.js
 	./$(BIN) test/batch24_smoke.js
 	./$(BIN) test/batch25_smoke.js
+	./$(BIN) test/case_suite_smoke.js
+	./$(BIN) test/format_file_size_smoke.js
 
 test-all: test test-libs
 
