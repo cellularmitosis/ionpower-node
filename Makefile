@@ -437,6 +437,10 @@ test-libs: $(BIN)
 	./$(BIN) test/iso8601_duration_smoke.js
 	./$(BIN) test/process_smoke.js
 	./$(BIN) test/string_template_smoke.js
+	./$(BIN) test/url_template_smoke.js
+	./$(BIN) test/make_error_smoke.js
+	./$(BIN) test/prr_smoke.js
+	./$(BIN) test/mnemonist_set_smoke.js
 
 test-all: test test-libs
 
