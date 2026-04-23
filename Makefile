@@ -476,6 +476,7 @@ test-libs: $(BIN)
 	./$(BIN) test/batch_tail_smoke.js
 	./$(BIN) test/final_push_smoke.js
 	./$(BIN) test/v500_smoke.js
+	./$(BIN) test/milestone500_smoke.js
 
 test-all: test test-libs
 
