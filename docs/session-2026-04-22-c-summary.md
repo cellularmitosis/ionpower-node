@@ -8,13 +8,18 @@ of secondary Node-compat features.
 
 ## End state
 
-- **200 third-party libraries** working (was 88 at session-B close).
-- **713 `ok:`** assertion-level checks across `make test-all`;
+- **225 third-party libraries** working (was 88 at session-B close).
+- **756 `ok:`** assertion-level checks across `make test-all`;
   **zero FAIL**.
 - **G3 SpiderMonkey build complete + verified on imacg3**:
   `/opt/mozjs-45-ionpower-g3/bin/js -e "print(Math.sqrt(2))"` → `1.4142...`,
   5M-iter integer-sum loop in 254 ms.
-- Big JWT / htmlparser2 / HTTP / Buffer improvements.
+- **G4 SpiderMonkey build in progress on emac** after the user
+  installed Xcode 2.5 (unblocked the /usr/lib/crt1.o + MacOSX10.4u.sdk
+  dependency). Last check: ~39 .o files compiled; configure + ~1/3 of
+  mfbt + js/src pass done.
+- Big JWT / htmlparser2 / HTTP / Buffer improvements;
+  `Stats.isFile()/isDirectory()` now return functions (Node-compatible).
 
 ## Bridge additions this session
 
