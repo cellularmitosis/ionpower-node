@@ -6,14 +6,14 @@ count into the mid-150s while landing an HTTP client, finishing the
 G3 SpiderMonkey build infrastructure, and documenting a whole pile
 of secondary Node-compat features.
 
-## End state (so far)
+## End state
 
-- **155 third-party libraries** working (was 88 at session-B close).
-- **643 `ok:`** assertion-level checks across `make test-all`;
+- **200 third-party libraries** working (was 88 at session-B close).
+- **713 `ok:`** assertion-level checks across `make test-all`;
   **zero FAIL**.
-- G3 SpiderMonkey build running to completion on imacg3 in the
-  background (last-step dsymutil at session-summary write-time).
-  libmozjs-45.a + libmozglue.dylib have already been produced.
+- **G3 SpiderMonkey build complete + verified on imacg3**:
+  `/opt/mozjs-45-ionpower-g3/bin/js -e "print(Math.sqrt(2))"` → `1.4142...`,
+  5M-iter integer-sum loop in 254 ms.
 - Big JWT / htmlparser2 / HTTP / Buffer improvements.
 
 ## Bridge additions this session
@@ -87,12 +87,69 @@ base64-decodes the API blob through `Buffer.from(blob, 'base64')`,
 renders with markdown-it, writes HTML. Works end-to-end on imacg52
 against the live api.github.com.
 
+## Additional libraries after 155 milestone (155 → 200)
+
+    156. ip-regex                       165. is-plain-object + is-number
+    157. char-regex                     166. buffer-crc32
+    158. safer-buffer                   167. tsv
+    159. cookiejar                      168. object-assign
+    160. arg                            169. small_utils (5: abbrev, word-wrap,
+    161. atob                                strip-json-comments, repeat-string,
+    162. btoa                                title-case)
+    163. urldecode                      170-177. simple-statistics / heap /
+    164. safe-stable-stringify                  tinydate / sjcl / number-to-words /
+                                                is-url / humanize-duration / slug
+                                        178-186. jwt-decode / color_utils (3:
+                                                  hex-rgb + rgb-hex + color-name) /
+                                                  base-64
+                                        187-190. case (2: lower-case + upper-case) /
+                                                  tslib / anchorme
+                                        191-194. numeral / inflection /
+                                                  oauth-sign / fromentries
+                                        195-200. fast-equals / diff2html / hoopy /
+                                                  fast-sort / jsonparse /
+                                                  pretty-compact
+
+## Additional bridge additions after 155 milestone
+
+- `http` + `https` core-module seeds, `http.getSync` / `postSync`
+  fork+exec'ing curl; CA bundle auto-detected; `--cacert` pass-through
+- `Array.prototype.flat` / `flatMap`, `Object.entries` / `values` /
+  `fromEntries`, `String.prototype.trimStart` / `trimEnd` polyfills
+
+## G3 install verified
+
+    $ ssh imacg3 'DYLD_LIBRARY_PATH=/opt/mozjs-45-ionpower-g3/lib \
+        /opt/mozjs-45-ionpower-g3/bin/js \
+        -e "print(Math.sqrt(2))"'
+    1.4142135623730951
+
+    $ ssh imacg3 'DYLD_LIBRARY_PATH=/opt/mozjs-45-ionpower-g3/lib \
+        /opt/mozjs-45-ionpower-g3/bin/js \
+        -e "var t=Date.now(); var s=0; for(var i=0;i<5e6;++i) s=(s+i)|0;
+             print(\"5M in \" + (Date.now()-t) + \" ms\")"'
+    5M in 254 ms
+
+The `-gdwarf-2` → dsymutil pass choked on G3 (ran >45 min of a
+700 MHz chip and still wasn't done); SIGTERM + manual cp of the
+existing js + libmozglue.dylib got the install finished. See
+docs/g3-g4-builds.md for the workaround.
+
+## emac G4 status
+
+Bootstrapped: tiger.sh, python2-2.7.18, pip+setuptools primed, m4-1.4.19,
+make-4.3, autoconf-2.13, gcc-4.9.4, cctools-667.3, ld64-97.17-tigerbrew.
+**Blocked on Xcode 2.5**: no `/usr/lib/crt1.o`, no
+`/Developer/SDKs/MacOSX10.4u.sdk`. Installing those requires GUI
+interaction (`open` Xcode Installer Launcher.app). Alternative:
+cross-build on imacg52 from a separate source tree + OBJDIR.
+
 ## `make test-all` at session write-up
 
-    643 ok: checkpoints
+    713 ok: checkpoints
     0 FAIL
     0 make errors
-    ~130 smokes
+    ~150 smokes
 
 ## Ideas for the next session
 
