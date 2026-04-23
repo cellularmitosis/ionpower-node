@@ -458,6 +458,8 @@ test-libs: $(BIN)
 	./$(BIN) test/async_fs_smoke.js
 	./$(BIN) test/stream_libs_smoke.js
 	./$(BIN) test/crypto_expand_smoke.js
+	./$(BIN) test/csv_ndjson_smoke.js
+	./$(BIN) test/bcryptjs_smoke.js
 
 test-all: test test-libs
 
