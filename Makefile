@@ -367,6 +367,8 @@ test-libs: $(BIN)
 	./$(BIN) test/case_lib_smoke.js
 	./$(BIN) test/twig_smoke.js
 	./$(BIN) test/p_limit_smoke.js
+	./$(BIN) test/acorn_walk_smoke.js
+	./$(BIN) test/bn_js_smoke.js
 
 test-all: test test-libs
 
