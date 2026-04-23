@@ -36,6 +36,64 @@ static bool FileExists(const char* path) {
     return stat(path, &st) == 0 && S_ISREG(st.st_mode);
 }
 
+// Collapse `./` and `../` in `path` in-place. Leaves a single leading '/'
+// intact if present. Used to canonicalize resolved module paths so the
+// module cache and recursion-detection see identical keys regardless of
+// how the caller spelled the relative path.
+//
+// Without this, `require('./foo')` from a module at `/a/b/` produces the
+// stat-valid but non-canonical path `/a/b/./foo.js`, which then requires
+// `./bar` → `/a/b/./bar.js`, which requires `./bar` → `/a/b/./././bar.js`,
+// and so on forever. semver's internal requires are the shape that hits
+// this.
+static void CanonicalizePath(char* path) {
+    if (!path || !*path) return;
+    char tmp[PATH_MAX];
+    size_t len = strlen(path);
+    if (len >= sizeof tmp) return;
+
+    bool absolute = (path[0] == '/');
+    // Tokenize on '/' and rebuild.
+    char* parts[256];
+    int nparts = 0;
+    size_t i = absolute ? 1 : 0;
+    while (i < len && nparts < 256) {
+        while (i < len && path[i] == '/') ++i;
+        if (i >= len) break;
+        parts[nparts++] = path + i;
+        while (i < len && path[i] != '/') ++i;
+        if (i < len) path[i++] = 0;
+    }
+
+    // Filter '.' and collapse '..'.
+    char* kept[256];
+    int nkept = 0;
+    for (int k = 0; k < nparts; ++k) {
+        if (strcmp(parts[k], ".") == 0) continue;
+        if (strcmp(parts[k], "..") == 0) {
+            if (nkept > 0) --nkept;
+            // On a non-absolute path with no parents to pop, preserve ..
+            else if (!absolute) kept[nkept++] = parts[k];
+            continue;
+        }
+        kept[nkept++] = parts[k];
+    }
+
+    // Rebuild into tmp.
+    size_t o = 0;
+    if (absolute) tmp[o++] = '/';
+    for (int k = 0; k < nkept; ++k) {
+        if (o > (absolute ? 1u : 0u)) tmp[o++] = '/';
+        size_t pl = strlen(kept[k]);
+        if (o + pl >= sizeof tmp) return;
+        memcpy(tmp + o, kept[k], pl);
+        o += pl;
+    }
+    if (o == 0) { tmp[o++] = '.'; }
+    tmp[o] = 0;
+    memcpy(path, tmp, o + 1);
+}
+
 static bool DirExists(const char* path) {
     struct stat st;
     return stat(path, &st) == 0 && S_ISDIR(st.st_mode);
@@ -128,19 +186,30 @@ static bool ResolveModule(const char* spec, const char* from_dir,
     char base[PATH_MAX];
     if (spec[0] == '/') {
         strncpy(base, spec, sizeof base); base[sizeof base - 1] = 0;
-        return TryModuleExtensions(base, out, outsz);
+        if (TryModuleExtensions(base, out, outsz)) {
+            CanonicalizePath(out);
+            return true;
+        }
+        return false;
     }
     if (spec[0] == '.' && (spec[1] == '/' ||
                            (spec[1] == '.' && spec[2] == '/'))) {
         snprintf(base, sizeof base, "%s/%s", from_dir, spec);
-        return TryModuleExtensions(base, out, outsz);
+        if (TryModuleExtensions(base, out, outsz)) {
+            CanonicalizePath(out);
+            return true;
+        }
+        return false;
     }
     // Bare specifier: walk up looking in node_modules/.
     char dir[PATH_MAX];
     strncpy(dir, from_dir, sizeof dir); dir[sizeof dir - 1] = 0;
     for (;;) {
         snprintf(base, sizeof base, "%s/node_modules/%s", dir, spec);
-        if (TryModuleExtensions(base, out, outsz)) return true;
+        if (TryModuleExtensions(base, out, outsz)) {
+            CanonicalizePath(out);
+            return true;
+        }
         // Walk up.
         if (dir[0] == 0 || (dir[0] == '/' && dir[1] == 0)) break;
         char* slash = strrchr(dir, '/');

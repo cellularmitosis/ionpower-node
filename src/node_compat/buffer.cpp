@@ -530,6 +530,52 @@ bool InstallBuffer(JSContext* cx, JS::HandleObject global) {
         "  var b = v & 0xFF;\n"
         "  for (var i = s; i < e; ++i) this[i] = b;\n"
         "  return this;\n"
+        "};\n"
+        // Some libraries (safe-buffer, jsonwebtoken's jws) inspect
+        // Buffer.prototype to walk/clone it. Our Buffer is a function-
+        // shaped object with alloc/from on it, not a real constructor;
+        // pin its prototype to Uint8Array.prototype so `Object.create(
+        // Buffer.prototype)` works and instanceof is plausible.
+        "Buffer.prototype = Uint8Array.prototype;\n"
+        "Buffer.allocUnsafe = Buffer.allocUnsafe || Buffer.alloc;\n"
+        "Buffer.allocUnsafeSlow = Buffer.allocUnsafeSlow || Buffer.alloc;\n"
+        // Node exposes byteLength on the Buffer ctor: utf8 byte count.
+        "Buffer.byteLength = Buffer.byteLength || function(str, enc) {\n"
+        "  if (typeof str !== 'string') return str.length | 0;\n"
+        "  enc = enc || 'utf8';\n"
+        "  if (enc === 'latin1' || enc === 'binary' || enc === 'ascii') return str.length;\n"
+        "  if (enc === 'ucs2' || enc === 'utf16le' || enc === 'utf-16le') return str.length * 2;\n"
+        "  if (enc === 'hex') return (str.length / 2) | 0;\n"
+        "  if (enc === 'base64') {\n"
+        "    var s = str.replace(/[^A-Za-z0-9+/]/g, '');\n"
+        "    var pad = (str.match(/=+$/) || [''])[0].length;\n"
+        "    return ((s.length * 3) >> 2) - pad;\n"
+        "  }\n"
+        // utf8: count bytes from UTF-16 code units.
+        "  var n = 0;\n"
+        "  for (var i = 0; i < str.length; ++i) {\n"
+        "    var c = str.charCodeAt(i);\n"
+        "    if (c < 0x80) n += 1;\n"
+        "    else if (c < 0x800) n += 2;\n"
+        "    else if (c >= 0xD800 && c <= 0xDBFF) { n += 4; ++i; }\n"
+        "    else n += 3;\n"
+        "  }\n"
+        "  return n;\n"
+        "};\n"
+        "Buffer.concat = Buffer.concat || function(list, total) {\n"
+        "  if (total === undefined) {\n"
+        "    total = 0;\n"
+        "    for (var i = 0; i < list.length; ++i) total += list[i].length;\n"
+        "  }\n"
+        "  var out = Buffer.alloc(total);\n"
+        "  var off = 0;\n"
+        "  for (var j = 0; j < list.length; ++j) {\n"
+        "    var src = list[j];\n"
+        "    var n = Math.min(src.length, total - off);\n"
+        "    for (var k = 0; k < n; ++k) out[off + k] = src[k];\n"
+        "    off += n;\n"
+        "  }\n"
+        "  return out;\n"
         "};\n";
     JS::CompileOptions opts(cx);
     opts.setFileAndLine("<ionpower-node buffer patch>", 1);

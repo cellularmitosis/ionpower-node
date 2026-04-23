@@ -166,6 +166,9 @@ test-libs: $(BIN)
 	./$(BIN) test/rfc6902_smoke.js
 	./$(BIN) test/fast_memoize_smoke.js
 	./$(BIN) test/tiny_warning_smoke.js
+	./$(BIN) test/crypto_hash_smoke.js
+	./$(BIN) test/htmlparser2_smoke.js
+	./$(BIN) test/jsonwebtoken_smoke.js
 
 test-all: test test-libs
 
