@@ -110,12 +110,21 @@ Then rebuild ionpower-node against the new prefix and rerun
 `make test-all` — the 600+ `ok:` checkpoints are the real
 integration smoke.
 
-## Gotcha: dsymutil hangs for *hours* on a G3
+## Gotcha: dsymutil is slow (but finishes) on a G3
 
 The link step of `js/src/shell/js` invokes `dsymutil js` to build a
 .dSYM bundle from the 8.8 MB binary's embedded DWARF debug info.
-On a G3 iMac (~700 MHz), this step alone took over 30 minutes with
-no sign of progress and was still running when I finally killed it.
+On a G3 iMac (~700 MHz), this step runs in **~15.7 minutes**
+(941 s real time, 902 s user, 19 s sys; measured 2026-04-22) at
+165–250 MB RSS and produces a 68 MB DWARF archive under
+`js.dSYM/Contents/Resources/DWARF/js`.
+
+The original build-session observation that dsymutil "didn't
+finish in 30 min" turned out to be partially a flaky Claude
+session plus a concurrent network outage — a clean retest on the
+same G3 binary finished reliably at the timing above. Still a
+substantial chunk of total build time; if you don't need debug
+symbols, skip it with the workaround below.
 
 **Workaround:** once you confirm the `js` binary itself exists at
 `js/src/build_OPT.OBJ/js/src/shell/js`, kill dsymutil with SIGTERM
