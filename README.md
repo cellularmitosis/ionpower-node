@@ -99,25 +99,26 @@ release lands.
 | Module | Status | Notes |
 |---|---|---|
 | `fs` (sync) | ✅ Working | `readFileSync`, `writeFileSync`, `existsSync`, `readdirSync`, `statSync`, `lstatSync` (alias), `unlinkSync`, `mkdirSync` (+ recursive), `rmdirSync`, `appendFileSync`, `copyFileSync`, `chmodSync`, `renameSync`, `realpathSync` (passthrough). Errors carry Node-style `.code`/`.errno`/`.syscall`/`.path`. |
-| `fs` (async) | ❌ Missing | No event loop — all fs is synchronous. |
-| `fs.promises` | ❌ Missing | Ditto. |
-| `fs.createReadStream`/`WriteStream` | ❌ Missing | Would need real stream. |
+| `fs` (async) | ✅ Working | Callback-style `readFile`/`writeFile`/`readdir`/`stat`/`lstat`/`unlink`/`mkdir`/`rmdir`/`rename`/`appendFile`/`copyFile`/`chmod`/`access`/`realpath`/`exists`. Each wraps the sync version + fires the callback via the timer queue. |
+| `fs.promises` | ✅ Working | Promise-wrapped version of every callback form. |
+| `fs.constants` | ✅ Working | `F_OK`/`R_OK`/`W_OK`/`X_OK`/`O_RDONLY`/`O_WRONLY`/`O_RDWR`. |
+| `fs.createReadStream`/`WriteStream` | ❌ Missing | Would need streaming to/from OS fd; sync fs covers most CJS use. |
 | `path` | ✅ Working | `join`, `resolve`, `normalize`, `dirname`, `basename`, `extname`, `relative`, `parse`, `format`, `sep`, `delimiter`, `isAbsolute`. |
 | `os` | 🟡 Partial | `platform` (`darwin`), `arch` (`ppc`), `homedir`, `tmpdir`, `hostname`, `cpus` (1-core stub), `type`, `release`, `endianness` (`BE`), `EOL`. No `networkInterfaces`, no `loadavg`. |
 | `events` | ✅ Working | `EventEmitter` with `on`/`once`/`off`/`emit`/`addListener`/`removeListener`/`removeAllListeners`/`listenerCount`/`listeners`/`prependListener`. |
 | `util` | 🟡 Partial | `format`, `inspect` (depth-limited, cycle-safe), `inherits`, `promisify` (+ `.custom` symbol), `callbackify`, `deprecate`, `types.*`, `isArray`/`isString`/`isNumber`/`isBoolean`/`isFunction`/`isObject`/`isNull`/`isUndefined`/`isNullOrUndefined`/`isError`/`isPrimitive`/`isBuffer`/`isDate`/`isRegExp`. No `parseArgs`, no `styleText`. |
 | `buffer` | ✅ Working | `Buffer` class: `from` (string/array/Buffer/ArrayBuffer), `alloc`, `allocUnsafe`, `isBuffer`, `concat`, `byteLength`, `compare`. Instance: `toString`, `slice`, `write`, `copy`, `fill`, `indexOf`, `includes`, `equals`, `.length`. |
-| `crypto` | 🟡 Partial | `randomBytes` (real entropy), `pseudoRandomBytes`, `randomUUID` (v4), `createHash` (md5/sha1/sha256/sha512), `createHmac` (sha1/sha256). No `createCipheriv`, no `pbkdf2`, no `sign`/`verify`, no `diffieHellman`. |
+| `crypto` | 🟡 Partial | `randomBytes` (real entropy), `pseudoRandomBytes`, `randomUUID` (v4), `createHash` (**md5/sha1/sha256**), `createHmac` (md5/sha1/sha256), `pbkdf2Sync`/`pbkdf2` (HMAC-SHA1/SHA256/MD5), `timingSafeEqual`, `createSecretKey`, `getHashes`, `getCiphers`. No `createCipheriv`, no `sign`/`verify`, no `diffieHellman`. |
 | `http` | 🟡 Partial | Sync-only `getSync`/`requestSync` for simple GET. No `createServer`, no async request. |
 | `https` | ❌ Missing | Would need TLS + async. |
 | `net` | ❌ Missing | Would need sockets + event loop. |
 | `dns` | ❌ Missing | |
 | `child_process` | 🟡 Stub | `spawn`/`exec`/`execSync`/`fork` all throw. |
-| `stream` | 🟡 Stub | `Stream`/`Readable`/`Writable`/`Duplex`/`Transform`/`PassThrough` are an EE-based pass-through stub. `.pipe()` returns the destination; `.write()`/`.end()` no-op. Most CJS libs that "touch but don't stream" work; pipelines don't. |
+| `stream` | ✅ Working | Real `Readable` / `Writable` / `Duplex` / `Transform` / `PassThrough` with buffering, `.pipe()`, `.read([n])` / `.push(chunk)` / `.end()`. `stream.pipeline()` and `stream.finished()` also implemented. Backpressure is nominally modeled but collapses to always-drained under the sync runtime; pipe auto-resumes whenever a `'data'` listener is added. |
 | `string_decoder` | ✅ Working | `StringDecoder` over Buffer-to-UTF-8. |
 | `querystring` | ✅ Working | `parse`/`stringify`. |
 | `assert` | ✅ Working | `equal`, `strictEqual`, `notEqual`, `notStrictEqual`, `deepEqual`, `deepStrictEqual`, `throws`, `doesNotThrow`, `fail`, `ok`, `AssertionError`. |
-| `timers` | 🟡 Synchronous | `setImmediate`/`setTimeout`/`setInterval` + clears. Under the sync runtime, `setTimeout(fn, N)` fires synchronously. |
+| `timers` | ✅ Working | `setImmediate`/`setTimeout`/`setInterval` + matching clears enqueue into a per-runtime `__timer_queue__`. After the entry script returns, `main.cpp` drains the queue in `fireAt` order (no wallclock sleep between firings — ordering is correct but absolute delays collapse). Intervals re-queue themselves. |
 | `tty` | 🟡 Stub | `ReadStream`/`WriteStream` exported as EE-derived stubs. |
 | `module` | ❌ Missing | No `createRequire`, no `Module` class. |
 | `worker_threads` | ❌ Missing | |
@@ -134,7 +135,7 @@ release lands.
 | `console` | ✅ Working | `log`/`error`/`warn`/`info`/`debug`/`trace`/`dir`/`time`/`timeEnd`/`assert`. |
 | `Promise` | ✅ Polyfill | **Synchronous** Promise (no microtask queue): executor + `.then`/`.catch`/`.finally` chains run inline. `Promise.resolve`/`reject`/`all`/`race`/`allSettled`. |
 | `queueMicrotask` | ✅ Synchronous | Runs the callback immediately via `Promise.resolve().then(fn)`. |
-| `setTimeout`/`setInterval`/`setImmediate` | 🟡 Synchronous | Fire immediately. No actual scheduling. |
+| `setTimeout`/`setInterval`/`setImmediate` | ✅ Queued | Enqueue into `__timer_queue__`; drain after the entry script returns (main.cpp). Ordering is correct; wallclock delays are not honored. |
 | `TextEncoder`/`TextDecoder` | ✅ Working | UTF-8 only. |
 | `URL`/`URLSearchParams` | ✅ Polyfill | Covers protocol/host/hostname/port/pathname/search/hash/origin/href + username/password, plus search-params get/getAll/has/set/append/delete/forEach/keys/values/entries/toString/sort. Not spec-complete for IDN / non-special schemes / exotic relative resolution. |
 | `crypto` (WebCrypto) | 🟡 Partial | `crypto.getRandomValues`, `crypto.randomUUID`, `crypto.subtle` absent. |
@@ -174,8 +175,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**374** (post-[v0.4](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.4),
-pre-v0.5). Full suite: **1051** assertions across 310+ smoke files.
+**453** as of [v0.6](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.6).
+Full suite: **1146** assertions across 340+ smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
