@@ -463,6 +463,8 @@ test-libs: $(BIN)
 	./$(BIN) test/lodash_subs_smoke.js
 	./$(BIN) test/picocolors_smoke.js
 	./$(BIN) test/lines_and_columns_smoke.js
+	./$(BIN) test/http_utils_smoke.js
+	./$(BIN) test/defu_iterall_smoke.js
 
 test-all: test test-libs
 
