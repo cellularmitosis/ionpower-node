@@ -55,9 +55,9 @@ if ! grep -q 'IONPOWER_TIGER_NOSETNAME' "$NSPRFILE"; then
     # don't leak fallback fallthrough) AND replace the actual
     # pthread_setname_np call under XP_DARWIN (the symbol isn't declared
     # on 10.4 so even dead code fails to compile).
-    /opt/perl-5.36.0/bin/perl -i -pe 's|^(    int result;)$|$1\n    // IONPOWER_TIGER_NOSETNAME: pthread_setname_np is Leopard-only\n    (void)name; return PR_SUCCESS;|' \
+    perl -i -pe 's|^(    int result;)$|$1\n    // IONPOWER_TIGER_NOSETNAME: pthread_setname_np is Leopard-only\n    (void)name; return PR_SUCCESS;|' \
         "$NSPRFILE"
-    /opt/perl-5.36.0/bin/perl -i -pe 's|^(    )result = pthread_setname_np\(name\);|${1}result = 0; // IONPOWER_TIGER_NOSETNAME: Leopard-only|' \
+    perl -i -pe 's|^(    )result = pthread_setname_np\(name\);|${1}result = 0; // IONPOWER_TIGER_NOSETNAME: Leopard-only|' \
         "$NSPRFILE"
 fi
 
@@ -66,7 +66,7 @@ fi
 # system pip and skip reinstalling pip+setuptools. Idempotent.
 VENVFILE="$SRC/python/mozbuild/mozbuild/virtualenv.py"
 if ! grep -q 'IONPOWER_VENV_FLAGS' "$VENVFILE"; then
-    /opt/perl-5.36.0/bin/perl -i -pe '
+    perl -i -pe '
         s|^(        args = \[sys.executable, self.virtualenv_script_path,)|        # IONPOWER_VENV_FLAGS: pip-6.0.6 wheel in virtualenv_support is buggy.\n\1|;
         s|^(            self.virtualenv_root\])|            "--system-site-packages", "--no-pip", "--no-setuptools",\n\1|' \
         "$VENVFILE"

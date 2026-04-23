@@ -216,6 +216,9 @@ test-libs: $(BIN)
 	./$(BIN) test/reselect_smoke.js
 	./$(BIN) test/array_move_smoke.js
 	./$(BIN) test/split_on_first_smoke.js
+	./$(BIN) test/url_parse_smoke.js
+	./$(BIN) test/ipaddr_smoke.js
+	./$(BIN) test/tinypure_smoke.js
 
 test-all: test test-libs
 

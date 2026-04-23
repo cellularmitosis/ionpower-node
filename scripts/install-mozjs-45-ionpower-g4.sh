@@ -13,7 +13,10 @@ set -e -o pipefail
 # make-4.3: Mozilla's Makefile.in rejects GNU make < 3.81; Tiger ships 3.80.
 # m4-1.4.19: autoconf 2.13 wants modern GNU m4. Tiger ships an older m4.
 # /usr/local/bin: tiger.sh itself lives here on freshly-bootstrapped hosts.
-PATH=/opt/make-4.3/bin:/opt/m4-1.4.19/bin:/opt/autoconf-2.13/bin:/opt/python2-2.7.18/bin:/opt/tigersh-deps-0.1/bin:/usr/local/bin:$PATH
+# On Xcode-less hosts (emac): cctools-667.3 provides `as`, and
+# ld64-97.17-tigerbrew provides `ld`. imacg52 has /usr/bin/{as,ld} from
+# Xcode 2.5 already on PATH, so these are no-ops there.
+PATH=/opt/make-4.3/bin:/opt/m4-1.4.19/bin:/opt/autoconf-2.13/bin:/opt/python2-2.7.18/bin:/opt/cctools-667.3/bin:/opt/ld64-97.17-tigerbrew/bin:/opt/tigersh-deps-0.1/bin:/usr/local/bin:$PATH
 export PATH
 SCRATCH=/Users/macuser/tmp
 
@@ -57,16 +60,16 @@ mkdir -p "$SRC/intl/icu/source/common" "$SRC/intl/icu/source/i18n"
 # Idempotent — skip if already patched.
 NSPRFILE="$SRC/js/src/vm/PosixNSPR.cpp"
 if ! grep -q 'IONPOWER_TIGER_NOSETNAME' "$NSPRFILE"; then
-    /opt/perl-5.36.0/bin/perl -i -pe 's|^(    int result;)$|$1\n    // IONPOWER_TIGER_NOSETNAME: pthread_setname_np is Leopard-only\n    (void)name; return PR_SUCCESS;|' \
+    perl -i -pe 's|^(    int result;)$|$1\n    // IONPOWER_TIGER_NOSETNAME: pthread_setname_np is Leopard-only\n    (void)name; return PR_SUCCESS;|' \
         "$NSPRFILE"
-    /opt/perl-5.36.0/bin/perl -i -pe 's|^(    )result = pthread_setname_np\(name\);|${1}result = 0; // IONPOWER_TIGER_NOSETNAME: Leopard-only|' \
+    perl -i -pe 's|^(    )result = pthread_setname_np\(name\);|${1}result = 0; // IONPOWER_TIGER_NOSETNAME: Leopard-only|' \
         "$NSPRFILE"
 fi
 
 # See G3 script / docs/g3-g4-builds.md for rationale. Idempotent.
 VENVFILE="$SRC/python/mozbuild/mozbuild/virtualenv.py"
 if ! grep -q 'IONPOWER_VENV_FLAGS' "$VENVFILE"; then
-    /opt/perl-5.36.0/bin/perl -i -pe '
+    perl -i -pe '
         s|^(        args = \[sys.executable, self.virtualenv_script_path,)|        # IONPOWER_VENV_FLAGS: pip-6.0.6 wheel in virtualenv_support is buggy.\n\1|;
         s|^(            self.virtualenv_root\])|            "--system-site-packages", "--no-pip", "--no-setuptools",\n\1|' \
         "$VENVFILE"
