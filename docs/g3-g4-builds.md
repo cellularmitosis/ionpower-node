@@ -97,12 +97,63 @@ sources in ~3 hours at 2 GHz with the 970.
 After `make install` lands:
 
 ```bash
-ssh <host> '/opt/mozjs-45-ionpower-g{3,4}/bin/js -e "print(\"hello from \"+Math.sqrt(2))"'
+ssh <host> 'DYLD_LIBRARY_PATH=/opt/mozjs-45-ionpower-g{3,4}/lib \
+    /opt/mozjs-45-ionpower-g{3,4}/bin/js \
+    -e "print(\"hello from \"+Math.sqrt(2))"'
 ```
 
 The G5 artifact at imacg52 has been printing `hello from
-1.4142135623730951` reliably for weeks.
+1.4142135623730951` reliably for weeks. The G3 artifact at imacg3
+printed the same 2026-04-22.
 
 Then rebuild ionpower-node against the new prefix and rerun
-`make test-all` — the 400+ `ok:` checkpoints are the real
+`make test-all` — the 600+ `ok:` checkpoints are the real
 integration smoke.
+
+## Gotcha: dsymutil hangs for *hours* on a G3
+
+The link step of `js/src/shell/js` invokes `dsymutil js` to build a
+.dSYM bundle from the 8.8 MB binary's embedded DWARF debug info.
+On a G3 iMac (~700 MHz), this step alone took over 30 minutes with
+no sign of progress and was still running when I finally killed it.
+
+**Workaround:** once you confirm the `js` binary itself exists at
+`js/src/build_OPT.OBJ/js/src/shell/js`, kill dsymutil with SIGTERM
+— make will exit with an error. Then manually copy the artifacts:
+
+```bash
+ssh imacg3 '
+OBJDIR=/Users/macuser/tmp/tenfourfox-src/js/src/build_OPT.OBJ
+PREFIX=/opt/mozjs-45-ionpower-g3
+mkdir -p $PREFIX/bin $PREFIX/lib
+cp $OBJDIR/js/src/shell/js                   $PREFIX/bin/js
+cp $OBJDIR/mozglue/build/libmozglue.dylib    $PREFIX/lib/
+# libjs_static.a may land with a mangled name if make exited mid-install;
+# fix it:
+[ -f $PREFIX/lib/libjs_static.ajs ] && \
+    mv $PREFIX/lib/libjs_static.ajs $PREFIX/lib/libjs_static.a
+DYLD_LIBRARY_PATH=$PREFIX/lib $PREFIX/bin/js -e "print(Math.sqrt(2))"
+'
+```
+
+The cleaner long-term fix is to strip `-gdwarf-2` from the CFLAGS in
+the install script so dsymutil has nothing to process. That's a
+one-line change to `install-mozjs-45-ionpower-g{3,4}.sh`; pending
+validation.
+
+## G3 install artifacts (imacg3, 2026-04-22)
+
+After the manual install step above:
+
+```
+/opt/mozjs-45-ionpower-g3/bin/js          (8.8 MB, ppc750 Mach-O)
+/opt/mozjs-45-ionpower-g3/bin/js-config
+/opt/mozjs-45-ionpower-g3/lib/libjs_static.a    (220 MB static archive)
+/opt/mozjs-45-ionpower-g3/lib/libmozglue.dylib  (124 KB)
+/opt/mozjs-45-ionpower-g3/include/mozjs-45/{jsapi,jsfriendapi,...}.h
+```
+
+Smoke: `print(Math.sqrt(2))` returns `1.4142135623730951`. A
+5-million-iteration integer-sum loop completes in ~250 ms on a 700 MHz
+G3 — roughly 2× the G5's time as expected for the clock-rate
+difference.

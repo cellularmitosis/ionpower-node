@@ -242,6 +242,7 @@ test-libs: $(BIN)
 	./$(BIN) test/buffer_crc32_smoke.js
 	./$(BIN) test/tsv_smoke.js
 	./$(BIN) test/object_assign_smoke.js
+	./$(BIN) test/small_utils_smoke.js
 
 test-all: test test-libs
 
