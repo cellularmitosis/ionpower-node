@@ -243,6 +243,9 @@ test-libs: $(BIN)
 	./$(BIN) test/tsv_smoke.js
 	./$(BIN) test/object_assign_smoke.js
 	./$(BIN) test/small_utils_smoke.js
+	./$(BIN) test/simple_statistics_smoke.js
+	./$(BIN) test/heap_smoke.js
+	./$(BIN) test/tinydate_smoke.js
 
 test-all: test test-libs
 
