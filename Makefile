@@ -349,6 +349,11 @@ test-libs: $(BIN)
 	./$(BIN) test/js_levenshtein_smoke.js
 	./$(BIN) test/map_obj_smoke.js
 	./$(BIN) test/mkdirp_classic_smoke.js
+	./$(BIN) test/ansi_utils_smoke.js
+	./$(BIN) test/glob_path_smoke.js
+	./$(BIN) test/shell_quote_smoke.js
+	./$(BIN) test/sort_keys_smoke.js
+	./$(BIN) test/hash_sum_smoke.js
 
 test-all: test test-libs
 
