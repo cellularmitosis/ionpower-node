@@ -294,6 +294,8 @@ test-libs: $(BIN)
 	./$(BIN) test/immutable_smoke.js
 	./$(BIN) test/string_hash_smoke.js
 	./$(BIN) test/punycode_smoke.js
+	./$(BIN) test/small_batch_smoke.js
+	./$(BIN) test/html_tokenizer_smoke.js
 
 test-all: test test-libs
 
