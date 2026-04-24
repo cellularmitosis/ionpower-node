@@ -44,17 +44,10 @@ var v2 = crypto.randomInt(5);
 assert(v2 >= 0 && v2 < 5, "randomInt(5) range, got " + v2);
 console.log("ok: randomInt");
 
-// --- scrypt stubs throw cleanly ---
-var threw = false;
-try { crypto.scryptSync("a", "b", 16); } catch (e) { threw = true; }
-assert(threw, "scryptSync stub throws");
-var asyncErr = null;
-crypto.scrypt("a", "b", 16, function (err) { asyncErr = err; });
-// Ping event loop by exiting and expecting error — but SM drain handles this
-process.on("exit", function () {
-    if (!asyncErr) { console.error("FAIL: scrypt cb never fired"); process.exit(1); }
-});
-console.log("ok: scrypt stubs");
+// --- scrypt works as of v0.16 (RFC 7914 pure JS). Quick sanity only. ---
+var scryptOut = crypto.scryptSync("a", "b", 16, { N: 2, r: 1, p: 1 });
+assert(scryptOut.length === 16, "scryptSync output length");
+console.log("ok: scrypt (RFC 7914 pure JS)");
 
 // --- string_decoder partial multibyte ---
 var sd = new StringDecoder("utf8");
