@@ -60,9 +60,9 @@ var pt2 = d2["final"]("utf8");
 eq(pt2, "hello world", "AES-128-CBC round-trip");
 console.log("ok: AES-128-CBC round-trip");
 
-// --- Bad cipher name ---
+// --- Bad cipher name (aes-128-ecb isn't supported) ---
 var threw = false;
-try { crypto.createCipheriv("aes-256-gcm", key, iv); } catch (e) { threw = true; }
+try { crypto.createCipheriv("aes-128-ecb", key, iv); } catch (e) { threw = true; }
 assert(threw, "unsupported modes throw");
 console.log("ok: unsupported modes throw");
 
