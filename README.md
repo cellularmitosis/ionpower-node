@@ -148,6 +148,7 @@ release lands.
 | `globalThis` / `global` / `window` / `self` | ✅ All aliased | Any of the four resolves to the global object. |
 | `Intl` | ❌ Missing | SM45 was built `--without-intl-api`. Blocks luxon, ICU-dependent date/number formatters. |
 | `Symbol`, `Map`, `Set`, `WeakMap`, `WeakSet`, `Proxy`, `Reflect`, typed arrays | ✅ Native | SpiderMonkey 45 provides these. |
+| ES2022+ small APIs | ✅ Polyfill | `Object.hasOwn`, `structuredClone` (deep clone — handles objects/arrays/Date/RegExp/Map/Set/Buffer), `AggregateError`, `Promise.any`, `Array.prototype.at`/`findLast`/`findLastIndex`/`toSorted`/`toReversed`/`toSpliced`/`with`, `String.prototype.at`/`replaceAll`. |
 
 ### CommonJS
 
@@ -177,8 +178,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**592+** as of [v0.27](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.27).
-Full suite: **1410+** assertions across 376 smoke files.
+**592+** as of [v0.28](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.28).
+Full suite: **1438+** assertions across 377 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
