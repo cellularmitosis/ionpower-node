@@ -114,6 +114,7 @@ release lands.
 | `dns` | ✅ Working | `lookup` / `resolve` / `resolve4` / `resolve6` / `promises.lookup` via `gethostbyname` (blocking under the hood; called from event-loop `setImmediate`). MX/TXT/CNAME/SRV/NS `resolve*` return empty arrays for compatibility. |
 | `net` | ✅ Working | `net.Socket` (Duplex over event-loop `ioWatch`) + `net.createServer` / `createConnection`. BSD-socket primitives via `__net_native__`: `socketCreate`/`bind`/`listen`/`accept`/`connect` non-blocking. IPv4 only; `gethostbyname` for DNS. |
 | `dgram` (UDP) | ✅ Working | `dgram.createSocket('udp4')` / `Socket#bind` / `send` / `close`. `'message'` / `'listening'` / `'error'` / `'close'` events. Receives via `ioWatch(fd, READABLE)` + `recvfrom`; sends via `sendto`. IPv4 only; auto-binds to an ephemeral port if `.send()` is called before `.bind()`. |
+| `readline` | ✅ Working | `createInterface({ input, output })`, `'line'` / `'close'` events, `.question(prompt, cb)` (one-shot), `.pause`/`.resume`/`.close`, `.setPrompt`/`.prompt`. Cursor helpers (`cursorTo`, `moveCursor`, `clearLine`, `clearScreenDown`) emit ANSI CSI when the target stream is a TTY, no-op otherwise. |
 | `dns` | ❌ Missing | |
 | `child_process` | ✅ Working | All sync + async variants except `fork`. `execSync`/`spawnSync`/`execFileSync` via blocking fork+waitpid. `spawn`/`exec`/`execFile` return a `ChildProcess` (EventEmitter) backed by the event loop — `.stdout`/`.stderr` are Readables, `.stdin` is Writable, emits `'exit'`(code,sig) then `'close'`. |
 | `stream` | ✅ Working | Real `Readable` / `Writable` / `Duplex` / `Transform` / `PassThrough` with buffering, `.pipe()`, `.read([n])` / `.push(chunk)` / `.end()`. `stream.pipeline()` and `stream.finished()` also implemented. Backpressure is nominally modeled but collapses to always-drained under the sync runtime; pipe auto-resumes whenever a `'data'` listener is added. |
@@ -179,8 +180,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**602+** as of [v0.33](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.33).
-Full suite: **1483+** assertions across 382 smoke files.
+**602+** as of [v0.34](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.34).
+Full suite: **1489+** assertions across 383 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
