@@ -4281,7 +4281,53 @@ static const char kBootstrapJS[] =
     "    },\n"
     "    builtinModules: ['fs','path','events','util','child_process','os','crypto','buffer','string_decoder','assert','stream','timers','querystring','readable-stream','inherits','supports-color','has-ansi','module']\n"
     "  };\n"
+    // Node 18+ module.isBuiltin(name): checks builtinModules (stripping\n"
+    // any 'node:' prefix).\n"
+    "  module_core.isBuiltin = function (spec) {\n"
+    "    var name = String(spec || '').replace(/^node:/, '');\n"
+    "    return module_core.builtinModules.indexOf(name) >= 0;\n"
+    "  };\n"
     "  __require_cache__['module']         = module_core;\n"
+    // vm: minimal runInThisContext / runInNewContext / Script. No
+    // compartment isolation — runInNewContext parameterizes the sandbox
+    // keys as Function() args, then invokes the resulting function. Good
+    // enough for libraries that evaluate small expressions against a
+    // known-keys sandbox (template engines, JSON-path probes).\n"
+    "  function _vmRunInThisContext(code, options) {\n"
+    "    return (0, eval)(String(code));\n"  // indirect eval -> global scope
+    "  }\n"
+    "  function _vmRunInNewContext(code, sandbox, options) {\n"
+    "    sandbox = sandbox || {};\n"
+    "    var keys = Object.keys(sandbox);\n"
+    "    var vals = keys.map(function (k) { return sandbox[k]; });\n"
+    "    var body = String(code);\n"
+    // If the code looks like an expression (no ;, no top-level var/let/const/function),
+    // return its value. Otherwise evaluate as a statement block.\n"
+    "    var looksExpr = !/[;\\n]/.test(body) && !/^\\s*(var|let|const|function|if|for|while|switch|return|throw|try)\\b/.test(body);\n"
+    "    var fnBody = looksExpr ? 'return (' + body + ');' : body;\n"
+    "    var fn = Function.apply(null, keys.concat([fnBody]));\n"
+    "    return fn.apply(sandbox, vals);\n"
+    "  }\n"
+    "  function _vmScript(code, options) {\n"
+    "    if (!(this instanceof _vmScript)) return new _vmScript(code, options);\n"
+    "    this.code = String(code);\n"
+    "  }\n"
+    "  _vmScript.prototype.runInThisContext = function (opts) { return _vmRunInThisContext(this.code, opts); };\n"
+    "  _vmScript.prototype.runInNewContext  = function (sandbox, opts) { return _vmRunInNewContext(this.code, sandbox, opts); };\n"
+    "  _vmScript.prototype.runInContext     = function (context, opts) { return _vmRunInNewContext(this.code, context, opts); };\n"
+    "  var vmModule = {\n"
+    "    runInThisContext: _vmRunInThisContext,\n"
+    "    runInNewContext:  _vmRunInNewContext,\n"
+    "    runInContext:     _vmRunInNewContext,\n"
+    "    createContext:    function (sandbox) { return sandbox || {}; },\n"
+    "    isContext:        function (v) { return v && typeof v === 'object'; },\n"
+    "    Script:           _vmScript,\n"
+    "    compileFunction:  function (code, params, opts) {\n"
+    "      params = params || [];\n"
+    "      return Function.apply(null, params.concat([String(code)]));\n"
+    "    }\n"
+    "  };\n"
+    "  __require_cache__['vm']             = vmModule;\n"
     // tweetnacl: seed into the require cache at first access. A getter
     // on __require_cache__ would be spec-cleaner, but JS_GetProperty()
     // may bypass getters; the wrapped __make_require__ does a hasOwn
