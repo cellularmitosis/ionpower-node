@@ -141,7 +141,7 @@ release lands.
 | `setTimeout`/`setInterval`/`setImmediate` | ✅ Wallclock-real | Enqueue into the event loop; `select()` honors the next fireAt. `setTimeout(fn, N)` sleeps ~N ms before firing. Intervals self-requeue. |
 | `TextEncoder`/`TextDecoder` | ✅ Working | UTF-8 only. |
 | `URL`/`URLSearchParams` | ✅ Polyfill | Covers protocol/host/hostname/port/pathname/search/hash/origin/href + username/password, plus search-params get/getAll/has/set/append/delete/forEach/keys/values/entries/toString/sort. Not spec-complete for IDN / non-special schemes / exotic relative resolution. |
-| `crypto` (WebCrypto) | ✅ Working | `crypto.getRandomValues`, `crypto.randomUUID`, `crypto.subtle` with `digest`/`sign`/`verify`/`encrypt`/`decrypt`/`deriveBits`/`importKey`/`exportKey`/`generateKey`/`wrapKey`/`unwrapKey` over SHA-{1,256,384,512}, HMAC, AES-{CBC,CTR,GCM,KW}, PBKDF2, HKDF. `"raw"` and `"jwk"` key formats (JWK for symmetric). Node-style `crypto.sign`/`verify`/`generateKeyPair{,Sync}`/`createPrivateKey`/`createPublicKey` for **Ed25519** (tweetnacl-backed). Still missing: RSA / ECDSA / ECDH. |
+| `crypto` (WebCrypto) | ✅ Working | `crypto.getRandomValues`, `crypto.randomUUID`, `crypto.subtle` with `digest`/`sign`/`verify`/`encrypt`/`decrypt`/`deriveBits`/`importKey`/`exportKey`/`generateKey`/`wrapKey`/`unwrapKey` over SHA-{1,256,384,512}, HMAC, AES-{CBC,CTR,GCM,KW}, PBKDF2, HKDF, **Ed25519** (sign/verify/generateKey/import/export), **X25519** (generateKey/deriveBits — curve25519 ECDH). `"raw"` and `"jwk"` key formats. Node-style `crypto.sign`/`verify`/`generateKeyPair{,Sync}`/`createPrivateKey`/`createPublicKey` also wired for Ed25519. Still missing: RSA / ECDSA / NIST ECDH. |
 | `ReadableStream`/`WritableStream`/`TransformStream` | ✅ Polyfill | WHATWG Streams minimal shape. `ReadableStream` supports `start`/`pull`/`cancel` sources, `getReader().read()`, `locked`, `tee()`, `pipeTo`, `pipeThrough`. `WritableStream` supports `start`/`write`/`close`/`abort` sinks, `getWriter().write`/`close`/`abort`/`releaseLock`. `TransformStream` bundles the pair with `start`/`transform`/`flush`. Backpressure is best-effort (no explicit high-water-mark queue). |
 | `atob`/`btoa` | ✅ Working | |
 | `performance` (WHATWG) / `perf_hooks` core | ✅ Polyfill | `performance.now()` returns ms since `performance.timeOrigin` (Date.now() at process start). `mark`/`measure`/`clearMarks`/`clearMeasures`/`getEntries*` are callable stubs. `PerformanceObserver` constructs with no-op `observe`/`disconnect`/`takeRecords`. `require('perf_hooks')` returns `{ performance, PerformanceObserver, constants }`. Resolution is ms (no sub-millisecond precision). |
@@ -179,8 +179,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**592+** as of [v0.30](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.30).
-Full suite: **1453+** assertions across 379 smoke files.
+**592+** as of [v0.31](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.31).
+Full suite: **1460+** assertions across 380 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
