@@ -1,2 +1,2 @@
-!function(e,n){"object"==typeof exports&&"undefined"!=typeof module?module.exports=n():"function"==typeof define&&define.amd?define(n):(e=e||self).mitt=n()}(this,function(){return function(e){return{all:e=e||new Map,on:function(n,t){var f=e.get(n);f?f.push(t):e.set(n,[t])},off:function(n,t){var f=e.get(n);f&&(t?f.splice(f.indexOf(t)>>>0,1):e.set(n,[]))},emit:function(n,t){var f=e.get(n);f&&f.slice().map(function(e){e(t)}),(f=e.get("*"))&&f.slice().map(function(e){e(n,t)})}}}});
-//# sourceMappingURL=mitt.umd.js.map
+module.exports=function(n){return{all:n=n||new Map,on:function(e,t){var i=n.get(e);i?i.push(t):n.set(e,[t])},off:function(e,t){var i=n.get(e);i&&(t?i.splice(i.indexOf(t)>>>0,1):n.set(e,[]))},emit:function(e,t){var i=n.get(e);i&&i.slice().map(function(n){n(t)}),(i=n.get("*"))&&i.slice().map(function(n){n(e,t)})}}};
+//# sourceMappingURL=mitt.js.map
