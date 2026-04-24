@@ -4328,6 +4328,81 @@ static const char kBootstrapJS[] =
     "    }\n"
     "  };\n"
     "  __require_cache__['vm']             = vmModule;\n"
+    // worker_threads: we have no real threads, so the surface is the
+    // "isMainThread = true" half. Libraries doing `if (isMainThread)`
+    // branch correctly to their synchronous fallback; libraries that
+    // actually need to spawn a Worker get an explicit throw.
+    "  var workerThreads = {\n"
+    "    isMainThread: true,\n"
+    "    parentPort: null,\n"
+    "    workerData: null,\n"
+    "    threadId: 0,\n"
+    "    resourceLimits: {},\n"
+    "    Worker: function () {\n"
+    "      throw new Error('worker_threads: Worker threads not supported on ionpower-node');\n"
+    "    },\n"
+    "    MessageChannel: function () {\n"
+    "      throw new Error('worker_threads: MessageChannel not supported');\n"
+    "    },\n"
+    "    MessagePort: function () {\n"
+    "      throw new Error('worker_threads: MessagePort not supported');\n"
+    "    },\n"
+    "    BroadcastChannel: function () {\n"
+    "      throw new Error('worker_threads: BroadcastChannel not supported');\n"
+    "    },\n"
+    "    getEnvironmentData: function () { return undefined; },\n"
+    "    setEnvironmentData: function () {},\n"
+    "    markAsUntransferable: function () {},\n"
+    "    moveMessagePortToContext: function () { throw new Error('not supported'); },\n"
+    "    receiveMessageOnPort: function () { return undefined; }\n"
+    "  };\n"
+    "  __require_cache__['worker_threads'] = workerThreads;\n"
+    // inspector: debugger surface. No V8 inspector under SpiderMonkey,
+    // so all methods are no-ops / throw. But `require('inspector')` must
+    // load (some logger libs sniff it).\n"
+    "  var inspector = {\n"
+    "    Session: function () { throw new Error('inspector.Session not supported'); },\n"
+    "    open:    function () { /* no-op */ },\n"
+    "    close:   function () { /* no-op */ },\n"
+    "    url:     function () { return undefined; },\n"
+    "    waitForDebugger: function () { /* no-op */ },\n"
+    "    console: {\n"
+    "      log:   function () {},\n"
+    "      error: function () {},\n"
+    "      warn:  function () {}\n"
+    "    }\n"
+    "  };\n"
+    "  __require_cache__['inspector']      = inspector;\n"
+    // tty: our process.stdout already has isTTY + columns/rows. Expose
+    // a module that mirrors + gives constructors that library bundles
+    // check for (even if they never actually new them).\n"
+    "  function _ReadStreamTTY(fd) {\n"
+    "    events.EventEmitter.call(this);\n"
+    "    this.fd = fd; this.isTTY = (fd === 0 && process.stdin.isTTY);\n"
+    "    this.isRaw = false;\n"
+    "  }\n"
+    "  util.inherits(_ReadStreamTTY, events.EventEmitter);\n"
+    "  _ReadStreamTTY.prototype.setRawMode = function (raw) { this.isRaw = !!raw; return this; };\n"
+    "  function _WriteStreamTTY(fd) {\n"
+    "    events.EventEmitter.call(this);\n"
+    "    this.fd = fd; this.isTTY = true;\n"
+    "    this.columns = 80; this.rows = 24;\n"
+    "  }\n"
+    "  util.inherits(_WriteStreamTTY, events.EventEmitter);\n"
+    "  _WriteStreamTTY.prototype.getColorDepth  = function () { return 8; };\n"
+    "  _WriteStreamTTY.prototype.hasColors      = function (count) { return (count || 0) <= 256; };\n"
+    "  _WriteStreamTTY.prototype.getWindowSize  = function () { return [this.columns, this.rows]; };\n"
+    "  var ttyModule = {\n"
+    "    isatty: function (fd) {\n"
+    "      if (fd === 0) return !!(process.stdin && process.stdin.isTTY);\n"
+    "      if (fd === 1) return !!(process.stdout && process.stdout.isTTY);\n"
+    "      if (fd === 2) return !!(process.stderr && process.stderr.isTTY);\n"
+    "      return false;\n"
+    "    },\n"
+    "    ReadStream:  _ReadStreamTTY,\n"
+    "    WriteStream: _WriteStreamTTY\n"
+    "  };\n"
+    "  __require_cache__['tty']            = ttyModule;\n"
     // tweetnacl: seed into the require cache at first access. A getter
     // on __require_cache__ would be spec-cleaner, but JS_GetProperty()
     // may bypass getters; the wrapped __make_require__ does a hasOwn
@@ -6394,20 +6469,9 @@ static const char kBootstrapJS[] =
     "    resolve6: _dnsPromise(function (h, cb) { _dns_resolve(h, 'AAAA', cb); })\n"
     "  };\n"
     "  __require_cache__['dns']            = dnsModule;\n"
-    // tty: isatty backed by our process.std*.isTTY; Stream stubs for
-    // consumers that `new tty.WriteStream(fd)` (we only support
-    // EventEmitter-shape listening, not actual reads/writes).
-    "  __require_cache__['tty']            = {\n"
-    "    isatty: function (fd) {\n"
-    "      if (fd === 1 && process.stdout) return !!process.stdout.isTTY;\n"
-    "      if (fd === 2 && process.stderr) return !!process.stderr.isTTY;\n"
-    "      return false;\n"
-    "    },\n"
-    "    ReadStream:  function () { events.EventEmitter.call(this); },\n"
-    "    WriteStream: function () { events.EventEmitter.call(this); }\n"
-    "  };\n"
-    "  util.inherits(__require_cache__['tty'].ReadStream,  events.EventEmitter);\n"
-    "  util.inherits(__require_cache__['tty'].WriteStream, events.EventEmitter);\n"
+    // (tty is registered earlier — full impl with ReadStream/WriteStream
+    // that set .columns/.rows/.isTTY in the constructor.)
+
 
     // Re-wrap __make_require__ so bare specifiers check the cache first,
     // and strip the `node:` prefix (Node ≥16 supports `require('node:path')`;
