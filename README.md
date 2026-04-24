@@ -175,8 +175,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**575+** as of [v0.20](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.20).
-Full suite: **1361+** assertions across 370 smoke files.
+**580+** as of [v0.21](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.21).
+Full suite: **1365+** assertions across 371 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
