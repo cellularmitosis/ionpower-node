@@ -133,7 +133,7 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
     if (!DefineEnv(cx, process)) return false;
     if (!DefineStringProp(cx, process, "platform", "darwin"))     return false;
     if (!DefineStringProp(cx, process, "arch",     "ppc"))        return false;
-    if (!DefineStringProp(cx, process, "version",  "ionpower-node-0.7")) return false;
+    if (!DefineStringProp(cx, process, "version",  "ionpower-node-0.8")) return false;
 
     JS::RootedValue pidv(cx, JS::Int32Value((int32_t)getpid()));
     if (!JS_DefineProperty(cx, process, "pid", pidv, JSPROP_ENUMERATE))
@@ -171,6 +171,19 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
     if (!stdoutObj || !stderrObj) return false;
     if (!JS_DefineProperty(cx, process, "stdout", stdoutObj, JSPROP_ENUMERATE)) return false;
     if (!JS_DefineProperty(cx, process, "stderr", stderrObj, JSPROP_ENUMERATE)) return false;
+
+    // process.stdin — readable surface. Libraries that check .isTTY (ora,
+    // inquirer, etc.) need a real shape; libraries that want to read
+    // piped input use fs.readFileSync('/dev/stdin'). .on('data') is
+    // wired up in JS-land (globals.cpp) so first-listener synchronously
+    // drains and emits, then emits 'end'.
+    JS::RootedObject stdinObj(cx, JS_NewPlainObject(cx));
+    if (!stdinObj) return false;
+    JS::RootedValue fd0(cx, JS::Int32Value(0));
+    if (!JS_DefineProperty(cx, stdinObj, "fd", fd0, JSPROP_ENUMERATE)) return false;
+    JS::RootedValue isttyIn(cx, JS::BooleanValue(isatty(0) != 0));
+    if (!JS_DefineProperty(cx, stdinObj, "isTTY", isttyIn, JSPROP_ENUMERATE)) return false;
+    if (!JS_DefineProperty(cx, process, "stdin", stdinObj, JSPROP_ENUMERATE)) return false;
 
     return JS_DefineProperty(cx, global, "process", process, JSPROP_ENUMERATE);
 }

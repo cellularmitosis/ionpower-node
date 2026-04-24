@@ -400,11 +400,17 @@ static bool BufferToString(JSContext* cx, unsigned argc, JS::Value* vp) {
     }
 
     // Default: UTF-8. Decode through the SM converter so multi-byte sequences
-    // produce correct code units (was Latin-1 before, which mangled non-ASCII).
+    // produce correct code units. Fall back to the lossy converter (U+FFFD
+    // on invalid) so callers don't crash when they toString partial/invalid
+    // UTF-8 (e.g. StringDecoder.end() on an unterminated multibyte).
     JS::UTF8Chars u8((const char*)data, slen);
     size_t u16len = 0;
     char16_t* u16 = JS::UTF8CharsToNewTwoByteCharsZ(cx, u8, &u16len).get();
-    if (!u16) return false;
+    if (!u16) {
+        if (JS_IsExceptionPending(cx)) JS_ClearPendingException(cx);
+        u16 = JS::LossyUTF8CharsToNewTwoByteCharsZ(cx, u8, &u16len).get();
+        if (!u16) return false;
+    }
     JS::RootedString s(cx, JS_NewUCString(cx, u16, u16len));
     if (!s) return false;
     args.rval().setString(s);

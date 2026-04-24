@@ -104,33 +104,33 @@ release lands.
 | `fs.constants` | ✅ Working | `F_OK`/`R_OK`/`W_OK`/`X_OK`/`O_RDONLY`/`O_WRONLY`/`O_RDWR`. |
 | `fs.createReadStream`/`WriteStream` | ❌ Missing | Would need streaming to/from OS fd; sync fs covers most CJS use. |
 | `path` | ✅ Working | `join`, `resolve`, `normalize`, `dirname`, `basename`, `extname`, `relative`, `parse`, `format`, `sep`, `delimiter`, `isAbsolute`. |
-| `os` | 🟡 Partial | `platform` (`darwin`), `arch` (`ppc`), `homedir`, `tmpdir`, `hostname`, `cpus` (1-core stub), `type`, `release`, `endianness` (`BE`), `EOL`. No `networkInterfaces`, no `loadavg`. |
-| `events` | ✅ Working | `EventEmitter` with `on`/`once`/`off`/`emit`/`addListener`/`removeListener`/`removeAllListeners`/`listenerCount`/`listeners`/`prependListener`. |
-| `util` | 🟡 Partial | `format`, `inspect` (depth-limited, cycle-safe), `inherits`, `promisify` (+ `.custom` symbol), `callbackify`, `deprecate`, `types.*`, `isArray`/`isString`/`isNumber`/`isBoolean`/`isFunction`/`isObject`/`isNull`/`isUndefined`/`isNullOrUndefined`/`isError`/`isPrimitive`/`isBuffer`/`isDate`/`isRegExp`. No `parseArgs`, no `styleText`. |
-| `buffer` | ✅ Working | `Buffer` class: `from` (string/array/Buffer/ArrayBuffer), `alloc`, `allocUnsafe`, `isBuffer`, `concat`, `byteLength`, `compare`. Instance: `toString`, `slice`, `write`, `copy`, `fill`, `indexOf`, `includes`, `equals`, `.length`. |
-| `crypto` | 🟡 Partial | `randomBytes` (real entropy), `pseudoRandomBytes`, `randomUUID` (v4), `createHash` (**md5/sha1/sha256**), `createHmac` (md5/sha1/sha256), `pbkdf2Sync`/`pbkdf2` (HMAC-SHA1/SHA256/MD5), `timingSafeEqual`, `createSecretKey`, `getHashes`, `getCiphers`. No `createCipheriv`, no `sign`/`verify`, no `diffieHellman`. |
+| `os` | ✅ Working | `platform` (`darwin`), `arch` (`ppc`), `type`, `release`, `version`, `machine`, `endianness` (`BE`), `homedir`, `tmpdir`, `hostname`, `cpus`, `uptime`, `loadavg`, `freemem`, `totalmem`, `userInfo`, `networkInterfaces` (empty stub), `EOL`, `devNull`, `availableParallelism`, `constants.signals/errno/priority`. |
+| `events` | ✅ Working | `EventEmitter` with `on`/`once`/`off`/`emit`/`addListener`/`removeListener`/`removeAllListeners`/`listenerCount`/`listeners`/`rawListeners`/`eventNames`/`prependListener`/`prependOnceListener`. Module exports `events.once(emitter, name)` (Promise), `events.getEventListeners`, `events.setMaxListeners`, `events.defaultMaxListeners`. |
+| `util` | ✅ Working | `format`, `inspect` (depth-limited, cycle-safe), `inherits`, `promisify` (+ `.custom`), `callbackify`, `deprecate`, `types.*`, `isDeepStrictEqual`, `stripVTControlCharacters`, `parseArgs`, `TextEncoder`/`TextDecoder`, plus all the legacy `isX` predicates. |
+| `buffer` | ✅ Working | `Buffer` class: `from` (string/array/Buffer/ArrayBuffer), `alloc`, `allocUnsafe`, `isBuffer`, `concat`, `byteLength`, `compare`, `isEncoding`. Instance: `toString`, `slice`, `write`, `copy`, `fill`, `indexOf`, `includes`, `equals`, `.length`. |
+| `crypto` | 🟡 Partial | `randomBytes` (real entropy), `pseudoRandomBytes`, `randomUUID` (v4), `randomInt`, `createHash` (**md5/sha1/sha224/sha256**), `createHmac` (md5/sha1/sha224/sha256), `pbkdf2Sync`/`pbkdf2` across those, `timingSafeEqual`, `createSecretKey`, `getHashes`, `getCiphers`. No SHA-512 (needs 64-bit emulation), no `createCipheriv`, no `sign`/`verify`, no `scrypt` (stubs throw). |
 | `http` | 🟡 Partial | Sync-only `getSync`/`requestSync` for simple GET. No `createServer`, no async request. |
-| `https` | ❌ Missing | Would need TLS + async. |
+| `https` | 🟡 Partial | Alias of `http` (curl handles both). |
 | `net` | ❌ Missing | Would need sockets + event loop. |
 | `dns` | ❌ Missing | |
-| `child_process` | 🟡 Stub | `spawn`/`exec`/`execSync`/`fork` all throw. |
+| `child_process` | ✅ Working | `execSync`, `spawnSync`, `execFileSync` via fork+exec+waitpid. `.status`/`.stdout`/`.stderr`/`.pid`/`.signal` on spawnSync; error on non-zero `execSync` carries `.status`/`.stdout`/`.stderr`. Async `spawn`/`exec`/`fork`/`execFile` throw (no event loop). |
 | `stream` | ✅ Working | Real `Readable` / `Writable` / `Duplex` / `Transform` / `PassThrough` with buffering, `.pipe()`, `.read([n])` / `.push(chunk)` / `.end()`. `stream.pipeline()` and `stream.finished()` also implemented. Backpressure is nominally modeled but collapses to always-drained under the sync runtime; pipe auto-resumes whenever a `'data'` listener is added. |
-| `string_decoder` | ✅ Working | `StringDecoder` over Buffer-to-UTF-8. |
-| `querystring` | ✅ Working | `parse`/`stringify`. |
+| `string_decoder` | ✅ Working | `StringDecoder` over Buffer-to-UTF-8 with partial-multibyte buffering across `.write()` calls. |
+| `querystring` | ✅ Working | `parse`/`stringify` with custom sep/eq, array-valued keys, `escape`/`unescape`/`encode`/`decode`. |
+| `url` | ✅ Working | Legacy `parse` (full URL object shape), `format`, `resolve`, `fileURLToPath`, `pathToFileURL`, plus WHATWG `URL`/`URLSearchParams` globals. |
 | `assert` | ✅ Working | `equal`, `strictEqual`, `notEqual`, `notStrictEqual`, `deepEqual`, `deepStrictEqual`, `throws`, `doesNotThrow`, `fail`, `ok`, `AssertionError`. |
 | `timers` | ✅ Working | `setImmediate`/`setTimeout`/`setInterval` + matching clears enqueue into a per-runtime `__timer_queue__`. After the entry script returns, `main.cpp` drains the queue in `fireAt` order (no wallclock sleep between firings — ordering is correct but absolute delays collapse). Intervals re-queue themselves. |
 | `tty` | 🟡 Stub | `ReadStream`/`WriteStream` exported as EE-derived stubs. |
 | `module` | ❌ Missing | No `createRequire`, no `Module` class. |
 | `worker_threads` | ❌ Missing | |
 | `cluster` | ❌ Missing | |
-| `zlib` | ❌ Missing | |
-| `url` | 🟡 Via globals | `URL`/`URLSearchParams` available globally (tiny ~150-line polyfill); `require('url')` not seeded. |
+| `zlib` | 🟡 Stub | `createGzip`/`createGunzip`/`createDeflate`/`createInflate` + their sync/async variants all throw a clear "not implemented" error. `zlib.constants.*` exported so library probes succeed. Real implementation deferred (needs pure-JS inflate/deflate or a native binding). |
 
 ### Globals
 
 | Global | Status | Notes |
 |---|---|---|
-| `process` | ✅ Working | `argv`, `env`, `cwd`, `exit`, `exitCode`, `platform`, `arch`, `version`, `versions` (`node`/`ionpower`/`spidermonkey`/`v8`), `release`, `pid`, `stdout`/`stderr` (sync write, `.isTTY`, `.fd`, `.columns`/`.rows`), `nextTick` (synchronous), `umask`, `hrtime` (+ `.bigint`), `uptime`, `title`, `memoryUsage` (zero-filled), event-emitter surface (`on`/`once`/`off`/`emit` including `'exit'` flush). No `stdin`. |
+| `process` | ✅ Working | `argv`, `env`, `cwd`, `exit`, `exitCode`, `platform`, `arch`, `version`, `versions` (`node`/`ionpower`/`spidermonkey`/`v8`), `release`, `pid`, `stdout`/`stderr`/`stdin` (all with `.fd`/`.isTTY`; `stdin` is a Readable that drains `/dev/stdin` on first `'data'` listener), `nextTick` (synchronous), `umask`, `hrtime` (+ `.bigint`), `uptime`, `title`, `memoryUsage` (zero-filled), event-emitter surface (`on`/`once`/`off`/`emit` including `'exit'` flush). |
 | `Buffer` | ✅ Working | See `buffer` above. |
 | `console` | ✅ Working | `log`/`error`/`warn`/`info`/`debug`/`trace`/`dir`/`time`/`timeEnd`/`assert`. |
 | `Promise` | ✅ Polyfill | **Synchronous** Promise (no microtask queue): executor + `.then`/`.catch`/`.finally` chains run inline. `Promise.resolve`/`reject`/`all`/`race`/`allSettled`. |
@@ -175,8 +175,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**501** as of [v0.7](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.7).
-Full suite: **1186** assertions across 360+ smoke files.
+**504** as of [v0.8](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.8).
+Full suite: **1205** assertions across 365 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.

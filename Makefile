@@ -52,6 +52,7 @@ SRCS = src/main.cpp \
        src/node_compat/timers.cpp \
        src/node_compat/crypto.cpp \
        src/node_compat/http.cpp \
+       src/node_compat/child_process.cpp \
        src/node_compat/globals.cpp
 
 OBJS = $(SRCS:.cpp=.o)
@@ -85,7 +86,7 @@ clean:
 # Install to $(PREFIX) (default /opt/ionpower-node-$(VERSION)).
 # Ships the `node` binary + babel.js fallback + README. Runtime still
 # depends on /opt/mozjs-45-ionpower* being present separately.
-VERSION ?= 0.7
+VERSION ?= 0.8
 PREFIX  ?= /opt/ionpower-node-$(VERSION)
 install: $(BIN)
 	mkdir -p $(PREFIX)/bin $(PREFIX)/share/ionpower-node/vendor
@@ -478,6 +479,10 @@ test-libs: $(BIN)
 	./$(BIN) test/v500_smoke.js
 	./$(BIN) test/milestone500_smoke.js
 	./$(BIN) test/lodash_getset_smoke.js
+	./$(BIN) test/wave1_api_smoke.js
+	./$(BIN) test/wave2_crypto_smoke.js
+	./$(BIN) test/wave3_child_process_smoke.js
+	./$(BIN) test/wave5_libs_smoke.js
 
 test-all: test test-libs
 
