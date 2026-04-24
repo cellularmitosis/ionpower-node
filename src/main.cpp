@@ -115,7 +115,26 @@ static int RunMain(JSContext* cx, int argc, char** argv)
     // loop to drain them.
     ionpower::RunEventLoop(cx, global);
 
-    return ok ? 0 : 1;
+    // Honour process.exitCode (set by node:test runner, user scripts,
+    // etc.) — even if the script itself ran clean. Default 0 if unset.
+    int exitCode = ok ? 0 : 1;
+    {
+        JS::RootedValue procV(cx);
+        if (JS_GetProperty(cx, global, "process", &procV) && procV.isObject()) {
+            JS::RootedObject proc(cx, &procV.toObject());
+            JS::RootedValue ecV(cx);
+            if (JS_GetProperty(cx, proc, "exitCode", &ecV)) {
+                if (ecV.isInt32()) {
+                    int32_t ec = ecV.toInt32();
+                    if (ec != 0) exitCode = ec;
+                } else if (ecV.isNumber()) {
+                    int32_t ec = (int32_t)ecV.toNumber();
+                    if (ec != 0) exitCode = ec;
+                }
+            }
+        }
+    }
+    return exitCode;
 }
 
 int main(int argc, char** argv)
