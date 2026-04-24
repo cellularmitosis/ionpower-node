@@ -125,7 +125,7 @@ release lands.
 | `module` | ❌ Missing | No `createRequire`, no `Module` class. |
 | `worker_threads` | ❌ Missing | |
 | `cluster` | ❌ Missing | |
-| `zlib` | 🟡 Stub | `createGzip`/`createGunzip`/`createDeflate`/`createInflate` + their sync/async variants all throw a clear "not implemented" error. `zlib.constants.*` exported so library probes succeed. Real implementation deferred (needs pure-JS inflate/deflate or a native binding). |
+| `zlib` | ✅ Working | Real RFC 1951 inflate via embedded tiny-inflate. Deflate in "stored" mode (uncompressed blocks with valid deflate framing); no compression ratio gain but produces output any RFC-conforming decoder (including `gunzip(1)`) accepts. `gzipSync`/`gunzipSync`/`deflateSync`/`inflateSync`/`deflateRawSync`/`inflateRawSync` + all matching async/Transform variants. Adler-32 (zlib) + CRC-32 (gzip) computed correctly. Brotli still throws. |
 
 ### Globals
 
@@ -175,8 +175,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**560+** as of [v0.13](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.13).
-Full suite: **1315+** assertions across 379 smoke files.
+**560+** as of [v0.14](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.14).
+Full suite: **1330+** assertions across 380 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
