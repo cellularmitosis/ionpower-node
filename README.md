@@ -141,6 +141,7 @@ release lands.
 | `TextEncoder`/`TextDecoder` | ✅ Working | UTF-8 only. |
 | `URL`/`URLSearchParams` | ✅ Polyfill | Covers protocol/host/hostname/port/pathname/search/hash/origin/href + username/password, plus search-params get/getAll/has/set/append/delete/forEach/keys/values/entries/toString/sort. Not spec-complete for IDN / non-special schemes / exotic relative resolution. |
 | `crypto` (WebCrypto) | ✅ Working | `crypto.getRandomValues`, `crypto.randomUUID`, `crypto.subtle` with `digest`/`sign`/`verify`/`encrypt`/`decrypt`/`deriveBits`/`importKey`/`exportKey`/`generateKey`/`wrapKey`/`unwrapKey` over SHA-{1,256,384,512}, HMAC, AES-{CBC,CTR,GCM,KW}, PBKDF2, HKDF. `"raw"` and `"jwk"` key formats (JWK for symmetric). No asymmetric (no `ECDH`/`ECDSA`/`RSA-*`). |
+| `ReadableStream`/`WritableStream`/`TransformStream` | ✅ Polyfill | WHATWG Streams minimal shape. `ReadableStream` supports `start`/`pull`/`cancel` sources, `getReader().read()`, `locked`, `tee()`, `pipeTo`, `pipeThrough`. `WritableStream` supports `start`/`write`/`close`/`abort` sinks, `getWriter().write`/`close`/`abort`/`releaseLock`. `TransformStream` bundles the pair with `start`/`transform`/`flush`. Backpressure is best-effort (no explicit high-water-mark queue). |
 | `atob`/`btoa` | ✅ Working | |
 | `Error.captureStackTrace` | ✅ Shim | Attaches `.stack` as an own property so error-ex / json-parse-even-better-errors work. |
 | `globalThis` / `global` / `window` / `self` | ✅ All aliased | Any of the four resolves to the global object. |
@@ -175,8 +176,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**585+** as of [v0.23](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.23).
-Full suite: **1370+** assertions across 372 smoke files.
+**585+** as of [v0.24](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.24).
+Full suite: **1381+** assertions across 373 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
