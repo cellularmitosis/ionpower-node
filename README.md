@@ -116,6 +116,7 @@ release lands.
 | `dgram` (UDP) | ✅ Working | `dgram.createSocket('udp4')` / `Socket#bind` / `send` / `close`. `'message'` / `'listening'` / `'error'` / `'close'` events. Receives via `ioWatch(fd, READABLE)` + `recvfrom`; sends via `sendto`. IPv4 only; auto-binds to an ephemeral port if `.send()` is called before `.bind()`. |
 | `readline` | ✅ Working | `createInterface({ input, output })`, `'line'` / `'close'` events, `.question(prompt, cb)` (one-shot), `.pause`/`.resume`/`.close`, `.setPrompt`/`.prompt`. Cursor helpers (`cursorTo`, `moveCursor`, `clearLine`, `clearScreenDown`) emit ANSI CSI when the target stream is a TTY, no-op otherwise. |
 | `node:test` / `test` | ✅ Working | Minimal TAP runner. `test(name, fn)`, `test.skip`/`test.todo`, async test functions, nested `t.test(sub, fn)`, `t.diagnostic(msg)`. Registers on import, runs on next tick, prints `TAP version 13` + plan + ok/not-ok + fail counts. Sets `process.exitCode = 1` on any failure. |
+| `ws` / `WebSocket` | ✅ Working | RFC 6455 client (`new WebSocket(url)` — browser-style `.onopen`/`.onmessage`/`.onclose`/`.onerror`) + server (`require('ws').WebSocketServer({ port, host })`). Text + binary frames, ping/pong autorespond, close-frame handshake. Server and client share frame encode/decode; client frames are masked per spec. `ws://` only — no TLS (`wss://`) yet. |
 | `dns` | ❌ Missing | |
 | `child_process` | ✅ Working | All sync + async variants except `fork`. `execSync`/`spawnSync`/`execFileSync` via blocking fork+waitpid. `spawn`/`exec`/`execFile` return a `ChildProcess` (EventEmitter) backed by the event loop — `.stdout`/`.stderr` are Readables, `.stdin` is Writable, emits `'exit'`(code,sig) then `'close'`. |
 | `stream` | ✅ Working | Real `Readable` / `Writable` / `Duplex` / `Transform` / `PassThrough` with buffering, `.pipe()`, `.read([n])` / `.push(chunk)` / `.end()`. `stream.pipeline()` and `stream.finished()` also implemented. Backpressure is nominally modeled but collapses to always-drained under the sync runtime; pipe auto-resumes whenever a `'data'` listener is added. |
@@ -181,8 +182,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**610+** as of [v0.36](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.36).
-Full suite: **1517+** assertions across 385 smoke files.
+**610+** as of [v0.37](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.37).
+Full suite: **1523+** assertions across 386 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
