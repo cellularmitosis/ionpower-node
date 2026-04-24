@@ -279,6 +279,33 @@ static bool JsClose(JSContext* cx, unsigned argc, JS::Value* vp) {
     return true;
 }
 
+// lookup(host) -> {address, family} — synchronous gethostbyname wrapper.
+static bool JsLookup(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 1 || !args[0].isString()) {
+        JS_ReportError(cx, "lookup: hostname string required");
+        return false;
+    }
+    JSAutoByteString hostBs;
+    if (!EncodeStrUtf8(cx, args[0].toString(), &hostBs)) return false;
+    struct sockaddr_in sa;
+    if (!ResolveHost(hostBs.ptr(), 0, &sa)) {
+        JS_ReportError(cx, "lookup: cannot resolve %s", hostBs.ptr());
+        return false;
+    }
+    char ip[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &sa.sin_addr, ip, sizeof(ip));
+    JS::RootedObject o(cx, JS_NewPlainObject(cx));
+    if (!o) return false;
+    JS::RootedString s(cx, JS_NewStringCopyZ(cx, ip));
+    JS::RootedValue sv(cx, JS::StringValue(s));
+    if (!JS_DefineProperty(cx, o, "address", sv, JSPROP_ENUMERATE)) return false;
+    JS::RootedValue fv(cx, JS::Int32Value(4));
+    if (!JS_DefineProperty(cx, o, "family", fv, JSPROP_ENUMERATE)) return false;
+    args.rval().setObject(*o);
+    return true;
+}
+
 // setNoDelay(fd, bool)
 static bool JsSetNoDelay(JSContext* cx, unsigned argc, JS::Value* vp) {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -306,6 +333,7 @@ bool InstallNet(JSContext* cx, JS::HandleObject global) {
     if (!JS_DefineFunction(cx, n, "shutdown",       JsShutdown,      2, JSPROP_ENUMERATE)) return false;
     if (!JS_DefineFunction(cx, n, "closeFd",        JsClose,         1, JSPROP_ENUMERATE)) return false;
     if (!JS_DefineFunction(cx, n, "setNoDelay",     JsSetNoDelay,    2, JSPROP_ENUMERATE)) return false;
+    if (!JS_DefineFunction(cx, n, "lookup",         JsLookup,        1, JSPROP_ENUMERATE)) return false;
 
     // Constants
     JS::RootedValue v(cx);

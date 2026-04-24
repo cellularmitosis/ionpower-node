@@ -108,9 +108,10 @@ release lands.
 | `events` | ✅ Working | `EventEmitter` with `on`/`once`/`off`/`emit`/`addListener`/`removeListener`/`removeAllListeners`/`listenerCount`/`listeners`/`rawListeners`/`eventNames`/`prependListener`/`prependOnceListener`. Module exports `events.once(emitter, name)` (Promise), `events.getEventListeners`, `events.setMaxListeners`, `events.defaultMaxListeners`. |
 | `util` | ✅ Working | `format`, `inspect` (depth-limited, cycle-safe), `inherits`, `promisify` (+ `.custom`), `callbackify`, `deprecate`, `types.*`, `isDeepStrictEqual`, `stripVTControlCharacters`, `parseArgs`, `TextEncoder`/`TextDecoder`, plus all the legacy `isX` predicates. |
 | `buffer` | ✅ Working | `Buffer` class: `from` (string/array/Buffer/ArrayBuffer), `alloc`, `allocUnsafe`, `isBuffer`, `concat`, `byteLength`, `compare`, `isEncoding`. Instance: `toString`, `slice`, `write`, `copy`, `fill`, `indexOf`, `includes`, `equals`, `.length`. |
-| `crypto` | 🟡 Partial | `randomBytes` (real entropy), `pseudoRandomBytes`, `randomUUID` (v4), `randomInt`, `createHash` (**md5/sha1/sha224/sha256**), `createHmac` (md5/sha1/sha224/sha256), `pbkdf2Sync`/`pbkdf2` across those, `timingSafeEqual`, `createSecretKey`, `getHashes`, `getCiphers`. No SHA-512 (needs 64-bit emulation), no `createCipheriv`, no `sign`/`verify`, no `scrypt` (stubs throw). |
-| `http` | ✅ Working | Real async `http.request`/`http.get`/`http.createServer` on top of `net.Socket` + an in-house HTTP/1.1 parser. Content-Length and Transfer-Encoding: chunked bodies both parsed. `IncomingMessage` / `ServerResponse` / `ClientRequest` classes present. Sync `http.getSync`/`postSync` retained (curl-backed, handles HTTPS). |
+| `crypto` | 🟡 Partial | `randomBytes` (real entropy), `pseudoRandomBytes`, `randomUUID` (v4), `randomInt`, `createHash` (**md5/sha1/sha224/sha256/sha384/sha512**), `createHmac` across all of those, `pbkdf2Sync`/`pbkdf2` across all of those, `timingSafeEqual`, `createSecretKey`, `getHashes`, `getCiphers`. SHA-512/384 via Uint32 hi/lo pairs; RFC 4231 vectors verified. No `createCipheriv`, no `sign`/`verify`, no `scrypt` (stubs throw). |
+| `http` | ✅ Working | Real async `http.request`/`http.get`/`http.createServer` on top of `net.Socket` + an in-house HTTP/1.1 parser. Content-Length and chunked Transfer-Encoding on both sides. Server supports auto-chunked responses (stream `.write()` without Content-Length) and keep-alive pipelining. `IncomingMessage` / `ServerResponse` / `ClientRequest` classes present. Sync `http.getSync`/`postSync` retained (curl-backed, handles HTTPS). |
 | `https` | 🟡 Partial | Async `https.request`/etc falls back to the sync curl shim (TLS without OpenSSL binding). |
+| `dns` | ✅ Working | `lookup` / `resolve` / `resolve4` / `resolve6` / `promises.lookup` via `gethostbyname` (blocking under the hood; called from event-loop `setImmediate`). MX/TXT/CNAME/SRV/NS `resolve*` return empty arrays for compatibility. |
 | `net` | ✅ Working | `net.Socket` (Duplex over event-loop `ioWatch`) + `net.createServer` / `createConnection`. BSD-socket primitives via `__net_native__`: `socketCreate`/`bind`/`listen`/`accept`/`connect` non-blocking. IPv4 only; `gethostbyname` for DNS. |
 | `dns` | ❌ Missing | |
 | `child_process` | ✅ Working | All sync + async variants except `fork`. `execSync`/`spawnSync`/`execFileSync` via blocking fork+waitpid. `spawn`/`exec`/`execFile` return a `ChildProcess` (EventEmitter) backed by the event loop — `.stdout`/`.stderr` are Readables, `.stdin` is Writable, emits `'exit'`(code,sig) then `'close'`. |
@@ -130,7 +131,8 @@ release lands.
 
 | Global | Status | Notes |
 |---|---|---|
-| `process` | ✅ Working | `argv`, `env`, `cwd`, `exit`, `exitCode`, `platform`, `arch`, `version`, `versions` (`node`/`ionpower`/`spidermonkey`/`v8`), `release`, `pid`, `stdout`/`stderr`/`stdin` (all with `.fd`/`.isTTY`; `stdin` is a Readable that drains `/dev/stdin` on first `'data'` listener), `nextTick` (synchronous), `umask`, `hrtime` (+ `.bigint`), `uptime`, `title`, `memoryUsage` (zero-filled), event-emitter surface (`on`/`once`/`off`/`emit` including `'exit'` flush). |
+| `process` | ✅ Working | `argv`, `env`, `cwd`, `exit`, `exitCode`, `platform`, `arch`, `version`, `versions` (`node`/`ionpower`/`spidermonkey`/`v8`), `release`, `pid`, `stdout`/`stderr`/`stdin` (all with `.fd`/`.isTTY`; `stdin` is a real Readable streaming via `ioWatch(0, READABLE)` + non-blocking reads, emits `'data'` chunks + `'end'` on EOF), `nextTick` (microtask-queued), `umask`, `hrtime` (+ `.bigint`), `uptime`, `title`, `memoryUsage` (zero-filled), event-emitter surface (`on`/`once`/`off`/`emit` including `'exit'` flush). |
+| `fetch` / `AbortController` / `AbortSignal` | ✅ Working | WHATWG-minimal `fetch(url, init)` → `Response` with `.text()`/`.json()`/`.arrayBuffer()`/`.buffer()`. `Headers` Map-ish API. `AbortController.abort(reason)` propagates to an in-flight fetch. `AbortSignal.timeout(ms)` and `.abort(reason)` static factories. HTTPS delegates to the sync curl path. |
 | `Buffer` | ✅ Working | See `buffer` above. |
 | `console` | ✅ Working | `log`/`error`/`warn`/`info`/`debug`/`trace`/`dir`/`time`/`timeEnd`/`assert`. |
 | `Promise` | ✅ Polyfill | `.then`/`.catch`/`.finally` callbacks are routed through the event loop's microtask queue; fire after the current synchronous code returns, before setTimeout-queued work. `Promise.resolve`/`reject`/`all`/`race`/`allSettled`. |
@@ -139,8 +141,6 @@ release lands.
 | `TextEncoder`/`TextDecoder` | ✅ Working | UTF-8 only. |
 | `URL`/`URLSearchParams` | ✅ Polyfill | Covers protocol/host/hostname/port/pathname/search/hash/origin/href + username/password, plus search-params get/getAll/has/set/append/delete/forEach/keys/values/entries/toString/sort. Not spec-complete for IDN / non-special schemes / exotic relative resolution. |
 | `crypto` (WebCrypto) | 🟡 Partial | `crypto.getRandomValues`, `crypto.randomUUID`, `crypto.subtle` absent. |
-| `fetch` | ❌ Missing | No async. |
-| `AbortController`/`AbortSignal` | ❌ Missing | |
 | `atob`/`btoa` | ✅ Working | |
 | `Error.captureStackTrace` | ✅ Shim | Attaches `.stack` as an own property so error-ex / json-parse-even-better-errors work. |
 | `globalThis` / `global` / `window` / `self` | ✅ All aliased | Any of the four resolves to the global object. |
@@ -175,8 +175,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**504** as of [v0.11](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.11).
-Full suite: **1231** assertions across 371 smoke files.
+**504** as of [v0.12](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.12).
+Full suite: **1255+** assertions across 375 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
