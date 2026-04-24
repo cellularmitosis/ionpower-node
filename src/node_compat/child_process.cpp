@@ -465,13 +465,218 @@ static bool SpawnSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     return true;
 }
 
+// spawnAsync(file, args, opts) — non-blocking fork+exec.
+// Returns { pid, stdinFd, stdoutFd, stderrFd }. The caller plumbs the
+// fds through the event-loop ioWatch primitive and registers a child
+// exit callback via childRegister(pid). All pipe fds are set
+// non-blocking so reads don't stall the event loop.
+static bool SpawnAsync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 1 || !args[0].isString()) {
+        JS_ReportError(cx, "spawnAsync: file string required");
+        return false;
+    }
+    JSAutoByteString fileBs;
+    if (!EncodeJSStringUtf8(cx, args[0].toString(), &fileBs)) return false;
+
+    std::vector<std::string> argsHolder;
+    argsHolder.push_back(fileBs.ptr());
+    if (args.length() >= 2 && args[1].isObject()) {
+        JS::RootedObject arrObj(cx, &args[1].toObject());
+        bool isArr = false;
+        JS_IsArrayObject(cx, arrObj, &isArr);
+        if (isArr) {
+            uint32_t len = 0;
+            JS_GetArrayLength(cx, arrObj, &len);
+            for (uint32_t i = 0; i < len; ++i) {
+                JS::RootedValue v(cx);
+                JS_GetElement(cx, arrObj, i, &v);
+                if (v.isString()) {
+                    JSAutoByteString bs;
+                    if (EncodeJSStringUtf8(cx, v.toString(), &bs)) argsHolder.push_back(bs.ptr());
+                }
+            }
+        }
+    }
+
+    char cwdBuf[1024] = { 0 };
+    const char* cwd = nullptr;
+    if (args.length() >= 3 && args[2].isObject()) {
+        JS::RootedObject o(cx, &args[2].toObject());
+        JS::RootedValue v(cx);
+        if (JS_GetProperty(cx, o, "cwd", &v) && v.isString()) {
+            JSAutoByteString bs;
+            if (EncodeJSStringUtf8(cx, v.toString(), &bs)) {
+                strncpy(cwdBuf, bs.ptr(), sizeof(cwdBuf) - 1);
+                cwd = cwdBuf;
+            }
+        }
+    }
+
+    int inPipe[2], outPipe[2], errPipe[2];
+    if (pipe(inPipe)  < 0) { JS_ReportError(cx, "spawnAsync: pipe(stdin) failed"); return false; }
+    if (pipe(outPipe) < 0) { close(inPipe[0]); close(inPipe[1]);
+                             JS_ReportError(cx, "spawnAsync: pipe(stdout) failed"); return false; }
+    if (pipe(errPipe) < 0) { close(inPipe[0]); close(inPipe[1]); close(outPipe[0]); close(outPipe[1]);
+                             JS_ReportError(cx, "spawnAsync: pipe(stderr) failed"); return false; }
+
+    pid_t pid = fork();
+    if (pid < 0) {
+        close(inPipe[0]);  close(inPipe[1]);
+        close(outPipe[0]); close(outPipe[1]);
+        close(errPipe[0]); close(errPipe[1]);
+        JS_ReportError(cx, "spawnAsync: fork failed: %s", strerror(errno));
+        return false;
+    }
+
+    if (pid == 0) {
+        // Child
+        dup2(inPipe[0],  0); close(inPipe[0]);  close(inPipe[1]);
+        dup2(outPipe[1], 1); close(outPipe[0]); close(outPipe[1]);
+        dup2(errPipe[1], 2); close(errPipe[0]); close(errPipe[1]);
+        if (cwd && *cwd) { if (chdir(cwd) < 0) _exit(127); }
+        std::vector<char*> argvVec;
+        for (size_t i = 0; i < argsHolder.size(); ++i)
+            argvVec.push_back(const_cast<char*>(argsHolder[i].c_str()));
+        argvVec.push_back(nullptr);
+        execvp(fileBs.ptr(), argvVec.data());
+        _exit(127);
+    }
+
+    // Parent — close child ends, mark parent ends non-blocking.
+    close(inPipe[0]);
+    close(outPipe[1]);
+    close(errPipe[1]);
+    fcntl(inPipe[1],  F_SETFL, O_NONBLOCK);
+    fcntl(outPipe[0], F_SETFL, O_NONBLOCK);
+    fcntl(errPipe[0], F_SETFL, O_NONBLOCK);
+
+    JS::RootedObject result(cx, JS_NewPlainObject(cx));
+    if (!result) return false;
+    JS::RootedValue v(cx);
+    v.setInt32((int32_t)pid);          JS_DefineProperty(cx, result, "pid",       v, JSPROP_ENUMERATE);
+    v.setInt32(inPipe[1]);             JS_DefineProperty(cx, result, "stdinFd",   v, JSPROP_ENUMERATE);
+    v.setInt32(outPipe[0]);            JS_DefineProperty(cx, result, "stdoutFd",  v, JSPROP_ENUMERATE);
+    v.setInt32(errPipe[0]);            JS_DefineProperty(cx, result, "stderrFd",  v, JSPROP_ENUMERATE);
+    args.rval().setObject(*result);
+    return true;
+}
+
+// readFd(fd, maxBytes) -> { bytes: Buffer, eof: bool, wouldBlock: bool }
+// Non-blocking read. `eof` true iff read() returned 0; `wouldBlock` true
+// iff EAGAIN/EWOULDBLOCK.
+static bool ReadFd(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 1) { JS_ReportError(cx, "readFd: fd required"); return false; }
+    int32_t fd = 0;
+    if (!JS::ToInt32(cx, args[0], &fd)) return false;
+    int32_t maxBytes = 65536;
+    if (args.length() >= 2) JS::ToInt32(cx, args[1], &maxBytes);
+    if (maxBytes <= 0 || maxBytes > 1024*1024) maxBytes = 65536;
+
+    std::vector<char> buf((size_t)maxBytes);
+    ssize_t r = read(fd, buf.data(), (size_t)maxBytes);
+    int saved_errno = errno;
+
+    JS::RootedObject result(cx, JS_NewPlainObject(cx));
+    if (!result) return false;
+    JS::RootedValue v(cx);
+
+    if (r > 0) {
+        JS::RootedObject arr(cx, JS_NewUint8Array(cx, (uint32_t)r));
+        if (!arr) return false;
+        {
+            JS::AutoCheckCannotGC nogc;
+            bool shared;
+            uint8_t* out = JS_GetUint8ArrayData(arr, &shared, nogc);
+            if (out) memcpy(out, buf.data(), (size_t)r);
+        }
+        v.setObject(*arr); JS_DefineProperty(cx, result, "bytes",      v, JSPROP_ENUMERATE);
+        v.setBoolean(false); JS_DefineProperty(cx, result, "eof",        v, JSPROP_ENUMERATE);
+        v.setBoolean(false); JS_DefineProperty(cx, result, "wouldBlock", v, JSPROP_ENUMERATE);
+    } else if (r == 0) {
+        v.setNull();         JS_DefineProperty(cx, result, "bytes",      v, JSPROP_ENUMERATE);
+        v.setBoolean(true);  JS_DefineProperty(cx, result, "eof",        v, JSPROP_ENUMERATE);
+        v.setBoolean(false); JS_DefineProperty(cx, result, "wouldBlock", v, JSPROP_ENUMERATE);
+    } else {
+        bool would = (saved_errno == EAGAIN || saved_errno == EWOULDBLOCK);
+        v.setNull();         JS_DefineProperty(cx, result, "bytes",      v, JSPROP_ENUMERATE);
+        v.setBoolean(false); JS_DefineProperty(cx, result, "eof",        v, JSPROP_ENUMERATE);
+        v.setBoolean(would); JS_DefineProperty(cx, result, "wouldBlock", v, JSPROP_ENUMERATE);
+        if (!would) {
+            v.setInt32(saved_errno);
+            JS_DefineProperty(cx, result, "errno", v, JSPROP_ENUMERATE);
+        }
+    }
+    args.rval().setObject(*result);
+    return true;
+}
+
+// writeFd(fd, bytesOrString) -> { written: int, wouldBlock: bool }
+static bool WriteFd(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 2) { JS_ReportError(cx, "writeFd: fd + data required"); return false; }
+    int32_t fd = 0;
+    if (!JS::ToInt32(cx, args[0], &fd)) return false;
+
+    const char* data = nullptr;
+    size_t len = 0;
+    std::string str;
+
+    if (args[1].isString()) {
+        JSAutoByteString bs;
+        if (!EncodeJSStringUtf8(cx, args[1].toString(), &bs)) return false;
+        str.assign(bs.ptr(), strlen(bs.ptr()));
+        data = str.data(); len = str.size();
+    } else if (args[1].isObject() && JS_IsUint8Array(&args[1].toObject())) {
+        JS::RootedObject a(cx, &args[1].toObject());
+        len = JS_GetTypedArrayByteLength(a);
+        JS::AutoCheckCannotGC nogc;
+        bool shared;
+        uint8_t* d = JS_GetUint8ArrayData(a, &shared, nogc);
+        if (d) { str.assign((const char*)d, len); data = str.data(); }
+    } else {
+        JS_ReportError(cx, "writeFd: data must be string or Uint8Array");
+        return false;
+    }
+
+    ssize_t w = write(fd, data, len);
+    int saved_errno = errno;
+
+    JS::RootedObject result(cx, JS_NewPlainObject(cx));
+    if (!result) return false;
+    JS::RootedValue v(cx);
+    if (w >= 0) {
+        v.setInt32((int32_t)w); JS_DefineProperty(cx, result, "written",    v, JSPROP_ENUMERATE);
+        v.setBoolean(false);    JS_DefineProperty(cx, result, "wouldBlock", v, JSPROP_ENUMERATE);
+    } else {
+        bool would = (saved_errno == EAGAIN || saved_errno == EWOULDBLOCK);
+        v.setInt32(0);          JS_DefineProperty(cx, result, "written",    v, JSPROP_ENUMERATE);
+        v.setBoolean(would);    JS_DefineProperty(cx, result, "wouldBlock", v, JSPROP_ENUMERATE);
+        if (!would) { v.setInt32(saved_errno); JS_DefineProperty(cx, result, "errno", v, JSPROP_ENUMERATE); }
+    }
+    args.rval().setObject(*result);
+    return true;
+}
+
+// closeFd(fd)
+static bool CloseFd(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    int32_t fd = 0;
+    if (args.length() >= 1 && JS::ToInt32(cx, args[0], &fd)) close(fd);
+    args.rval().setUndefined();
+    return true;
+}
+
 bool InstallChildProcess(JSContext* cx, JS::HandleObject global) {
     JS::RootedObject cp(cx, JS_NewPlainObject(cx));
     if (!cp) return false;
-    if (!JS_DefineFunction(cx, cp, "execSync", ExecSync, 1, JSPROP_ENUMERATE))
-        return false;
-    if (!JS_DefineFunction(cx, cp, "spawnSync", SpawnSync, 2, JSPROP_ENUMERATE))
-        return false;
+    if (!JS_DefineFunction(cx, cp, "execSync",   ExecSync,   1, JSPROP_ENUMERATE)) return false;
+    if (!JS_DefineFunction(cx, cp, "spawnSync",  SpawnSync,  2, JSPROP_ENUMERATE)) return false;
+    if (!JS_DefineFunction(cx, cp, "spawnAsync", SpawnAsync, 2, JSPROP_ENUMERATE)) return false;
+    if (!JS_DefineFunction(cx, cp, "readFd",     ReadFd,     2, JSPROP_ENUMERATE)) return false;
+    if (!JS_DefineFunction(cx, cp, "writeFd",    WriteFd,    2, JSPROP_ENUMERATE)) return false;
+    if (!JS_DefineFunction(cx, cp, "closeFd",    CloseFd,    1, JSPROP_ENUMERATE)) return false;
     return JS_DefineProperty(cx, global, "__child_process_native__", cp,
                              JSPROP_ENUMERATE);
 }

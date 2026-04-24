@@ -113,13 +113,13 @@ release lands.
 | `https` | 🟡 Partial | Alias of `http` (curl handles both). |
 | `net` | ❌ Missing | Would need sockets + event loop. |
 | `dns` | ❌ Missing | |
-| `child_process` | ✅ Working | `execSync`, `spawnSync`, `execFileSync` via fork+exec+waitpid. `.status`/`.stdout`/`.stderr`/`.pid`/`.signal` on spawnSync; error on non-zero `execSync` carries `.status`/`.stdout`/`.stderr`. Async `spawn`/`exec`/`fork`/`execFile` throw (no event loop). |
+| `child_process` | ✅ Working | All sync + async variants except `fork`. `execSync`/`spawnSync`/`execFileSync` via blocking fork+waitpid. `spawn`/`exec`/`execFile` return a `ChildProcess` (EventEmitter) backed by the event loop — `.stdout`/`.stderr` are Readables, `.stdin` is Writable, emits `'exit'`(code,sig) then `'close'`. |
 | `stream` | ✅ Working | Real `Readable` / `Writable` / `Duplex` / `Transform` / `PassThrough` with buffering, `.pipe()`, `.read([n])` / `.push(chunk)` / `.end()`. `stream.pipeline()` and `stream.finished()` also implemented. Backpressure is nominally modeled but collapses to always-drained under the sync runtime; pipe auto-resumes whenever a `'data'` listener is added. |
 | `string_decoder` | ✅ Working | `StringDecoder` over Buffer-to-UTF-8 with partial-multibyte buffering across `.write()` calls. |
 | `querystring` | ✅ Working | `parse`/`stringify` with custom sep/eq, array-valued keys, `escape`/`unescape`/`encode`/`decode`. |
 | `url` | ✅ Working | Legacy `parse` (full URL object shape), `format`, `resolve`, `fileURLToPath`, `pathToFileURL`, plus WHATWG `URL`/`URLSearchParams` globals. |
 | `assert` | ✅ Working | `equal`, `strictEqual`, `notEqual`, `notStrictEqual`, `deepEqual`, `deepStrictEqual`, `throws`, `doesNotThrow`, `fail`, `ok`, `AssertionError`. |
-| `timers` | ✅ Working | `setImmediate`/`setTimeout`/`setInterval` + matching clears enqueue into a per-runtime `__timer_queue__`. After the entry script returns, `main.cpp` drains the queue in `fireAt` order (no wallclock sleep between firings — ordering is correct but absolute delays collapse). Intervals re-queue themselves. |
+| `timers` | ✅ Working | `setImmediate`/`setTimeout`/`setInterval` + matching clears enqueue into the event loop. `select()`-based loop blocks until the next `fireAt` (real wallclock), wakes on fd events or `SIGCHLD`, then fires due timers. `setTimeout(fn, 100)` really does wait ~100ms. Intervals re-queue themselves. |
 | `tty` | 🟡 Stub | `ReadStream`/`WriteStream` exported as EE-derived stubs. |
 | `module` | ❌ Missing | No `createRequire`, no `Module` class. |
 | `worker_threads` | ❌ Missing | |
@@ -135,7 +135,7 @@ release lands.
 | `console` | ✅ Working | `log`/`error`/`warn`/`info`/`debug`/`trace`/`dir`/`time`/`timeEnd`/`assert`. |
 | `Promise` | ✅ Polyfill | **Synchronous** Promise (no microtask queue): executor + `.then`/`.catch`/`.finally` chains run inline. `Promise.resolve`/`reject`/`all`/`race`/`allSettled`. |
 | `queueMicrotask` | ✅ Synchronous | Runs the callback immediately via `Promise.resolve().then(fn)`. |
-| `setTimeout`/`setInterval`/`setImmediate` | ✅ Queued | Enqueue into `__timer_queue__`; drain after the entry script returns (main.cpp). Ordering is correct; wallclock delays are not honored. |
+| `setTimeout`/`setInterval`/`setImmediate` | ✅ Wallclock-real | Enqueue into the event loop; `select()` honors the next fireAt. `setTimeout(fn, N)` sleeps ~N ms before firing. Intervals self-requeue. |
 | `TextEncoder`/`TextDecoder` | ✅ Working | UTF-8 only. |
 | `URL`/`URLSearchParams` | ✅ Polyfill | Covers protocol/host/hostname/port/pathname/search/hash/origin/href + username/password, plus search-params get/getAll/has/set/append/delete/forEach/keys/values/entries/toString/sort. Not spec-complete for IDN / non-special schemes / exotic relative resolution. |
 | `crypto` (WebCrypto) | 🟡 Partial | `crypto.getRandomValues`, `crypto.randomUUID`, `crypto.subtle` absent. |
@@ -175,8 +175,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**504** as of [v0.8](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.8).
-Full suite: **1205** assertions across 365 smoke files.
+**504** as of [v0.9](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.9).
+Full suite: **1220+** assertions across 367 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.

@@ -75,22 +75,10 @@ static int RunMain(JSContext* cx, int argc, char** argv)
             JS_ReportPendingException(cx);
     }
 
-    // Drain the timer queue (setTimeout / setInterval / setImmediate).
-    // Scripts that schedule work via setTimeout see those callbacks run
-    // before exit, in fireAt order. Drain runs inside the JS-level
-    // __drain_timers__ (see src/node_compat/globals.cpp).
-    auto drain = [&]() {
-        JS::RootedValue drainV(cx);
-        if (JS_GetProperty(cx, global, "__drain_timers__", &drainV)
-            && drainV.isObject() && JS_ObjectIsFunction(cx, &drainV.toObject())) {
-            JS::RootedValue rv(cx);
-            (void)JS::Call(cx, JS::UndefinedHandleValue, drainV,
-                           JS::HandleValueArray::empty(), &rv);
-            if (JS_IsExceptionPending(cx))
-                JS_ReportPendingException(cx);
-        }
-    };
-    drain();
+    // Run the event loop: services timers (wallclock-honored), I/O watchers,
+    // and child-process exit notifications. Blocks on select() between
+    // events. Returns only when nothing is pending.
+    ionpower::RunEventLoop(cx, global);
 
     // Run any 'exit' handlers the script registered via process.on('exit', ...).
     // tape is the canonical reason: it registers an exit hook and only then
@@ -108,8 +96,9 @@ static int RunMain(JSContext* cx, int argc, char** argv)
     }
 
     // Exit handlers can schedule more timers (e.g. tape's exit hook
-    // emits 'finish' and consumers queue via setImmediate). Drain again.
-    drain();
+    // emits 'finish' and consumers queue via setImmediate). Re-enter the
+    // loop to drain them.
+    ionpower::RunEventLoop(cx, global);
 
     return ok ? 0 : 1;
 }
