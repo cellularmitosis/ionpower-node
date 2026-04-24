@@ -3730,6 +3730,38 @@ static const char kBootstrapJS[] =
     "    builtinModules: ['fs','path','events','util','child_process','os','crypto','buffer','string_decoder','assert','stream','timers','querystring','readable-stream','inherits','supports-color','has-ansi','module']\n"
     "  };\n"
     "  __require_cache__['module']         = module_core;\n"
+    // perf_hooks: Node's high-resolution timer + performance observer
+    // surface. Libraries use `performance.now()` for benchmarks /
+    // per-request timing. We synthesize from Date.now() — ms-level
+    // resolution (no sub-millisecond precision), but monotonic. Mark
+    // and measure are stubs that swallow args; no PerformanceObserver
+    // callback fires.
+    "  var _perfOrigin = Date.now();\n"
+    "  var _performance = {\n"
+    "    now:        function () { return Date.now() - _perfOrigin; },\n"
+    "    timeOrigin: _perfOrigin,\n"
+    "    mark:       function () { return { name: arguments[0] || '', entryType: 'mark', startTime: Date.now() - _perfOrigin, duration: 0 }; },\n"
+    "    measure:    function () { return { name: arguments[0] || '', entryType: 'measure', startTime: Date.now() - _perfOrigin, duration: 0 }; },\n"
+    "    clearMarks:    function () {},\n"
+    "    clearMeasures: function () {},\n"
+    "    getEntries:        function () { return []; },\n"
+    "    getEntriesByName:  function () { return []; },\n"
+    "    getEntriesByType:  function () { return []; }\n"
+    "  };\n"
+    "  function _PerformanceObserver(cb) { this._cb = cb; }\n"
+    "  _PerformanceObserver.prototype.observe    = function () {};\n"
+    "  _PerformanceObserver.prototype.disconnect = function () {};\n"
+    "  _PerformanceObserver.prototype.takeRecords = function () { return []; };\n"
+    "  var perf_hooks = {\n"
+    "    performance:         _performance,\n"
+    "    PerformanceObserver: _PerformanceObserver,\n"
+    "    constants: { NODE_PERFORMANCE_GC_MAJOR: 2, NODE_PERFORMANCE_GC_MINOR: 1, NODE_PERFORMANCE_GC_INCREMENTAL: 4, NODE_PERFORMANCE_GC_WEAKCB: 8 }\n"
+    "  };\n"
+    "  __require_cache__['perf_hooks']     = perf_hooks;\n"
+    "  if (typeof globalThis !== 'undefined') {\n"
+    "    if (typeof globalThis.performance === 'undefined') globalThis.performance = _performance;\n"
+    "    if (typeof globalThis.PerformanceObserver === 'undefined') globalThis.PerformanceObserver = _PerformanceObserver;\n"
+    "  }\n"
     // process.stdin readable behavior. Now that we have a real event
     // loop, stdin can stream via ioWatch(0, READABLE) + readFd. Chunks
     // emit as they arrive; 'end' fires on EOF (read() returning 0).

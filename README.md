@@ -143,6 +143,7 @@ release lands.
 | `crypto` (WebCrypto) | ✅ Working | `crypto.getRandomValues`, `crypto.randomUUID`, `crypto.subtle` with `digest`/`sign`/`verify`/`encrypt`/`decrypt`/`deriveBits`/`importKey`/`exportKey`/`generateKey`/`wrapKey`/`unwrapKey` over SHA-{1,256,384,512}, HMAC, AES-{CBC,CTR,GCM,KW}, PBKDF2, HKDF. `"raw"` and `"jwk"` key formats (JWK for symmetric). No asymmetric (no `ECDH`/`ECDSA`/`RSA-*`). |
 | `ReadableStream`/`WritableStream`/`TransformStream` | ✅ Polyfill | WHATWG Streams minimal shape. `ReadableStream` supports `start`/`pull`/`cancel` sources, `getReader().read()`, `locked`, `tee()`, `pipeTo`, `pipeThrough`. `WritableStream` supports `start`/`write`/`close`/`abort` sinks, `getWriter().write`/`close`/`abort`/`releaseLock`. `TransformStream` bundles the pair with `start`/`transform`/`flush`. Backpressure is best-effort (no explicit high-water-mark queue). |
 | `atob`/`btoa` | ✅ Working | |
+| `performance` (WHATWG) / `perf_hooks` core | ✅ Polyfill | `performance.now()` returns ms since `performance.timeOrigin` (Date.now() at process start). `mark`/`measure`/`clearMarks`/`clearMeasures`/`getEntries*` are callable stubs. `PerformanceObserver` constructs with no-op `observe`/`disconnect`/`takeRecords`. `require('perf_hooks')` returns `{ performance, PerformanceObserver, constants }`. Resolution is ms (no sub-millisecond precision). |
 | `Error.captureStackTrace` | ✅ Shim | Attaches `.stack` as an own property so error-ex / json-parse-even-better-errors work. |
 | `globalThis` / `global` / `window` / `self` | ✅ All aliased | Any of the four resolves to the global object. |
 | `Intl` | ❌ Missing | SM45 was built `--without-intl-api`. Blocks luxon, ICU-dependent date/number formatters. |
@@ -176,8 +177,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**585+** as of [v0.25](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.25).
-Full suite: **1386+** assertions across 374 smoke files.
+**585+** as of [v0.26](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.26).
+Full suite: **1393+** assertions across 375 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
