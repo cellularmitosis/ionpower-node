@@ -140,7 +140,7 @@ release lands.
 | `setTimeout`/`setInterval`/`setImmediate` | ✅ Wallclock-real | Enqueue into the event loop; `select()` honors the next fireAt. `setTimeout(fn, N)` sleeps ~N ms before firing. Intervals self-requeue. |
 | `TextEncoder`/`TextDecoder` | ✅ Working | UTF-8 only. |
 | `URL`/`URLSearchParams` | ✅ Polyfill | Covers protocol/host/hostname/port/pathname/search/hash/origin/href + username/password, plus search-params get/getAll/has/set/append/delete/forEach/keys/values/entries/toString/sort. Not spec-complete for IDN / non-special schemes / exotic relative resolution. |
-| `crypto` (WebCrypto) | 🟡 Partial | `crypto.getRandomValues`, `crypto.randomUUID`, `crypto.subtle` absent. |
+| `crypto` (WebCrypto) | ✅ Working | `crypto.getRandomValues`, `crypto.randomUUID`, `crypto.subtle` with `digest`/`sign`/`verify`/`encrypt`/`decrypt`/`deriveBits`/`importKey`/`exportKey`/`generateKey` over SHA-{1,256,384,512}, HMAC, AES-{CBC,CTR,GCM}, PBKDF2, HKDF. No asymmetric (no `ECDH`/`ECDSA`/`RSA-*`). |
 | `atob`/`btoa` | ✅ Working | |
 | `Error.captureStackTrace` | ✅ Shim | Attaches `.stack` as an own property so error-ex / json-parse-even-better-errors work. |
 | `globalThis` / `global` / `window` / `self` | ✅ All aliased | Any of the four resolves to the global object. |
@@ -175,8 +175,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**575+** as of [v0.19](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.19).
-Full suite: **1356+** assertions across 369 smoke files.
+**575+** as of [v0.20](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.20).
+Full suite: **1361+** assertions across 370 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
