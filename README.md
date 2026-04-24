@@ -102,16 +102,16 @@ release lands.
 | `fs` (async) | ✅ Working | Callback-style `readFile`/`writeFile`/`readdir`/`stat`/`lstat`/`unlink`/`mkdir`/`rmdir`/`rename`/`appendFile`/`copyFile`/`chmod`/`access`/`realpath`/`exists`. Each wraps the sync version + fires the callback via the timer queue. |
 | `fs.promises` | ✅ Working | Promise-wrapped version of every callback form. |
 | `fs.constants` | ✅ Working | `F_OK`/`R_OK`/`W_OK`/`X_OK`/`O_RDONLY`/`O_WRONLY`/`O_RDWR`. |
-| `fs.createReadStream`/`WriteStream` | ❌ Missing | Would need streaming to/from OS fd; sync fs covers most CJS use. |
+| `fs.createReadStream`/`WriteStream` | ✅ Working | `createReadStream(path, {highWaterMark, encoding, start, end})` emits `'open'`/`'data'`/`'end'`/`'close'`. `createWriteStream(path, {flags})` supports `'w'` (write) / `'a'` (append); flushes on `.end()`. Whole-file-in-memory under the hood — not truly streaming to disk, but fine for realistic file sizes on Tiger-era kit. `.pipe()` works. |
 | `path` | ✅ Working | `join`, `resolve`, `normalize`, `dirname`, `basename`, `extname`, `relative`, `parse`, `format`, `sep`, `delimiter`, `isAbsolute`. |
 | `os` | ✅ Working | `platform` (`darwin`), `arch` (`ppc`), `type`, `release`, `version`, `machine`, `endianness` (`BE`), `homedir`, `tmpdir`, `hostname`, `cpus`, `uptime`, `loadavg`, `freemem`, `totalmem`, `userInfo`, `networkInterfaces` (empty stub), `EOL`, `devNull`, `availableParallelism`, `constants.signals/errno/priority`. |
 | `events` | ✅ Working | `EventEmitter` with `on`/`once`/`off`/`emit`/`addListener`/`removeListener`/`removeAllListeners`/`listenerCount`/`listeners`/`rawListeners`/`eventNames`/`prependListener`/`prependOnceListener`. Module exports `events.once(emitter, name)` (Promise), `events.getEventListeners`, `events.setMaxListeners`, `events.defaultMaxListeners`. |
 | `util` | ✅ Working | `format`, `inspect` (depth-limited, cycle-safe), `inherits`, `promisify` (+ `.custom`), `callbackify`, `deprecate`, `types.*`, `isDeepStrictEqual`, `stripVTControlCharacters`, `parseArgs`, `TextEncoder`/`TextDecoder`, plus all the legacy `isX` predicates. |
 | `buffer` | ✅ Working | `Buffer` class: `from` (string/array/Buffer/ArrayBuffer), `alloc`, `allocUnsafe`, `isBuffer`, `concat`, `byteLength`, `compare`, `isEncoding`. Instance: `toString`, `slice`, `write`, `copy`, `fill`, `indexOf`, `includes`, `equals`, `.length`. |
 | `crypto` | 🟡 Partial | `randomBytes` (real entropy), `pseudoRandomBytes`, `randomUUID` (v4), `randomInt`, `createHash` (**md5/sha1/sha224/sha256**), `createHmac` (md5/sha1/sha224/sha256), `pbkdf2Sync`/`pbkdf2` across those, `timingSafeEqual`, `createSecretKey`, `getHashes`, `getCiphers`. No SHA-512 (needs 64-bit emulation), no `createCipheriv`, no `sign`/`verify`, no `scrypt` (stubs throw). |
-| `http` | 🟡 Partial | Sync-only `getSync`/`requestSync` for simple GET. No `createServer`, no async request. |
-| `https` | 🟡 Partial | Alias of `http` (curl handles both). |
-| `net` | ❌ Missing | Would need sockets + event loop. |
+| `http` | ✅ Working | Real async `http.request`/`http.get`/`http.createServer` on top of `net.Socket` + an in-house HTTP/1.1 parser. Content-Length and Transfer-Encoding: chunked bodies both parsed. `IncomingMessage` / `ServerResponse` / `ClientRequest` classes present. Sync `http.getSync`/`postSync` retained (curl-backed, handles HTTPS). |
+| `https` | 🟡 Partial | Async `https.request`/etc falls back to the sync curl shim (TLS without OpenSSL binding). |
+| `net` | ✅ Working | `net.Socket` (Duplex over event-loop `ioWatch`) + `net.createServer` / `createConnection`. BSD-socket primitives via `__net_native__`: `socketCreate`/`bind`/`listen`/`accept`/`connect` non-blocking. IPv4 only; `gethostbyname` for DNS. |
 | `dns` | ❌ Missing | |
 | `child_process` | ✅ Working | All sync + async variants except `fork`. `execSync`/`spawnSync`/`execFileSync` via blocking fork+waitpid. `spawn`/`exec`/`execFile` return a `ChildProcess` (EventEmitter) backed by the event loop — `.stdout`/`.stderr` are Readables, `.stdin` is Writable, emits `'exit'`(code,sig) then `'close'`. |
 | `stream` | ✅ Working | Real `Readable` / `Writable` / `Duplex` / `Transform` / `PassThrough` with buffering, `.pipe()`, `.read([n])` / `.push(chunk)` / `.end()`. `stream.pipeline()` and `stream.finished()` also implemented. Backpressure is nominally modeled but collapses to always-drained under the sync runtime; pipe auto-resumes whenever a `'data'` listener is added. |
@@ -175,8 +175,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**504** as of [v0.9](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.9).
-Full suite: **1220+** assertions across 367 smoke files.
+**504** as of [v0.10](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.10).
+Full suite: **1225+** assertions across 370 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
