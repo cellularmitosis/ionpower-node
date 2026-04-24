@@ -319,6 +319,124 @@ static bool JsSetNoDelay(JSContext* cx, unsigned argc, JS::Value* vp) {
     return true;
 }
 
+// dgram primitives — sendto + recvfrom for UDP sockets. Operating on
+// a plain int fd that the caller got back from socketCreate(AF_INET,
+// SOCK_DGRAM, 0) + bind(). No connection state.
+
+static bool JsSendto(JSContext* cx, unsigned argc, JS::Value* vp) {
+    // sendto(fd, bufOrString, host, port) -> bytesSent
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 4) { JS_ReportError(cx, "sendto: needs (fd, buf, host, port)"); return false; }
+    int32_t fd = 0;
+    if (!JS::ToInt32(cx, args[0], &fd)) return false;
+    int32_t port = 0;
+    JS::RootedString hostS(cx, JS::ToString(cx, args[2]));
+    if (!hostS) return false;
+    JSAutoByteString hostBytes;
+    if (!EncodeStrUtf8(cx, hostS, &hostBytes)) return false;
+    if (!JS::ToInt32(cx, args[3], &port)) return false;
+
+    struct sockaddr_in sa;
+    if (!ResolveHost(hostBytes.ptr(), (uint16_t)port, &sa)) {
+        JS_ReportError(cx, "sendto: host resolve failed: %s", hostBytes.ptr());
+        return false;
+    }
+
+    // Accept Buffer/Uint8Array or a string.
+    const uint8_t* data = nullptr;
+    size_t len = 0;
+    std::string strBuf;
+    if (args[1].isObject() && JS_IsUint8Array(&args[1].toObject())) {
+        JS::RootedObject u8(cx, &args[1].toObject());
+        uint32_t bl = JS_GetTypedArrayByteLength(u8);
+        JS::AutoCheckCannotGC nogc;
+        bool shared;
+        uint8_t* src = JS_GetUint8ArrayData(u8, &shared, nogc);
+        if (!src && bl > 0) { JS_ReportError(cx, "sendto: typedarray read failed"); return false; }
+        data = src;
+        len = bl;
+        // Can't call syscalls while AutoCheckCannotGC is live — copy first.
+        strBuf.assign(reinterpret_cast<const char*>(src), bl);
+        data = reinterpret_cast<const uint8_t*>(strBuf.data());
+    } else {
+        JS::RootedString s(cx, JS::ToString(cx, args[1]));
+        if (!s) return false;
+        JSAutoByteString bytes;
+        if (!EncodeStrUtf8(cx, s, &bytes)) return false;
+        strBuf = bytes.ptr();
+        data = reinterpret_cast<const uint8_t*>(strBuf.data());
+        len = strBuf.size();
+    }
+
+    ssize_t w = sendto(fd, data, len, 0, (struct sockaddr*)&sa, sizeof(sa));
+    if (w < 0) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            args.rval().setInt32(-1);  // caller polls
+            return true;
+        }
+        JS_ReportError(cx, "sendto: %s", strerror(errno));
+        return false;
+    }
+    args.rval().setInt32((int32_t)w);
+    return true;
+}
+
+static bool JsRecvfrom(JSContext* cx, unsigned argc, JS::Value* vp) {
+    // recvfrom(fd, maxLen=65536) -> { data:Uint8Array, address, port, size } or null on wouldBlock
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    int32_t fd = 0;
+    int32_t maxLen = 65536;
+    if (args.length() >= 1 && !JS::ToInt32(cx, args[0], &fd)) return false;
+    if (args.length() >= 2 && !JS::ToInt32(cx, args[1], &maxLen)) return false;
+    if (maxLen <= 0 || maxLen > (1 << 20)) maxLen = 65536;
+
+    std::string buf;
+    buf.resize((size_t)maxLen);
+    struct sockaddr_in from;
+    socklen_t fromLen = sizeof(from);
+    ssize_t n = recvfrom(fd, &buf[0], buf.size(), 0,
+                        (struct sockaddr*)&from, &fromLen);
+    if (n < 0) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            args.rval().setNull();
+            return true;
+        }
+        JS_ReportError(cx, "recvfrom: %s", strerror(errno));
+        return false;
+    }
+
+    // Build result object.
+    JS::RootedObject out(cx, JS_NewPlainObject(cx));
+    if (!out) return false;
+
+    // data: Uint8Array of n bytes
+    JS::RootedObject u8(cx, JS_NewUint8Array(cx, (uint32_t)n));
+    if (!u8) return false;
+    if (n > 0) {
+        JS::AutoCheckCannotGC nogc;
+        bool shared;
+        uint8_t* dst = JS_GetUint8ArrayData(u8, &shared, nogc);
+        if (!dst) { JS_ReportError(cx, "recvfrom: alloc failed"); return false; }
+        memcpy(dst, buf.data(), (size_t)n);
+    }
+    JS::RootedValue dataV(cx, JS::ObjectValue(*u8));
+    if (!JS_DefineProperty(cx, out, "data", dataV, JSPROP_ENUMERATE)) return false;
+
+    // address + port — stringified from sockaddr_in
+    char ip[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &from.sin_addr, ip, sizeof(ip));
+    JS::RootedString ipS(cx, JS_NewStringCopyZ(cx, ip));
+    JS::RootedValue ipV(cx, JS::StringValue(ipS));
+    if (!JS_DefineProperty(cx, out, "address", ipV, JSPROP_ENUMERATE)) return false;
+    JS::RootedValue portV(cx, JS::Int32Value((int32_t)ntohs(from.sin_port)));
+    if (!JS_DefineProperty(cx, out, "port", portV, JSPROP_ENUMERATE)) return false;
+    JS::RootedValue sizeV(cx, JS::Int32Value((int32_t)n));
+    if (!JS_DefineProperty(cx, out, "size", sizeV, JSPROP_ENUMERATE)) return false;
+
+    args.rval().setObject(*out);
+    return true;
+}
+
 bool InstallNet(JSContext* cx, JS::HandleObject global) {
     JS::RootedObject n(cx, JS_NewPlainObject(cx));
     if (!n) return false;
@@ -334,6 +452,8 @@ bool InstallNet(JSContext* cx, JS::HandleObject global) {
     if (!JS_DefineFunction(cx, n, "closeFd",        JsClose,         1, JSPROP_ENUMERATE)) return false;
     if (!JS_DefineFunction(cx, n, "setNoDelay",     JsSetNoDelay,    2, JSPROP_ENUMERATE)) return false;
     if (!JS_DefineFunction(cx, n, "lookup",         JsLookup,        1, JSPROP_ENUMERATE)) return false;
+    if (!JS_DefineFunction(cx, n, "sendto",         JsSendto,        4, JSPROP_ENUMERATE)) return false;
+    if (!JS_DefineFunction(cx, n, "recvfrom",       JsRecvfrom,      2, JSPROP_ENUMERATE)) return false;
 
     // Constants
     JS::RootedValue v(cx);
