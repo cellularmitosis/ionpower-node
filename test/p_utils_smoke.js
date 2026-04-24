@@ -20,21 +20,24 @@ rfdc = rfdc.default || rfdc;
 
 function assert(c, msg) { if (!c) { console.error("FAIL:", msg); process.exit(1); } }
 
-// p-defer: externally-resolved Promise.
+// p-defer: externally-resolved Promise (microtask-queued; check at exit).
 var d = pDefer();
 assert(typeof d.promise.then === "function", "p-defer has promise");
 assert(typeof d.resolve === "function", "p-defer has resolve");
 var resolved = null;
 d.promise.then(function (v) { resolved = v; });
 d.resolve(42);
-assert(resolved === 42, "deferred resolved to 42");
-console.log("ok: p-defer");
 
-// p-finally: .finally shim.
+// p-finally: .finally shim (microtask-queued).
 var fin = false;
 pFinally(Promise.resolve(1), function () { fin = true; });
-assert(fin, "p-finally ran");
-console.log("ok: p-finally");
+
+process.on("exit", function () {
+    assert(resolved === 42, "deferred resolved to 42: " + resolved);
+    console.log("ok: p-defer");
+    assert(fin, "p-finally ran");
+    console.log("ok: p-finally");
+});
 
 // rfdc: really fast deep clone.
 var orig = { a: { b: [1, 2, { c: 3 }] } };

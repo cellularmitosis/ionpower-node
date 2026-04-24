@@ -1556,7 +1556,25 @@ static const char kBootstrapJS[] =
     // chains execute immediately. Good enough for the sync-callback-style
     // libraries that resolved eagerly (JSZip, denodeify, jwt-like flows);
     // async I/O still goes through our sync bridges (http.getSync etc.).
-    "  if (typeof Promise === 'undefined') {\n"
+    // Microtask queue — drained by the event loop between callback
+    // firings, and by main.cpp between phases. Stored as a plain array;
+    // _enqueueMicrotask / __drain_microtasks__ are the only APIs.
+    "  this.__microtask_queue__ = [];\n"
+    "  this._enqueueMicrotask = function (fn) { __microtask_queue__.push(fn); };\n"
+    "  this.__drain_microtasks__ = function () {\n"
+    "    var safety = 100000;\n"
+    "    while (__microtask_queue__.length > 0 && safety-- > 0) {\n"
+    "      var fn = __microtask_queue__.shift();\n"
+    "      try { fn(); }\n"
+    "      catch (e) { console.error('microtask:', e && e.stack || e); }\n"
+    "    }\n"
+    "    if (safety <= 0) console.error('[ionpower] microtask drain hit 100k safety guard');\n"
+    "  };\n"
+    // Install _IonPromise unconditionally. SM45's native Promise also
+    // fires .then callbacks synchronously (no internal microtask driver),
+    // so we need our own to route through __microtask_queue__ and align
+    // with Node's actual semantics.
+    "  {\n"
     "    function _IonPromise(executor) {\n"
     "      var self = this;\n"
     "      this._state = 'pending';\n"
@@ -1566,15 +1584,27 @@ static const char kBootstrapJS[] =
     "      function resolve(v) {\n"
     "        if (self._state !== 'pending') return;\n"
     "        if (v && typeof v.then === 'function') {\n"
-    "          v.then(resolve, reject); return;\n"
+    "          try { v.then(resolve, reject); } catch (e) { reject(e); }\n"
+    "          return;\n"
     "        }\n"
     "        self._state = 'fulfilled'; self._value = v;\n"
-    "        for (var i = 0; i < self._onFulfilled.length; ++i) self._onFulfilled[i](v);\n"
+    "        /* Queue callbacks through microtask queue, not sync */\n"
+    "        (function (cbs, val) {\n"
+    "          for (var i = 0; i < cbs.length; ++i) (function (cb) {\n"
+    "            _enqueueMicrotask(function () { cb(val); });\n"
+    "          })(cbs[i]);\n"
+    "        })(self._onFulfilled, v);\n"
+    "        self._onFulfilled = null; self._onRejected = null;\n"
     "      }\n"
     "      function reject(r) {\n"
     "        if (self._state !== 'pending') return;\n"
     "        self._state = 'rejected'; self._value = r;\n"
-    "        for (var i = 0; i < self._onRejected.length; ++i) self._onRejected[i](r);\n"
+    "        (function (cbs, val) {\n"
+    "          for (var i = 0; i < cbs.length; ++i) (function (cb) {\n"
+    "            _enqueueMicrotask(function () { cb(val); });\n"
+    "          })(cbs[i]);\n"
+    "        })(self._onRejected, r);\n"
+    "        self._onFulfilled = null; self._onRejected = null;\n"
     "      }\n"
     "      try { executor(resolve, reject); } catch (e) { reject(e); }\n"
     "    }\n"
@@ -1589,8 +1619,9 @@ static const char kBootstrapJS[] =
     "          if (typeof onR !== 'function') { reject(r); return; }\n"
     "          try { resolve(onR(r)); } catch (e) { reject(e); }\n"
     "        }\n"
-    "        if (self._state === 'fulfilled') handleF(self._value);\n"
-    "        else if (self._state === 'rejected') handleR(self._value);\n"
+    "        /* If already settled, defer via microtask to preserve ordering */\n"
+    "        if (self._state === 'fulfilled') _enqueueMicrotask(function () { handleF(self._value); });\n"
+    "        else if (self._state === 'rejected') _enqueueMicrotask(function () { handleR(self._value); });\n"
     "        else { self._onFulfilled.push(handleF); self._onRejected.push(handleR); }\n"
     "      });\n"
     "    };\n"
@@ -1640,13 +1671,9 @@ static const char kBootstrapJS[] =
     "    this.Promise = _IonPromise;\n"
     "    if (typeof globalThis !== 'undefined') globalThis.Promise = _IonPromise;\n"
     "  }\n"
-    // queueMicrotask: fire synchronously through Promise.resolve (no event loop).
-    "  if (typeof queueMicrotask === 'undefined') {\n"
-    "    this.queueMicrotask = function (fn) {\n"
-    "      Promise.resolve().then(fn)['catch'](function (e) { console.error(e); });\n"
-    "    };\n"
-    "    if (typeof globalThis !== 'undefined') globalThis.queueMicrotask = this.queueMicrotask;\n"
-    "  }\n"
+    // queueMicrotask: route through the microtask queue.
+    "  this.queueMicrotask = function (fn) { _enqueueMicrotask(fn); };\n"
+    "  if (typeof globalThis !== 'undefined') globalThis.queueMicrotask = this.queueMicrotask;\n"
     // Timer queue: setTimeout / setInterval / setImmediate enqueue
     // into __timer_queue__ (populated by timers.cpp stubs that
     // forward to __timer_enqueue__ below). Drained by
@@ -1782,13 +1809,16 @@ static const char kBootstrapJS[] =
     // matches our Promise / queueMicrotask story. Libraries like tape queue
     // their test runs through nextTick, so without this the tests silently
     // never execute.
-    "  if (typeof process.nextTick !== 'function') {\n"
-    "    process.nextTick = function (fn) {\n"
-    "      var args = Array.prototype.slice.call(arguments, 1);\n"
+    // process.nextTick — queues through the microtask queue. Node says
+    // nextTick runs before any queued microtask; we share the queue
+    // (same as queueMicrotask), which is close enough for library use.
+    "  process.nextTick = function (fn) {\n"
+    "    var args = Array.prototype.slice.call(arguments, 1);\n"
+    "    _enqueueMicrotask(function () {\n"
     "      try { fn.apply(null, args); }\n"
     "      catch (e) { console.error('nextTick:', e && e.stack || e); }\n"
-    "    };\n"
-    "  }\n"
+    "    });\n"
+    "  };\n"
     // process.on('exit', fn) — queue exit handlers. main.cpp calls
     // __process_flush_exit__() after the entry script returns so the queue
     // drains. tape's canEmitExit branch needs this to actually run tests.

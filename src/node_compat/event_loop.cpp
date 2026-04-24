@@ -211,6 +211,18 @@ static void CallGlobalFn(JSContext* cx, JS::HandleObject global,
     }
 }
 
+// Drain the JS-side microtask queue (Promise .then callbacks, queueMicrotask,
+// process.nextTick). Safe to call with no pending microtasks.
+static void DrainMicrotasks(JSContext* cx, JS::HandleObject global) {
+    JS::RootedValue fnv(cx);
+    if (!JS_GetProperty(cx, global, "__drain_microtasks__", &fnv)) return;
+    if (!fnv.isObject() || !JS_ObjectIsFunction(cx, &fnv.toObject())) return;
+    JS::RootedValue rv(cx);
+    if (!JS::Call(cx, global, fnv, JS::HandleValueArray::empty(), &rv)) {
+        if (JS_IsExceptionPending(cx)) JS_ReportPendingException(cx);
+    }
+}
+
 // Reap any child that has exited and fire its JS callback via
 // __event_loop_fire_child__(pid, exitCode, signal). JS-side callback
 // table does the rest (emit 'exit' / 'close' on the ChildProcess, etc).
@@ -312,6 +324,7 @@ bool RunEventLoop(JSContext* cx, JS::HandleObject global) {
         if (g_sigchld_seen) {
             g_sigchld_seen = 0;
             ReapChildren(cx, global);
+            DrainMicrotasks(cx, global);
         }
 
         if (n < 0 && sel_errno != EINTR) {
@@ -333,10 +346,14 @@ bool RunEventLoop(JSContext* cx, JS::HandleObject global) {
             for (size_t i = 0; i < toFire.size(); ++i) {
                 double arg = (double)toFire[i];
                 CallGlobalFn(cx, global, "__event_loop_fire_watcher__", 1, &arg);
+                DrainMicrotasks(cx, global);
             }
         }
 
-        if (anyTimer) FireDueTimers(cx, global);
+        if (anyTimer) {
+            FireDueTimers(cx, global);
+            DrainMicrotasks(cx, global);
+        }
     }
     return true;
 }

@@ -75,9 +75,24 @@ static int RunMain(JSContext* cx, int argc, char** argv)
             JS_ReportPendingException(cx);
     }
 
+    // Drain any microtasks the script queued synchronously (Promise
+    // chains, queueMicrotask, process.nextTick) before entering the
+    // event loop proper.
+    {
+        JS::RootedValue dm(cx);
+        if (JS_GetProperty(cx, global, "__drain_microtasks__", &dm)
+            && dm.isObject() && JS_ObjectIsFunction(cx, &dm.toObject())) {
+            JS::RootedValue rv(cx);
+            (void)JS::Call(cx, JS::UndefinedHandleValue, dm,
+                           JS::HandleValueArray::empty(), &rv);
+            if (JS_IsExceptionPending(cx)) JS_ReportPendingException(cx);
+        }
+    }
+
     // Run the event loop: services timers (wallclock-honored), I/O watchers,
     // and child-process exit notifications. Blocks on select() between
-    // events. Returns only when nothing is pending.
+    // events. Returns only when nothing is pending. The loop drains
+    // microtasks after every callback firing.
     ionpower::RunEventLoop(cx, global);
 
     // Run any 'exit' handlers the script registered via process.on('exit', ...).

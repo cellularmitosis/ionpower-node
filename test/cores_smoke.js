@@ -71,14 +71,11 @@ assert(os.EOL === "\n",             "os.EOL");
 assert(Array.isArray(os.cpus()) && os.cpus().length >= 1, "os.cpus");
 console.log("ok: os basics");
 
-// 8. child_process — execSync (sync) and spawn (async) both work now.
-// execSync returns stdout.
+// 8. child_process.execSync (sync). The async spawn is covered by
+// async_child_process_smoke.js.
 var out = child.execSync("echo hello-cores", { encoding: "utf8" });
 assert(out.trim() === "hello-cores", "execSync stdout");
-// spawn returns a ChildProcess with .stdout / .stderr / .on('exit').
-var cp = child.spawn("echo", ["ok"]);
-assert(typeof cp.stdout === "object" && typeof cp.stdout.on === "function",
-       "spawn returns ChildProcess w/ stdout");
-console.log("ok: child_process execSync + spawn");
+assert(typeof child.spawn === "function", "spawn is a function");
+console.log("ok: child_process execSync (+spawn exposed)");
 
 console.log("\ncores smoke: all assertions passed");

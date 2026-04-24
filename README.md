@@ -133,8 +133,8 @@ release lands.
 | `process` | ✅ Working | `argv`, `env`, `cwd`, `exit`, `exitCode`, `platform`, `arch`, `version`, `versions` (`node`/`ionpower`/`spidermonkey`/`v8`), `release`, `pid`, `stdout`/`stderr`/`stdin` (all with `.fd`/`.isTTY`; `stdin` is a Readable that drains `/dev/stdin` on first `'data'` listener), `nextTick` (synchronous), `umask`, `hrtime` (+ `.bigint`), `uptime`, `title`, `memoryUsage` (zero-filled), event-emitter surface (`on`/`once`/`off`/`emit` including `'exit'` flush). |
 | `Buffer` | ✅ Working | See `buffer` above. |
 | `console` | ✅ Working | `log`/`error`/`warn`/`info`/`debug`/`trace`/`dir`/`time`/`timeEnd`/`assert`. |
-| `Promise` | ✅ Polyfill | **Synchronous** Promise (no microtask queue): executor + `.then`/`.catch`/`.finally` chains run inline. `Promise.resolve`/`reject`/`all`/`race`/`allSettled`. |
-| `queueMicrotask` | ✅ Synchronous | Runs the callback immediately via `Promise.resolve().then(fn)`. |
+| `Promise` | ✅ Polyfill | `.then`/`.catch`/`.finally` callbacks are routed through the event loop's microtask queue; fire after the current synchronous code returns, before setTimeout-queued work. `Promise.resolve`/`reject`/`all`/`race`/`allSettled`. |
+| `queueMicrotask` | ✅ Microtask-queued | Pushes onto `__microtask_queue__`; the event loop drains between callback firings. |
 | `setTimeout`/`setInterval`/`setImmediate` | ✅ Wallclock-real | Enqueue into the event loop; `select()` honors the next fireAt. `setTimeout(fn, N)` sleeps ~N ms before firing. Intervals self-requeue. |
 | `TextEncoder`/`TextDecoder` | ✅ Working | UTF-8 only. |
 | `URL`/`URLSearchParams` | ✅ Polyfill | Covers protocol/host/hostname/port/pathname/search/hash/origin/href + username/password, plus search-params get/getAll/has/set/append/delete/forEach/keys/values/entries/toString/sort. Not spec-complete for IDN / non-special schemes / exotic relative resolution. |
@@ -175,8 +175,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**504** as of [v0.10](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.10).
-Full suite: **1225+** assertions across 370 smoke files.
+**504** as of [v0.11](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.11).
+Full suite: **1231** assertions across 371 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.

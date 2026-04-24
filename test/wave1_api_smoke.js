@@ -104,13 +104,17 @@ ee.on("y", fn);
 ee.off("y", fn);
 eq(ee.listenerCount("y"), 0, "off alias removes");
 
-// events.once returns Promise
+// events.once returns Promise (microtask-queued; check via exit handler).
 var emitter = new events.EventEmitter();
-var resolved = null;
-events.once(emitter, "boom").then(function (args) { resolved = args; });
+var resolvedOnce = null;
+events.once(emitter, "boom").then(function (args) { resolvedOnce = args; });
 emitter.emit("boom", 1, 2);
-eq(resolved, [1, 2], "events.once promise settles");
 console.log("ok: events");
+
+process.on("exit", function () {
+    eq(resolvedOnce, [1, 2], "events.once promise settles");
+    console.log("ok: events.once after drain");
+});
 
 // --- path ---
 eq(path.normalize("/a/./b/../c/"), "/a/c/", "path.normalize");
