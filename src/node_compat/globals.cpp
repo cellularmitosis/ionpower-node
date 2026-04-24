@@ -1411,13 +1411,26 @@ static const char kBootstrapJS[] =
     "  var _nacl = null;\n"
     "  function _naclLoad() {\n"
     "    if (_nacl) return _nacl;\n"
-    // Bootstrap scope doesn't have a local `require`. We build one via
-    // __make_require__(cwd) — that's the same wrapped require users get
-    // in scripts, including the vendor-path fallback. Without the wrap
-    // we'd use __require_native__ which skips vendor/ lookup.
+    // Look up tweetnacl.js ourselves via the vendor-dir walk to avoid
+    // going through the wrapped __make_require__ (which itself short-
+    // circuits 'tweetnacl' back here — infinite recursion).\n"
     "    var cwd = (typeof process !== 'undefined' && process.cwd) ? process.cwd() : '/';\n"
-    "    var localReq = __make_require__(cwd);\n"
-    "    _nacl = localReq('tweetnacl');\n"
+    "    var candidates = [cwd + '/test/vendor/tweetnacl.js', cwd + '/vendor/tweetnacl.js'];\n"
+    "    try {\n"
+    "      var exeDir = process.argv[0].replace(/\\/[^/]+$/, '');\n"
+    "      candidates.push(exeDir + '/../share/ionpower-node/vendor/tweetnacl.js');\n"
+    "    } catch (e) {}\n"
+    "    for (var i = 0; i < candidates.length; i++) {\n"
+    "      var c = candidates[i];\n"
+    "      try {\n"
+    "        if (fs.existsSync(c)) {\n"
+    "          var candDir = c.replace(/\\/[^/]+$/, '');\n"
+    "          _nacl = __require_native__(candDir, './tweetnacl.js');\n"
+    "          break;\n"
+    "        }\n"
+    "      } catch (e2) {}\n"
+    "    }\n"
+    "    if (!_nacl) throw new Error('tweetnacl.js not found in any vendor directory');\n"
     // Route tweetnacl's PRNG through our crypto.getRandomValues so key
     // generation is actually random rather than the 'no PRNG set' stub.
     "    if (typeof _nacl.setPRNG === 'function') {\n"
@@ -4202,6 +4215,27 @@ static const char kBootstrapJS[] =
     "    builtinModules: ['fs','path','events','util','child_process','os','crypto','buffer','string_decoder','assert','stream','timers','querystring','readable-stream','inherits','supports-color','has-ansi','module']\n"
     "  };\n"
     "  __require_cache__['module']         = module_core;\n"
+    // tweetnacl: seed into the require cache at first access. A getter
+    // on __require_cache__ would be spec-cleaner, but JS_GetProperty()
+    // may bypass getters; the wrapped __make_require__ does a hasOwn
+    // check so we have to populate eagerly via a lazy wrapper. Rather
+    // than eager-loading the ~2400-line file here, we leave the cache
+    // unseeded and let crypto.* use _naclLoad() which does the PRNG
+    // wiring. Users who `require('tweetnacl')` directly get the raw
+    // library and must call setPRNG themselves — but our patch below
+    // installs PRNG as a side effect of ANY _naclLoad() call, so once
+    // any crypto.sign/verify/etc. touches nacl, later requires share
+    // the PRNG-wired instance through the cache.\n"
+    // Cache the wired instance after first _naclLoad() so direct
+    // require('tweetnacl') gets the wired copy.\n"
+    "  (function () {\n"
+    "    var origLoad = _naclLoad;\n"
+    "    _naclLoad = function () {\n"
+    "      var out = origLoad();\n"
+    "      if (!__require_cache__['tweetnacl']) __require_cache__['tweetnacl'] = out;\n"
+    "      return out;\n"
+    "    };\n"
+    "  })();\n"
     // perf_hooks: Node's high-resolution timer + performance observer
     // surface. Libraries use `performance.now()` for benchmarks /
     // per-request timing. We synthesize from Date.now() — ms-level
@@ -5804,6 +5838,10 @@ static const char kBootstrapJS[] =
     "    var wrapped = function(spec) {\n"
     "      if (typeof spec === 'string' && spec.indexOf('node:') === 0)\n"
     "        spec = spec.slice(5);\n"
+    // Short-circuit tweetnacl: route through _naclLoad so the PRNG is
+    // wired to crypto.getRandomValues. The first call populates the
+    // require cache; subsequent requires hit it cheaply.\n"
+    "      if (spec === 'tweetnacl') return _naclLoad();\n"
     "      if (__require_cache__.hasOwnProperty(spec)) return __require_cache__[spec];\n"
     "      try { return req(spec); }\n"
     "      catch (e) {\n"
