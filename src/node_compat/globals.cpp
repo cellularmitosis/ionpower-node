@@ -3714,6 +3714,22 @@ static const char kBootstrapJS[] =
     // Node. Alias to our built-in stream module.
     "  __require_cache__['readable-stream'] = stream;\n"
     "  __require_cache__['inherits']        = util.inherits;\n"
+    // 'module' core — primarily to expose Node 12+ createRequire, which
+    // several dual-mode (ESM + CJS) packages use. Our __make_require__
+    // primitive already binds require() to a directory, so we just peel
+    // the dirname off the passed filename / file: URL and hand that to
+    // __make_require__.
+    "  var module_core = {\n"
+    "    createRequire: function (filename) {\n"
+    "      var fn = String(filename);\n"
+    "      if (fn.indexOf('file://') === 0) fn = fn.slice(7);\n"
+    "      var slash = fn.lastIndexOf('/');\n"
+    "      var dir = slash >= 0 ? fn.slice(0, slash) : fn;\n"
+    "      return __make_require__(dir);\n"
+    "    },\n"
+    "    builtinModules: ['fs','path','events','util','child_process','os','crypto','buffer','string_decoder','assert','stream','timers','querystring','readable-stream','inherits','supports-color','has-ansi','module']\n"
+    "  };\n"
+    "  __require_cache__['module']         = module_core;\n"
     // process.stdin readable behavior. Now that we have a real event
     // loop, stdin can stream via ioWatch(0, READABLE) + readFd. Chunks
     // emit as they arrive; 'end' fires on EOF (read() returning 0).

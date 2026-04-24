@@ -158,7 +158,7 @@ release lands.
 | `require('bare-module')` node_modules walk | ✅ Working | Standard upward search. |
 | `require('bare-module')` vendor fallback | ✅ Working | If node_modules lookup fails, walks caller's dir up looking for `<ancestor>/<name>.js` or `<ancestor>/vendor/<name>.js`, plus global dirs (`cwd/test/vendor`, installed `share/ionpower-node/vendor`). Lets unpatched libraries' bare `require('chalk')` etc. resolve to vendored copies. |
 | `require('node:fs')` prefix | ✅ Stripped | `node:` prefix stripped before lookup. |
-| Seeded core modules | ✅ Working | `__require_cache__` pre-populated with fs / path / events / util / child_process / os / crypto / buffer / string_decoder / assert / stream / timers / querystring / supports-color / has-ansi / process. |
+| Seeded core modules | ✅ Working | `__require_cache__` pre-populated with fs / path / events / util / child_process / os / crypto / buffer / string_decoder / assert / stream / timers / querystring / supports-color / has-ansi / process / module (with `createRequire` + `builtinModules`). |
 | ESM `import`/`export` | 🟡 Via Babel | Bootstrap lazily loads `@babel/standalone` on parse failure and re-evaluates the ESM-lowered source. Handles `import X from "y"`, `export default`, `export { X }`. Does **not** handle top-level `await`, dynamic `import()`, or `import.meta`. Cached on disk at `~/.ionpower-cache/babel-v1/`. |
 | `import.meta` | ❌ Missing | |
 | Top-level `await` | ❌ Missing | No async context. |
@@ -176,8 +176,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**585+** as of [v0.24](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.24).
-Full suite: **1381+** assertions across 373 smoke files.
+**585+** as of [v0.25](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.25).
+Full suite: **1386+** assertions across 374 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
