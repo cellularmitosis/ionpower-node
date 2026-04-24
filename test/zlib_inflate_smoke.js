@@ -43,11 +43,11 @@ gunzipStream.on("data", function (c) { collected += String(c); });
 gunzipStream.on("end",  function () { finished = true; });
 gunzipStream.end(helloGz);
 
-// --- compression still throws ---
-var threw = false;
-try { zlib.gzipSync(Buffer.from("x")); } catch (e) { threw = true; }
-assert(threw, "gzipSync throws (compression not implemented)");
-console.log("ok: compression stubs throw");
+// --- compression works as of v0.14 (stored mode) ---
+var gzCompressed = zlib.gzipSync(Buffer.from("x"));
+assert(gzCompressed[0] === 0x1f && gzCompressed[1] === 0x8b, "gzip magic on gzipSync output");
+assert(zlib.gunzipSync(gzCompressed).toString("utf8") === "x", "gzipSync round-trips");
+console.log("ok: compression round-trips");
 
 process.on("exit", function () {
     assert(finished, "gunzip stream 'end' fired");

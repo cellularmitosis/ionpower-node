@@ -48,14 +48,14 @@ var r3 = cp.execFileSync("/bin/echo", ["abc"], { encoding: "utf8" });
 eq(r3.trim(), "abc", "execFileSync");
 console.log("ok: execFileSync");
 
-// --- zlib stub loads ---
+// --- zlib works (deflate real as of v0.14) ---
 assert(typeof zlib.createGzip === "function", "zlib.createGzip present");
 assert(typeof zlib.gzipSync === "function", "zlib.gzipSync present");
-var zthrew = false;
-try { zlib.gzipSync("hi"); } catch (e) { zthrew = true; }
-assert(zthrew, "zlib.gzipSync throws not-implemented");
+var gzOut = zlib.gzipSync("hi");
+assert(gzOut[0] === 0x1f && gzOut[1] === 0x8b, "gzipSync outputs gzip magic");
+assert(zlib.gunzipSync(gzOut).toString("utf8") === "hi", "gzip round-trip");
 eq(zlib.constants.Z_NO_FLUSH, 0, "zlib.constants.Z_NO_FLUSH");
-console.log("ok: zlib stub");
+console.log("ok: zlib (compression + constants)");
 
 // --- process.stdin basics ---
 assert(typeof process.stdin.on === "function", "process.stdin.on");
