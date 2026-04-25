@@ -4802,6 +4802,21 @@ static const char kBootstrapJS[] =
     // queueMicrotask: route through the microtask queue.
     "  this.queueMicrotask = function (fn) { _enqueueMicrotask(fn); };\n"
     "  if (typeof globalThis !== 'undefined') globalThis.queueMicrotask = this.queueMicrotask;\n"
+    // __dynamic_import__: backs the regex-rewritten dynamic import()
+    // calls produced by _preprocessImports. Returns a Promise that
+    // resolves to the loaded module. The user's local `require` is
+    // passed in so relative specifiers resolve against the importing
+    // module's directory; falls back to the bootstrap require if
+    // none was passed.
+    "  this.__dynamic_import__ = function (spec, req) {\n"
+    "    return new Promise(function (resolve, reject) {\n"
+    "      try {\n"
+    "        var mod = (typeof req === 'function' ? req : require)(spec);\n"
+    "        resolve(mod && typeof mod === 'object' && 'default' in mod ? mod : { default: mod });\n"
+    "      } catch (e) { reject(e); }\n"
+    "    });\n"
+    "  };\n"
+    "  if (typeof globalThis !== 'undefined') globalThis.__dynamic_import__ = this.__dynamic_import__;\n"
     // Timer queue: setTimeout / setInterval / setImmediate enqueue
     // into __timer_queue__ (populated by timers.cpp stubs that
     // forward to __timer_enqueue__ below). Drained by
@@ -8539,6 +8554,40 @@ static const char kBootstrapJS[] =
     "      return '_' + c.charCodeAt(0).toString(16) + '_';\n"
     "    });\n"
     "  }\n"
+    // Pre-Babel substitutions for things @babel/standalone presets:env
+    // can't lower out of the box. Cheap regex-based; runs only on
+    // parse failure (i.e. when Babel is being invoked anyway).
+    //
+    //   import.meta.url       -> ("file://" + __filename)
+    //   import.meta.filename  -> __filename
+    //   import.meta.dirname   -> __dirname
+    //   import.meta            -> object form (any other access)
+    //   import(spec)           -> __dynamic_import__(spec)
+    //
+    // The source has comments + string literals stripped before the
+    // need-detection scan, so 'import.meta' inside a string doesn't
+    // trigger pointless substitution. The substitutions themselves
+    // are applied to the original source though, which means there's
+    // a tiny risk of replacing a literal substring inside a string.
+    // The token boundaries (\b) make that vanishingly rare.
+    "  function _preprocessImports(src) {\n"
+    "    var stripped = String(src)\n"
+    "      .replace(/\\/\\*[\\s\\S]*?\\*\\//g, '')\n"
+    "      .replace(/\\/\\/[^\\n]*/g, '')\n"
+    "      .replace(/\"(?:[^\"\\\\]|\\\\.)*\"/g, '\"\"')\n"
+    "      .replace(/'(?:[^'\\\\]|\\\\.)*'/g, \"''\");\n"
+    "    if (!/import\\.meta|import\\s*\\(/.test(stripped)) return src;\n"
+    "    return String(src)\n"
+    "      .replace(/\\bimport\\.meta\\.url\\b/g, '(\"file://\" + __filename)')\n"
+    "      .replace(/\\bimport\\.meta\\.filename\\b/g, '__filename')\n"
+    "      .replace(/\\bimport\\.meta\\.dirname\\b/g, '__dirname')\n"
+    "      .replace(/\\bimport\\.meta\\b/g, '({ url: \"file://\" + __filename, filename: __filename, dirname: __dirname })')\n"
+    // import(spec) -> __dynamic_import__(spec, require). Capture
+    // everything up to the matching ')' as long as no nested parens
+    // appear in the specifier. Pass the local `require` so relative
+    // specifiers resolve against the importing module's directory.
+    "      .replace(/\\bimport\\s*\\(([^)]*)\\)/g, '__dynamic_import__($1, require)');\n"
+    "  }\n"
     // Heuristic: does the source contain `await` at what looks like
     // top level (not inside an `async function` block)? This is a
     // brace-counting scanner; not perfect but good enough for the
@@ -8636,14 +8685,15 @@ static const char kBootstrapJS[] =
     "    var babel = __babel_lazy_load__();\n"
     "    if (!babel) return null;\n"
     "    var code;\n"
+    // Pre-Babel rewrites: import.meta + dynamic import().
+    "    var srcForBabel = _preprocessImports(rawSrc);\n"
     // Top-level-await pre-detection: if the source contains a bare
     // `await` token outside an `async function` context, pre-wrap in
     // an async IIFE so Babel sees something it can lower. This is a
     // heuristic but it's right for the common entry-script case
     // (`var x = await fetch(...)` at the top of a file).
-    "    var srcForBabel = rawSrc;\n"
-    "    if (_looksLikeTopLevelAwait(rawSrc)) {\n"
-    "      srcForBabel = '(async function () {\\n' + rawSrc + '\\n})();';\n"
+    "    if (_looksLikeTopLevelAwait(srcForBabel)) {\n"
+    "      srcForBabel = '(async function () {\\n' + srcForBabel + '\\n})();';\n"
     "    }\n"
     "    try {\n"
     "      code = babel.transform(srcForBabel, { presets: ['env'] }).code;\n"

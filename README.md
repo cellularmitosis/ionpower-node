@@ -163,11 +163,12 @@ the runtime, today:
 - **`Intl`** — SM45 was built `--without-intl-api`. Blocks luxon,
   ICU-dependent date / number formatters.
 - **Native addons** — no N-API.
-- **`import.meta`, dynamic `import()`** — the Babel-on-parse-failure
-  path lowers `async function` / `await` / `import` / `export` but
-  not these two. (Top-level `await` works for entry-point scripts via
-  an async-IIFE wrap; CJS modules still can't synchronously export
-  a top-level-await result.)
+- **CJS top-level-await result export** — top-level `await` works
+  for entry-point scripts via an async-IIFE wrap, but CJS modules
+  can't synchronously export a value that's computed via TLA. Real
+  Node only supports module-level TLA in ESM, which we don't run
+  natively (the Babel path lowers ESM to CJS, losing the ability to
+  await at module load time).
 - **Worker shared memory** — `worker_threads` is process-backed
   (each Worker is a fresh `node` child), so `transferList` /
   `MessageChannel` / `MessagePort` / `Atomics` don't apply. Use
@@ -260,9 +261,9 @@ release lands.
 | Seeded core modules | ✅ Working | `__require_cache__` pre-populated with the full Node core surface: fs / fs/promises / path / path/posix / path/win32 / events / util / child_process / cluster / os / crypto / buffer / string_decoder / assert / stream / stream/web / stream/promises / stream/consumers / timers / timers/promises / querystring / dns / dns/promises / http / https / net / dgram / readline / url / zlib / worker_threads / async_hooks / diagnostics_channel / module / supports-color / has-ansi / process / vm / perf_hooks / readable-stream / inherits / node:test / test. The `node:` prefix is stripped before lookup, so `require('node:fs')` and `require('fs')` resolve to the same module. |
 | ESM `import`/`export` | 🟡 Via Babel | Bootstrap lazily loads `@babel/standalone` on parse failure and re-evaluates the ESM-lowered source. Handles `import X from "y"`, `export default`, `export { X }`. Does **not** handle top-level `await`, dynamic `import()`, or `import.meta`. Cached on disk at `~/.ionpower-cache/babel-v1/`. |
 | `async`/`await` / `for await` | ✅ Via Babel | `async function` / `await expr` / `try { await reject } catch` / `for await (chunk of asyncIter)` all work — same path as ESM (Babel lowers on parse failure). `Symbol.asyncIterator` is polyfilled; WebStreams `Readable` and `events.on()` iterators carry the well-known so `for await` recognizes them. |
-| `import.meta` | ❌ Missing | |
+| `import.meta` | ✅ Via regex rewrite | The Babel-on-parse-failure preprocessor rewrites `import.meta.url` -> `("file://" + __filename)`, `import.meta.filename` -> `__filename`, `import.meta.dirname` -> `__dirname`, and bare `import.meta` -> an object literal with all three. |
 | Top-level `await` | ✅ Via Babel (entry-script only) | When the parser rejects `await` at top level, the bootstrap retries the source wrapped in an `async` IIFE. Works for entry-point scripts that don't need to export anything. CJS modules can't synchronously export a value computed via top-level await — that's a hard limit of CJS. |
-| Dynamic `import()` | ❌ Missing | |
+| Dynamic `import()` | ✅ Via rewrite | `import(spec)` is regex-rewritten to `__dynamic_import__(spec, require)` which returns `Promise.resolve({ default: require(spec) })`. The local `require` is passed in so relative specifiers resolve against the importing module's directory. Works for built-in modules, relative paths, and bare module names. Specifiers with nested parens / commas at the top level aren't supported by the regex. |
 
 ### Compat shims seeded as fake packages
 
@@ -276,8 +277,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**658+** as of [v0.77](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.77).
-Full suite: **1957+** assertions across 428 smoke files.
+**658+** as of [v0.78](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.78).
+Full suite: **1962+** assertions across 429 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
