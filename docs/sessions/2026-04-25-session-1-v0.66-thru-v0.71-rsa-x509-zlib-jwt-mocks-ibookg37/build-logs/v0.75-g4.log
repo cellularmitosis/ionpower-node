@@ -1,0 +1,184 @@
+=== [emac/g4/0.75] rsync source ===
+Transfer starting: 2386 files
+./
+demos/npm-fetch/
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/
+src/
+src/node_compat/
+test/
+test/vendor/
+Makefile
+README.md
+demos/npm-fetch/README.md
+demos/npm-fetch/install.js
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.74-g3.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.74-g4.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.74-g5.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.75-g3.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.75-g4.log
+src/main.cpp
+src/node_compat/buffer.cpp
+src/node_compat/globals.cpp
+src/node_compat/net.cpp
+src/node_compat/process.cpp
+test/ecdsa_smoke.js
+test/vendor/elliptic/
+test/vendor/elliptic/lib/
+test/vendor/elliptic/lib/elliptic/
+test/vendor/elliptic/lib/elliptic/curve/
+test/vendor/elliptic/lib/elliptic/ec/
+test/vendor/elliptic/lib/elliptic/eddsa/
+test/vendor/elliptic/lib/elliptic/precomputed/
+test/vendor/elliptic/node_modules/
+test/vendor/elliptic/node_modules/bn.js/
+test/vendor/elliptic/node_modules/bn.js/lib/
+test/vendor/elliptic/node_modules/brorand/
+test/vendor/elliptic/node_modules/brorand/test/
+test/vendor/elliptic/node_modules/hash.js/
+test/vendor/elliptic/node_modules/hash.js/lib/
+test/vendor/elliptic/node_modules/hash.js/lib/hash/
+test/vendor/elliptic/node_modules/hash.js/lib/hash/sha/
+test/vendor/elliptic/node_modules/hash.js/test/
+test/vendor/elliptic/node_modules/hmac-drbg/
+test/vendor/elliptic/node_modules/hmac-drbg/lib/
+test/vendor/elliptic/node_modules/hmac-drbg/test/
+test/vendor/elliptic/node_modules/hmac-drbg/test/fixtures/
+test/vendor/elliptic/node_modules/minimalistic-assert/
+test/vendor/elliptic/node_modules/minimalistic-crypto-utils/
+test/vendor/elliptic/node_modules/minimalistic-crypto-utils/lib/
+test/vendor/elliptic/node_modules/minimalistic-crypto-utils/test/
+test/vendor/elliptic/README.md
+test/vendor/elliptic/lib/elliptic.js
+test/vendor/elliptic/lib/elliptic/curve/base.js
+test/vendor/elliptic/lib/elliptic/curve/edwards.js
+test/vendor/elliptic/lib/elliptic/curve/index.js
+test/vendor/elliptic/lib/elliptic/curve/mont.js
+test/vendor/elliptic/lib/elliptic/curve/short.js
+test/vendor/elliptic/lib/elliptic/curves.js
+test/vendor/elliptic/lib/elliptic/ec/index.js
+test/vendor/elliptic/lib/elliptic/ec/key.js
+test/vendor/elliptic/lib/elliptic/ec/signature.js
+test/vendor/elliptic/lib/elliptic/eddsa/index.js
+test/vendor/elliptic/lib/elliptic/eddsa/key.js
+test/vendor/elliptic/lib/elliptic/eddsa/signature.js
+test/vendor/elliptic/lib/elliptic/precomputed/secp256k1.js
+test/vendor/elliptic/lib/elliptic/utils.js
+test/vendor/elliptic/node_modules/bn.js/LICENSE
+test/vendor/elliptic/node_modules/bn.js/README.md
+test/vendor/elliptic/node_modules/bn.js/lib/bn.js
+test/vendor/elliptic/node_modules/bn.js/package.json
+test/vendor/elliptic/node_modules/brorand/.npmignore
+test/vendor/elliptic/node_modules/brorand/README.md
+test/vendor/elliptic/node_modules/brorand/index.js
+test/vendor/elliptic/node_modules/brorand/package.json
+test/vendor/elliptic/node_modules/brorand/test/api-test.js
+test/vendor/elliptic/node_modules/hash.js/.eslintrc.js
+test/vendor/elliptic/node_modules/hash.js/.travis.yml
+test/vendor/elliptic/node_modules/hash.js/README.md
+test/vendor/elliptic/node_modules/hash.js/lib/hash.d.ts
+test/vendor/elliptic/node_modules/hash.js/lib/hash.js
+test/vendor/elliptic/node_modules/hash.js/lib/hash/common.js
+test/vendor/elliptic/node_modules/hash.js/lib/hash/hmac.js
+test/vendor/elliptic/node_modules/hash.js/lib/hash/ripemd.js
+test/vendor/elliptic/node_modules/hash.js/lib/hash/sha.js
+test/vendor/elliptic/node_modules/hash.js/lib/hash/sha/1.js
+test/vendor/elliptic/node_modules/hash.js/lib/hash/sha/224.js
+test/vendor/elliptic/node_modules/hash.js/lib/hash/sha/256.js
+test/vendor/elliptic/node_modules/hash.js/lib/hash/sha/384.js
+test/vendor/elliptic/node_modules/hash.js/lib/hash/sha/512.js
+test/vendor/elliptic/node_modules/hash.js/lib/hash/sha/common.js
+test/vendor/elliptic/node_modules/hash.js/lib/hash/utils.js
+test/vendor/elliptic/node_modules/hash.js/package.json
+test/vendor/elliptic/node_modules/hash.js/test/hash-test.js
+test/vendor/elliptic/node_modules/hash.js/test/hmac-test.js
+test/vendor/elliptic/node_modules/hmac-drbg/.npmignore
+test/vendor/elliptic/node_modules/hmac-drbg/.travis.yml
+test/vendor/elliptic/node_modules/hmac-drbg/README.md
+test/vendor/elliptic/node_modules/hmac-drbg/lib/hmac-drbg.js
+test/vendor/elliptic/node_modules/hmac-drbg/package.json
+test/vendor/elliptic/node_modules/hmac-drbg/test/drbg-test.js
+test/vendor/elliptic/node_modules/hmac-drbg/test/fixtures/hmac-drbg-nist.json
+test/vendor/elliptic/node_modules/minimalistic-assert/LICENSE
+test/vendor/elliptic/node_modules/minimalistic-assert/index.js
+test/vendor/elliptic/node_modules/minimalistic-assert/package.json
+test/vendor/elliptic/node_modules/minimalistic-assert/readme.md
+test/vendor/elliptic/node_modules/minimalistic-crypto-utils/.npmignore
+test/vendor/elliptic/node_modules/minimalistic-crypto-utils/.travis.yml
+test/vendor/elliptic/node_modules/minimalistic-crypto-utils/README.md
+test/vendor/elliptic/node_modules/minimalistic-crypto-utils/lib/utils.js
+test/vendor/elliptic/node_modules/minimalistic-crypto-utils/package.json
+test/vendor/elliptic/node_modules/minimalistic-crypto-utils/test/utils-test.js
+test/vendor/elliptic/package.json
+
+sent 501686 bytes  received 6500 bytes  1902605 bytes/sec
+total size is 39856181  speedup is 78.43
+=== [emac/g4/0.75] scp Makefile + process.cpp + globals.cpp + main.cpp + net.cpp (gremlin workaround) ===
+=== [emac/g4/0.75] clean + build  (MOZJS=/opt/mozjs-45-ionpower-g4 CPU='-mcpu=7450 -mtune=7450') ===
+rm -f src/main.o src/node_compat/console.o src/node_compat/process.o src/node_compat/fs.o src/node_compat/path.o src/node_compat/buffer.o src/node_compat/require.o src/node_compat/timers.o src/node_compat/crypto.o src/node_compat/http.o src/node_compat/child_process.o src/node_compat/event_loop.o src/node_compat/net.o src/node_compat/zlib.o src/node_compat/globals.o node
+                                                                          ^
+/opt/mozjs-45-ionpower-g4/include/mozjs-45/jspubtd.h:474:74: warning: (perhaps the 'offsetof' macro was used incorrectly) [-Winvalid-offsetof]
+/opt/gcc-4.9.4/bin/g++-4.9 -m32 -mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mcpu=7450 -mtune=7450 -force_cpusubtype_ALL -std=gnu++0x -fpermissive -fno-exceptions -fno-rtti -O2 -g -I src -I /opt/mozjs-45-ionpower-g4/include/mozjs-45 src/main.o src/node_compat/console.o src/node_compat/process.o src/node_compat/fs.o src/node_compat/path.o src/node_compat/buffer.o src/node_compat/require.o src/node_compat/timers.o src/node_compat/crypto.o src/node_compat/http.o src/node_compat/child_process.o src/node_compat/event_loop.o src/node_compat/net.o src/node_compat/zlib.o src/node_compat/globals.o -o node -L /opt/mozjs-45-ionpower-g4/lib -m32 -mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -force_cpusubtype_ALL -B /opt/ld64-97.17-tigerbrew/bin/ -ljs_static -lmozglue -lpthread -lm -lz -framework Carbon -framework ExceptionHandling -lobjc -Wl,-stack_size,0x10000000
+ld: warning: object file compiled with -mlong-branch which is no longer needed. To remove this warning, recompile without -mlong-branch: /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/crt1.o
+ld: warning: object file compiled with -mlong-branch which is no longer needed. To remove this warning, recompile without -mlong-branch: /opt/gcc-libs-4.9.4/bin/../lib/gcc/powerpc-apple-darwin8.11.0/4.9.4/crt3.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,575) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,575) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1206)=k(0,46) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/timers.o
+ld: warning: js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >::trace(js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >*, JSTracer*) has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/http.o
+  [install_name_tool] @executable_path -> /opt/mozjs-45-ionpower-g4/lib
+=== [emac/g4/0.75] test-all ===
+ok: simulated fetch().arrayBuffer() -> Buffer.from(ab) round-trip
+
+buffer_from_ab smoke: all assertions passed
+./node test/ecdsa_smoke.js
+Generating EC P-256 keypair...
+keygen took 5071 ms
+ok: generateKeyPairSync('ec', { namedCurve: 'P-256' })
+Signing (ES256)...
+sign took 731 ms
+ok: ES256 sign produced 71-byte DER signature
+Verifying...
+verify took 2351 ms
+ok: ES256 verify
+ok: tamper rejected
+Generating second EC P-256 keypair for cross-key check...
+ok: cross-key verify fails
+Generating secp256k1 keypair...
+ok: secp256k1 sign/verify
+
+ecdsa smoke: all assertions passed
+=== [emac/g4/0.75] install ===
+cp test/vendor/babel.js      /opt/ionpower-node-0.75/share/ionpower-node/vendor/
+cp test/vendor/tweetnacl.js  /opt/ionpower-node-0.75/share/ionpower-node/vendor/
+cp -r test/vendor/node-forge /opt/ionpower-node-0.75/share/ionpower-node/vendor/
+cp -r test/vendor/elliptic   /opt/ionpower-node-0.75/share/ionpower-node/vendor/
+cp README.md LICENSE   /opt/ionpower-node-0.75/share/ionpower-node/ 2>/dev/null || true
+
+installed ionpower-node 0.75 to /opt/ionpower-node-0.75
+  binary:   /opt/ionpower-node-0.75/bin/node (-> ionpower-node)
+  babel:    /opt/ionpower-node-0.75/share/ionpower-node/vendor/babel.js
+  mozjs:    expected at /opt/mozjs-45-ionpower-g4/
+
+Run:  /opt/ionpower-node-0.75/bin/node <script.js>
+=== [emac/g4/0.75] tarball ===
+-rw-r--r--   1 macuser  wheel  5129540 Apr 25 06:07 /tmp/ionpower-node-0.75-g4-ppc.tar.gz
+=== [emac/g4/0.75] DONE ===

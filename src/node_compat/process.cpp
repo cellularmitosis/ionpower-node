@@ -209,7 +209,7 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
     if (!DefineEnv(cx, process)) return false;
     if (!DefineStringProp(cx, process, "platform", "darwin"))     return false;
     if (!DefineStringProp(cx, process, "arch",     "ppc"))        return false;
-    if (!DefineStringProp(cx, process, "version",  "ionpower-node-0.74")) return false;
+    if (!DefineStringProp(cx, process, "version",  "ionpower-node-0.75")) return false;
 
     JS::RootedValue pidv(cx, JS::Int32Value((int32_t)getpid()));
     if (!JS_DefineProperty(cx, process, "pid", pidv, JSPROP_ENUMERATE))
