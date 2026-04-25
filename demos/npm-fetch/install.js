@@ -142,7 +142,9 @@ function runDemo(pkgName, mod) {
     if (pkgName === "mri") {
         var argv = mod(["--port", "8080", "--verbose", "--", "extra1", "extra2"]);
         console.log("    mri parsed: " + JSON.stringify(argv));
-        if (argv.port !== "8080" || !argv.verbose) {
+        // mri auto-coerces numeric values, so .port may be 8080 (number)
+        // or "8080" (string) depending on version.
+        if (String(argv.port) !== "8080" || !argv.verbose) {
             console.error("    FAIL: mri output not as expected");
             process.exit(1);
         }

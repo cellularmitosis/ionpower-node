@@ -257,9 +257,48 @@ static bool BufferFrom(JSContext* cx, unsigned argc, JS::Value* vp) {
         args.rval().setObject(*arr);
         return true;
     }
-    // Array-like: length + [0..length-1].
     if (args[0].isObject()) {
         JS::RootedObject src(cx, &args[0].toObject());
+
+        // ArrayBuffer: copy the bytes into a fresh Uint8Array. (Node's
+        // Buffer.from(ArrayBuffer) shares memory; we copy because
+        // SM45's JS_NewUint8ArrayWithBuffer needs a length parameter
+        // we'd need to read separately, and copy is safe for the
+        // sizes Buffer is used at.)
+        if (JS_IsArrayBufferObject(src)) {
+            uint32_t blen = JS_GetArrayBufferByteLength(src);
+            JS::RootedObject arr(cx, JS_NewUint8Array(cx, blen));
+            if (!arr) return false;
+            if (blen > 0) {
+                JS::AutoCheckCannotGC nogc;
+                bool sharedDummy;
+                uint8_t* src_data = JS_GetArrayBufferData(src, &sharedDummy, nogc);
+                uint8_t* dst_data = JS_GetUint8ArrayData(arr, &sharedDummy, nogc);
+                if (src_data && dst_data) memcpy(dst_data, src_data, blen);
+            }
+            args.rval().setObject(*arr);
+            return true;
+        }
+
+        // Typed array (Uint8Array / Buffer / DataView etc.): copy bytes
+        // by their .byteOffset / .byteLength so we don't read past the
+        // backing buffer (e.g. a sliced view).
+        if (JS_IsTypedArrayObject(src)) {
+            uint32_t blen = JS_GetTypedArrayByteLength(src);
+            JS::RootedObject arr(cx, JS_NewUint8Array(cx, blen));
+            if (!arr) return false;
+            if (blen > 0) {
+                JS::AutoCheckCannotGC nogc;
+                bool sharedDummy;
+                uint8_t* src_data = (uint8_t*)JS_GetArrayBufferViewData(src, &sharedDummy, nogc);
+                uint8_t* dst_data = JS_GetUint8ArrayData(arr, &sharedDummy, nogc);
+                if (src_data && dst_data) memcpy(dst_data, src_data, blen);
+            }
+            args.rval().setObject(*arr);
+            return true;
+        }
+
+        // Array-like: length + [0..length-1].
         uint32_t len = 0;
         JS::RootedValue lv(cx);
         if (!JS_GetProperty(cx, src, "length", &lv)) return false;

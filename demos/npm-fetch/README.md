@@ -6,23 +6,23 @@ package, hitting `registry.npmjs.org` from a PowerPC iBook G3.
 ```
 $ ssh ibookg37 './node demos/npm-fetch/install.js mri'
 [1] resolving mri@latest from registry.npmjs.org
-    metadata fetched in 796 ms
+    metadata fetched in 344 ms
     -> mri@1.2.0
        https://registry.npmjs.org/mri/-/mri-1.2.0.tgz
 [2] downloading tarball
-    4448 bytes (.tgz) in 188 ms
+    4448 bytes (.tgz) in 307 ms
 [3] gunzipping via zlib.gunzipSync (tiny-inflate)
-    18432 bytes (.tar) in 31 ms  [4.14x expansion]
+    18432 bytes (.tar) in 38 ms  [4.14x expansion]
 [4] parsing POSIX ustar archive
-    7 entries (5 files) in 4 ms
+    6 entries (6 files) in 25 ms
 [5] writing to /Users/macuser/tmp/ionpower-node/node_modules/mri
-    5 files written in 89 ms
+    6 files written in 15 ms
 [6] require('mri') + sanity check
-    loaded in 14 ms
-    mri parsed: {"_":["extra1","extra2"],"port":"8080","verbose":true}
+    loaded in 6 ms
+    mri parsed: {"_":["extra1","extra2"],"port":8080,"verbose":true}
     OK: mri parsed --port 8080 --verbose into a real options object
 
-=== mri@1.2.0 installed end-to-end in ~1100 ms ===
+=== mri@1.2.0 installed end-to-end in 754 ms ===
 ```
 
 ## What this proves
