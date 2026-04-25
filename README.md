@@ -236,7 +236,7 @@ release lands.
 | `setTimeout`/`setInterval`/`setImmediate` | ✅ Wallclock-real | Enqueue into the event loop; `select()` honors the next fireAt. `setTimeout(fn, N)` sleeps ~N ms before firing. Intervals self-requeue. |
 | `TextEncoder`/`TextDecoder` | ✅ Working | UTF-8 only. |
 | `URL`/`URLSearchParams` | ✅ Polyfill | Covers protocol/host/hostname/port/pathname/search/hash/origin/href + username/password, plus search-params get/getAll/has/set/append/delete/forEach/keys/values/entries/toString/sort. Not spec-complete for IDN / non-special schemes / exotic relative resolution. |
-| `crypto` (WebCrypto) | ✅ Working | `crypto.getRandomValues`, `crypto.randomUUID`, `crypto.subtle` with `digest`/`sign`/`verify`/`encrypt`/`decrypt`/`deriveBits`/`importKey`/`exportKey`/`generateKey`/`wrapKey`/`unwrapKey` over SHA-{1,256,384,512}, HMAC, AES-{CBC,CTR,GCM,KW}, PBKDF2, HKDF, **Ed25519** (sign/verify/generateKey/import/export), **X25519** (generateKey/deriveBits — curve25519 ECDH), **ECDSA** on `P-256`/`P-384`/`secp256k1` (sign/verify with hash sha1/256/384/512; raw r‖s sigs), **NIST ECDH** on the same curves (deriveBits). `"raw"` and `"jwk"` key formats. |
+| `crypto` (WebCrypto) | ✅ Working | `crypto.getRandomValues`, `crypto.randomUUID`, `crypto.subtle` with `digest`/`sign`/`verify`/`encrypt`/`decrypt`/`deriveBits`/`importKey`/`exportKey`/`generateKey`/`wrapKey`/`unwrapKey` over SHA-{1,256,384,512}, HMAC, AES-{CBC,CTR,GCM,KW}, PBKDF2, HKDF, **Ed25519** (sign/verify/generateKey/import/export), **X25519** (generateKey/deriveBits — curve25519 ECDH), **ECDSA** on `P-256`/`P-384`/`secp256k1` (sign/verify with hash sha1/256/384/512; raw r‖s sigs), **NIST ECDH** on the same curves (deriveBits). EC JWK import/export with full `{kty:'EC', crv, x, y, d?}` shape; raw uncompressed-point (`0x04 ‖ X ‖ Y`) export for public keys. |
 | `ReadableStream`/`WritableStream`/`TransformStream` | ✅ Polyfill | WHATWG Streams minimal shape. `ReadableStream` supports `start`/`pull`/`cancel` sources, `getReader().read()`, `locked`, `tee()`, `pipeTo`, `pipeThrough`. `WritableStream` supports `start`/`write`/`close`/`abort` sinks, `getWriter().write`/`close`/`abort`/`releaseLock`. `TransformStream` bundles the pair with `start`/`transform`/`flush`. Backpressure is best-effort (no explicit high-water-mark queue). |
 | `atob`/`btoa` | ✅ Working | |
 | `EventTarget` / `Event` / `CustomEvent` | ✅ Working | DOM-style event API. `new EventTarget()`, `addEventListener`/`removeEventListener` (with `once`/`capture`/`signal` options; AbortSignal aborts the listener), `dispatchEvent`. `Event(type, init)` and `CustomEvent(type, { detail })` constructors with `target`/`currentTarget`/`type`/`defaultPrevented`/`preventDefault`/`stopPropagation`/`stopImmediatePropagation`. |
@@ -277,8 +277,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**658+** as of [v0.80](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.80).
-Full suite: **1980+** assertions across 431 smoke files.
+**658+** as of [v0.81](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.81).
+Full suite: **1990+** assertions across 432 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
