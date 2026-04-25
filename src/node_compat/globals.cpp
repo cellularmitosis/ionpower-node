@@ -5597,6 +5597,85 @@ static const char kBootstrapJS[] =
     // (dns/promises is registered later, right after the dns module
     // itself populates __require_cache__.)
 
+    // Sub-path module aliases that Node ships out of the box and that
+    // modern packages are increasingly using as their import target.
+    "  __require_cache__['fs/promises']     = fs.promises;\n"
+    "  __require_cache__['node:fs/promises']= fs.promises;\n"
+    // path: posix and win32 sub-namespaces. We're a POSIX-only runtime
+    // so both alias to the same `path` for now.
+    "  __require_cache__['path/posix']      = path;\n"
+    "  __require_cache__['path/win32']      = path;\n"
+    // stream/web: WHATWG Streams from globalThis (already polyfilled).
+    "  __require_cache__['stream/web']      = {\n"
+    "    ReadableStream:        globalThis.ReadableStream,\n"
+    "    WritableStream:        globalThis.WritableStream,\n"
+    "    TransformStream:       globalThis.TransformStream,\n"
+    "    ByteLengthQueuingStrategy: globalThis.ByteLengthQueuingStrategy,\n"
+    "    CountQueuingStrategy:  globalThis.CountQueuingStrategy\n"
+    "  };\n"
+    // stream/promises: pipeline + finished as Promise-returning (the
+    // base stream module already exposes a Promise form via stream.promises).
+    "  __require_cache__['stream/promises'] = stream.promises || {\n"
+    "    pipeline: function () {\n"
+    "      var args = Array.prototype.slice.call(arguments);\n"
+    "      return new Promise(function (resolve, reject) {\n"
+    "        args.push(function (err) { if (err) reject(err); else resolve(); });\n"
+    "        stream.pipeline.apply(null, args);\n"
+    "      });\n"
+    "    },\n"
+    "    finished: function (s, opts) {\n"
+    "      return new Promise(function (resolve, reject) {\n"
+    "        stream.finished(s, opts || {}, function (err) { if (err) reject(err); else resolve(); });\n"
+    "      });\n"
+    "    }\n"
+    "  };\n"
+    // stream/consumers: helpers that drain a ReadableStream into a
+    // Buffer / string / JSON / arrayBuffer / blob.
+    "  __require_cache__['stream/consumers'] = (function () {\n"
+    "    function _drain(rs) {\n"
+    "      return new Promise(function (resolve, reject) {\n"
+    "        if (rs && typeof rs.getReader === 'function') {\n"
+    "          var reader = rs.getReader();\n"
+    "          var chunks = [];\n"
+    "          function pump() {\n"
+    "            reader.read().then(function (r) {\n"
+    "              if (r.done) return resolve(chunks);\n"
+    "              chunks.push(r.value); pump();\n"
+    "            }, reject);\n"
+    "          }\n"
+    "          pump();\n"
+    "          return;\n"
+    "        }\n"
+    "        if (rs && typeof rs.on === 'function') {\n"
+    "          var c = [];\n"
+    "          rs.on('data', function (d) { c.push(d); });\n"
+    "          rs.on('end',  function () { resolve(c); });\n"
+    "          rs.on('error', reject);\n"
+    "          return;\n"
+    "        }\n"
+    "        reject(new TypeError('stream/consumers: not a readable stream'));\n"
+    "      });\n"
+    "    }\n"
+    "    function _toBuf(chunks) {\n"
+    "      var bufs = chunks.map(function (c) {\n"
+    "        if (Buffer.isBuffer(c)) return c;\n"
+    "        if (c instanceof Uint8Array) return Buffer.from(c.buffer, c.byteOffset, c.byteLength);\n"
+    "        if (typeof c === 'string') return Buffer.from(c, 'utf8');\n"
+    "        return Buffer.from(c);\n"
+    "      });\n"
+    "      return Buffer.concat(bufs);\n"
+    "    }\n"
+    "    return {\n"
+    "      buffer:      function (rs) { return _drain(rs).then(_toBuf); },\n"
+    "      arrayBuffer: function (rs) { return _drain(rs).then(_toBuf).then(function (b) {\n"
+    "        return b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength);\n"
+    "      }); },\n"
+    "      text:        function (rs) { return _drain(rs).then(_toBuf).then(function (b) { return b.toString('utf8'); }); },\n"
+    "      json:        function (rs) { return _drain(rs).then(_toBuf).then(function (b) { return JSON.parse(b.toString('utf8')); }); },\n"
+    "      blob:        function (rs) { return _drain(rs).then(_toBuf); }  /* no Blob class; closest equivalent */\n"
+    "    };\n"
+    "  })();\n"
+
     // worker_threads: we have no real threads, so the surface is the
     // "isMainThread = true" half. Libraries doing `if (isMainThread)`
     // branch correctly to their synchronous fallback; libraries that
