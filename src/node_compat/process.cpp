@@ -12,6 +12,8 @@
 #include <errno.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 extern char** environ;
 
 // Forward-declare the native write handler; installed per-stream below.
@@ -49,6 +51,78 @@ static bool ProcessExit(JSContext* cx, unsigned argc, JS::Value* vp) {
     // not reached
 }
 
+// process.cpuUsage([previous]) — Node returns user + system in
+// microseconds; if `previous` is passed, returns the delta.
+static bool ProcessCpuUsage(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    struct rusage ru;
+    if (getrusage(RUSAGE_SELF, &ru) != 0) {
+        JS_ReportError(cx, "process.cpuUsage: %s", strerror(errno));
+        return false;
+    }
+    int64_t user = (int64_t)ru.ru_utime.tv_sec * 1000000 + (int64_t)ru.ru_utime.tv_usec;
+    int64_t sys  = (int64_t)ru.ru_stime.tv_sec * 1000000 + (int64_t)ru.ru_stime.tv_usec;
+
+    // Optional previous arg: subtract its .user / .system fields.
+    if (args.length() >= 1 && args[0].isObject()) {
+        JS::RootedObject prev(cx, &args[0].toObject());
+        JS::RootedValue uv(cx), sv(cx);
+        if (JS_GetProperty(cx, prev, "user", &uv) && uv.isNumber())
+            user -= (int64_t)uv.toNumber();
+        if (JS_GetProperty(cx, prev, "system", &sv) && sv.isNumber())
+            sys -= (int64_t)sv.toNumber();
+    }
+
+    JS::RootedObject out(cx, JS_NewPlainObject(cx));
+    if (!out) return false;
+    JS::RootedValue uV(cx, JS::NumberValue((double)user));
+    JS::RootedValue sV(cx, JS::NumberValue((double)sys));
+    if (!JS_DefineProperty(cx, out, "user",   uV, JSPROP_ENUMERATE)) return false;
+    if (!JS_DefineProperty(cx, out, "system", sV, JSPROP_ENUMERATE)) return false;
+    args.rval().setObject(*out);
+    return true;
+}
+
+// process.resourceUsage() — Node-style stats from getrusage.
+static bool ProcessResourceUsage(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    struct rusage ru;
+    if (getrusage(RUSAGE_SELF, &ru) != 0) {
+        JS_ReportError(cx, "process.resourceUsage: %s", strerror(errno));
+        return false;
+    }
+    JS::RootedObject out(cx, JS_NewPlainObject(cx));
+    if (!out) return false;
+
+    auto setNum = [&](const char* key, double v) {
+        JS::RootedValue val(cx, JS::NumberValue(v));
+        return JS_DefineProperty(cx, out, key, val, JSPROP_ENUMERATE);
+    };
+
+    double user = (double)ru.ru_utime.tv_sec * 1e6 + (double)ru.ru_utime.tv_usec;
+    double sys  = (double)ru.ru_stime.tv_sec * 1e6 + (double)ru.ru_stime.tv_usec;
+    if (!setNum("userCPUTime",   user)) return false;
+    if (!setNum("systemCPUTime", sys))  return false;
+    // ru_maxrss on Darwin is in bytes; Node reports it in KB.
+    if (!setNum("maxRSS",                 (double)ru.ru_maxrss / 1024.0)) return false;
+    if (!setNum("sharedMemorySize",       (double)ru.ru_ixrss)) return false;
+    if (!setNum("unsharedDataSize",       (double)ru.ru_idrss)) return false;
+    if (!setNum("unsharedStackSize",      (double)ru.ru_isrss)) return false;
+    if (!setNum("minorPageFault",         (double)ru.ru_minflt)) return false;
+    if (!setNum("majorPageFault",         (double)ru.ru_majflt)) return false;
+    if (!setNum("swappedOut",             (double)ru.ru_nswap)) return false;
+    if (!setNum("fsRead",                 (double)ru.ru_inblock)) return false;
+    if (!setNum("fsWrite",                (double)ru.ru_oublock)) return false;
+    if (!setNum("ipcSent",                (double)ru.ru_msgsnd)) return false;
+    if (!setNum("ipcReceived",            (double)ru.ru_msgrcv)) return false;
+    if (!setNum("signalsCount",           (double)ru.ru_nsignals)) return false;
+    if (!setNum("voluntaryContextSwitches",   (double)ru.ru_nvcsw)) return false;
+    if (!setNum("involuntaryContextSwitches", (double)ru.ru_nivcsw)) return false;
+
+    args.rval().setObject(*out);
+    return true;
+}
+
 static bool ProcessGetenv(JSContext* cx, unsigned argc, JS::Value* vp) {
     // Not standard Node API, but convenient mirror of os.getenv.
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -72,9 +146,11 @@ static bool ProcessGetenv(JSContext* cx, unsigned argc, JS::Value* vp) {
 }
 
 static const JSFunctionSpec kProcessFuncs[] = {
-    JS_FN("cwd",    ProcessCwd,    0, 0),
-    JS_FN("exit",   ProcessExit,   1, 0),
-    JS_FN("getenv", ProcessGetenv, 1, 0),
+    JS_FN("cwd",            ProcessCwd,           0, 0),
+    JS_FN("exit",           ProcessExit,          1, 0),
+    JS_FN("getenv",         ProcessGetenv,        1, 0),
+    JS_FN("cpuUsage",       ProcessCpuUsage,      1, 0),
+    JS_FN("resourceUsage",  ProcessResourceUsage, 0, 0),
     JS_FS_END
 };
 
@@ -133,7 +209,7 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
     if (!DefineEnv(cx, process)) return false;
     if (!DefineStringProp(cx, process, "platform", "darwin"))     return false;
     if (!DefineStringProp(cx, process, "arch",     "ppc"))        return false;
-    if (!DefineStringProp(cx, process, "version",  "ionpower-node-0.52")) return false;
+    if (!DefineStringProp(cx, process, "version",  "ionpower-node-0.53")) return false;
 
     JS::RootedValue pidv(cx, JS::Int32Value((int32_t)getpid()));
     if (!JS_DefineProperty(cx, process, "pid", pidv, JSPROP_ENUMERATE))
