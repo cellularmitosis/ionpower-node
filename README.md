@@ -154,9 +154,10 @@ the runtime, today:
 
 - **TLS / `https.createServer` / `wss://`** — no OpenSSL binding;
   client-side `https.request` falls back to a sync curl shim.
-- **NIST ECDH** (P-256 / P-384) — ECDSA sign/verify works (via
-  vendored elliptic) but ECDH key agreement isn't wired yet. X25519
-  ECDH does work.
+- (Asymmetric crypto is now feature-complete on the curves we
+  support: RSA + Ed25519 + ECDSA + ECDH all work for sign / verify
+  / encrypt / decrypt / agree. RSA / ECDSA / ECDH are slow on G3
+  because bn.js bignum isn't tuned for 32-bit PowerPC.)
 - **Brotli** — `zlib.brotliCompressSync` / `brotliDecompressSync`
   throw. `gzip` / `deflate` work for real.
 - **`Intl`** — SM45 was built `--without-intl-api`. Blocks luxon,
@@ -195,7 +196,7 @@ release lands.
 | `events` | ✅ Working | `EventEmitter` with `on`/`once`/`off`/`emit`/`addListener`/`removeListener`/`removeAllListeners`/`listenerCount`/`listeners`/`rawListeners`/`eventNames`/`prependListener`/`prependOnceListener`. Module exports `events.once(emitter, name)` (Promise), `events.getEventListeners`, `events.setMaxListeners`, `events.defaultMaxListeners`. |
 | `util` | ✅ Working | `format`, `inspect` (depth-limited, cycle-safe), `inherits`, `promisify` (+ `.custom`), `callbackify`, `deprecate`, `types.*`, `isDeepStrictEqual`, `stripVTControlCharacters`, `parseArgs`, `TextEncoder`/`TextDecoder`, plus all the legacy `isX` predicates. |
 | `buffer` | ✅ Working | `Buffer` class: `from` (string/array/Buffer/ArrayBuffer), `alloc`, `allocUnsafe`, `isBuffer`, `concat`, `byteLength`, `compare`, `isEncoding`. Instance: `toString`, `slice`, `write`, `copy`, `fill`, `indexOf`, `includes`, `equals`, `.length`. |
-| `crypto` | ✅ Working | `randomBytes` (real entropy), `pseudoRandomBytes`, `randomUUID` (v4), `randomInt`, `createHash` (**md5/sha1/sha224/sha256/sha384/sha512**), `createHmac` across all of those, `pbkdf2Sync`/`pbkdf2` across all of those, `scryptSync`/`scrypt` (RFC 7914), `createCipheriv`/`createDecipheriv` (**AES-128/192/256 in CBC / CTR / GCM**; NIST SP 800-38A F.2.5 / F.5.5 + NIST GCM Test Case 3 vectors verified; PKCS#7 padding for CBC; setAAD/setAuthTag/getAuthTag for GCM), `hkdfSync`/`hkdf` (RFC 5869 across all hashes; TC1 verified), `timingSafeEqual`, `createSecretKey`, `createPrivateKey`, `createPublicKey` (raw/JWK Ed25519 + PEM RSA), `generateKeyPair{,Sync}` (Ed25519 native, **RSA** via node-forge), `sign`/`verify` (Ed25519 native + RSA via forge across sha256/sha384/sha512), `publicEncrypt`/`privateDecrypt` (RSA-OAEP across sha1/sha256), **ECDSA** via vendored elliptic on `P-256`/`P-384`/`P-521`/`secp256k1` (slow on G3 — ~3 s sign, ~13 s verify for P-256), `X509Certificate` (PEM/DER ctor; `subject`/`issuer`/`validFrom`/`validTo`/`serialNumber`/`fingerprint{,256,512}`/`raw`/`subjectAltName`/`publicKey`/`ca`; `toString`/`toJSON` -> PEM; `checkIssued`/`checkPrivateKey`/`checkHost`/`verify`), `getHashes`, `getCiphers`. No NIST ECDH. |
+| `crypto` | ✅ Working | `randomBytes` (real entropy), `pseudoRandomBytes`, `randomUUID` (v4), `randomInt`, `createHash` (**md5/sha1/sha224/sha256/sha384/sha512**), `createHmac` across all of those, `pbkdf2Sync`/`pbkdf2` across all of those, `scryptSync`/`scrypt` (RFC 7914), `createCipheriv`/`createDecipheriv` (**AES-128/192/256 in CBC / CTR / GCM**; NIST SP 800-38A F.2.5 / F.5.5 + NIST GCM Test Case 3 vectors verified; PKCS#7 padding for CBC; setAAD/setAuthTag/getAuthTag for GCM), `hkdfSync`/`hkdf` (RFC 5869 across all hashes; TC1 verified), `timingSafeEqual`, `createSecretKey`, `createPrivateKey`, `createPublicKey` (raw/JWK Ed25519 + PEM RSA), `generateKeyPair{,Sync}` (Ed25519 native, **RSA** via node-forge), `sign`/`verify` (Ed25519 native + RSA via forge across sha256/sha384/sha512), `publicEncrypt`/`privateDecrypt` (RSA-OAEP across sha1/sha256), **ECDSA** via vendored elliptic on `P-256`/`P-384`/`P-521`/`secp256k1` (slow on G3 — ~3 s sign, ~13 s verify for P-256), `crypto.diffieHellman({ privateKey, publicKey })` for **NIST ECDH** on the same curves (returns left-padded X-coordinate Buffer), `X509Certificate` (PEM/DER ctor; `subject`/`issuer`/`validFrom`/`validTo`/`serialNumber`/`fingerprint{,256,512}`/`raw`/`subjectAltName`/`publicKey`/`ca`; `toString`/`toJSON` -> PEM; `checkIssued`/`checkPrivateKey`/`checkHost`/`verify`), `getHashes`, `getCiphers`. |
 | `http` | ✅ Working | Real async `http.request`/`http.get`/`http.createServer` on top of `net.Socket` + an in-house HTTP/1.1 parser. Content-Length and chunked Transfer-Encoding on both sides. Server supports auto-chunked responses (stream `.write()` without Content-Length) and keep-alive pipelining. `IncomingMessage` / `ServerResponse` / `ClientRequest` classes present. Sync `http.getSync`/`postSync` retained (curl-backed, handles HTTPS). |
 | `https` | 🟡 Partial | Async `https.request`/etc falls back to the sync curl shim (TLS without OpenSSL binding). |
 | `dns` | ✅ Working | `lookup` / `resolve` / `resolve4` / `resolve6` / `promises.lookup` via `gethostbyname` (blocking under the hood; called from event-loop `setImmediate`). MX/TXT/CNAME/SRV/NS `resolve*` return empty arrays for compatibility. |
@@ -273,8 +274,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**658+** as of [v0.75](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.75).
-Full suite: **1945+** assertions across 426 smoke files.
+**658+** as of [v0.76](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.76).
+Full suite: **1955+** assertions across 427 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.

@@ -2285,6 +2285,28 @@ static const char kBootstrapJS[] =
     "    try { return key._elliptic.verify(dig, Array.prototype.slice.call(sigBytes)); }\n"
     "    catch (e) { return false; }\n"
     "  }\n"
+    // ECDH key agreement. crypto.diffieHellman({ privateKey, publicKey })
+    // returns the shared secret as a Buffer (the X coordinate of the
+    // derived point, big-endian, padded to the curve's byte length).
+    "  function _ecdhDerive(privateKey, publicKey) {\n"
+    "    if (!(privateKey instanceof KeyObject) || privateKey.asymmetricKeyType !== 'ec') {\n"
+    "      throw new TypeError('crypto.diffieHellman: privateKey must be EC KeyObject');\n"
+    "    }\n"
+    "    if (!(publicKey instanceof KeyObject) || publicKey.asymmetricKeyType !== 'ec') {\n"
+    "      throw new TypeError('crypto.diffieHellman: publicKey must be EC KeyObject');\n"
+    "    }\n"
+    "    if (privateKey._curve !== publicKey._curve) {\n"
+    "      throw new Error('crypto.diffieHellman: curve mismatch (' +\n"
+    "        privateKey._curve + ' vs ' + publicKey._curve + ')');\n"
+    "    }\n"
+    "    var sharedBN = privateKey._elliptic.derive(publicKey._elliptic.getPublic());\n"
+    "    /* Node returns the X coordinate as a left-padded Buffer of the\n"
+    "       curve's byte length (P-256 -> 32 bytes, P-384 -> 48, P-521 -> 66). */\n"
+    "    var hex = sharedBN.toString(16);\n"
+    "    var byteLen = ({ 'P-256': 32, 'P-384': 48, 'P-521': 66, secp256k1: 32 })[privateKey._curve] || 32;\n"
+    "    while (hex.length < byteLen * 2) hex = '0' + hex;\n"
+    "    return Buffer.from(hex, 'hex');\n"
+    "  }\n"
     // Wrap a forge keypair (with .publicKey, .privateKey forge objects)
     // into Node-style KeyObject pair. We carry the forge keys on _forge
     // and stash their PEM forms for export().
@@ -3092,6 +3114,7 @@ static const char kBootstrapJS[] =
     "    publicEncrypt:       publicEncrypt,\n"
     "    privateDecrypt:      privateDecrypt,\n"
     "    X509Certificate:     X509Certificate,\n"
+    "    diffieHellman:       function (opts) { return _ecdhDerive(opts.privateKey, opts.publicKey); },\n"
     "    generateKeyPairSync: cryptoGenerateKeyPairSync,\n"
     "    generateKeyPair:     cryptoGenerateKeyPair,\n"
     "    timingSafeEqual: function (a, b) {\n"
