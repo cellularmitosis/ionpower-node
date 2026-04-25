@@ -1,0 +1,497 @@
+=== [pmacg5/g5/0.72] rsync source ===
+Transfer starting: 2286 files
+deleting docs/session-2026-04-25-x-summary.md
+deleting docs/session-2026-04-24-w-summary.md
+deleting docs/session-2026-04-24-v-summary.md
+deleting docs/session-2026-04-24-u-summary.md
+deleting docs/session-2026-04-24-t-summary.md
+deleting docs/session-2026-04-24-s-summary.md
+deleting docs/session-2026-04-24-r-summary.md
+deleting docs/session-2026-04-24-q-summary.md
+deleting docs/session-2026-04-24-p-summary.md
+deleting docs/session-2026-04-24-n-summary.md
+deleting docs/session-2026-04-24-m-summary.md
+deleting docs/session-2026-04-24-l-summary.md
+deleting docs/session-2026-04-24-k-summary.md
+deleting docs/session-2026-04-24-j-summary.md
+deleting docs/session-2026-04-23-i-summary.md
+deleting docs/session-2026-04-23-h-summary.md
+deleting docs/session-2026-04-23-g-summary.md
+deleting docs/session-2026-04-23-f-summary.md
+deleting docs/session-2026-04-23-e-summary.md
+deleting docs/session-2026-04-23-d-summary.md
+deleting docs/session-2026-04-22-summary.md
+deleting docs/session-2026-04-22-c-summary.md
+deleting docs/session-2026-04-22-b-summary.md
+deleting docs/session-2026-04-21-resume.md
+deleting test/fib-report.txt
+./
+docs/
+CLAUDE.md
+Makefile
+README.md
+docs/sessions/
+docs/sessions/2026-04-21-session-resume/
+docs/sessions/2026-04-21-session-resume/build-logs/
+docs/sessions/2026-04-21-session-resume/release-notes/
+docs/sessions/2026-04-22-session-a/
+docs/sessions/2026-04-22-session-b/
+docs/sessions/2026-04-22-session-c/
+docs/sessions/2026-04-23-session-d/
+docs/sessions/2026-04-21-session-resume/build-logs/sync-to-g5.log
+docs/sessions/2026-04-23-session-d/release-notes/
+docs/sessions/2026-04-23-session-e/
+docs/sessions/2026-04-23-session-e/release-notes/
+docs/sessions/2026-04-23-session-f/
+docs/sessions/2026-04-23-session-f/release-notes/
+docs/sessions/2026-04-23-session-g/
+docs/sessions/2026-04-23-session-g/release-notes/
+docs/sessions/2026-04-23-session-h/
+docs/sessions/2026-04-23-session-h/release-notes/
+docs/sessions/2026-04-23-session-i/
+docs/sessions/2026-04-21-session-resume/release-notes/acorn-commit-msg.txt
+docs/sessions/2026-04-21-session-resume/release-notes/hb-commit-msg.txt
+docs/sessions/2026-04-21-session-resume/release-notes/lodash-commit-msg.txt
+docs/sessions/2026-04-21-session-resume/release-notes/marked-commit-msg.txt
+docs/sessions/2026-04-21-session-resume/release-notes/ts-commit-msg.txt
+docs/sessions/2026-04-21-session-resume/summary.md
+docs/sessions/2026-04-22-session-a/summary.md
+docs/sessions/2026-04-22-session-b/summary.md
+docs/sessions/2026-04-22-session-c/summary.md
+docs/sessions/2026-04-23-session-d/release-notes/v0.1-initial-commit-msg.txt
+docs/sessions/2026-04-23-session-d/release-notes/v0.1-notes.md
+docs/sessions/2026-04-23-session-d/release-notes/v0.2-release-notes.md
+docs/sessions/2026-04-23-session-d/summary.md
+docs/sessions/2026-04-23-session-e/release-notes/v0.3-release-notes.md
+docs/sessions/2026-04-23-session-e/release-notes/v0.4-release-notes.md
+docs/sessions/2026-04-23-session-e/summary.md
+docs/sessions/2026-04-23-session-f/release-notes/v0.5-release-notes.md
+docs/sessions/2026-04-23-session-i/release-notes/
+docs/sessions/2026-04-23-session-f/summary.md
+docs/sessions/2026-04-23-session-g/release-notes/v0.6-release-notes.md
+docs/sessions/2026-04-23-session-g/summary.md
+docs/sessions/2026-04-23-session-h/release-notes/v0.7-release-notes.md
+docs/sessions/2026-04-23-session-h/release-notes/v0.8-commit-msg.txt
+docs/sessions/2026-04-23-session-h/release-notes/v0.8-release-notes.md
+docs/sessions/2026-04-23-session-h/summary.md
+docs/sessions/2026-04-23-session-i/release-notes/v0.9-commit-msg.txt
+docs/sessions/2026-04-23-session-i/release-notes/v0.9-release-notes.md
+docs/sessions/2026-04-23-session-i/summary.md
+docs/sessions/2026-04-24-session-j/
+docs/sessions/2026-04-24-session-j/release-notes/
+docs/sessions/2026-04-24-session-j/scripts/
+docs/sessions/2026-04-24-session-k/
+docs/sessions/2026-04-24-session-j/release-notes/v0.10-commit.txt
+docs/sessions/2026-04-24-session-j/release-notes/v0.10-release-notes.md
+docs/sessions/2026-04-24-session-j/release-notes/v0.11-commit.txt
+docs/sessions/2026-04-24-session-j/release-notes/v0.11-release-notes.md
+docs/sessions/2026-04-24-session-j/release-notes/v0.11-tag.txt
+docs/sessions/2026-04-24-session-j/scripts/install-mozjs-45-ionpower-pmacg5.sh
+docs/sessions/2026-04-24-session-j/summary.md
+docs/sessions/2026-04-24-session-k/release-notes/
+docs/sessions/2026-04-24-session-l/
+docs/sessions/2026-04-24-session-m/
+docs/sessions/2026-04-24-session-m/release-notes/
+docs/sessions/2026-04-24-session-n/
+docs/sessions/2026-04-24-session-n/release-notes/
+docs/sessions/2026-04-24-session-k/release-notes/v0.12-commit.txt
+docs/sessions/2026-04-24-session-k/release-notes/v0.12-release-notes.md
+docs/sessions/2026-04-24-session-k/release-notes/v0.12-tag.txt
+docs/sessions/2026-04-24-session-k/summary.md
+docs/sessions/2026-04-24-session-l/summary.md
+docs/sessions/2026-04-24-session-m/release-notes/v0.13-commit.txt
+docs/sessions/2026-04-24-session-m/release-notes/v0.13-release-notes.md
+docs/sessions/2026-04-24-session-m/release-notes/v0.13-tag.txt
+docs/sessions/2026-04-24-session-m/summary.md
+docs/sessions/2026-04-24-session-n/release-notes/v0.14-commit.txt
+docs/sessions/2026-04-24-session-n/release-notes/v0.14-release-notes.md
+docs/sessions/2026-04-24-session-n/release-notes/v0.14-tag.txt
+docs/sessions/2026-04-24-session-n/summary.md
+docs/sessions/2026-04-24-session-p/
+docs/sessions/2026-04-24-session-p/release-notes/
+docs/sessions/2026-04-24-session-q/
+docs/sessions/2026-04-24-session-q/release-notes/
+docs/sessions/2026-04-24-session-r/
+docs/sessions/2026-04-24-session-r/release-notes/
+docs/sessions/2026-04-24-session-s/
+docs/sessions/2026-04-24-session-p/release-notes/v0.15-commit.txt
+docs/sessions/2026-04-24-session-s/release-notes/
+docs/sessions/2026-04-24-session-t/
+docs/sessions/2026-04-24-session-p/release-notes/v0.15-release-notes.md
+docs/sessions/2026-04-24-session-p/release-notes/v0.15-tag.txt
+docs/sessions/2026-04-24-session-p/release-notes/v0.16-commit.txt
+docs/sessions/2026-04-24-session-p/release-notes/v0.16-release-notes.md
+docs/sessions/2026-04-24-session-p/release-notes/v0.16-tag.txt
+docs/sessions/2026-04-24-session-p/summary.md
+docs/sessions/2026-04-24-session-q/release-notes/v0.17-commit.txt
+docs/sessions/2026-04-24-session-q/release-notes/v0.17-release-notes.md
+docs/sessions/2026-04-24-session-q/release-notes/v0.17-tag.txt
+docs/sessions/2026-04-24-session-q/release-notes/v0.18-commit.txt
+docs/sessions/2026-04-24-session-q/release-notes/v0.18-release-notes.md
+docs/sessions/2026-04-24-session-q/release-notes/v0.18-tag.txt
+docs/sessions/2026-04-24-session-q/summary.md
+docs/sessions/2026-04-24-session-r/release-notes/v0.19-commit.txt
+docs/sessions/2026-04-24-session-r/release-notes/v0.19-release-notes.md
+docs/sessions/2026-04-24-session-r/release-notes/v0.19-tag.txt
+docs/sessions/2026-04-24-session-r/summary.md
+docs/sessions/2026-04-24-session-s/release-notes/v0.20-commit.txt
+docs/sessions/2026-04-24-session-s/release-notes/v0.20-release-notes.md
+docs/sessions/2026-04-24-session-s/release-notes/v0.20-tag.txt
+docs/sessions/2026-04-24-session-s/release-notes/v0.21-commit.txt
+docs/sessions/2026-04-24-session-s/release-notes/v0.21-release-notes.md
+docs/sessions/2026-04-24-session-s/release-notes/v0.21-tag.txt
+docs/sessions/2026-04-24-session-s/summary.md
+docs/sessions/2026-04-24-session-t/summary.md
+docs/sessions/2026-04-24-session-u/
+docs/sessions/2026-04-24-session-u/build-logs/
+docs/sessions/2026-04-24-session-u/release-notes/
+docs/sessions/2026-04-24-session-u/scripts/
+docs/sessions/2026-04-24-session-v/
+docs/sessions/2026-04-24-session-v/build-logs/
+docs/sessions/2026-04-24-session-v/release-notes/
+docs/sessions/2026-04-24-session-u/build-logs/v0.23-g3.log
+docs/sessions/2026-04-24-session-w/
+docs/sessions/2026-04-24-session-u/build-logs/v0.23-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/
+docs/sessions/2026-04-24-session-w/release-notes/
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/
+docs/sessions/2026-04-24-session-u/build-logs/v0.23-g5.log
+docs/sessions/2026-04-24-session-u/release-notes/v0.22-commit.txt
+docs/sessions/2026-04-24-session-u/release-notes/v0.22-release-notes.md
+docs/sessions/2026-04-24-session-u/release-notes/v0.22-tag.txt
+docs/sessions/2026-04-24-session-u/release-notes/v0.23-notes.md
+docs/sessions/2026-04-24-session-u/scripts/triad-v0.23-g4.sh
+docs/sessions/2026-04-24-session-u/scripts/triad-v0.23.sh
+docs/sessions/2026-04-24-session-u/summary.md
+docs/sessions/2026-04-24-session-v/build-logs/v0.24-g3.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.24-g4.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.24-g5.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.25-g3.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.25-g4.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.25-g5.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.26-g3.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.26-g4.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.26-g5.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.27-g3.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.27-g4.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/release-notes/
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/scripts/
+docs/sessions/2026-04-25-session-x/
+docs/sessions/2026-04-25-session-x/build-logs/
+docs/sessions/2026-04-25-session-x/release-notes/
+examples/
+examples/chat/
+scripts/
+src/
+src/node_compat/
+docs/sessions/2026-04-24-session-v/build-logs/v0.27-g5.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.28-g3.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.28-g4.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.28-g5.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.29-g3.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.29-g4.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.29-g5.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.30-g3.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.30-g4.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.30-g5.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.31-g3.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.31-g4.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.31-g5.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.32-g3.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.32-g4.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.32-g5.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.33-g3.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.33-g4.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.33-g5.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.34-g3.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.34-g4.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.34-g5.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.35-g3.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.35-g4.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.35-g5.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.36-g3.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.36-g4.log
+docs/sessions/2026-04-24-session-v/build-logs/v0.36-g5.log
+docs/sessions/2026-04-24-session-v/release-notes/v0.24-notes.md
+docs/sessions/2026-04-24-session-v/release-notes/v0.25-notes.md
+docs/sessions/2026-04-24-session-v/release-notes/v0.26-commit-msg.txt
+docs/sessions/2026-04-24-session-v/release-notes/v0.26-notes.md
+docs/sessions/2026-04-24-session-v/release-notes/v0.27-commit-msg.txt
+docs/sessions/2026-04-24-session-v/release-notes/v0.27-notes.md
+docs/sessions/2026-04-24-session-v/release-notes/v0.28-commit-msg.txt
+docs/sessions/2026-04-24-session-v/release-notes/v0.28-notes.md
+docs/sessions/2026-04-24-session-v/release-notes/v0.29-commit-msg.txt
+docs/sessions/2026-04-24-session-v/release-notes/v0.29-notes.md
+docs/sessions/2026-04-24-session-v/release-notes/v0.30-commit-msg.txt
+docs/sessions/2026-04-24-session-v/release-notes/v0.30-notes.md
+docs/sessions/2026-04-24-session-v/release-notes/v0.31-commit-msg.txt
+docs/sessions/2026-04-24-session-v/release-notes/v0.31-notes.md
+docs/sessions/2026-04-24-session-v/release-notes/v0.32-commit-msg.txt
+docs/sessions/2026-04-24-session-v/release-notes/v0.32-notes.md
+docs/sessions/2026-04-24-session-v/release-notes/v0.33-commit-msg.txt
+docs/sessions/2026-04-24-session-v/release-notes/v0.33-notes.md
+docs/sessions/2026-04-24-session-v/release-notes/v0.34-commit-msg.txt
+docs/sessions/2026-04-24-session-v/release-notes/v0.34-notes.md
+docs/sessions/2026-04-24-session-v/release-notes/v0.35-commit-msg.txt
+docs/sessions/2026-04-24-session-v/release-notes/v0.35-notes.md
+docs/sessions/2026-04-24-session-v/release-notes/v0.36-commit-msg.txt
+docs/sessions/2026-04-24-session-v/release-notes/v0.36-notes.md
+docs/sessions/2026-04-24-session-v/summary.md
+docs/sessions/2026-04-24-session-w/build-logs/v0.37-g3.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.37-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.37-g5.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.38-g3.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.38-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.38-g5.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.39-g3.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.39-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.39-g5.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.40-g3.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.40-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.40-g5.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.41-g3.log
+test/
+docs/sessions/2026-04-24-session-w/build-logs/v0.41-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.41-g5.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.42-g3.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.42-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.42-g5.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.43-g3.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.43-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.43-g5.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.44-g3.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.44-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.44-g5.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.45-g3.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.45-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.45-g5.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.46-g3.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.46-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.46-g5.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.47-g3.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.47-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.47-g5.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.48-g3.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.48-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.48-g5.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.49-g3.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.49-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.49-g5.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.50-g3.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.50-g4.log
+docs/sessions/2026-04-24-session-w/build-logs/v0.50-g5.log
+docs/sessions/2026-04-24-session-w/release-notes/v0.37-commit-msg.txt
+docs/sessions/2026-04-24-session-w/release-notes/v0.37-notes.md
+docs/sessions/2026-04-24-session-w/release-notes/v0.38-commit-msg.txt
+docs/sessions/2026-04-24-session-w/release-notes/v0.38-notes.md
+docs/sessions/2026-04-24-session-w/release-notes/v0.39-commit-msg.txt
+docs/sessions/2026-04-24-session-w/release-notes/v0.39-notes.md
+docs/sessions/2026-04-24-session-w/release-notes/v0.40-commit-msg.txt
+docs/sessions/2026-04-24-session-w/release-notes/v0.40-notes.md
+docs/sessions/2026-04-24-session-w/release-notes/v0.41-commit-msg.txt
+docs/sessions/2026-04-24-session-w/release-notes/v0.41-notes.md
+docs/sessions/2026-04-24-session-w/release-notes/v0.42-commit-msg.txt
+docs/sessions/2026-04-24-session-w/release-notes/v0.42-notes.md
+docs/sessions/2026-04-24-session-w/release-notes/v0.43-commit-msg.txt
+docs/sessions/2026-04-24-session-w/release-notes/v0.43-notes.md
+docs/sessions/2026-04-24-session-w/release-notes/v0.44-commit-msg.txt
+docs/sessions/2026-04-24-session-w/release-notes/v0.44-notes.md
+docs/sessions/2026-04-24-session-w/release-notes/v0.45-commit-msg.txt
+docs/sessions/2026-04-24-session-w/release-notes/v0.45-notes.md
+docs/sessions/2026-04-24-session-w/release-notes/v0.46-commit-msg.txt
+docs/sessions/2026-04-24-session-w/release-notes/v0.46-notes.md
+docs/sessions/2026-04-24-session-w/release-notes/v0.47-commit-msg.txt
+docs/sessions/2026-04-24-session-w/release-notes/v0.47-notes.md
+docs/sessions/2026-04-24-session-w/release-notes/v0.48-commit-msg.txt
+docs/sessions/2026-04-24-session-w/release-notes/v0.48-notes.md
+docs/sessions/2026-04-24-session-w/release-notes/v0.49-commit-msg.txt
+docs/sessions/2026-04-24-session-w/release-notes/v0.49-notes.md
+docs/sessions/2026-04-24-session-w/release-notes/v0.50-commit-msg.txt
+docs/sessions/2026-04-24-session-w/release-notes/v0.50-notes.md
+docs/sessions/2026-04-24-session-w/summary.md
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.66-g3.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.66-g4.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.66-g5.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.67-g3.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.67-g4.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.67-g5.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.68-g3.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.68-g4.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.68-g5.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.69-g3.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.69-g4.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.69-g5.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.70-g3.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.70-g4.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.70-g5.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.71-g3.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.71-g4.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.71-g5.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.71-ibookg37-tests.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.71-ibookg37-validate.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.72-g3.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.72-g4.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.72-g5.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/notes.md
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/release-notes/v0.66.md
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/release-notes/v0.67.md
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/release-notes/v0.68.md
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/release-notes/v0.69.md
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/release-notes/v0.70-msg.txt
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/release-notes/v0.70.md
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/release-notes/v0.71-msg.txt
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/release-notes/v0.71.md
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/release-notes/workflow-commit-msg.txt
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/scripts/migrate-legacy-tmp-artifacts.sh
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/scripts/migrate-triad-build-logs.sh
+docs/sessions/2026-04-25-session-x/build-logs/v0.51-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.51-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.51-g5.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.52-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.52-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.52-g5.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.53-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.53-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.53-g5.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.54-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.54-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.54-g5.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.55-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.55-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.55-g5.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.56-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.56-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.56-g5.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.57-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.57-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.57-g5.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.58-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.58-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.58-g5.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.59-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.59-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.59-g5.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.60-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.60-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.60-g5.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.61-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.61-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.61-g5.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.62-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.62-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.62-g5.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.63-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.63-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.63-g5.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.64-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.64-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.64-g5.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.65-g3.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.65-g4.log
+docs/sessions/2026-04-25-session-x/build-logs/v0.65-g5.log
+docs/sessions/2026-04-25-session-x/release-notes/v0.51-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.51-notes.md
+docs/sessions/2026-04-25-session-x/release-notes/v0.52-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.52-notes.md
+docs/sessions/2026-04-25-session-x/release-notes/v0.53-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.53-notes.md
+docs/sessions/2026-04-25-session-x/release-notes/v0.54-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.54-notes.md
+docs/sessions/2026-04-25-session-x/release-notes/v0.55-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.56-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.56-notes.md
+docs/sessions/2026-04-25-session-x/release-notes/v0.57-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.58-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.59-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.60-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.61-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.62-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.63-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.64-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.65-commit-msg.txt
+docs/sessions/2026-04-25-session-x/release-notes/v0.65-notes.md
+docs/sessions/2026-04-25-session-x/summary.md
+docs/sessions/README.md
+examples/chat/README.md
+examples/chat/index.html
+examples/chat/server.js
+scripts/triad-build.sh
+src/main.cpp
+src/node_compat/buffer.cpp
+src/node_compat/globals.cpp
+src/node_compat/net.cpp
+src/node_compat/process.cpp
+test/os_real_smoke.js
+
+sent 2848850 bytes  received 11486 bytes  2933377 bytes/sec
+total size is 39428139  speedup is 13.78
+=== [pmacg5/g5/0.72] scp Makefile + process.cpp + globals.cpp + main.cpp + net.cpp (gremlin workaround) ===
+=== [pmacg5/g5/0.72] clean + build  (MOZJS=/opt/mozjs-45-ionpower-g5 CPU='-mcpu=G5 -D_PPC970_') ===
+rm -f src/main.o src/node_compat/console.o src/node_compat/process.o src/node_compat/fs.o src/node_compat/path.o src/node_compat/buffer.o src/node_compat/require.o src/node_compat/timers.o src/node_compat/crypto.o src/node_compat/http.o src/node_compat/child_process.o src/node_compat/event_loop.o src/node_compat/net.o src/node_compat/zlib.o src/node_compat/globals.o node
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,575) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,575) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1206)=k(0,46) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: duplicate dylib /opt/gcc-4.9.4/lib/libstdc++.6.dylib
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src32.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src21.o) and (default) in src/node_compat/timers.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/buffer.o
+ld: warning: js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >::trace(js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >*, JSTracer*) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/http.o
+  [install_name_tool] @executable_path -> /opt/mozjs-45-ionpower-g5/lib
+=== [pmacg5/g5/0.72] test-all ===
+ok 9 - mock.fn mockImplementation switches behavior
+# pass 9
+# fail 0
+./node test/cluster_stub_smoke.js
+ok: cluster master-half shape
+ok: cluster.fork rejects
+ok: cluster is EventEmitter
+ok: setupMaster / setupPrimary
+ok: cluster.disconnect (single-process)
+
+cluster stub smoke: all assertions passed
+./node test/os_real_smoke.js
+ok: os.cpus() = [{"model":"PowerPC G5 (970)","speed":2300,"times":{"user":0,"nice":0,"sys":0,"idle":0,"irq":0}},{"model":"PowerPC G5 (970)","speed":2300,"times":{"user":0,"nice":0,"sys":0,"idle":0,"irq":0}}]
+ok: os.hostname() = pmacg5.home
+ok: os.loadavg() = [6.2, 5.55, 4.98]
+ok: os.totalmem() = 2147483648 bytes (2048 MB)
+ok: os.freemem() = 1168961536 bytes (1115 MB)
+ok: caching of expensive probes
+
+os_real smoke: all assertions passed
+=== [pmacg5/g5/0.72] install ===
+ln -sf ionpower-node /opt/ionpower-node-0.72/bin/node
+cp test/vendor/babel.js      /opt/ionpower-node-0.72/share/ionpower-node/vendor/
+cp test/vendor/tweetnacl.js  /opt/ionpower-node-0.72/share/ionpower-node/vendor/
+cp -r test/vendor/node-forge /opt/ionpower-node-0.72/share/ionpower-node/vendor/
+cp README.md LICENSE   /opt/ionpower-node-0.72/share/ionpower-node/ 2>/dev/null || true
+
+installed ionpower-node 0.72 to /opt/ionpower-node-0.72
+  binary:   /opt/ionpower-node-0.72/bin/node (-> ionpower-node)
+  babel:    /opt/ionpower-node-0.72/share/ionpower-node/vendor/babel.js
+  mozjs:    expected at /opt/mozjs-45-ionpower-g5/
+
+Run:  /opt/ionpower-node-0.72/bin/node <script.js>
+=== [pmacg5/g5/0.72] tarball ===
+-rw-r--r--   1 macuser  wheel  4941292 Apr 25 05:19 /tmp/ionpower-node-0.72-g5-ppc.tar.gz
+=== [pmacg5/g5/0.72] DONE ===

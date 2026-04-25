@@ -129,7 +129,7 @@ release lands.
 | `fs.constants` | ✅ Working | `F_OK`/`R_OK`/`W_OK`/`X_OK`/`O_RDONLY`/`O_WRONLY`/`O_RDWR`. |
 | `fs.createReadStream`/`WriteStream` | ✅ Working | `createReadStream(path, {highWaterMark, encoding, start, end})` emits `'open'`/`'data'`/`'end'`/`'close'`. `createWriteStream(path, {flags})` supports `'w'` (write) / `'a'` (append); flushes on `.end()`. Whole-file-in-memory under the hood — not truly streaming to disk, but fine for realistic file sizes on Tiger-era kit. `.pipe()` works. |
 | `path` | ✅ Working | `join`, `resolve`, `normalize`, `dirname`, `basename`, `extname`, `relative`, `parse`, `format`, `sep`, `delimiter`, `isAbsolute`. POSIX-only runtime, so `require('path/posix')` and `require('path/win32')` both alias to the same `path`. |
-| `os` | ✅ Working | `platform` (`darwin`), `arch` (`ppc`), `type`, `release`, `version`, `machine`, `endianness` (`BE`), `homedir`, `tmpdir`, `hostname`, `cpus`, `uptime`, `loadavg`, `freemem`, `totalmem`, `userInfo`, `networkInterfaces` (empty stub), `EOL`, `devNull`, `availableParallelism`, `constants.signals/errno/priority`. |
+| `os` | ✅ Working | `platform` (`darwin`), `arch` (`ppc`), `type`, `release`, `version`, `machine`, `endianness` (`BE`), `homedir`, `tmpdir`, `EOL`, `devNull`, `availableParallelism`, `userInfo`, `networkInterfaces` (empty stub), `constants.signals/errno/priority`. **`hostname()`** runs `/bin/hostname`. **`cpus()`** probes `hw.cpusubtype` + `hw.cpufrequency` + `hw.ncpu` via `sysctl` and maps the Mach-O subtype (9/10/11/100) to the right PowerPC variant (G3 750 / G4 7400 / G4 7450 / G5 970). **`loadavg()`** parses `/usr/bin/uptime`. **`totalmem()`** is `hw.memsize` via sysctl. **`freemem()`** is `Pages free + Pages speculative` from `/usr/bin/vm_stat`. |
 | `events` | ✅ Working | `EventEmitter` with `on`/`once`/`off`/`emit`/`addListener`/`removeListener`/`removeAllListeners`/`listenerCount`/`listeners`/`rawListeners`/`eventNames`/`prependListener`/`prependOnceListener`. Module exports `events.once(emitter, name)` (Promise), `events.getEventListeners`, `events.setMaxListeners`, `events.defaultMaxListeners`. |
 | `util` | ✅ Working | `format`, `inspect` (depth-limited, cycle-safe), `inherits`, `promisify` (+ `.custom`), `callbackify`, `deprecate`, `types.*`, `isDeepStrictEqual`, `stripVTControlCharacters`, `parseArgs`, `TextEncoder`/`TextDecoder`, plus all the legacy `isX` predicates. |
 | `buffer` | ✅ Working | `Buffer` class: `from` (string/array/Buffer/ArrayBuffer), `alloc`, `allocUnsafe`, `isBuffer`, `concat`, `byteLength`, `compare`, `isEncoding`. Instance: `toString`, `slice`, `write`, `copy`, `fill`, `indexOf`, `includes`, `equals`, `.length`. |
@@ -211,8 +211,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**658+** as of [v0.71](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.71).
-Full suite: **1900+** assertions across 422 smoke files.
+**658+** as of [v0.72](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.72).
+Full suite: **1915+** assertions across 423 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
