@@ -163,9 +163,11 @@ the runtime, today:
 - **`Intl`** — SM45 was built `--without-intl-api`. Blocks luxon,
   ICU-dependent date / number formatters.
 - **Native addons** — no N-API.
-- **Top-level `await`, `import.meta`, dynamic `import()`** —
-  the Babel-on-parse-failure path lowers `async function` / `await`
-  / `import` / `export` but not these three.
+- **`import.meta`, dynamic `import()`** — the Babel-on-parse-failure
+  path lowers `async function` / `await` / `import` / `export` but
+  not these two. (Top-level `await` works for entry-point scripts via
+  an async-IIFE wrap; CJS modules still can't synchronously export
+  a top-level-await result.)
 - **Worker shared memory** — `worker_threads` is process-backed
   (each Worker is a fresh `node` child), so `transferList` /
   `MessageChannel` / `MessagePort` / `Atomics` don't apply. Use
@@ -259,7 +261,7 @@ release lands.
 | ESM `import`/`export` | 🟡 Via Babel | Bootstrap lazily loads `@babel/standalone` on parse failure and re-evaluates the ESM-lowered source. Handles `import X from "y"`, `export default`, `export { X }`. Does **not** handle top-level `await`, dynamic `import()`, or `import.meta`. Cached on disk at `~/.ionpower-cache/babel-v1/`. |
 | `async`/`await` / `for await` | ✅ Via Babel | `async function` / `await expr` / `try { await reject } catch` / `for await (chunk of asyncIter)` all work — same path as ESM (Babel lowers on parse failure). `Symbol.asyncIterator` is polyfilled; WebStreams `Readable` and `events.on()` iterators carry the well-known so `for await` recognizes them. |
 | `import.meta` | ❌ Missing | |
-| Top-level `await` | ❌ Missing | No async context. |
+| Top-level `await` | ✅ Via Babel (entry-script only) | When the parser rejects `await` at top level, the bootstrap retries the source wrapped in an `async` IIFE. Works for entry-point scripts that don't need to export anything. CJS modules can't synchronously export a value computed via top-level await — that's a hard limit of CJS. |
 | Dynamic `import()` | ❌ Missing | |
 
 ### Compat shims seeded as fake packages
@@ -274,8 +276,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**658+** as of [v0.76](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.76).
-Full suite: **1955+** assertions across 427 smoke files.
+**658+** as of [v0.77](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.77).
+Full suite: **1957+** assertions across 428 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.

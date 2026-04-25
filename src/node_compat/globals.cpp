@@ -8539,6 +8539,49 @@ static const char kBootstrapJS[] =
     "      return '_' + c.charCodeAt(0).toString(16) + '_';\n"
     "    });\n"
     "  }\n"
+    // Heuristic: does the source contain `await` at what looks like
+    // top level (not inside an `async function` block)? This is a
+    // brace-counting scanner; not perfect but good enough for the
+    // common entry-script case `var x = await fetch(...)`. Inside
+    // strings/regexes/comments we may false-positive but the wrap
+    // is harmless.
+    "  function _looksLikeTopLevelAwait(src) {\n"
+    "    if (!/\\bawait\\b/.test(src)) return false;\n"
+    "    // Strip line + block comments + string literals to reduce noise.\n"
+    "    var s = String(src)\n"
+    "      .replace(/\\/\\*[\\s\\S]*?\\*\\//g, '')\n"
+    "      .replace(/\\/\\/[^\\n]*/g, '')\n"
+    "      .replace(/\"(?:[^\"\\\\]|\\\\.)*\"/g, '\"\"')\n"
+    "      .replace(/'(?:[^'\\\\]|\\\\.)*'/g, \"''\");\n"
+    "    var depth = 0;\n"          // brace depth from top-level perspective
+    "    var asyncDepth = -1;\n"    // depth at which we entered an async function (or -1 = not in one)
+    "    var i = 0; var n = s.length;\n"
+    "    while (i < n) {\n"
+    "      var ch = s.charAt(i);\n"
+    "      if (ch === '{') { depth++; i++; continue; }\n"
+    "      if (ch === '}') {\n"
+    "        if (asyncDepth === depth) asyncDepth = -1;\n"
+    "        depth--; i++; continue;\n"
+    "      }\n"
+    "      // Detect 'async function' (with optional name + space).\n"
+    "      if (asyncDepth < 0 && s.substr(i, 5) === 'async') {\n"
+    "        var rest = s.substr(i + 5).match(/^\\s+function\\b/);\n"
+    "        if (rest) { asyncDepth = depth + 1; /* applies inside the upcoming brace */ }\n"
+    "      }\n"
+    "      // Detect arrow async: 'async (...) =>' OR 'async x =>'.\n"
+    "      if (asyncDepth < 0 && /^async\\s*(\\(|[A-Za-z_$])/.test(s.substr(i, 32))) {\n"
+    "        // Arrow body may or may not be braced; conservative: skip\n"
+    "        // mark, treat as async until next ';' or matching brace.\n"
+    "        asyncDepth = depth;\n"
+    "      }\n"
+    "      // Detect bare 'await' at the current depth.\n"
+    "      if (s.substr(i, 5) === 'await' && /\\W/.test(s.charAt(i - 1) || ' ') && /\\s/.test(s.charAt(i + 5) || '')) {\n"
+    "        if (asyncDepth < 0) return true;   // top-level await found\n"
+    "      }\n"
+    "      i++;\n"
+    "    }\n"
+    "    return false;\n"
+    "  }\n"
     "  function __babel_lazy_load__() {\n"
     "    if (__babel_instance__) return __babel_instance__;\n"
     "    if (__babel_attempted__) return null;\n"
@@ -8593,8 +8636,17 @@ static const char kBootstrapJS[] =
     "    var babel = __babel_lazy_load__();\n"
     "    if (!babel) return null;\n"
     "    var code;\n"
+    // Top-level-await pre-detection: if the source contains a bare
+    // `await` token outside an `async function` context, pre-wrap in
+    // an async IIFE so Babel sees something it can lower. This is a
+    // heuristic but it's right for the common entry-script case
+    // (`var x = await fetch(...)` at the top of a file).
+    "    var srcForBabel = rawSrc;\n"
+    "    if (_looksLikeTopLevelAwait(rawSrc)) {\n"
+    "      srcForBabel = '(async function () {\\n' + rawSrc + '\\n})();';\n"
+    "    }\n"
     "    try {\n"
-    "      code = babel.transform(rawSrc, { presets: ['env'] }).code;\n"
+    "      code = babel.transform(srcForBabel, { presets: ['env'] }).code;\n"
     "    } catch (e) { return null; }\n"
     "    __babel_mem_cache__[absPath] = { mtime: mtime, code: code };\n"
     // Disk cache write (best-effort).
