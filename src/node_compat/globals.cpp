@@ -6413,7 +6413,13 @@ static const char kBootstrapJS[] =
     "      return this;\n"
     "    };\n"
     "    process.stdin.setEncoding = function (enc) { this._encoding = enc; return this; };\n"
-    "    process.stdin.setRawMode  = function () { return this; };\n"
+    // setRawMode(true) -> tcsetattr to ICANON-off + ECHO-off; (false)
+    // restores the saved termios. No-op when stdin isn't a TTY.
+    "    process.stdin.setRawMode  = function (raw) {\n"
+    "      try { var prev = process._setRawMode(0, !!raw); this.isRaw = !!raw; return this; }\n"
+    "      catch (e) { return this; }\n"
+    "    };\n"
+    "    process.stdin.isRaw       = false;\n"
     "    process.stdin.unref       = function () { return this; };\n"
     "    process.stdin.ref         = function () { return this; };\n"
     "    process.stdin.read        = function () {\n"

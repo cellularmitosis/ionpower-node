@@ -1,0 +1,93 @@
+=== [ibookg37/g3/0.80] rsync source ===
+Transfer starting: 2405 files
+deleting test/fib-report.txt
+./
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/
+src/
+src/node_compat/
+Makefile
+README.md
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.79-g3.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.79-g4.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.79-g5.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.80-g3.log
+src/main.cpp
+test/
+src/node_compat/buffer.cpp
+src/node_compat/globals.cpp
+src/node_compat/net.cpp
+src/node_compat/process.cpp
+test/raw_mode_smoke.js
+
+sent 200268 bytes  received 5254 bytes  270744 bytes/sec
+total size is 40029165  speedup is 194.77
+=== [ibookg37/g3/0.80] scp Makefile + process.cpp + globals.cpp + main.cpp + net.cpp (gremlin workaround) ===
+=== [ibookg37/g3/0.80] clean + build  (MOZJS=/opt/mozjs-45-ionpower-g3 CPU='-mcpu=750 -mtune=750') ===
+rm -f src/main.o src/node_compat/console.o src/node_compat/process.o src/node_compat/fs.o src/node_compat/path.o src/node_compat/buffer.o src/node_compat/require.o src/node_compat/timers.o src/node_compat/crypto.o src/node_compat/http.o src/node_compat/child_process.o src/node_compat/event_loop.o src/node_compat/net.o src/node_compat/zlib.o src/node_compat/globals.o node
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src10.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src16.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src31.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src26.o) and (default) in src/node_compat/timers.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src1.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src1.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src1.o) and (default) in src/node_compat/buffer.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src1.o) and (default) in src/node_compat/timers.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/buffer.o
+ld: warning: js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >::trace(js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >*, JSTracer*) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/http.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/timers.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src4.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src4.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src4.o) and (default) in src/node_compat/buffer.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src4.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(jsarray.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src12.o) and (default) in src/node_compat/timers.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(RegExp.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(RegExp.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(RegExp.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src2.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src2.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src2.o) and (default) in src/node_compat/buffer.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src2.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src18.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Unified_cpp_js_src9.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Promise.o) and (default) in src/node_compat/timers.o
+  [install_name_tool] @executable_path -> /opt/mozjs-45-ionpower-g3/lib
+=== [ibookg37/g3/0.80] test-all ===
+./node test/subtle_ecdsa_smoke.js
+Generating ECDSA P-256 keypair via crypto.subtle.generateKey...
+keygen took 13626 ms
+ok: subtle.generateKey ECDSA P-256
+ok: subtle.sign ECDSA -> raw r||s 64 bytes
+ok: subtle.verify ECDSA
+ok: subtle ECDSA tamper rejected
+Generating two P-256 keypairs for ECDH...
+ok: subtle.deriveBits ECDH P-256 round-trip
+
+subtle_ecdsa smoke: all assertions passed
+./node test/raw_mode_smoke.js
+ok: process._setRawMode + _tty_size native bindings exposed
+ok: setRawMode no-ops on non-TTY stdin
+ok: tty_size returns null for non-TTY
+ok: process.stdin.setRawMode flag toggling
+ok: _setRawMode(0, false) doesn't throw
+skip: stdout not a TTY (running under make/pipe)
+
+raw_mode smoke: all assertions passed
+=== [ibookg37/g3/0.80] install ===
+cp test/vendor/babel.js      /opt/ionpower-node-0.80/share/ionpower-node/vendor/
+cp test/vendor/tweetnacl.js  /opt/ionpower-node-0.80/share/ionpower-node/vendor/
+cp -r test/vendor/node-forge /opt/ionpower-node-0.80/share/ionpower-node/vendor/
+cp -r test/vendor/elliptic   /opt/ionpower-node-0.80/share/ionpower-node/vendor/
+cp README.md LICENSE   /opt/ionpower-node-0.80/share/ionpower-node/ 2>/dev/null || true
+
+installed ionpower-node 0.80 to /opt/ionpower-node-0.80
+  binary:   /opt/ionpower-node-0.80/bin/node (-> ionpower-node)
+  babel:    /opt/ionpower-node-0.80/share/ionpower-node/vendor/babel.js
+  mozjs:    expected at /opt/mozjs-45-ionpower-g3/
+
+Run:  /opt/ionpower-node-0.80/bin/node <script.js>
+=== [ibookg37/g3/0.80] tarball ===
+-rw-r--r--   1 macuser  wheel  4898813 Apr 25 07:43 /tmp/ionpower-node-0.80-g3-ppc.tar.gz
+=== [ibookg37/g3/0.80] DONE ===

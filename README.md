@@ -215,7 +215,7 @@ release lands.
 | `url` | ✅ Working | Legacy `parse` (full URL object shape), `format`, `resolve`, `fileURLToPath`, `pathToFileURL`, plus WHATWG `URL`/`URLSearchParams` globals. |
 | `assert` | ✅ Working | `equal`, `strictEqual`, `notEqual`, `notStrictEqual`, `deepEqual`, `deepStrictEqual`, `throws`, `doesNotThrow`, `fail`, `ok`, `AssertionError`. |
 | `timers` | ✅ Working | `setImmediate`/`setTimeout`/`setInterval` + matching clears enqueue into the event loop. `select()`-based loop blocks until the next `fireAt` (real wallclock), wakes on fd events or `SIGCHLD`, then fires due timers. `setTimeout(fn, 100)` really does wait ~100ms. Intervals re-queue themselves. |
-| `tty` | 🟡 Stub | `ReadStream`/`WriteStream` exported as EE-derived stubs. |
+| `tty` | ✅ Working | `tty.ReadStream`/`WriteStream` constructors, `tty.isatty(fd)`. `process.stdin.setRawMode(bool)` is real — `tcsetattr`-backed via the `process._setRawMode` native; saves the original termios on first call so `setRawMode(false)` restores exactly what the user had. `process.stdout.columns`/`rows` come from `ioctl(TIOCGWINSZ)` at startup; falls back to 80×24 if the fd isn't a sized TTY. CLI prompt libraries (inquirer, prompts) work as a result. |
 | `module` | ✅ Working | `createRequire(filename)`, `builtinModules`, `isBuiltin(name)`, `Module` class with `_cache` (mirrors `__require_cache__`), `_extensions`, `wrap(src)`, `wrapper`, plus static `Module.{builtinModules,isBuiltin,createRequire}`. |
 | `async_hooks` | ✅ Working | `AsyncLocalStorage` (run/getStore/exit/disable/enterWith). State snapshot is captured at every microtask + timer enqueue (Promise.then chains, setTimeout, setImmediate, queueMicrotask) and restored before the callback fires, so `als.run(store, () => Promise.resolve().then(...))` propagates correctly. Doesn't yet propagate through I/O event-loop `ioWatch` callbacks. `executionAsyncId`/`createHook` callable but no-op. |
 | `diagnostics_channel` | ✅ Working | `channel(name)`, `subscribe`/`unsubscribe`, `hasSubscribers`, `publish(data)`. Channel instances cached by name. Module-level `dc.subscribe(name, fn)` / `dc.unsubscribe`. `tracingChannel(name)` returns `{ start, end, asyncStart, asyncEnd, error }` sub-channels with `.traceSync(fn, ctx)` / `.tracePromise(fn, ctx)` / `.traceCallback(fn, position, ctx, ...args)` helpers. |
@@ -277,8 +277,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**658+** as of [v0.79](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.79).
-Full suite: **1971+** assertions across 430 smoke files.
+**658+** as of [v0.80](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.80).
+Full suite: **1980+** assertions across 431 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.

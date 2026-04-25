@@ -11,6 +11,8 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
+#include <termios.h>
+#include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -145,10 +147,95 @@ static bool ProcessGetenv(JSContext* cx, unsigned argc, JS::Value* vp) {
     return true;
 }
 
+// process._setRawMode(fd, raw): tcsetattr-based raw-mode toggle for
+// process.stdin (or any TTY fd). Caches the original termios on
+// first raw-mode call so a setRawMode(false) afterwards restores
+// exactly what the user had before. Returns the previous raw state.
+static struct termios kSavedTermios[3];
+static bool           kSavedTermiosValid[3] = { false, false, false };
+static bool           kCurrentlyRaw[3]      = { false, false, false };
+
+static bool ProcessSetRawMode(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 2 || !args[0].isInt32()) {
+        JS_ReportError(cx, "process._setRawMode: (fd, bool) required");
+        return false;
+    }
+    int fd = args[0].toInt32();
+    bool wantRaw = JS::ToBoolean(args[1]);
+    if (fd < 0 || fd > 2) {
+        JS_ReportError(cx, "process._setRawMode: fd must be 0/1/2");
+        return false;
+    }
+    if (!isatty(fd)) {
+        // Not a TTY — silently no-op (matches Node when stdin is a pipe).
+        args.rval().setBoolean(false);
+        return true;
+    }
+    bool prev = kCurrentlyRaw[fd];
+    if (wantRaw) {
+        // Save original on first raw call.
+        if (!kSavedTermiosValid[fd]) {
+            if (tcgetattr(fd, &kSavedTermios[fd]) != 0) {
+                JS_ReportError(cx, "process._setRawMode: tcgetattr: %s", strerror(errno));
+                return false;
+            }
+            kSavedTermiosValid[fd] = true;
+        }
+        struct termios raw = kSavedTermios[fd];
+        // Mirror Node's setRawMode — disable canonical mode + echo +
+        // signal char generation; turn off CR/NL translation; keep
+        // 8-bit clean.
+        raw.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL | IXON);
+        raw.c_oflag &= ~OPOST;
+        raw.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
+        raw.c_cflag &= ~(CSIZE | PARENB);
+        raw.c_cflag |= CS8;
+        raw.c_cc[VMIN]  = 1;
+        raw.c_cc[VTIME] = 0;
+        if (tcsetattr(fd, TCSANOW, &raw) != 0) {
+            JS_ReportError(cx, "process._setRawMode: tcsetattr raw: %s", strerror(errno));
+            return false;
+        }
+        kCurrentlyRaw[fd] = true;
+    } else {
+        if (kSavedTermiosValid[fd]) {
+            if (tcsetattr(fd, TCSANOW, &kSavedTermios[fd]) != 0) {
+                JS_ReportError(cx, "process._setRawMode: tcsetattr restore: %s", strerror(errno));
+                return false;
+            }
+        }
+        kCurrentlyRaw[fd] = false;
+    }
+    args.rval().setBoolean(prev);
+    return true;
+}
+
+// process._tty_size(fd): returns { columns, rows } using TIOCGWINSZ,
+// or null if the fd isn't a TTY or the ioctl fails.
+static bool ProcessTtySize(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    int fd = (args.length() >= 1 && args[0].isInt32()) ? args[0].toInt32() : 1;
+    if (!isatty(fd)) { args.rval().setNull(); return true; }
+    struct winsize ws;
+    if (ioctl(fd, TIOCGWINSZ, &ws) != 0) {
+        args.rval().setNull(); return true;
+    }
+    JS::RootedObject o(cx, JS_NewPlainObject(cx));
+    JS::RootedValue cv(cx, JS::Int32Value(ws.ws_col ? ws.ws_col : 80));
+    JS::RootedValue rv(cx, JS::Int32Value(ws.ws_row ? ws.ws_row : 24));
+    if (!JS_DefineProperty(cx, o, "columns", cv, JSPROP_ENUMERATE)) return false;
+    if (!JS_DefineProperty(cx, o, "rows",    rv, JSPROP_ENUMERATE)) return false;
+    args.rval().setObject(*o);
+    return true;
+}
+
 static const JSFunctionSpec kProcessFuncs[] = {
     JS_FN("cwd",            ProcessCwd,           0, 0),
     JS_FN("exit",           ProcessExit,          1, 0),
     JS_FN("getenv",         ProcessGetenv,        1, 0),
+    JS_FN("_setRawMode",    ProcessSetRawMode,    2, 0),
+    JS_FN("_tty_size",      ProcessTtySize,       1, 0),
     JS_FN("cpuUsage",       ProcessCpuUsage,      1, 0),
     JS_FN("resourceUsage",  ProcessResourceUsage, 0, 0),
     JS_FS_END
@@ -209,7 +296,7 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
     if (!DefineEnv(cx, process)) return false;
     if (!DefineStringProp(cx, process, "platform", "darwin"))     return false;
     if (!DefineStringProp(cx, process, "arch",     "ppc"))        return false;
-    if (!DefineStringProp(cx, process, "version",  "ionpower-node-0.79")) return false;
+    if (!DefineStringProp(cx, process, "version",  "ionpower-node-0.80")) return false;
 
     JS::RootedValue pidv(cx, JS::Int32Value((int32_t)getpid()));
     if (!JS_DefineProperty(cx, process, "pid", pidv, JSPROP_ENUMERATE))
@@ -226,11 +313,19 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
         if (!JS_DefineProperty(cx, s, "fd", fdV, JSPROP_ENUMERATE)) return nullptr;
         JS::RootedValue isttyV(cx, JS::BooleanValue(isatty(fd) != 0));
         if (!JS_DefineProperty(cx, s, "isTTY", isttyV, JSPROP_ENUMERATE)) return nullptr;
-        // Columns / rows: unknown-but-non-zero when TTY, otherwise undefined.
-        // (We don't yet call TIOCGWINSZ.)
+        // Columns / rows: query the real terminal via TIOCGWINSZ when
+        // the fd is a TTY. Falls back to 80x24 if the ioctl reports
+        // zero (some pseudo-TTYs do that before the controlling
+        // process sets a size).
         if (isatty(fd)) {
-            JS::RootedValue c(cx, JS::Int32Value(80));
-            JS::RootedValue r(cx, JS::Int32Value(24));
+            int cols = 80, rows = 24;
+            struct winsize ws;
+            if (ioctl(fd, TIOCGWINSZ, &ws) == 0) {
+                if (ws.ws_col) cols = ws.ws_col;
+                if (ws.ws_row) rows = ws.ws_row;
+            }
+            JS::RootedValue c(cx, JS::Int32Value(cols));
+            JS::RootedValue r(cx, JS::Int32Value(rows));
             if (!JS_DefineProperty(cx, s, "columns", c, JSPROP_ENUMERATE)) return nullptr;
             if (!JS_DefineProperty(cx, s, "rows",    r, JSPROP_ENUMERATE)) return nullptr;
         }
