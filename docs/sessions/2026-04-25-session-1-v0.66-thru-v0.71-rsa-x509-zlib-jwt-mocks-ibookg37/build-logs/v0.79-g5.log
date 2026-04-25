@@ -1,0 +1,95 @@
+=== [pmacg5/g5/0.79] rsync source ===
+Transfer starting: 2403 files
+deleting test/fib-report.txt
+./
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/
+src/
+src/node_compat/
+Makefile
+README.md
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.78-g3.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.78-g4.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.78-g5.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.79-g3.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.79-g4.log
+docs/sessions/2026-04-25-session-1-v0.66-thru-v0.71-rsa-x509-zlib-jwt-mocks-ibookg37/build-logs/v0.79-g5.log
+src/main.cpp
+src/node_compat/buffer.cpp
+test/
+src/node_compat/globals.cpp
+src/node_compat/net.cpp
+src/node_compat/process.cpp
+test/subtle_ecdsa_smoke.js
+
+sent 203580 bytes  received 5288 bytes  107051 bytes/sec
+total size is 39998125  speedup is 191.50
+=== [pmacg5/g5/0.79] scp Makefile + process.cpp + globals.cpp + main.cpp + net.cpp (gremlin workaround) ===
+=== [pmacg5/g5/0.79] clean + build  (MOZJS=/opt/mozjs-45-ionpower-g5 CPU='-mcpu=G5 -D_PPC970_') ===
+rm -f src/main.o src/node_compat/console.o src/node_compat/process.o src/node_compat/fs.o src/node_compat/path.o src/node_compat/buffer.o src/node_compat/require.o src/node_compat/timers.o src/node_compat/crypto.o src/node_compat/http.o src/node_compat/child_process.o src/node_compat/event_loop.o src/node_compat/net.o src/node_compat/zlib.o src/node_compat/globals.o node
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,575) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,575) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1206)=k(0,46) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: duplicate dylib /opt/gcc-4.9.4/lib/libstdc++.6.dylib
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src32.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src21.o) and (default) in src/node_compat/timers.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/buffer.o
+ld: warning: js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >::trace(js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >*, JSTracer*) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/http.o
+  [install_name_tool] @executable_path -> /opt/mozjs-45-ionpower-g5/lib
+=== [pmacg5/g5/0.79] test-all ===
+top_level_await smoke: all assertions passed
+./node test/import_meta_smoke.js
+ok: import.meta.url
+ok: import.meta.filename / .dirname
+ok: dynamic import('fs')
+ok: dynamic import('/abs/path')
+ok: await import('fs')
+
+import_meta smoke: all assertions passed
+./node test/subtle_ecdsa_smoke.js
+Generating ECDSA P-256 keypair via crypto.subtle.generateKey...
+keygen took 10370 ms
+ok: subtle.generateKey ECDSA P-256
+ok: subtle.sign ECDSA -> raw r||s 64 bytes
+ok: subtle.verify ECDSA
+ok: subtle ECDSA tamper rejected
+Generating two P-256 keypairs for ECDH...
+ok: subtle.deriveBits ECDH P-256 round-trip
+
+subtle_ecdsa smoke: all assertions passed
+=== [pmacg5/g5/0.79] install ===
+cp test/vendor/babel.js      /opt/ionpower-node-0.79/share/ionpower-node/vendor/
+cp test/vendor/tweetnacl.js  /opt/ionpower-node-0.79/share/ionpower-node/vendor/
+cp -r test/vendor/node-forge /opt/ionpower-node-0.79/share/ionpower-node/vendor/
+cp -r test/vendor/elliptic   /opt/ionpower-node-0.79/share/ionpower-node/vendor/
+cp README.md LICENSE   /opt/ionpower-node-0.79/share/ionpower-node/ 2>/dev/null || true
+
+installed ionpower-node 0.79 to /opt/ionpower-node-0.79
+  binary:   /opt/ionpower-node-0.79/bin/node (-> ionpower-node)
+  babel:    /opt/ionpower-node-0.79/share/ionpower-node/vendor/babel.js
+  mozjs:    expected at /opt/mozjs-45-ionpower-g5/
+
+Run:  /opt/ionpower-node-0.79/bin/node <script.js>
+=== [pmacg5/g5/0.79] tarball ===
+-rw-r--r--   1 macuser  wheel  5036217 Apr 25 07:27 /tmp/ionpower-node-0.79-g5-ppc.tar.gz
+=== [pmacg5/g5/0.79] DONE ===
