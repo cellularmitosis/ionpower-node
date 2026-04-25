@@ -363,6 +363,10 @@ static bool DoCurl(JSContext* cx, const char* url, const char* method,
     }
 
     // Body as string (UTF-8 decoded). For binary use .bodyBytes below.
+    // Bodies with non-UTF-8 bytes (gzip / images / tar) leave the
+    // string side empty but the bytes path still works; clear any
+    // pending JS exception that the failed decode left behind so the
+    // bodyBytes Uint8Array we build next isn't tripped up by it.
     if (bodyBuf) {
         JS::UTF8Chars u8(bodyBuf, bodyLen2);
         size_t u16len = 0;
@@ -373,6 +377,15 @@ static bool DoCurl(JSContext* cx, const char* url, const char* method,
                 JS::RootedValue bV(cx, JS::StringValue(bodyStr));
                 JS_DefineProperty(cx, result, "body", bV, JSPROP_ENUMERATE);
             }
+        } else if (JS_IsExceptionPending(cx)) {
+            // UTF-8 decode failed (binary body); clear so subsequent
+            // JSAPI calls aren't poisoned by the pending exception.
+            JS_ClearPendingException(cx);
+            // Set body to empty string so consumers get a sane value
+            // if they read .body instead of .bodyBytes.
+            JS::RootedString empty(cx, JS_NewStringCopyZ(cx, ""));
+            JS::RootedValue eV(cx, JS::StringValue(empty));
+            JS_DefineProperty(cx, result, "body", eV, JSPROP_ENUMERATE);
         }
         // Also expose raw bytes as a Uint8Array.
         JS::RootedObject arr(cx, JS_NewUint8Array(cx, bodyLen2));

@@ -65,26 +65,70 @@ test/           400+ smoke files. Most pair with a vendored library:
                             (require fallback) and as smoke targets.
 ```
 
-## Build (triad: imacg3 / emac / pmacg5)
+## Setup on a Tiger PPC host
 
-Each host has a matching SpiderMonkey at `/opt/mozjs-45-ionpower-{g3,g4,g5}/`
-already built. The runtime tarball unpacks beside it.
+The runtime needs a matching SpiderMonkey + IonPower JIT installed
+beside it. Both are shipped as separate release tarballs so you only
+download the SpiderMonkey once (it's a few hundred MB on disk and
+rarely changes), then unpack a fresh runtime tarball per release.
+
+**Final layout on the host** (G3 example):
+
+```
+/opt/
+├── mozjs-45-ionpower-g3/        <- SpiderMonkey + IonPower JIT (-mcpu=750)
+│   ├── bin/, include/, lib/...
+└── ionpower-node-0.73/          <- Node-compat runtime
+    └── bin/node                 <- the executable; expects sibling /opt/mozjs-45-ionpower-g3/
+```
+
+For G4 hosts, `mozjs-45-ionpower-g4` (`-mcpu=7450`); for G5,
+`mozjs-45-ionpower-g5` (`-mcpu=G5 -D_PPC970_`). The runtime is
+arch-specific too — the G3 tarball expects the G3 mozjs.
+
+### One-time: install SpiderMonkey
+
+The mozjs build is identical across all our releases — pulled once
+from the [v0.73 release page](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.73)
+and reused thereafter:
 
 ```bash
-# Prebuilt: grab from the latest Releases page
-#   https://github.com/cellularmitosis/ionpower-node/releases
-# Untar the matching {g3|g4|g5} tarball into /opt and run
-#   /opt/ionpower-node-<version>/bin/node test/hello.js
+# G3 (PPC 750 / G3 600-900 MHz iMac/iBook/PowerBook G3)
+curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/download/v0.73/mozjs-45-ionpower-g3.tar.gz
+sudo tar xzpf mozjs-45-ionpower-g3.tar.gz -C /opt/
 
-# From source (on a Tiger PPC host that already has the matching mozjs):
+# G4 (PPC 7400 / 7450 / eMac / iBook G4 / PowerBook G4 / Mac mini G4)
+curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/download/v0.73/mozjs-45-ionpower-g4.tar.gz
+sudo tar xzpf mozjs-45-ionpower-g4.tar.gz -C /opt/
+
+# G5 (PPC 970 / Power Mac G5)
+curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/download/v0.73/mozjs-45-ionpower-g5.tar.gz
+sudo tar xzpf mozjs-45-ionpower-g5.tar.gz -C /opt/
+```
+
+### Per-release: install the runtime
+
+For each `v0.NN` release, grab the matching `ionpower-node-NN-{g3,g4,g5}-ppc.tar.gz`:
+
+```bash
+curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-NN-g3-ppc.tar.gz
+sudo tar xzpf ionpower-node-NN-g3-ppc.tar.gz -C /opt/
+/opt/ionpower-node-NN/bin/node --version
+```
+
+### Building from source
+
+If you want to rebuild on a host that already has the matching mozjs:
+
+```bash
 ~/bin/tiger-rsync.sh --exclude=.git . <host>:~/tmp/ionpower-node/
 ssh <host> 'cd ~/tmp/ionpower-node && make MOZJS_PREFIX=/opt/mozjs-45-ionpower-g3 CPU_FLAGS="-mcpu=750 -mtune=750"'
 ssh <host> 'cd ~/tmp/ionpower-node && ./node test/hello.js'
 ssh <host> 'cd ~/tmp/ionpower-node && make test-all'   # full smoke suite
 ```
 
-The triad-build helper script in `/tmp/triad-build.sh` automates the
-above against one of {imacg3, emac, pmacg5} per release tag.
+The [`scripts/triad-build.sh`](scripts/triad-build.sh) helper automates
+the above against one of {ibookg37, emac, pmacg5} per release tag.
 
 ## Scope limits
 
@@ -211,8 +255,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**658+** as of [v0.72](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.72).
-Full suite: **1915+** assertions across 423 smoke files.
+**658+** as of [v0.73](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.73).
+Full suite: **1925+** assertions across 424 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
