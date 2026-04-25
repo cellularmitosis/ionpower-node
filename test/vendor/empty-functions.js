@@ -1,0 +1,10 @@
+var emptyFunction = require('./noop')
+emptyFunction.default = emptyFunction;
+emptyFunction.noop = emptyFunction;
+emptyFunction.emptyFunction = emptyFunction;
+emptyFunction.returnsTrue = require('./returns-true');
+emptyFunction.returnsFalse = require('./returns-false');
+emptyFunction.returnsNull = require('./returns-null');
+emptyFunction.returnsThis = require('./returns-this');
+emptyFunction.returnsArgument = require('./returns-argument');
+module.exports = emptyFunction;
