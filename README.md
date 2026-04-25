@@ -126,7 +126,7 @@ release lands.
 | `assert` | ✅ Working | `equal`, `strictEqual`, `notEqual`, `notStrictEqual`, `deepEqual`, `deepStrictEqual`, `throws`, `doesNotThrow`, `fail`, `ok`, `AssertionError`. |
 | `timers` | ✅ Working | `setImmediate`/`setTimeout`/`setInterval` + matching clears enqueue into the event loop. `select()`-based loop blocks until the next `fireAt` (real wallclock), wakes on fd events or `SIGCHLD`, then fires due timers. `setTimeout(fn, 100)` really does wait ~100ms. Intervals re-queue themselves. |
 | `tty` | 🟡 Stub | `ReadStream`/`WriteStream` exported as EE-derived stubs. |
-| `module` | ❌ Missing | No `createRequire`, no `Module` class. |
+| `module` | ✅ Working | `createRequire(filename)`, `builtinModules`, `isBuiltin(name)`, `Module` class with `_cache` (mirrors `__require_cache__`), `_extensions`, `wrap(src)`, `wrapper`, plus static `Module.{builtinModules,isBuiltin,createRequire}`. |
 | `worker_threads` | ❌ Missing | |
 | `cluster` | ❌ Missing | |
 | `zlib` | ✅ Working | Real RFC 1951 inflate via embedded tiny-inflate. **Real DEFLATE compression** by shelling out to `/usr/bin/gzip` (always present on Tiger), then stripping or rewrapping the framing for `deflateSync`/`deflateRawSync`. Falls back to stored-mode framing if `gzip` is missing — so output is always a valid deflate stream. `gzipSync`/`gunzipSync`/`deflateSync`/`inflateSync`/`deflateRawSync`/`inflateRawSync` + all matching async/Transform variants. Adler-32 (zlib) + CRC-32 (gzip) computed correctly. Brotli still throws. |
@@ -183,8 +183,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**658+** as of [v0.68](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.68).
-Full suite: **1825+** assertions across 417 smoke files.
+**658+** as of [v0.69](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.69).
+Full suite: **1860+** assertions across 419 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.

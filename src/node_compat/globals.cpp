@@ -5496,6 +5496,31 @@ static const char kBootstrapJS[] =
     "    var name = String(spec || '').replace(/^node:/, '');\n"
     "    return module_core.builtinModules.indexOf(name) >= 0;\n"
     "  };\n"
+    // Module class — minimal Node-shape constructor used by some libs to
+    // walk the require cache or wrap source. Backed by __require_cache__
+    // for the actual loader state.
+    "  function Module(id, parent) {\n"
+    "    if (!(this instanceof Module)) return new Module(id, parent);\n"
+    "    this.id = id || '.';\n"
+    "    this.path = '';\n"
+    "    this.exports = {};\n"
+    "    this.parent = parent || null;\n"
+    "    this.filename = null;\n"
+    "    this.loaded = false;\n"
+    "    this.children = [];\n"
+    "    this.paths = [];\n"
+    "  }\n"
+    "  Module._cache  = __require_cache__;\n"
+    "  Module._extensions = { '.js': null, '.json': null, '.cjs': null };\n"
+    "  Module.wrapper = [\n"
+    "    '(function (exports, require, module, __filename, __dirname) { ',\n"
+    "    '\\n});'\n"
+    "  ];\n"
+    "  Module.wrap = function (source) { return Module.wrapper[0] + String(source) + Module.wrapper[1]; };\n"
+    "  Module.builtinModules = module_core.builtinModules;\n"
+    "  Module.isBuiltin      = module_core.isBuiltin;\n"
+    "  Module.createRequire  = module_core.createRequire;\n"
+    "  module_core.Module    = Module;\n"
     "  __require_cache__['module']         = module_core;\n"
     // vm: minimal runInThisContext / runInNewContext / Script. No
     // compartment isolation — runInNewContext parameterizes the sandbox
