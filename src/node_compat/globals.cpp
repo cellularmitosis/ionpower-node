@@ -439,6 +439,19 @@ static const char kBootstrapJS[] =
     "    sep: '\\\\', delimiter: ';'\n"
     "  };\n"
 
+    // --- Symbol.asyncIterator polyfill. SM45 ships Symbol but no
+    // asyncIterator well-known. Babel's lowered `for await` reaches
+    // for it; without it our WebStreams Readers and events.on
+    // iterators don't register as async-iterable. Polyfill before
+    // any consumer runs.
+    "  if (typeof Symbol !== 'undefined' && !Symbol.asyncIterator) {\n"
+    "    try {\n"
+    "      Object.defineProperty(Symbol, 'asyncIterator', {\n"
+    "        value: Symbol('Symbol.asyncIterator'),\n"
+    "        writable: false, enumerable: false, configurable: false\n"
+    "      });\n"
+    "    } catch (e) {}\n"
+    "  }\n"
     // --- events.EventEmitter (pure JS, Node-compatible enough for most libs).
     // _events is lazily initialized on first listener so that subclasses
     // whose constructors skip calling EventEmitter.call(this) still work
@@ -3062,6 +3075,17 @@ static const char kBootstrapJS[] =
     "  _ReadableStreamDefaultReader.prototype.cancel = function (r) {\n"
     "    return this._stream ? this._stream.cancel(r) : Promise.resolve();\n"
     "  };\n"
+    // Async iterator: makes `for await (chunk of reader)` work via
+    // Babel's lowered runtime helper. The protocol expects .next()
+    // returning Promise<{value, done}>; our Reader has .read() with
+    // that shape, so we adapt.
+    "  if (typeof Symbol !== 'undefined' && Symbol.asyncIterator) {\n"
+    "    _ReadableStreamDefaultReader.prototype.next = function () { return this.read(); };\n"
+    "    _ReadableStreamDefaultReader.prototype[Symbol.asyncIterator] = function () { return this; };\n"
+    "    _ReadableStream.prototype[Symbol.asyncIterator] = function () {\n"
+    "      return this.getReader();\n"
+    "    };\n"
+    "  }\n"
 
     "  function _WritableStream(sink) {\n"
     "    if (!(this instanceof _WritableStream)) return new _WritableStream(sink);\n"

@@ -166,6 +166,7 @@ release lands.
 | `require('node:fs')` prefix | ✅ Stripped | `node:` prefix stripped before lookup. |
 | Seeded core modules | ✅ Working | `__require_cache__` pre-populated with fs / path / events / util / child_process / os / crypto / buffer / string_decoder / assert / stream / timers / querystring / supports-color / has-ansi / process / module (with `createRequire` + `builtinModules`). |
 | ESM `import`/`export` | 🟡 Via Babel | Bootstrap lazily loads `@babel/standalone` on parse failure and re-evaluates the ESM-lowered source. Handles `import X from "y"`, `export default`, `export { X }`. Does **not** handle top-level `await`, dynamic `import()`, or `import.meta`. Cached on disk at `~/.ionpower-cache/babel-v1/`. |
+| `async`/`await` / `for await` | ✅ Via Babel | `async function` / `await expr` / `try { await reject } catch` / `for await (chunk of asyncIter)` all work — same path as ESM (Babel lowers on parse failure). `Symbol.asyncIterator` is polyfilled; WebStreams `Readable` and `events.on()` iterators carry the well-known so `for await` recognizes them. |
 | `import.meta` | ❌ Missing | |
 | Top-level `await` | ❌ Missing | No async context. |
 | Dynamic `import()` | ❌ Missing | |
@@ -182,8 +183,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**657+** as of [v0.55](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.55).
-Full suite: **1715+** assertions across 404 smoke files.
+**657+** as of [v0.56](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.56).
+Full suite: **1719+** assertions across 405 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
