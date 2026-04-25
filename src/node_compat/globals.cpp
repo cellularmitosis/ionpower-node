@@ -3786,8 +3786,29 @@ static const char kBootstrapJS[] =
     // Microtask queue — drained by the event loop between callback
     // firings, and by main.cpp between phases. Stored as a plain array;
     // _enqueueMicrotask / __drain_microtasks__ are the only APIs.
+    //
+    // AsyncLocalStorage propagation: every microtask (and timer)
+    // enqueued while inside als.run(...) carries a snapshot of every
+    // ALS's current store. When the task fires, we restore those
+    // stores around the callback so getStore() works across awaits.
+    "  this.__als_states__ = [];\n"  // array of ALS instances with current store
+    "  this.__als_snapshot__ = function () {\n"
+    "    var snap = [];\n"
+    "    var arr = __als_states__;\n"
+    "    for (var i = 0; i < arr.length; i++) snap.push({ als: arr[i], store: arr[i]._stack[arr[i]._stack.length - 1] });\n"
+    "    return snap;\n"
+    "  };\n"
+    "  this.__als_with__ = function (snap, fn) {\n"
+    "    if (!snap || snap.length === 0) return fn();\n"
+    "    for (var i = 0; i < snap.length; i++) snap[i].als._stack.push(snap[i].store);\n"
+    "    try { return fn(); }\n"
+    "    finally { for (var j = 0; j < snap.length; j++) snap[j].als._stack.pop(); }\n"
+    "  };\n"
     "  this.__microtask_queue__ = [];\n"
-    "  this._enqueueMicrotask = function (fn) { __microtask_queue__.push(fn); };\n"
+    "  this._enqueueMicrotask = function (fn) {\n"
+    "    var snap = __als_snapshot__();\n"
+    "    __microtask_queue__.push(snap.length ? function () { __als_with__(snap, fn); } : fn);\n"
+    "  };\n"
     "  this.__drain_microtasks__ = function () {\n"
     "    var safety = 100000;\n"
     "    while (__microtask_queue__.length > 0 && safety-- > 0) {\n"
@@ -3937,8 +3958,14 @@ static const char kBootstrapJS[] =
     "    var id = _timer_next_id++;\n"
     "    var now = Date.now();\n"
     "    var d = (typeof delay === 'number' && isFinite(delay) && delay > 0) ? delay : 0;\n"
+    // Capture ALS context at enqueue time; restore around fn() at fire time.
+    "    var snap = __als_snapshot__();\n"
+    "    var realFn = snap.length ? function () {\n"
+    "      var self = this; var ar = arguments;\n"
+    "      __als_with__(snap, function () { fn.apply(self, ar); });\n"
+    "    } : fn;\n"
     "    __timer_queue__.push({\n"
-    "      id: id, fn: fn, args: args, isInterval: !!isInterval,\n"
+    "      id: id, fn: realFn, args: args, isInterval: !!isInterval,\n"
     "      delay: d, fireAt: now + d, cleared: false\n"
     "    });\n"
     "    return id;\n"
@@ -4935,6 +4962,68 @@ static const char kBootstrapJS[] =
     "    receiveMessageOnPort: function () { return undefined; }\n"
     "  };\n"
     "  __require_cache__['worker_threads'] = workerThreads;\n"
+    // AsyncLocalStorage / async_hooks. Real Node uses async_hooks
+    // bookkeeping at engine level; we get most of the way there by
+    // capturing ALS state at every microtask + timer enqueue (see
+    // _enqueueMicrotask / __timer_enqueue__ above) and restoring it
+    // before the callback fires. That covers Promise.then chains
+    // (via _IonPromise's microtask-based settling) and setTimeout/
+    // setImmediate. Doesn't yet propagate through I/O event-loop
+    // ioWatch callbacks — could be added, but most consumers
+    // (express, fastify, pino) hit the microtask + timer paths.
+    "  function _AsyncLocalStorage() {\n"
+    "    this._stack = [];\n"
+    "    __als_states__.push(this);\n"
+    "  }\n"
+    "  _AsyncLocalStorage.prototype.run = function (store, callback) {\n"
+    "    this._stack.push(store);\n"
+    "    try { return callback.apply(null, Array.prototype.slice.call(arguments, 2)); }\n"
+    "    finally { this._stack.pop(); }\n"
+    "  };\n"
+    "  _AsyncLocalStorage.prototype.exit = function (callback) {\n"
+    "    var saved = this._stack;\n"
+    "    this._stack = [];\n"
+    "    try { return callback.apply(null, Array.prototype.slice.call(arguments, 1)); }\n"
+    "    finally { this._stack = saved; }\n"
+    "  };\n"
+    "  _AsyncLocalStorage.prototype.getStore = function () {\n"
+    "    return this._stack.length ? this._stack[this._stack.length - 1] : undefined;\n"
+    "  };\n"
+    "  _AsyncLocalStorage.prototype.enterWith = function (store) {\n"
+    "    this._stack.push(store);\n"
+    "  };\n"
+    "  _AsyncLocalStorage.prototype.disable = function () {\n"
+    "    this._stack = [];\n"
+    "  };\n"
+    "  _AsyncLocalStorage.bind = function (fn) { return fn; };\n"
+    "  _AsyncLocalStorage.snapshot = function () {\n"
+    "    var snap = __als_snapshot__();\n"
+    "    return function (cb) { return __als_with__(snap, cb); };\n"
+    "  };\n"
+    // AsyncResource — minimal stub. Real Node uses it for hooking the\n"
+    // async lifecycle; we just expose the shape so libraries don't\n"
+    // crash at construction.\n"
+    "  function _AsyncResource(type, opts) {\n"
+    "    this.type = type;\n"
+    "    this._asyncId = ++_asyncIdSeq;\n"
+    "  }\n"
+    "  var _asyncIdSeq = 0;\n"
+    "  _AsyncResource.prototype.runInAsyncScope = function (fn, thisArg) {\n"
+    "    return fn.apply(thisArg, Array.prototype.slice.call(arguments, 2));\n"
+    "  };\n"
+    "  _AsyncResource.prototype.bind = function (fn) { return fn; };\n"
+    "  _AsyncResource.prototype.asyncId       = function () { return this._asyncId; };\n"
+    "  _AsyncResource.prototype.triggerAsyncId= function () { return this._asyncId; };\n"
+    "  _AsyncResource.prototype.emitDestroy   = function () {};\n"
+    "  var asyncHooks = {\n"
+    "    AsyncLocalStorage: _AsyncLocalStorage,\n"
+    "    AsyncResource:     _AsyncResource,\n"
+    "    createHook:        function () { return { enable: function(){}, disable: function(){} }; },\n"
+    "    executionAsyncId:  function () { return 0; },\n"
+    "    triggerAsyncId:    function () { return 0; },\n"
+    "    executionAsyncResource: function () { return Object.create(null); }\n"
+    "  };\n"
+    "  __require_cache__['async_hooks']    = asyncHooks;\n"
     // inspector: debugger surface. No V8 inspector under SpiderMonkey,
     // so all methods are no-ops / throw. But `require('inspector')` must
     // load (some logger libs sniff it).\n"
