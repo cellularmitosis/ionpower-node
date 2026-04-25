@@ -129,7 +129,7 @@ release lands.
 | `module` | ❌ Missing | No `createRequire`, no `Module` class. |
 | `worker_threads` | ❌ Missing | |
 | `cluster` | ❌ Missing | |
-| `zlib` | ✅ Working | Real RFC 1951 inflate via embedded tiny-inflate. Deflate in "stored" mode (uncompressed blocks with valid deflate framing); no compression ratio gain but produces output any RFC-conforming decoder (including `gunzip(1)`) accepts. `gzipSync`/`gunzipSync`/`deflateSync`/`inflateSync`/`deflateRawSync`/`inflateRawSync` + all matching async/Transform variants. Adler-32 (zlib) + CRC-32 (gzip) computed correctly. Brotli still throws. |
+| `zlib` | ✅ Working | Real RFC 1951 inflate via embedded tiny-inflate. **Real DEFLATE compression** by shelling out to `/usr/bin/gzip` (always present on Tiger), then stripping or rewrapping the framing for `deflateSync`/`deflateRawSync`. Falls back to stored-mode framing if `gzip` is missing — so output is always a valid deflate stream. `gzipSync`/`gunzipSync`/`deflateSync`/`inflateSync`/`deflateRawSync`/`inflateRawSync` + all matching async/Transform variants. Adler-32 (zlib) + CRC-32 (gzip) computed correctly. Brotli still throws. |
 
 ### Globals
 
@@ -183,8 +183,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**658+** as of [v0.67](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.67).
-Full suite: **1812+** assertions across 416 smoke files.
+**658+** as of [v0.68](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.68).
+Full suite: **1825+** assertions across 417 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.

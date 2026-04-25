@@ -1,7 +1,6 @@
-// zlib compression (stored mode): deflate / gzip / deflateRaw +
-// round-trip via our existing inflate. Output is valid deflate that
-// any RFC 1951 decoder will consume — no compression ratio, just
-// frame correctness.
+// zlib compression: deflate / gzip / deflateRaw + round-trip via
+// inflate. Frame correctness + RFC 1951 conformance — actual
+// compression ratio is verified separately in zlib_real_smoke.js.
 
 var zlib = require("zlib");
 
@@ -13,7 +12,7 @@ var bytes = Buffer.from(msg);
 // --- deflateRawSync → inflateRawSync round-trip ---
 var raw = zlib.deflateRawSync(bytes);
 assert(raw instanceof Buffer || raw instanceof Uint8Array, "deflateRaw returns Buffer");
-assert(raw.length >= bytes.length + 5, "stored-mode adds 5+ bytes overhead");
+assert(raw.length >= 1, "deflateRaw produced at least one byte");
 var rawRound = zlib.inflateRawSync(raw).toString("utf8");
 assert(rawRound === msg, "deflateRaw → inflateRaw round-trip: " + JSON.stringify(rawRound));
 console.log("ok: deflateRaw → inflateRaw round-trip");
@@ -33,14 +32,14 @@ var gRound = zlib.gunzipSync(g).toString("utf8");
 assert(gRound === msg, "gzip → gunzip round-trip: " + JSON.stringify(gRound));
 console.log("ok: gzip → gunzip round-trip");
 
-// --- Large input (>64KB) splits into multiple stored blocks ---
+// --- Large input (>64KB) round-trips ---
 var bigStr = "x".repeat(100000);
 var bigBuf = Buffer.from(bigStr);
 var bigGz  = zlib.gzipSync(bigBuf);
 var bigRound = zlib.gunzipSync(bigGz).toString("utf8");
 assert(bigRound.length === 100000, "100k gzip round-trip length");
 assert(bigRound === bigStr, "100k gzip round-trip content");
-console.log("ok: >64KB splits into multi-block stored deflate");
+console.log("ok: >64KB round-trip");
 
 // --- Empty input ---
 var empty = zlib.gzipSync(Buffer.alloc(0));
