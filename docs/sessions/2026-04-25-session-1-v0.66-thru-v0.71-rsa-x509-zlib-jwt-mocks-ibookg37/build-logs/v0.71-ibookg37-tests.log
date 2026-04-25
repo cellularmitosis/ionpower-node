@@ -1,0 +1,3396 @@
+./node test/hello.js
+hello, ionpower-node
+argv: ["./node","test/hello.js"]
+platform: darwin arch: ppc pid: 12601 version: ionpower-node-0.71
+cwd: /Users/macuser/tmp/ionpower-node
+PATH env: /Users/macuser/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
+./node test/require_chain.js
+adder(2, 3) = 5
+greet('world') = hello, world
+util.shout('hi') = HI!!
+./node test/nm_resolution_smoke.js
+got: Hi PPC! -- signed
+ok: bare-specifier node_modules resolution works
+./node test/fs_smoke.js
+wrote /tmp/ionpower-node-fs-smoke.txt
+readback length: 44 match: true
+size: 44 isFile: true isDir: false
+/tmp has 64 entries (sample: [
+  "01_nstask_pipes",
+  "01_nstask_pipes.m",
+  "02_filemanager"
+] )
+path.join = a/b/c.txt
+path.dirname(tmp) = /tmp
+path.basename(tmp) = ionpower-node-fs-smoke.txt
+path.extname(tmp) = .txt
+path.isAbsolute(tmp) = true
+unlinked. exists now?  false
+./node test/fs_dirs_smoke.js
+ok: mkdirSync recursive created /tmp/ionpower-node-fs-dirs-test/a/b/c
+ok: renameSync -> /tmp/ionpower-node-fs-dirs-test/a/b/c-renamed
+ok: rmdirSync removed the nested chain
+
+fs_dirs smoke: all assertions passed
+./node test/fs_extras_smoke.js
+ok: appendFileSync
+ok: copyFileSync
+ok: chmodSync
+
+fs_extras smoke: all assertions passed
+./node test/timers_smoke.js
+main start
+main end
+setImmediate fired, args= one two
+setTimeout fired
+./node test/console_formatting.js
+primitive: 42 true null undefined
+string: hello
+object: {
+  "a": 1,
+  "b": "two",
+  "c": [
+    1,
+    2,
+    3
+  ]
+}
+array: [
+  10,
+  20,
+  30
+]
+nested: {
+  "outer": {
+    "inner": {
+      "leaf": "yes"
+    }
+  }
+}
+function: [Function: foo]
+anon function: [Function]
+arrow (named via decl): [Function: bar]
+user record: {
+  "name": "alice",
+  "pid": 12608,
+  "platform": "darwin"
+}
+warn goes to stderr: {
+  "level": "warn"
+}
+./node test/util_inspect_smoke.js
+ok: primitives
+ok: functions
+ok: arrays
+ok: plain objects
+ok: depth limit
+ok: cycles
+ok: dates
+ok: regexps
+ok: errors
+ok: map
+ok: set
+ok: uint8array
+
+util_inspect smoke: all assertions passed
+./node test/promise_smoke.js
+ok: resolve + then
+ok: constructor
+ok: reject catch
+ok: chain
+ok: all
+ok: race
+ok: allSettled
+ok: finally
+ok: thenable interop
+
+promise smoke: all assertions passed
+./node test/cores_smoke.js
+ok: EventEmitter.on / emit
+ok: EventEmitter.once
+ok: EventEmitter.removeListener
+ok: util.inherits + inherited emit
+ok: util.format
+ok: util.inspect
+ok: os basics
+ok: child_process execSync (+spawn exposed)
+
+cores smoke: all assertions passed
+./node test/integration.js
+ok: util.shout round-trip
+ok: path.join 3
+ok: path.dirname
+ok: path.extname
+ok: path.isAbsolute true
+ok: path.isAbsolute false
+ok: JSON name round-trip
+ok: JSON array length
+ok: JSON bool
+ok: unlink + existsSync
+ok: Buffer.from utf8 length
+ok: Buffer.toString utf8
+ok: setImmediate is deferred (queued)
+
+all integration assertions passed
+./node test/fibonacci.js
+fib(0) = 0
+fib(1) = 1
+fib(2) = 1
+fib(3) = 2
+fib(4) = 3
+fib(5) = 5
+fib(6) = 8
+fib(7) = 13
+fib(8) = 21
+fib(9) = 34
+fib(10) = 55
+fib(11) = 89
+fib(12) = 144
+fib(13) = 233
+fib(14) = 377
+fib(15) = 610
+fib(16) = 987
+fib(17) = 1597
+fib(18) = 2584
+fib(19) = 4181
+fib(20) = 6765
+fib(21) = 10946
+fib(22) = 17711
+fib(23) = 28657
+fib(24) = 46368
+fib(25) = 75025
+fib(26) = 121393
+fib(27) = 196418
+fib(28) = 317811
+fib(29) = 514229
+fib(30) = 832040
+fib(31) = 1346269
+fib(32) = 2178309
+elapsed: 771 ms
+wrote test/fib-report.txt
+./node test/jit_smoke.js
+sumTo(5000000) = 1642668640 in 67 ms
+./node test/marked_smoke.js
+<h1 id="hello-powerpc">Hello, PowerPC</h1>
+<p>This is <em>italic</em> and <strong>bold</strong> and <code>code</code>.</p>
+<ul>
+<li>item one</li>
+<li>item two</li>
+</ul>
+<blockquote>
+<p>a blockquote</p>
+</blockquote>
+<pre><code class="language-js">console.log(&#39;hi&#39;);
+</code></pre>
+
+
+marked smoke: all assertions passed
+./node test/acorn_smoke.js
+ok: simple parse  two statements, right node types
+ok: parse error thrown correctly: SyntaxError: Unexpected token (1:9)...
+parsing acorn.js (231201 bytes)...
+ok: acorn parsed its own source in 3874 ms
+    top-level statements: 1
+
+acorn smoke: all assertions passed
+./node test/handlebars_smoke.js
+ok: simple interpolation -> Hello, PowerPC!
+ok: each block -> "- alpha\n- beta\n- gamma\n"
+ok: if-else both branches
+ok: custom helper -> say HELLO!!
+ok: html escape -> <p>&lt;script&gt;alert(1)&lt;/script&gt;</p>
+ok: triple-stash raw -> <p><b>raw</b></p>
+
+handlebars smoke: all assertions passed
+version: 4.7.8
+./node test/lodash_smoke.js
+ok: chunk
+ok: compact
+ok: flatten
+ok: flattenDeep
+ok: uniq
+ok: zip
+ok: map
+ok: filter
+ok: reduce
+ok: groupBy
+ok: countBy
+ok: sortBy
+ok: camelCase
+ok: kebabCase
+ok: snakeCase
+ok: startCase
+ok: padStart
+ok: truncate
+ok: template
+ok: pick
+ok: omit
+ok: merge
+ok: invert
+ok: keys
+ok: once-1st
+ok: once-2nd
+ok: sum
+ok: mean
+ok: max
+ok: min
+ok: isArray
+ok: isString
+ok: isFunction
+ok: isPlainObj
+ok: cloneDeep
+
+lodash smoke: 35/35 passed
+./node test/semver_smoke.js
+ok: major
+ok: minor
+ok: patch
+ok: prerelease
+ok: build
+ok: valid ok
+ok: valid fail
+ok: lt
+ok: gt
+ok: eq
+ok: rcompare sorts low..high
+ok: ~1.2.3 satisfies 1.2.9
+ok: ~1.2.3 blocks 1.3.0
+ok: ^1.2.3 satisfies 1.9.9
+ok: ^1.2.3 blocks 2.0.0
+ok: >=1.0.0 <2.0.0 satisfies 1.5.0
+ok: inc patch
+ok: inc minor
+ok: inc major
+ok: inc prerelease
+ok: coerce
+ok: coerce bad
+
+semver smoke: 22/22 passed
+./node test/prettier_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/prettier.js:2364: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+{ parser: "babylon" } is deprecated; we now treat it as { parser: "babel" }.
+format small snippet in 742 ms:
+const x = { a: 1, b: 2, c: 3 };
+function f(x, y) {
+  return x + y;
+}
+
+
+format realistic input in 516 ms:
+function fibonacci(n) {
+  if (n < 2) return n;
+  let a = 0,
+    b = 1;
+  for (let i = 2; i <= n; i++) {
+    const c = a + b;
+    a = b;
+    b = c;
+  }
+  return b;
+}
+const arr = [1, 2, 3, 4, 5]
+  .map(x => x * x)
+  .filter(x => x > 4)
+  .reduce((a, b) => a + b, 0);
+module.exports = { fibonacci, arr };
+
+
+prettier smoke: all assertions passed
+version: 1.19.1
+./node test/typescript_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/typescript.js:31995: unreachable code after return statement
+/Users/macuser/tmp/ionpower-node/test/vendor/typescript.js:60756: unreachable code after return statement
+/Users/macuser/tmp/ionpower-node/test/vendor/typescript.js:96536: unreachable code after return statement
+/Users/macuser/tmp/ionpower-node/test/vendor/typescript.js:31995: unreachable code after return statement
+/Users/macuser/tmp/ionpower-node/test/vendor/typescript.js:82: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+loaded typescript v3.9.10 in 2654 ms
+/Users/macuser/tmp/ionpower-node/test/vendor/typescript.js:60756: unreachable code after return statement
+/Users/macuser/tmp/ionpower-node/test/vendor/typescript.js:96536: unreachable code after return statement
+transpile 1 in 1070 ms
+ok: simple transpile ->
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.y = void 0;
+var x = 42;
+exports.y = x * 2;
+
+transpile 2 in 1118 ms
+ok: class-with-generic compiled; output length = 766
+
+typescript smoke: all assertions passed
+./node test/minimist_smoke.js
+ok: positional only
+ok: --flag
+ok: --key value
+ok: --key=value
+ok: -v
+ok: -n 5
+ok: --no-color
+ok: with alias + default
+ok: string-typed value
+
+minimist smoke: 9/9 passed
+./node test/json5_smoke.js
+ok: strict JSON
+ok: unquoted keys
+ok: single quotes
+ok: trailing comma
+ok: line comment
+ok: hex number
+ok: trailing dot
+ok: leading dot
+ok: stringify round-trip
+ok: pretty indent
+
+json5 smoke: 10/10 passed
+./node test/mustache_smoke.js
+ok: interp + escape
+ok: triple-stash
+ok: each section
+ok: inverted empty
+ok: inverted missing
+ok: nested
+ok: lambda
+ok: partials
+
+mustache smoke: 8/8 passed
+./node test/jsyaml_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/esprima.js:421: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: flow scalar
+ok: flow mapping
+ok: flow sequence
+ok: block map
+ok: nested block
+ok: literal block
+ok: bools and null
+ok: anchor alias
+ok: dump round-trip
+dumped:
+name: ionpower
+works: true
+libs:
+  - marked
+  - acorn
+depth:
+  nested: 42
+
+
+js-yaml smoke: 9/9 passed
+./node test/kleur_smoke.js
+enabled (default): false
+ok: colors disabled in non-TTY mode  API is transparent
+ok: FORCE_COLOR=1 re-eval produced ANSI-wrapped output
+sample: "\u001b[31mhello\u001b[39m"
+
+kleur smoke: all assertions passed
+./node test/commander_smoke.js
+ok: flags and options parsed correctly
+ok: version configured
+ok: subcommand with action
+
+commander smoke: all assertions passed
+./node test/qs_smoke.js
+ok: parse simple
+ok: parse nested
+ok: parse deep nested
+ok: parse array
+ok: parse encoded
+ok: stringify simple
+ok: stringify nested
+ok: stringify array
+ok: round-trip name
+ok: round-trip id
+ok: round-trip tags
+
+qs smoke: 11/11 passed
+./node test/diff_smoke.js
+ok: diffChars: has 3 changes
+ok: diffChars: first chunk equal
+ok: diffChars: second chunk removed 'r'
+ok: diffChars: third chunk added 'z'
+ok: diffLines removed contains 'b\n'
+ok: diffLines added   contains 'B\n'
+ok: diffWords identifies brown->red
+ok: createPatch includes 'note.txt'
+ok: createPatch shows - world
+ok: createPatch shows + POWERPC
+ok: applyPatch reproduces target
+
+diff smoke: 11/11 passed
+./node test/esprima_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/esprima.js:421: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: simple parse
+ok: module parse
+ok: tokenize
+ok: parse error reports line
+self-parsing esprima.js (283563 bytes)...
+ok: self-parse in 3559 ms
+    top-level stmts: 2
+
+esprima smoke: all assertions passed
+./node test/dayjs_smoke.js
+ok: year
+ok: month
+ok: date
+ok: day
+ok: format YYYY-MM-DD
+ok: format HH:mm
+ok: add 7 days
+ok: subtract 1 mo
+ok: isBefore
+ok: isAfter
+ok: isSame
+ok: parse yyyymmdd
+ok: diff days
+ok: diff hours
+
+dayjs smoke: 14/14 passed
+./node test/beautify_smoke.js
+function hi(name) {
+  if (!name) {
+    name = 'world'
+  }
+  return 'hello, ' + name
+}
+ok: function reformat
+ok: object literal
+ok: idempotent on already-pretty input
+
+js-beautify smoke: all assertions passed
+./node test/babel_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+loaded @babel/standalone v7.23.9 in 3906 ms
+transform 1 (?. -> ES5) in 2503 ms
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.y = void 0;
+var _x$a;
+var x = {
+  a: {
+    b: 42
+  }
+};
+var y = exports.y = x === null || x === void 0 || (_x$a = x.a) === null || _x$a === void 0 ? void 0 : _x$a.b;
+ok: optional chaining transpiled away
+
+transform 2 (class+??+template) in 3929 ms
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.g = void 0;
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var Greet = /*#__PURE__*/function () {
+  function Greet(name) {
+    _classCallCheck(this, Greet);
+    this.name = name !== null && name !== void 0 ? name : 'world';
+  }
+  _createClass(Greet, [{
+    key: "hi",
+    value: function hi() {
+      return "hello, ".concat(this.name);
+    }
+  }]);
+  return Greet;
+}();
+var g = exports.g = new Greet();
+ok: class + nullish coalescing transpiled
+ok: transpiled code executes, yields total=14
+
+babel-standalone smoke: all assertions passed
+./node test/uuid_smoke.js
+uuid module keys: NIL, parse, stringify, v1, v3, v4, v5, validate, version
+v4(): 0db1d629-487e-48e3-8993-beb8b7922739
+ok: v4 (random, via /dev/urandom crypto shim)
+v5(): c4073e61-de3e-5d67-bba3-00c1f590d819
+ok: v5 (deterministic) works
+ok: validate
+ok: parse returns 16 bytes
+
+uuid smoke: all assertions passed (v3/v4/v5 + validate + parse)
+./node test/papaparse_smoke.js
+ok: csv header
+ok: no errors
+ok: quoted comma
+ok: escaped quote
+ok: array mode
+ok: unparse
+ok: round-trip
+
+papaparse smoke: 7/7 passed
+./node test/tinycolor_smoke.js
+ok: parse hex -> rgb/hsl
+ok: named color
+ok: darken / lighten
+ok: brightness / readability
+ok: mix
+
+tinycolor smoke: all assertions passed
+./node test/spark_md5_smoke.js
+ok: RFC 1321 test vectors match (5)
+ok: incremental append matches one-shot
+
+spark-md5 smoke: all assertions passed
+./node test/fflate_smoke.js
+corpus: 13 bytes
+deflateSync: 15 bytes (ratio 115.4%)
+ok: deflate/inflate
+gzipSync:    33 bytes
+ok: gzip/gunzip
+zipSync:     127 bytes
+ok: zip produces valid archive header (unzip deferred: see note)
+
+fflate smoke: basic deflate/inflate/gzip/gunzip round-trip + zip magic pass
+known gap: unzipSync fails on PPC with 'invalid length/literal'
+./node test/pako_smoke.js
+corpus: 2800 bytes
+pako.deflate: 75 bytes (ratio 2.7%)
+ok: deflate/inflate round-trip on 2800-byte corpus
+ok: gzip/ungzip
+ok: short-input round-trips (6)
+ok: string in / string out convenience
+
+pako smoke: all assertions passed
+./node test/he_smoke.js
+ok: encode basic
+ok: encode named
+ok: decode named
+ok: decode hex
+ok: decode dec
+ok: encode roundtrip
+ok: escape for attr
+ok: unescape
+
+he smoke: all assertions passed
+./node test/cryptojs_smoke.js
+ok: SHA-1 'abc'
+ok: SHA-256 'abc'
+ok: SHA-512 'abc'
+ok: MD5 'abc'
+ok: HMAC-SHA1 Jefe
+ok: base64 encode
+ok: base64 decode
+ok: AES round-trip
+
+crypto-js smoke: all assertions passed
+./node test/ajv_smoke.js
+ok: object schema (8 cases)
+ok: nested $ref schema
+ok: array + uniqueItems
+
+ajv smoke: all assertions passed
+./node test/pegjs_smoke.js
+ok: grammar compiled to parser
+ok: expressions evaluate correctly
+ok: syntax error reporting
+
+pegjs smoke: all assertions passed
+./node test/nanoid_smoke.js
+ok: nanoid(): nOYlh_adcw0gywMMGRZh2
+ok: nanoid(8): p6D-hVyF
+ok: 100 nanoid() calls all unique
+ok: customAlphabet: 637e5694f4262aa5
+ok: urlAlphabet is 64 chars
+
+nanoid smoke: all assertions passed
+./node test/ms_smoke.js
+ok: parse 2h
+ok: parse 1m
+ok: parse 1.5h
+ok: parse 100ms
+ok: parse 1d
+ok: parse '2 days'
+ok: format 60000
+ok: format 1200
+ok: format 90000 long
+ok: format 2h long
+ok: format 1d long
+
+ms smoke: all assertions passed
+./node test/strip_ansi_smoke.js
+ok: strip-ansi removed color codes: "hello world"
+ok: idempotent on plain input
+stripped fancy: "bold-orange + link"
+
+strip-ansi smoke: all assertions passed
+./node test/deepmerge_smoke.js
+ok: merge objects
+ok: deep merge
+ok: array concat
+ok: array replace
+ok: merge all three
+ok: scalars replace
+ok: nested + arrays
+
+deepmerge smoke: all assertions passed
+./node test/fast_deep_equal_smoke.js
+ok: primitives
+ok: different primitives
+ok: strings
+ok: arrays
+ok: arrays differ
+ok: nested
+ok: nested diff
+ok: key order agnostic
+ok: missing key
+ok: dates equal
+ok: regexp equal
+ok: regexp differ
+ok: null !== undefined
+ok: NaN equals NaN
+
+fast-deep-equal smoke: all assertions passed
+./node test/color_convert_smoke.js
+ok: color-convert (rgb.hex, hex.rgb, rgb.hsl, rgb.ansi256)
+ok: color-name (red, green)
+
+color-convert + color-name smoke: all assertions passed
+./node test/lunr_smoke.js
+search 'powerpc' -> ["a","c","d"]
+search 'title:tiger' -> ["c"]
+search 'powerp*' -> ["a","c","d"]
+
+lunr smoke: all assertions passed
+./node test/moment_smoke.js
+ok: parse + accessors + format
+ok: arithmetic
+ok: diff
+ok: fromNow: a few seconds ago
+
+moment smoke: all assertions passed
+./node test/showdown_smoke.js
+<h1 id="hello">Hello</h1>
+<p>This is <em>italic</em> and <strong>bold</strong>.</p>
+<ul>
+<li>one</li>
+<li>two</li>
+</ul>
+<pre><code class="js language-js">f()
+</code></pre>
+note: showdown.makeMarkdown requires a DOM (`window`)  skipped
+
+showdown smoke: all assertions passed
+./node test/object_hash_smoke.js
+ok: key-order-insensitive
+ok: shape-sensitive
+ok: primitives
+hash('hello') = f3584f1b4c5b81a19f1849be114ddbc532dc77f7
+ok: stable across calls
+ok: md5 algorithm: 4a43ab95debc984fed2b95c7fc66fdb3
+
+object-hash smoke: all assertions passed
+./node test/minimatch_smoke.js
+ok: *.js matches foo.js
+ok: *.js rejects foo.ts
+ok: **/foo matches a/b/foo
+ok: **/foo matches foo
+ok: ?.js matches f.js
+ok: ?.js rejects foo.js
+ok: {foo,bar}.js matches foo
+ok: {foo,bar}.js matches bar
+ok: {foo,bar}.js rejects baz
+ok: [abc].js matches a.js
+ok: [abc].js rejects d.js
+ok: brace expansion
+ok: dot not matched w/o dot
+ok: dot matched with dot
+
+minimatch smoke: all assertions passed
+./node test/validator_smoke.js
+ok: isEmail good
+ok: isEmail bad
+ok: isURL good
+ok: isURL bad
+ok: isUUID v4
+ok: isHex
+ok: isInt
+ok: isFloat
+ok: isNumeric
+ok: isAlpha
+ok: isBase64
+ok: isIP v4
+ok: isIP v6
+ok: isJSON good
+ok: isJSON bad
+escape: "&lt;h1&gt;hi&lt;&#x2F;h1&gt;"
+ok: escape produces entities
+ok: trim
+
+validator smoke: all assertions passed
+./node test/qrcode_smoke.js
+QR module count: 21
+dark modules: 226 of 441
+##############      ####    ##############
+##          ##    ####      ##          ##
+##  ######  ##  ##  ######  ##  ######  ##
+##  ######  ##    ##        ##  ######  ##
+##  ######  ##    ##        ##  ######  ##
+...
+
+qrcode-generator smoke: all assertions passed
+./node test/tweetnacl_smoke.js
+ok: sha-512 test vector
+ok: ed25519 sign / verify
+ok: secretbox encrypt / decrypt
+
+tweetnacl smoke: all assertions passed
+./node test/big_smoke.js
+ok: construct from int
+ok: construct from str
+ok: 1 + 2
+ok: 3 - 4
+ok: 7 * 8
+ok: 22 / 7 at 10 sig
+ok: 0.1 + 0.2 (exact)
+ok: big exp
+ok: cmp equal
+caught exception on cmp? false
+ok: abs(-3)
+ok: sqrt(2) 15 digits
+
+big.js smoke: all assertions passed
+./node test/mime_types_smoke.js
+ok: lookup (5), extension (2), contentType + charset
+
+mime-types smoke: all assertions passed
+./node test/markdown_it_smoke.js
+<h1>Hello</h1>
+<p><em>emph</em> and <strong>bold</strong> and <code>code</code>.</p>
+<ul>
+<li>one</li>
+<li>two</li>
+</ul>
+<pre><code class="language-js">f()
+</code></pre>
+
+ok: renderInline
+
+markdown-it smoke: all assertions passed
+./node test/sax_smoke.js
+parse ended, stack length: 0
+ok: parsed atom-like feed (3 text nodes)
+
+sax smoke: all assertions passed
+./node test/xml2js_smoke.js
+parsed: {"config":{"name":"ionpower-node","version":"0.1.0","targets":{"cpu":["G3","G4","G5"]},"debug":"true"}}
+ok: parsed object shape matches
+ok: Builder.buildObject: <greeting>hello, world</greeting>
+
+xml2js smoke: all assertions passed
+./node test/prism_smoke.js
+highlighted: <span class="token keyword">function</span> <span class="token function">greet</span><span class="token punctuation">(</span><span class="token parameter">name</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token string">'hello, '</span> <span class="token operator">+</span> name<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+ok: js highlighting
+css highlighted: <span class="token selector">body</span> <span class="token punctuation">{</span> <span class="token property">color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+prismjs smoke: all assertions passed
+./node test/immer_smoke.js
+ok: simple object update with structural sharing
+ok: nested update shares unchanged branches
+ok: explicit return
+
+immer smoke: all assertions passed
+./node test/chance_smoke.js
+ok: integer in range
+ok: name: Violet Simmons
+ok: email: sidfanu@fopcu.pm
+ok: url: http://gafgohrak.net/ted
+ok: guid: ae0fd2b7-4d13-5042-a845-c2ba000471ea
+ok: date: 2049-02-20
+ok: seeded reproducibility
+
+chance smoke: all assertions passed
+./node test/ini_smoke.js
+parsed: {
+  "name": "ionpower-node",
+  "debug": true,
+  "build": {
+    "cc": "gcc-4.9",
+    "optim": "-O2"
+  },
+  "target": {
+    "G5": {
+      "cpu": "970",
+      "tested": "yes"
+    },
+    "G3": {
+      "cpu": "750",
+      "tested": "no"
+    }
+  }
+}
+ok: parse
+re-stringified:
+name=ionpower-node
+debug=true
+
+[build]
+cc=gcc-4.9
+optim=-O2
+
+[target.G5]
+cpu=970
+tested=yes
+
+[target.G3]
+cpu=750
+tested=no
+
+
+ini smoke: all assertions passed
+./node test/slugify_smoke.js
+ok: basic -> "Hello-World!"
+ok: lower -> "hello-world"
+ok: strip bang -> "Hi"
+ok: replacement -> "a_b_c"
+ok: unicode -> "cafe-brut"
+ok: preserve -> "toplevel"
+
+slugify smoke: all assertions passed
+./node test/mitt_smoke.js
+ok: on + emit
+ok: stray off is harmless
+ok: wildcard
+
+mitt smoke: all assertions passed
+./node test/ramda_smoke.js
+ok: curry add(2)(3)
+ok: curry add(2, 3)
+ok: pipe(inc, dbl)(3)
+ok: compose(dbl, inc)(3)
+ok: map inc
+ok: filter odd
+ok: sortBy age
+ok: uniq
+ok: groupBy mod2
+ok: view
+ok: set
+ok: over
+
+ramda smoke: all assertions passed
+./node test/pluralize_smoke.js
+ok: cat -> cats
+ok: mouse -> mice
+ok: child -> children
+ok: person -> people
+ok: fish -> fish
+ok: datum -> data
+ok: analysis -> analyses
+ok: singular('dogs') -> dog
+ok: singular('children') -> child
+ok: count=1 -> test
+ok: count=2 -> tests
+ok: inclusive -> 2 tests
+
+pluralize smoke: all assertions passed
+./node test/debug_smoke.js
+2026-04-25T09:55:52.065Z ionpower:test hello from the debug logger
+ok: debug logger invoked
+ok: enable / enabled
+
+debug smoke: all assertions passed
+./node test/basex_smoke.js
+ok: hello -> Cn8eVZg
+ok: PowerPC -> 43nx2xLqKg
+ok: Mac OS X Tiger -> VSxyHxvu5JiKAYDmjrq
+ok: a -> 2g
+ok: custom base64 roundtrip
+
+base-x smoke: all assertions passed
+./node test/moo_smoke.js
+tokens: [["keyword","moo"],["lparen","("],["number","42"],["string","\"hi\""],["rparen",")"],["comment","// done"]]
+ok: 6 tokens match expected stream
+
+moo smoke: all assertions passed
+./node test/clone_smoke.js
+ok: deep clone with date
+ok: nested arrays
+ok: regex
+
+clone smoke: all assertions passed
+./node test/ejs_smoke.js
+ok: interp
+ok: escape
+ok: raw
+ok: if-else
+ok: each
+ok: compile+reuse A
+ok: compile+reuse B
+
+ejs smoke: all assertions passed
+./node test/dequal_smoke.js
+ok: primitives
+ok: diff prim
+ok: strings
+ok: arrays
+ok: arrays diff
+ok: objects
+ok: dates
+ok: regexp
+ok: null != undef
+ok: NaN == NaN
+ok: maps
+ok: sets
+
+dequal smoke: all assertions passed
+./node test/sm45_destructuring_defaults_repro.js
+ok: confirmed SM45 destructuring-default scope bug
+    (ReferenceError: outer is not defined)
+./node test/babel_fallback_smoke.js
+loaded modern sample via babel fallback in 59 ms
+ok: cache hit returned same exports (took 0 ms)
+
+babel_fallback_smoke: all assertions passed
+./node test/iconv_smoke.js
+ok: encode latin1 ('é' -> 0xE9)
+ok: decode latin1
+ok: utf16-le encode
+ok: decode utf16-le
+ok: utf8 encode length
+ok: decode utf8
+ok: win1252 roundtrip
+
+iconv-lite smoke: all assertions passed
+./node test/nearley_smoke.js
+ok: nearley runtime parse
+ok: nearley pair repetition
+
+nearley smoke: all assertions passed
+./node test/bignumber_smoke.js
+ok: addition past 2^53
+ok: big multiplication: 1.219326311248285321112635269e+29
+ok: division precision: 0.3333333333333333333333333333333333333333
+ok: comparison
+ok: toFixed
+
+bignumber smoke: all assertions passed
+./node test/decimal_smoke.js
+ok: exact float sum
+ok: big multiply: 1.2193263113702045408e+28
+ok: sqrt(2)
+ok: ln(10)
+
+decimal smoke: all assertions passed
+./node test/camelcase_smoke.js
+ok: 6 camelcase variants
+
+camelcase smoke: all assertions passed
+./node test/pretty_bytes_smoke.js
+ok: 6 pretty-bytes forms
+
+pretty-bytes smoke: all assertions passed
+./node test/figlet_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/figlet.js:18: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+  _   _ _____ _     _     ___  
+ | | | | ____| |   | |   / _ \ 
+ | |_| |  _| | |   | |  | | | |
+ |  _  | |___| |___| |__| |_| |
+ |_| |_|_____|_____|_____\___/ 
+                               
+ok: figlet rendered 'HELLO' in Standard font (191 chars)
+   ____ ____  
+  / ___| ___| 
+ | |  _|___ \ 
+ | |_| |___) |
+  \____|____/ 
+              
+ok: figlet rendered 'G5'
+
+figlet smoke: all assertions passed
+./node test/fecha_smoke.js
+ok: fecha.format YYYY-MM-DD
+ok: fecha.parse
+ok: fecha mediumDate preset
+
+fecha smoke: all assertions passed
+./node test/randomcolor_smoke.js
+ok: seeded hex color: #fc25bc
+ok: seed reproducibility
+ok: different seeds differ
+ok: hue:red -> #d34e6f
+ok: count:5 -> #a2e1e5, #a4fcc4, #7cf4e0, #496ab2, #dd694f
+
+randomcolor smoke: all assertions passed
+./node test/classnames_smoke.js
+ok: 5 classnames forms
+
+classnames smoke: all assertions passed
+./node test/tiny_emitter_smoke.js
+ok: on/emit
+ok: once
+ok: off
+
+tiny-emitter smoke: all assertions passed
+./node test/stable_stringify_smoke.js
+ok: key-order independence + sorted output
+ok: nested sort
+ok: primitives
+ok: custom comparator
+
+stable-stringify smoke: all assertions passed
+./node test/uniq_smoke.js
+ok: 3 uniq forms
+ok: uniq custom comparator
+
+uniq smoke: all assertions passed
+./node test/jszip_smoke.js
+ok: built zip of 467 bytes
+ok: round-trip read
+
+jszip smoke: all assertions passed
+./node test/hashids_smoke.js
+ok: encoded 1 -> m87L87VR
+ok: decoded back to 1
+ok: multi roundtrip: 3dcOT6sWx
+ok: salt sensitivity
+
+hashids smoke: all assertions passed
+./node test/jmespath_smoke.js
+ok: 5 jmespath queries
+
+jmespath smoke: all assertions passed
+./node test/seedrandom_smoke.js
+ok: seed determinism across 5 draws
+ok: seed sensitivity
+ok: range [0,1) respected
+
+seedrandom smoke: all assertions passed
+./node test/alea_smoke.js
+ok: 10 draws deterministic
+ok: range
+ok: uint32
+
+alea smoke: all assertions passed
+./node test/escape_html_smoke.js
+ok: 4 escape-html forms
+
+escape-html smoke: all assertions passed
+./node test/rfc6902_smoke.js
+ok: createPatch length: 3
+ok: applyPatch round-trip
+
+rfc6902 smoke: all assertions passed
+./node test/fast_memoize_smoke.js
+ok: memoization caches
+ok: distinct args don't collide
+ok: multi-arg memoization
+
+fast-memoize smoke: all assertions passed
+./node test/tiny_warning_smoke.js
+ok: tiny-warning: 2 warnings emitted on falsy conditions
+
+tiny-warning smoke: all assertions passed
+./node test/crypto_hash_smoke.js
+ok: SHA-256('abc') vector
+ok: SHA-256('') vector
+ok: SHA-256 block-boundary handling (shape): b35439a4ac6f0948b6d6f9e3c6af0f5f590ce20f1bde7090ef7970686ec6738a
+ok: chunked update
+ok: HMAC-SHA-256 RFC 4231 vector 1
+ok: HMAC-SHA-256 RFC 4231 vector 2
+ok: base64 digest
+ok: timingSafeEqual
+
+crypto hash/hmac smoke: all assertions passed
+./node test/htmlparser2_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/nm/node_modules/domhandler/lib/node.js:7: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: Parser event counts: {"opentag":11,"closetag":11,"text":7}
+ok: parseDocument produced a tree
+ok: tree walk finds #root div.main
+ok: text extraction
+
+htmlparser2 smoke: all assertions passed
+./node test/jsonwebtoken_smoke.js
+ok: signed HS256 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ...
+ok: verified; payload.sub=macuser
+ok: wrong secret rejected
+
+jsonwebtoken smoke: all assertions passed
+./node test/eventemitter3_smoke.js
+ok: on/emit
+ok: emit returns false when no listeners
+ok: once
+ok: removeListener
+ok: listenerCount
+
+eventemitter3 smoke: all assertions passed
+./node test/indent_string_smoke.js
+ok: 4 indent-string forms
+
+indent-string smoke: all assertions passed
+./node test/safe_json_stringify_smoke.js
+ok: circular handled: {"name":"root","self":"[Circular]"}
+ok: array
+
+safe-json-stringify smoke: all assertions passed
+./node test/leven_smoke.js
+ok: 6 leven distances
+
+leven smoke: all assertions passed
+./node test/strnum_smoke.js
+ok: 7 strnum conversions (scientific notation is string by default)
+
+strnum smoke: all assertions passed
+./node test/xregexp_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/xregexp.js:1246: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: named groups year/month/day
+ok: named-reference replace
+ok: unicode letter class /\pL+/
+
+xregexp smoke: all assertions passed
+./node test/htmlescape_smoke.js
+ok: 4 htmlescape forms
+
+htmlescape smoke: all assertions passed
+./node test/qhash_smoke.js
+ok: set dotted
+ok: get dotted
+ok: decorate
+ok: selectField
+
+qhash smoke: all assertions passed
+./node test/escape_regexp_smoke.js
+ok: 5 escape-regexp forms
+
+escape-regexp smoke: all assertions passed
+./node test/object_path_smoke.js
+ok: get
+ok: set
+ok: has
+ok: del
+ok: array index
+
+object-path smoke: all assertions passed
+./node test/currency_smoke.js
+ok: 0.1 + 0.2 exact
+ok: distribute sum-preserves
+ok: format: $1,234.50
+
+currency.js smoke: all assertions passed
+./node test/arr_union_diff_smoke.js
+ok: arr-union
+ok: arr-diff
+
+arr-union/arr-diff smoke: all assertions passed
+./node test/deep_extend_smoke.js
+ok: deep merge
+ok: multi-source
+ok: array replace
+
+deep-extend smoke: all assertions passed
+./node test/http_smoke.js
+GET http://example.com ...
+ok: http://example.com status=200, 528 bytes
+
+GET https://example.com ...
+ok: https://example.com status=200, 528 bytes
+
+Inspect response headers for https://example.com ...
+ok: headers.content-type = text/html
+
+GET https://example.com/nonexistent-404 ...
+ok: 404 status returned
+
+GET with custom user-agent header ...
+ok: custom headers accepted (request sent, response 200)
+ok: bodyBytes Uint8Array exposed
+
+http smoke: all assertions passed
+./node test/cookie_smoke.js
+ok: parse
+ok: serialize with options: sess=abc; Max-Age=60; Path=/; HttpOnly
+
+cookie smoke: all assertions passed
+./node test/cookie_signature_smoke.js
+ok: sign: hello-session-42.jBIhpF7MhXW+pl+YkTy9dbZhnEAV+IJa4v6Yed1n7xo
+ok: unsign round-trip
+ok: tampered returns false
+ok: wrong-secret returns false
+
+cookie-signature smoke: all assertions passed
+./node test/bytes_smoke.js
+ok: format
+ok: parse
+
+bytes smoke: all assertions passed
+./node test/content_type_smoke.js
+ok: parse
+ok: format: text/html; charset=utf-8
+
+content-type smoke: all assertions passed
+./node test/base64js_smoke.js
+ok: fromByteArray
+ok: toByteArray
+ok: byteLength
+
+base64-js smoke: all assertions passed
+./node test/json_logic_smoke.js
+ok: equality
+ok: arithmetic
+ok: var
+ok: nested if
+
+json-logic smoke: all assertions passed
+./node test/is_plain_obj_smoke.js
+ok: is-plain-obj
+ok: is-regexp
+
+is-plain-obj + is-regexp smoke: all assertions passed
+./node test/emoji_regex_smoke.js
+ok: wave emoji matched
+
+emoji-regex smoke: all assertions passed
+./node test/murmurhash_smoke.js
+ok: 'hello' -> 3806057185
+ok: '' -> 0
+
+murmurhash smoke: all assertions passed
+./node test/xxhashjs_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/xxhashjs.js:135: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: xxhash32('hello') = 0xa200ece3
+ok: xxhash64('hello') = 0xc5badaa04926dcd
+ok: streaming equals single-shot
+
+xxhashjs smoke: all assertions passed
+./node test/jsbn_smoke.js
+ok: 2^100 - 1
+ok: 3^10 mod 7 = 4
+
+jsbn smoke: all assertions passed
+./node test/crc32_smoke.js
+ok: CRC32('123456789') = 0xCBF43926
+ok: empty = 0
+ok: bytes input -> 0xb63cfbcd
+
+crc32 smoke: all assertions passed
+./node test/fastest_levenshtein_smoke.js
+ok: distance
+ok: closest('Gb', [GB,G3,G4,G5]) = GB
+
+fastest-levenshtein smoke: all assertions passed
+./node test/flatten_smoke.js
+ok: 3 flatten forms
+
+flatten smoke: all assertions passed
+./node test/fnv_plus_smoke.js
+ok: fnv32('hello world') = 0xd58b3fa7
+ok: fnv64 = 0x779a65e7023cd2e7
+ok: fast1a32 = 2961079041
+
+fnv-plus smoke: all assertions passed
+./node test/left_pad_smoke.js
+ok: 4 left-pad forms
+
+left-pad smoke: all assertions passed
+./node test/just_smoke.js
+ok: pick
+ok: omit
+ok: compare
+
+just-* smoke: all assertions passed
+./node test/format_util_smoke.js
+ok: 3 format-util forms
+
+format-util smoke: all assertions passed
+./node test/jsonpointer_smoke.js
+ok: get
+ok: set
+ok: root
+ok: escape ~0 / ~1
+
+jsonpointer smoke: all assertions passed
+./node test/traverse_smoke.js
+ok: map doubled numbers
+ok: paths: 9
+ok: get by path array
+
+traverse smoke: all assertions passed
+./node test/fraction_smoke.js
+ok: 1/3 + 1/6 = 1/2
+ok: '0.5' = 1/2
+ok: 22/7 = 3.(142857)
+ok: 3/4 / 2/3 = 9/8
+
+fraction.js smoke: all assertions passed
+./node test/bit_buffer_smoke.js
+ok: readBits/writeBits round-trip
+
+bit-buffer smoke: all assertions passed
+./node test/clsx_smoke.js
+ok: 4 clsx forms
+
+clsx smoke: all assertions passed
+./node test/tiny_invariant_smoke.js
+ok: truthy passes silently
+ok: falsy throws Error with message
+
+tiny-invariant smoke: all assertions passed
+./node test/diff_match_patch_smoke.js
+ok: diff produced 6 ops
+ok: patch_make produced 1 patches
+ok: patch_toText: @@ -1,19 +1,18 @@\n The \n-quick\n+slow\n  brown \n-fox\n+dog\n
+ok: patch_fromText round-trip
+ok: patch_apply produces target
+
+diff-match-patch smoke: all assertions passed
+./node test/circular_json_smoke.js
+ok: stringify: {"name":"root","self":"~"}
+ok: parse reconstructed cycle
+
+circular-json smoke: all assertions passed
+./node test/flatted_smoke.js
+ok: stringify: [{"name":"1","self":"0","arr":"2"},"root",[1,2,"0"]]
+ok: parse reconstructed nested cycles
+
+flatted smoke: all assertions passed
+./node test/big_integer_smoke.js
+ok: 100! = 93326215443944152681...00000000000000000000
+ok: 2^256
+ok: gcd
+
+big-integer smoke: all assertions passed
+./node test/diff_sequences_smoke.js
+ok: matches: [{"n":1,"aStart":0,"bStart":0},{"n":1,"aStart":2,"bStart":2}]
+
+diff-sequences smoke: all assertions passed
+./node test/reselect_smoke.js
+ok: memoized
+ok: unrelated-change cache
+ok: relevant-change recompute
+
+reselect smoke: all assertions passed
+./node test/array_move_smoke.js
+ok: immutable
+
+array-move smoke: all assertions passed
+./node test/split_on_first_smoke.js
+ok: 4 split-on-first forms
+
+split-on-first smoke: all assertions passed
+./node test/url_parse_smoke.js
+ok: parse all components
+ok: parsed query object
+ok: toString roundtrip
+
+url-parse smoke: all assertions passed
+./node test/ipaddr_smoke.js
+ok: isValid
+ok: private range
+ok: loopback range
+ok: ipv6 reserved range
+ok: v6 normalized
+
+ipaddr smoke: all assertions passed
+./node test/tinypure_smoke.js
+ok: array-differ
+ok: arr-flatten
+ok: requires-port
+ok: querystringify
+
+tinypure smoke: all assertions passed
+./node test/unorm_smoke.js
+ok: nfd
+ok: nfc
+ok: nfkc
+
+unorm smoke: all assertions passed
+./node test/glob_to_regexp_smoke.js
+ok: *.js
+ok: **/*.ts globstar
+
+glob-to-regexp smoke: all assertions passed
+./node test/assert_plus_smoke.js
+ok: happy paths
+ok: wrong types throw
+ok: optional*
+
+assert-plus smoke: all assertions passed
+./node test/longest_streak_smoke.js
+ok: 3 streaks
+
+longest-streak smoke: all assertions passed
+./node test/zero_fill_smoke.js
+ok: 3 zero-fill forms
+
+zero-fill smoke: all assertions passed
+./node test/ua_parser_smoke.js
+ok: TenFourFox-45 UA parsed: {"name":"Firefox","version":"45.0","major":"45"} {"name":"Mac OS","version":"10.4"} {"architecture":"ppc"}
+ok: Chrome on Windows parsed
+
+ua-parser smoke: all assertions passed
+./node test/preact_smoke.js
+ok: h() / createElement
+ok: Fragment
+ok: cloneElement
+
+preact smoke: all assertions passed
+./node test/extend_smoke.js
+ok: 3 extend forms
+
+extend smoke: all assertions passed
+./node test/dot_smoke.js
+ok: {{=it.name}}
+ok: loop
+ok: if/else
+
+doT smoke: all assertions passed
+./node test/lz_string_smoke.js
+ok: compress 1200 -> 472 (39%)
+ok: round-trip equals
+ok: URIComponent round-trip
+
+lz-string smoke: all assertions passed
+./node test/parse_ms_smoke.js
+ok: 25h42s500ms parsed
+ok: zero
+
+parse-ms smoke: all assertions passed
+./node test/ip_regex_smoke.js
+ok: default factory
+ok: v4()
+ok: v6()
+
+ip-regex smoke: all assertions passed
+./node test/char_regex_smoke.js
+ok: 'hi=Kworld' matched 8 chars
+
+char-regex smoke: all assertions passed
+./node test/safer_buffer_smoke.js
+ok: safer Buffer.from / toString
+ok: safer Buffer.alloc
+
+safer-buffer smoke: all assertions passed
+./node test/cookiejar_smoke.js
+ok: set + get at root
+ok: nested path
+
+cookiejar smoke: all assertions passed
+./node test/arg_smoke.js
+ok: 4 fields parsed
+
+arg smoke: all assertions passed
+./node test/atob_btoa_smoke.js
+ok: atob + btoa + round-trip
+
+atob/btoa smoke: all assertions passed
+./node test/urldecode_smoke.js
+ok: urldecode + invalid-sequence tolerance
+
+urldecode smoke: all assertions passed
+./node test/safe_stable_stringify_smoke.js
+ok: sorted keys
+ok: circular: {"name":"root","self":"[Circular]"}
+ok: primitives + array
+
+safe-stable-stringify smoke: all assertions passed
+./node test/tinypreds_smoke.js
+ok: is-plain-object
+ok: is-number
+
+tinypreds smoke: all assertions passed
+./node test/buffer_crc32_smoke.js
+ok: 0xCBF43926
+ok: empty
+
+buffer-crc32 smoke: all assertions passed
+./node test/tsv_smoke.js
+ok: parse
+ok: stringify
+
+tsv smoke: all assertions passed
+./node test/object_assign_smoke.js
+ok: 2 assign forms
+
+object-assign smoke: all assertions passed
+./node test/small_utils_smoke.js
+ok: abbrev
+ok: word-wrap
+ok: strip-json-comments
+ok: repeat-string
+ok: title-case
+
+small_utils smoke: all assertions passed
+./node test/simple_statistics_smoke.js
+ok: mean / median / stddev
+ok: linear regression y = x
+ok: quantile(0.5)
+
+simple-statistics smoke: all assertions passed
+./node test/heap_smoke.js
+ok: min-heap sorts
+ok: max-heap via comparator
+
+heap smoke: all assertions passed
+./node test/tinydate_smoke.js
+ok: basic format: 2026-04-22 10:30:45
+ok: literals
+
+tinydate smoke: all assertions passed
+./node test/sjcl_smoke.js
+ok: SHA-256 vector
+ok: HMAC-SHA-256 vector
+ok: pbkdf2
+ok: AES encrypt/decrypt round-trip
+
+sjcl smoke: all assertions passed
+./node test/number_to_words_smoke.js
+ok: toWords
+ok: toOrdinal
+
+number-to-words smoke: all assertions passed
+./node test/is_url_smoke.js
+ok: 5 is-url forms
+
+is-url smoke: all assertions passed
+./node test/humanize_duration_smoke.js
+ok: 25h -> 1 day, 1 hour
+ok: es: 5s -> 5 segundos
+ok: units+round -> 20 hours, 34 minutes
+
+humanize-duration smoke: all assertions passed
+./node test/slug_smoke.js
+ok: 4 slug forms
+
+slug smoke: all assertions passed
+./node test/jwt_decode_smoke.js
+ok: payload decoded
+ok: header decoded
+
+jwt-decode smoke: all assertions passed
+./node test/color_utils_smoke.js
+ok: hex-rgb
+ok: rgb-hex
+ok: color-name
+
+color utilities smoke: all assertions passed
+./node test/base64_smoke.js
+ok: 3 base-64 forms
+
+base-64 smoke: all assertions passed
+./node test/case_smoke.js
+ok: 2 case forms
+
+case smoke: all assertions passed
+./node test/tslib_smoke.js
+ok: __assign
+ok: __spreadArray
+/Users/macuser/tmp/ionpower-node/test/vendor/tslib.js:78: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: __extends
+
+tslib smoke: all assertions passed
+./node test/anchorme_smoke.js
+ok: auto-link
+ok: list() found 2 links
+
+anchorme smoke: all assertions passed
+./node test/numeral_smoke.js
+ok: 4 numeral formats
+ok: parse
+
+numeral smoke: all assertions passed
+./node test/inflection_smoke.js
+ok: plural/singular
+ok: case ops
+
+inflection smoke: all assertions passed
+./node test/oauth_sign_smoke.js
+ok: hmacsign256: V2oytya5NutdZmBJOvxi500EdMV5H9...
+ok: plaintext
+
+oauth-sign smoke: all assertions passed
+./node test/fromentries_smoke.js
+ok: 2 fromentries forms
+
+fromentries smoke: all assertions passed
+./node test/fast_equals_smoke.js
+ok: 5 fast-equals forms
+
+fast-equals smoke: all assertions passed
+./node test/diff2html_smoke.js
+ok: parse
+ok: html rendered 3609 bytes
+
+diff2html smoke: all assertions passed
+./node test/hoopy_smoke.js
+ok: circular buffer created and written
+
+hoopy smoke: all assertions passed
+./node test/fast_sort_smoke.js
+ok: 2 fast-sort forms
+
+fast-sort smoke: all assertions passed
+./node test/jsonparse_smoke.js
+ok: streaming parse produced 6 events
+
+jsonparse smoke: all assertions passed
+./node test/pretty_compact_smoke.js
+ok: compact + wrap
+
+pretty-compact smoke: all assertions passed
+./node test/path_libs_smoke.js
+ok: path-to-regexp
+ok: path-is-inside
+
+path-libs smoke: all assertions passed
+./node test/ansi_escapes_smoke.js
+ok: cursorUp
+ok: clearScreen
+ok: link
+
+ansi-escapes smoke: all assertions passed
+./node test/yocto_queue_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/yocto-queue.js:9: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: FIFO
+
+yocto-queue smoke: all assertions passed
+./node test/cron_smoke.js
+ok: cronstrue
+ok: cron-validator
+
+cron smoke: all assertions passed
+./node test/string_similarity_smoke.js
+ok: identical
+ok: hello/world = 0
+ok: case-sensitive = 0.75
+ok: findBestMatch picked applicable
+
+string-similarity smoke: all assertions passed
+./node test/jwt_simple_smoke.js
+ok: encode
+ok: decode
+ok: wrong secret
+
+jwt-simple smoke: all assertions passed
+./node test/tweetnacl_util_smoke.js
+ok: UTF-8 round-trip
+ok: base64 round-trip
+
+tweetnacl-util smoke: all assertions passed
+./node test/fast_copy_smoke.js
+ok: deep copy independence
+
+fast-copy smoke: all assertions passed
+./node test/is_promise_smoke.js
+ok: 5 is-promise forms
+
+is-promise smoke: all assertions passed
+./node test/fast_sha256_smoke.js
+ok: SHA-256
+ok: HMAC-SHA-256
+
+fast-sha256 smoke: all assertions passed
+./node test/graphlib_smoke.js
+ok: build graph
+ok: successors
+ok: topsort: [
+  "a",
+  "b",
+  "c"
+]
+ok: dijkstra
+
+graphlib smoke: all assertions passed
+./node test/dagre_smoke.js
+ok: layout positions: {"root":[105,20],"c1":[40,110]}
+
+dagre smoke: all assertions passed
+./node test/wordwrap_smoke.js
+ok: 20-col wrap to 3 lines
+ok: narrow wrap
+
+wordwrap smoke: all assertions passed
+./node test/tiny_typed_emitter_smoke.js
+ok: typed emitter fires
+
+tiny-typed-emitter smoke: all assertions passed
+./node test/natural_compare_smoke.js
+ok: numeric-in-strings: file1, file2, file10, file11
+
+natural-compare smoke: all assertions passed
+./node test/deep_clone_smoke.js
+ok: deep clone independence
+
+deep-clone smoke: all assertions passed
+./node test/spacetime_smoke.js
+ok: parse + accessors
+ok: goto LA -> NY: 12:0 -> 3:0
+ok: iso format: 2026-04-22T12:00:00.000-07:00
+
+spacetime smoke: all assertions passed
+./node test/cli_width_smoke.js
+ok: cliWidth = 0
+ok: defaultWidth=120 -> 120
+
+cli-width smoke: all assertions passed
+./node test/array_union_smoke.js
+ok: 3 array-union forms
+
+array-union smoke: all assertions passed
+./node test/is_directory_smoke.js
+ok: 3 is-directory.sync forms
+
+is-directory smoke: all assertions passed
+./node test/eventemitter2_smoke.js
+ok: wildcard emit
+ok: once
+
+eventemitter2 smoke: all assertions passed
+./node test/deep_diff_smoke.js
+ok: diff kinds: E,A
+ok: apply round-trip
+
+deep-diff smoke: all assertions passed
+./node test/rambda_smoke.js
+ok: 5 rambda forms
+
+rambda smoke: all assertions passed
+./node test/jshashes_smoke.js
+ok: MD5
+ok: SHA-1
+ok: SHA-256
+ok: HMAC-SHA-256 (RFC 4231)
+
+jshashes smoke: all assertions passed
+./node test/immutable_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/immutable.js:152: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: Map.set immutable
+ok: List.push immutable
+ok: Record
+
+immutable smoke: all assertions passed
+./node test/string_hash_smoke.js
+ok: hash('hello') = 181380007 hash('world') = 164394279
+
+string-hash smoke: all assertions passed
+./node test/punycode_smoke.js
+ok: münchen round-trip
+ok: münchen.example.com round-trip
+
+punycode smoke: all assertions passed
+./node test/small_batch_smoke.js
+ok: to-fast-properties
+ok: decamelize
+ok: trim-newlines
+ok: escape-goat
+
+small_batch smoke: all assertions passed
+./node test/html_tokenizer_smoke.js
+ok: start tag with attrs
+ok: text content
+
+simple-html-tokenizer smoke: all assertions passed
+./node test/promise_utils_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/p-each-series.js:8: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: is-stream
+ok: p-each-series
+ok: pify
+
+promise_utils smoke: all assertions passed
+./node test/mri_smoke.js
+ok: mri
+ok: mri aliases+defaults
+
+mri smoke: all assertions passed
+./node test/dedent_smoke.js
+ok: dedent
+ok: outdent.string shortened to "      foo\nbar\nz"
+
+dedent/outdent smoke: all assertions passed
+./node test/mimic_fn_smoke.js
+ok: mimic-fn
+
+mimic-fn smoke: all assertions passed
+./node test/tsscmp_smoke.js
+ok: tsscmp
+
+tsscmp smoke: all assertions passed
+./node test/node_forge_smoke.js
+ok: MD5 vector
+ok: SHA-1 vector
+ok: HMAC-SHA1 RFC 2202 vector
+ok: ASN.1 DER encode
+
+node-forge smoke: all assertions passed
+./node test/js_levenshtein_smoke.js
+ok: js-levenshtein (8 distance vectors)
+
+js-levenshtein smoke: all assertions passed
+./node test/map_obj_smoke.js
+ok: map-obj uppercase
+ok: map-obj doubled
+ok: map-obj deep
+ok: map-obj skip
+
+map-obj smoke: all assertions passed
+./node test/mkdirp_classic_smoke.js
+ok: mkdirp.sync created /tmp/ionpower-mkdirp-1777111029906/a/b/c/d (made=/tmp/ionpower-mkdirp-1777111029906)
+ok: mkdirp.sync idempotent
+ok: isDirectory() on mkdirp'd path
+
+mkdirp-classic smoke: all assertions passed
+./node test/ansi_utils_smoke.js
+ok: ansi-regex
+ok: strip-ansi
+ok: ansi-styles
+
+ansi_utils smoke: all assertions passed
+./node test/glob_path_smoke.js
+ok: is-glob
+ok: is-extglob
+ok: slash
+ok: normalize-path
+
+glob_path smoke: all assertions passed
+./node test/shell_quote_smoke.js
+ok: shell-quote.quote
+ok: shell-quote.parse
+
+shell-quote smoke: all assertions passed
+./node test/sort_keys_smoke.js
+ok: sort-keys shallow
+ok: sort-keys deep
+ok: sort-keys custom compare
+ok: is-plain-obj
+
+sort_keys smoke: all assertions passed
+./node test/hash_sum_smoke.js
+ok: hash-sum string -> 7769969c
+ok: hash-sum determinism + order-independence
+ok: hash-sum discriminates
+
+hash-sum smoke: all assertions passed
+./node test/string_width_smoke.js
+ok: string-width basic
+ok: is-fullwidth-code-point
+
+string_width smoke: all assertions passed
+./node test/indent_smoke.js
+ok: strip-indent
+ok: redent
+
+indent smoke: all assertions passed
+./node test/pretty_ms_smoke.js
+ok: pretty-ms
+
+pretty_ms smoke: all assertions passed
+./node test/pupa_smoke.js
+ok: pupa
+
+pupa smoke: all assertions passed
+./node test/linkifyjs_smoke.js
+ok: linkifyjs.find (URL + email)
+ok: linkifyjs.test
+
+linkifyjs smoke: all assertions passed
+./node test/keys_smoke.js
+ok: camelcase-keys
+ok: decamelize-keys
+
+keys smoke: all assertions passed
+./node test/quick_lru_smoke.js
+ok: quick-lru maxSize bounds
+ok: quick-lru keys iterator (4 keys)
+
+quick_lru smoke: all assertions passed
+./node test/xmldoc_smoke.js
+ok: xmldoc parsed RSS (2 items)
+
+xmldoc smoke: all assertions passed
+./node test/is_email_smoke.js
+ok: is-email (6 cases)
+
+is-email smoke: all assertions passed
+./node test/color_hash_smoke.js
+ok: color-hash hex: #a0ac53
+ok: color-hash deterministic + distinct
+ok: color-hash hsl + rgb shapes
+
+color-hash smoke: all assertions passed
+./node test/case_lib_smoke.js
+ok: Case (8 transforms)
+
+case-lib smoke: all assertions passed
+./node test/twig_smoke.js
+ok: twig simple interpolation
+ok: twig for loop
+ok: twig conditionals
+ok: twig upper filter
+
+twig smoke: all assertions passed
+./node test/p_limit_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/yocto-queue.js:9: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: p-limit exposes activeCount + pendingCount
+ok: p-limit ran 5 tasks through lim(2)
+
+p-limit smoke: all assertions passed
+./node test/acorn_walk_smoke.js
+ok: acorn-walk full visitor (5 idents)
+ok: acorn-walk VariableDeclaration count
+
+acorn-walk smoke: all assertions passed
+./node test/bn_js_smoke.js
+ok: bn.js 20! exact
+ok: bn.js 2^256 - 1
+ok: bn.js modexp
+
+bn.js smoke: all assertions passed
+./node test/is_arrayish_smoke.js
+ok: is-arrayish (6 cases)
+
+is-arrayish smoke: all assertions passed
+./node test/ansi_align_smoke.js
+ok: ansi-align center
+ok: ansi-align right
+ok: ansi-align ANSI-aware width (didn't mangle codes)
+
+ansi-align smoke: all assertions passed
+./node test/cli_columns_smoke.js
+ok: cli-columns 6 items rendered to 40-col width
+ok: cli-columns output is multi-line
+
+cli-columns smoke: all assertions passed
+./node test/micro_memoize_smoke.js
+ok: micro-memoize caches repeats
+ok: micro-memoize identity arg
+
+micro-memoize smoke: all assertions passed
+./node test/json_parse_better_smoke.js
+ok: json-parse-better valid
+ok: json-parse-better threw with positional detail
+
+json-parse-better smoke: all assertions passed
+./node test/error_ex_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/error-ex.js:104: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: error-ex composed message: missing comma in config.json on line 14
+ok: error-ex instanceof
+
+error-ex smoke: all assertions passed
+./node test/astring_smoke.js
+ok: astring round-trips parse -> generate
+ok: astring parse -> transform -> generate
+
+astring smoke: all assertions passed
+./node test/escape_string_regexp_smoke.js
+ok: escape-string-regexp (6 cases)
+ok: escaped regex enforces literal match
+
+escape-string-regexp smoke: all assertions passed
+./node test/p_try_smoke.js
+ok: p-try sync value
+ok: p-try sync throw caught
+ok: p-try forwards args
+
+p-try smoke: all assertions passed
+./node test/remove_accents_smoke.js
+ok: remove-accents (5 cases)
+ok: remove-accents.has
+
+remove-accents smoke: all assertions passed
+./node test/url_utils_smoke.js
+ok: is-absolute-url (6 cases)
+
+url_utils smoke: all assertions passed
+./node test/yargs_parser_smoke.js
+ok: yargs-parser basic
+ok: yargs-parser aliases
+ok: yargs-parser string type
+
+yargs-parser smoke: all assertions passed
+./node test/delay_smoke.js
+ok: delay returns thenable
+ok: delay resolves undefined
+ok: delay(value) resolves to provided value
+
+delay smoke: all assertions passed
+./node test/widest_line_smoke.js
+ok: widest-line (4 cases)
+
+widest-line smoke: all assertions passed
+./node test/kind_of_smoke.js
+ok: kind-of (11 cases)
+
+kind-of smoke: all assertions passed
+./node test/type_detect_smoke.js
+ok: type-detect (9 cases)
+
+type-detect smoke: all assertions passed
+./node test/has_values_smoke.js
+ok: has-values (10 cases)
+
+has-values smoke: all assertions passed
+./node test/onetime_smoke.js
+ok: onetime (called 1x; wrapped called 3x)
+ok: onetime.callCount
+
+onetime smoke: all assertions passed
+./node test/isobject_smoke.js
+ok: isobject (7 cases)
+
+isobject smoke: all assertions passed
+./node test/pinkie_smoke.js
+ok: pinkie static API (resolve/reject/all)
+ok: pinkie construct + then
+
+pinkie smoke: all assertions passed
+./node test/array_unique_smoke.js
+ok: array-unique (4 cases)
+
+array-unique smoke: all assertions passed
+./node test/stable_sort_smoke.js
+ok: stable sort preserves insertion order
+
+stable-sort smoke: all assertions passed
+./node test/split_lines_smoke.js
+ok: split-lines (4 cases)
+ok: split-lines preserveNewlines
+
+split-lines smoke: all assertions passed
+./node test/escape_latex_smoke.js
+ok: escape-latex: $, &, %
+ok: escape-latex: _ and #
+ok: escape-latex: ASCII passes through
+
+escape-latex smoke: all assertions passed
+./node test/fuse_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/fuse.js:119: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: fuse.search('war') -> Old Man's War
+ok: fuse typo tolerance
+
+fuse smoke: all assertions passed
+./node test/wrap_ansi_smoke.js
+ok: wrap-ansi plain (5 lines)
+
+wrap-ansi smoke: all assertions passed
+./node test/aproba_smoke.js
+ok: aproba accepts valid type strings
+ok: aproba rejects mismatched type
+ok: aproba checks arity
+
+aproba smoke: all assertions passed
+./node test/deep_freeze_smoke.js
+ok: deep-freeze: all nested containers frozen
+ok: deep-freeze: mutations rejected
+
+deep-freeze smoke: all assertions passed
+./node test/number_is_integer_smoke.js
+ok: number-is-integer (6 cases)
+ok: is-finite (3 cases)
+
+number_is_integer smoke: all assertions passed
+./node test/lodash_defaults_smoke.js
+ok: lodash.defaults fills missing
+ok: lodash.defaults: undefined counts as missing
+ok: lodash.defaults: null is a value
+
+lodash.defaults smoke: all assertions passed
+./node test/hooker_smoke.js
+ok: hooker pre-hook
+ok: hooker unhook restores
+
+hooker smoke: all assertions passed
+./node test/dot_prop_smoke.js
+ok: dot-prop.get
+ok: dot-prop.set
+ok: dot-prop.has
+ok: dot-prop.delete
+
+dot-prop smoke: all assertions passed
+./node test/get_set_value_smoke.js
+ok: get-value
+ok: set-value
+
+get/set-value smoke: all assertions passed
+./node test/tiny_queue_smoke.js
+ok: tiny-queue FIFO
+
+tiny-queue smoke: all assertions passed
+./node test/linked_list_smoke.js
+ok: linked-list append + toArray
+ok: linked-list detach
+
+linked-list smoke: all assertions passed
+./node test/mime_smoke.js
+ok: mime-types.lookup (4 cases)
+ok: mime-types.extension
+ok: mime-types.contentType
+ok: Mime class: custom registration
+
+mime smoke: all assertions passed
+./node test/text_table_smoke.js
+ok: text-table 3 rows aligned
+ok: text-table right-align
+
+text-table smoke: all assertions passed
+./node test/utils_merge_smoke.js
+ok: utils-merge mutates target
+ok: utils-merge tolerates undefined
+
+utils-merge smoke: all assertions passed
+./node test/uniqid_smoke.js
+ok: uniqid basic uniqueness
+ok: uniqid with prefix
+ok: uniqid 1000 unique in a row
+
+uniqid smoke: all assertions passed
+./node test/url_polyfill_smoke.js
+ok: URL full parse (10 components)
+ok: URL.href reassembles
+ok: URL.toString + toJSON
+ok: URL relative (absolute path)
+ok: URLSearchParams get/getAll/has
+ok: URLSearchParams set/append/delete
+ok: URLSearchParams.toString encodes
+ok: URL.searchParams reflects parsed query
+
+URL polyfill smoke: all assertions passed
+./node test/util_helpers_smoke.js
+ok: util.promisify.custom symbol
+ok: util.types (9 predicates)
+ok: util.isXxx legacy aliases (13)
+ok: util.promisify (resolve + reject)
+ok: util.callbackify
+
+util_helpers smoke: all assertions passed
+./node test/chalk_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/chalk.js:48: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: chalk.red returned: "\u001b[31merror\u001b[39m"
+ok: chalk.bold.blue chain
+ok: chalk.supportsColor = {"stdout":false,"stderr":false}
+ok: chalk.stripColor
+
+chalk smoke: all assertions passed
+./node test/normalize_url_smoke.js
+ok: normalize-url: lowercase + port strip
+ok: normalize-url: path collapse: http://example.com/a/b/c
+ok: normalize-url with sortQueryParameters: https://example.com?a=1&b=2
+
+normalize-url smoke: all assertions passed
+./node test/file_url_smoke.js
+ok: file-url absolute: file:///tmp/example.txt
+ok: file-url relative: file:///Users/macuser/tmp/ionpower-node/subdir/file.txt
+ok: file-url no-resolve
+
+file-url smoke: all assertions passed
+./node test/boxen_smoke.js
+ok: boxen default single border
+ok: boxen round borderStyle
+ok: boxen padding
+
+boxen smoke: all assertions passed
+./node test/log_symbols_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/chalk.js:48: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: log-symbols.info = "\u001b[34m9\u001b[39m"
+ok: log-symbols.success = "\u001b[32m\u001b[39m"
+ok: log-symbols.warning = "\u001b[33m \u001b[39m"
+ok: log-symbols.error = "\u001b[31m\u001b[39m"
+
+log-symbols smoke: all assertions passed
+./node test/is_unicode_supported_smoke.js
+ok: is-unicode-supported = true
+
+is-unicode-supported smoke: all assertions passed
+./node test/strip_final_newline_smoke.js
+ok: strip-final-newline (5 cases)
+
+strip-final-newline smoke: all assertions passed
+./node test/cli_spinners_smoke.js
+ok: cli-spinners.dots has 10 frames
+ok: cli-spinners has 86 named styles
+
+cli-spinners smoke: all assertions passed
+./node test/env_paths_smoke.js
+ok: env-paths returns 5 path categories
+ok: env-paths suffix:false
+
+env-paths smoke: all assertions passed
+./node test/just_suite_smoke.js
+ok: just-clone
+ok: just-safe-get
+ok: just-safe-set
+
+just_suite smoke: all assertions passed
+./node test/iota_array_smoke.js
+ok: iota-array
+
+iota-array smoke: all assertions passed
+./node test/inline_style_parser_smoke.js
+ok: inline-style-parser (3 decls)
+
+inline-style-parser smoke: all assertions passed
+./node test/rgbcolor_smoke.js
+ok: rgbcolor: red
+ok: rgbcolor: #00ff00
+ok: rgbcolor: rgb(50,100,150)
+ok: rgbcolor: invalid rejected
+
+rgbcolor smoke: all assertions passed
+./node test/parse_duration_smoke.js
+ok: parse-duration (6 cases)
+
+parse-duration smoke: all assertions passed
+./node test/fast_safe_stringify_smoke.js
+ok: fast-safe-stringify flat
+ok: fast-safe-stringify circular
+
+fast-safe-stringify smoke: all assertions passed
+./node test/minipass_smoke.js
+ok: minipass constructor + core methods
+ok: minipass write -> data events
+
+minipass smoke: all assertions passed
+./node test/eastasianwidth_smoke.js
+ok: eastasianwidth.length
+ok: eastasianwidth.characterLength
+ok: eastasianwidth.eastAsianWidth
+
+eastasianwidth smoke: all assertions passed
+./node test/content_disposition_smoke.js
+ok: content-disposition default
+ok: content-disposition filename
+ok: content-disposition non-ASCII: attachment; filename="å,?.txt"; filename*=UTF-8''%C3%A5%2C%C2%9E.txt
+ok: content-disposition.parse
+
+content-disposition smoke: all assertions passed
+./node test/dequal_lite_smoke.js
+ok: dequal primitives
+ok: dequal arrays
+ok: dequal nested objects
+
+dequal_lite smoke: all assertions passed
+./node test/rrule_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/rrule.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: rrule weekly (3 occurrences)
+ok: rrule.toString includes FREQ=WEEKLY
+
+rrule smoke: all assertions passed
+./node test/string_transforms_smoke.js
+ok: camelize
+ok: dashify
+ok: markdown-escape
+
+string_transforms smoke: all assertions passed
+./node test/is_json_smoke.js
+ok: is-json loose
+ok: is-json strict (6 cases)
+
+is-json smoke: all assertions passed
+./node test/iso8601_duration_smoke.js
+ok: iso8601-duration.parse
+ok: iso8601-duration parse minutes-only
+ok: iso8601-duration.toSeconds
+
+iso8601-duration smoke: all assertions passed
+./node test/process_smoke.js
+ok: process.hrtime() [0,24000000]
+ok: process.hrtime(prev) delta: [0,0]
+ok: process.hrtime.bigint = 25000000
+ok: process.uptime = 0.026
+ok: process.title = "ionpower-node"
+ok: process.versions = {"node":"14.0.0","ionpower":"0.71","spidermonkey":"45","v8":"8.4.0"}
+ok: process.release = {"name":"node","lts":"ionpower-node"}
+ok: process.memoryUsage = {"rss":0,"heapTotal":0,"heapUsed":0,"external":0,"arrayBuffers":0}
+
+process smoke: all assertions passed
+./node test/string_template_smoke.js
+ok: string-template (4 cases)
+
+string-template smoke: all assertions passed
+./node test/url_template_smoke.js
+ok: url-template level 1 (simple)
+ok: url-template level 2 (reserved)
+ok: url-template level 3 (query): /search?q=ion&page=2
+
+url-template smoke: all assertions passed
+./node test/make_error_smoke.js
+ok: make-error subclass
+ok: make-error subclass chain
+
+make-error smoke: all assertions passed
+./node test/prr_smoke.js
+ok: prr single property
+ok: prr bulk
+
+prr smoke: all assertions passed
+./node test/mnemonist_set_smoke.js
+ok: mnemonist/set.union
+ok: mnemonist/set.intersection
+ok: mnemonist/set.difference
+ok: mnemonist/set.jaccard
+
+mnemonist_set smoke: all assertions passed
+./node test/valid_url_smoke.js
+ok: valid-url.isUri
+ok: valid-url.isHttpUri + isHttpsUri
+
+valid-url smoke: all assertions passed
+./node test/throttle_debounce_smoke.js
+ok: throttleit (1 fires)
+ok: lodash.throttle (loads)
+ok: lodash.debounce (loads)
+
+throttle_debounce smoke: all assertions passed
+./node test/property_expr_smoke.js
+ok: property-expr getter
+ok: property-expr setter
+ok: property-expr.split
+
+property-expr smoke: all assertions passed
+./node test/filename_helpers_smoke.js
+ok: filename-reserved-regex
+ok: toidentifier
+
+filename_helpers smoke: all assertions passed
+./node test/tiny_utils_smoke.js
+ok: is-buffer
+ok: to-buffer
+ok: list-to-array
+ok: once
+ok: wrappy
+ok: strict-uri-encode
+ok: decode-uri-component
+ok: isarray
+
+tiny_utils smoke: all assertions passed
+./node test/pad_lr_smoke.js
+ok: pad-left
+ok: pad-right
+
+pad_lr smoke: all assertions passed
+./node test/mixin_deep_smoke.js
+ok: mixin-deep
+ok: mixin-deep multi-source
+
+mixin-deep smoke: all assertions passed
+./node test/is_negative_zero_smoke.js
+ok: is-negative-zero
+
+is-negative-zero smoke: all assertions passed
+./node test/md5_hex_smoke.js
+ok: md5-hex (3 RFC vectors)
+ok: md5-hex array input
+
+md5-hex smoke: all assertions passed
+./node test/batch24_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/fuzzball.js:16: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: xml-name-validator
+ok: cidr-regex
+ok: text-hex: #e06617
+ok: fuzzball.ratio (near=88, far=0)
+
+batch24 smoke: all assertions passed
+./node test/batch25_smoke.js
+ok: randombytes
+ok: ieee754 roundtrip
+ok: buffer-from
+ok: url-join
+ok: detect-newline
+ok: set-blocking (loads + no-throw)
+
+batch25 smoke: all assertions passed
+./node test/case_suite_smoke.js
+ok: 5 case converters
+
+case_suite smoke: all assertions passed
+./node test/format_file_size_smoke.js
+ok: format-file-size 1024 = 1 KB
+ok: format-file-size 1 MB = 1 MB
+
+format-file-size smoke: all assertions passed
+./node test/streams_smoke.js
+ok: Writable (write + write + end + finish)
+ok: Readable (push chain + 'data' + 'end')
+ok: Transform (uppercase)
+ok: PassThrough
+ok: pipe (Readable -> PassThrough -> Writable)
+ok: stream.pipeline + stream.finished
+
+streams smoke: all assertions passed
+./node test/async_fs_smoke.js
+ok: fs.constants
+ok: async fs stat
+ok: async fs access /tmp
+ok: async fs exists /tmp
+ok: fs.promises.readFile
+ok: async fs writeFile -> readFile
+ok: async fs unlink
+
+async_fs smoke: all assertions passed
+./node test/stream_libs_smoke.js
+ok: through (loads + runs)
+ok: through2
+ok: split2 (got 3 lines)
+ok: concat-stream
+ok: end-of-stream
+ok: pump (wires pipeline + returns last)
+ok: duplexer (builds)
+ok: from2 (builds)
+
+stream_libs smoke: all assertions passed
+./node test/crypto_expand_smoke.js
+ok: SHA-1 (3 FIPS vectors)
+ok: HMAC-SHA1 RFC 2202
+ok: HMAC-MD5
+ok: PBKDF2-HMAC-SHA1 (RFC 6070 vec 1)
+ok: PBKDF2-HMAC-SHA256
+ok: crypto.getHashes
+ok: async pbkdf2 completed
+
+crypto_expand smoke: all assertions passed
+./node test/csv_ndjson_smoke.js
+ok: csv-parser (header + 2 rows)
+ok: ndjson.parse (3 objects)
+ok: ndjson.stringify
+
+csv_ndjson smoke: all assertions passed
+./node test/bcryptjs_smoke.js
+ok: bcryptjs.genSaltSync
+ok: bcryptjs.hashSync
+ok: bcryptjs.compareSync (positive + negative)
+ok: bcryptjs.getRounds
+
+bcryptjs smoke: all assertions passed
+./node test/lodash_subs_smoke.js
+ok: lodash.merge
+ok: lodash.pick + omit
+ok: lodash.uniq
+ok: lodash.groupBy + sortBy
+ok: lodash.cloneDeep
+ok: lodash.isEqual
+
+lodash-subs smoke: all assertions passed
+./node test/picocolors_smoke.js
+ok: picocolors API surface + round-trip
+
+picocolors smoke: all assertions passed
+./node test/lines_and_columns_smoke.js
+ok: lines-and-columns.locationForIndex
+ok: lines-and-columns.indexForLocation
+
+lines_and_columns smoke: all assertions passed
+./node test/http_utils_smoke.js
+ok: type-is
+ok: media-typer.parse
+ok: forwarded (3 addrs)
+ok: vary
+ok: cookie-parser (factory + middleware shape)
+
+http_utils smoke: all assertions passed
+./node test/defu_iterall_smoke.js
+ok: defu (deep defaults, last wins)
+ok: iterall.isIterable
+ok: iterall.forEach
+ok: expand-template
+
+defu_iterall smoke: all assertions passed
+./node test/express_utils_smoke.js
+ok: etag
+ok: fresh
+ok: basic-auth
+ok: encodeurl
+ok: parseurl
+ok: on-finished
+ok: ee-first
+ok: uri-js
+ok: fast-diff
+ok: deep-freeze-strict
+ok: merge-descriptors
+
+express_utils smoke: all assertions passed
+./node test/express_more_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/p-cancelable.js:108: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: range-parser
+ok: methods (7)
+ok: statuses
+ok: finalhandler
+ok: p-cancelable
+ok: hex-color-regex
+ok: array-flatten@1
+
+express_more smoke: all assertions passed
+./node test/batch_big_smoke.js
+ok: qs@6.11 parse
+ok: minimist-options
+ok: dashdash
+ok: upper/lower/capitalize
+ok: iban
+ok: tinycolor2
+ok: node-natural-sort
+
+batch_big smoke: all assertions passed
+./node test/batch_more_smoke.js
+ok: any-base
+ok: base32
+ok: object-values
+ok: has
+ok: type.safeToString
+ok: crypt
+ok: frb-tree
+ok: heap-lib
+ok: deepmerge@4
+ok: tinyqueue
+ok: diff-match-patch (7 diff ops)
+ok: URLPattern polyfill (matched /books/:id)
+
+batch_more smoke: all assertions passed
+./node test/batch_mini_smoke.js
+ok: delay@6
+ok: abstract-logging
+ok: compact2string
+ok: stringify-attributes
+
+batch_mini smoke: all assertions passed
+./node test/p_utils_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/p-finally.js:4: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: rfdc
+ok: neo-async (surface)
+ok: clean-stack
+
+p_utils smoke: all assertions passed
+ok: p-defer
+ok: p-finally
+./node test/utility_batch_smoke.js
+ok: kleur/colors
+ok: nanoclone
+ok: is-even/is-odd
+ok: trim-repeated
+ok: escape-string-applescript
+ok: ansicolors
+
+utility_batch smoke: all assertions passed
+./node test/batch_late_smoke.js
+ok: has-flag@5
+ok: array-equal
+ok: big-num (big.js@6)
+
+batch_late smoke: all assertions passed
+./node test/batch_tail_smoke.js
+ok: debounce-fn (loads)
+ok: typedarray-to-buffer (loads + runs)
+ok: array-ify
+ok: is-module
+ok: shorthash
+ok: tinyspy (loads)
+
+batch_tail smoke: all assertions passed
+./node test/final_push_smoke.js
+ok: uuid-random (v4 format)
+ok: base-x (base58 encode)
+ok: secure-random
+ok: tinyspy tracks calls
+ok: loupe inspect
+ok: he (html entities)
+ok: is-callable
+
+final_push smoke: all assertions passed
+./node test/v500_smoke.js
+ok: stubs
+ok: amdefine
+stdout: hello
+ok: browser-stdout
+ok: json-stringify-nice
+ok: parse-headers
+
+v500 smoke: all assertions passed
+./node test/milestone500_smoke.js
+ok: is-relative
+ok: unc-path-regex
+ok: is-unc-path
+ok: arr-map + arr-filter
+ok: arr-flatten@1
+ok: make-iterator
+
+milestone500 smoke: all assertions passed
+./node test/lodash_getset_smoke.js
+ok: lodash.get
+ok: lodash.set
+
+lodash_getset smoke: all assertions passed
+./node test/wave1_api_smoke.js
+ok: os
+ok: querystring
+ok: url
+ok: util
+ok: events
+ok: path
+
+wave1_api smoke: all assertions passed
+ok: events.once after drain
+./node test/wave2_crypto_smoke.js
+ok: sha224
+ok: hmac-sha224
+ok: randomInt
+ok: scrypt (RFC 7914 pure JS)
+ok: string_decoder partial UTF-8
+
+wave2_crypto smoke: all assertions passed
+./node test/wave3_child_process_smoke.js
+ok: execSync
+ok: spawnSync
+ok: execFileSync
+ok: zlib (compression + constants)
+ok: process.stdin shape
+
+wave3_child_process smoke: all assertions passed
+./node test/wave5_libs_smoke.js
+ok: filter-obj
+ok: is-relative-url
+ok: titleize
+
+wave5_libs smoke: all assertions passed
+./node test/event_loop_smoke.js
+ok: setImmediate vs setTimeout
+ok: clearTimeout
+ok: timer ordering across loop iterations
+ok: setTimeout wallclock (elapsed 102ms)
+
+event_loop smoke: all assertions passed
+./node test/async_child_process_smoke.js
+ok: async spawn echo
+ok: async exec pipe
+ok: async spawn stderr + nonzero
+ok: async spawn stdin
+
+async_child_process smoke: all assertions passed
+./node test/net_smoke.js
+ok: server listening on 127.0.0.1:49209
+ok: tcp echo (11 bytes)
+
+net smoke: all assertions passed
+./node test/http_async_smoke.js
+ok: http server listening on :49211
+ok: GET /hello
+ok: POST /echo (4 bytes)
+ok: server request log (2)
+
+http_async smoke: all assertions passed
+./node test/fs_streams_smoke.js
+ok: createReadStream (9 chunks, 4390 bytes)
+ok: pipe rs -> ws (4390 bytes)
+ok: encoding:utf8
+ok: start/end slice
+
+fs_streams smoke: all assertions passed
+./node test/zlib_inflate_smoke.js
+ok: gunzipSync small payload
+ok: inflateSync zlib stream
+ok: inflateRawSync
+ok: compression round-trips
+ok: streaming createGunzip
+
+zlib_inflate smoke: all assertions passed
+./node test/microtask_smoke.js
+ok: microtask ordering: ["sync1","sync2","sync3","sync4","sync5","p:a","p:b","mt","nt","chain1:x","late-mt","chain2:x!","timeout0"]
+
+microtask smoke: all assertions passed
+./node test/sha512_smoke.js
+ok: SHA-512 FIPS vectors
+ok: SHA-384 FIPS vectors
+ok: HMAC-SHA512 RFC 4231 TC1
+ok: HMAC-SHA384 RFC 4231 TC1
+ok: PBKDF2-SHA512
+ok: 'sha-512' alias
+ok: crypto.getHashes
+
+sha512 smoke: all assertions passed
+./node test/fetch_smoke.js
+ok: fetch/AbortController/Headers/Response globals
+ok: Headers Map-ish API
+ok: AbortController.abort
+ok: AbortSignal.abort / .timeout shape
+ok: fetch GET + text()
+ok: fetch GET + json()
+ok: fetch POST + body
+ok: fetch + AbortController
+
+fetch smoke: all assertions passed
+./node test/dns_smoke.js
+ok: dns module surface
+ok: dns.lookup
+ok: dns.lookup { all: true }
+ok: dns.resolve4
+ok: dns.resolveMx stub
+ok: dns.lookup ENOTFOUND
+ok: dns.promises.lookup
+
+dns smoke: all assertions passed
+./node test/http_chunked_smoke.js
+ok: auto-chunked response
+ok: explicit chunked response
+ok: plain buffered responses (x2)
+
+http_chunked smoke: all assertions passed
+./node test/batch_wave_l_smoke.js
+ok: indexof
+ok: foreach
+ok: xtend-mutable
+ok: object-assign-v5
+ok: is-obj
+ok: is-primitive
+ok: min-indent
+ok: escape-string-regexp-v5
+ok: ms2
+ok: json-parse-safe
+ok: json-stringify-safe
+ok: levenshtein
+ok: sprintf-js
+ok: upper-case-first
+ok: no-case
+ok: sentence-case
+ok: unpipe (surface)
+ok: stream-shift (surface)
+ok: utils-merge-v1
+ok: destroy (surface)
+ok: has-ansi
+ok: cli-boxes
+ok: url-alphabet
+ok: colorette
+
+batch_wave_l smoke: all assertions passed
+./node test/batch_wave_l2_smoke.js
+skip: dotenv (require: cannot find module '../package.json' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+ok: number-precision
+ok: sax-js (surface)
+ok: moment-range
+ok: rc (surface)
+ok: safe-buffer (surface)
+ok: tiny-inflate (surface)
+ok: defaults (loads)
+/Users/macuser/tmp/ionpower-node/test/vendor/zod.js:36: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: zod (surface)
+ok: bplist-parser-mini (surface)
+skip: readline-sync (process.binding is not a function)
+ok: require-directory (surface)
+ok: sade
+ok: matcher
+ok: mime-db
+ok: uuid-v4-latest
+ok: hashset
+skip: supports-color (hasFlag is not a function)
+
+batch_wave_l2 smoke: all assertions passed
+./node test/batch_wave_l3_smoke.js
+ok: crypto-js-core (surface)
+ok: fp-ts (surface)
+/Users/macuser/tmp/ionpower-node/test/vendor/joi-full.js:2: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: joi-full (surface only)
+ok: nise (surface)
+ok: lazy (surface)
+ok: chalk-template (surface)
+ok: mime-db-v2
+ok: spinners (86 presets)
+ok: shortest
+ok: jszip-utils (surface)
+skip: json pkg (process.stdout.on is not a function)
+ok: arrify
+
+batch_wave_l3 smoke: all assertions passed
+./node test/batch_wave_l4_smoke.js
+ok: cookie parse+serialize
+ok: set-cookie-parser
+ok: cookie-signature
+ok: on-headers (surface)
+ok: delegates
+ok: ip
+ok: content-type
+ok: content-disposition
+ok: basic-auth v2
+ok: parse-ms v3
+
+batch_wave_l4 smoke: all assertions passed
+./node test/zlib_deflate_smoke.js
+ok: deflateRaw ’ inflateRaw round-trip
+ok: deflate ’ inflate round-trip
+ok: gzip ’ gunzip round-trip
+ok: >64KB round-trip
+ok: empty input handled
+ok: createGzip Transform
+ok: createDeflate Transform
+
+zlib_deflate smoke: all assertions passed
+./node test/batch_wave_n_smoke.js
+ok: accept-language-parser
+ok: base64-js v1
+ok: cookiejar (surface)
+skip: crypto-random-string (require: cannot find module './core.js' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+ok: fast-deep-equal
+skip: is-arguments (require: cannot find module 'has-tostringtag/shams' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+ok: json-schema-traverse
+ok: random-bytes.sync
+ok: uid-safe.sync
+skip: short-uuid (Bad alphabet)
+skip: verror (require: cannot find module 'extsprintf' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+ok: uri-js v4
+/Users/macuser/tmp/ionpower-node/test/vendor/hasha.js:4: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: hasha sha256
+skip: csrf (require: cannot find module 'rndm' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+ok: nanoid v3
+
+batch_wave_n smoke: surface + behavior for ~16 libs
+ok: dataloader
+./node test/batch_wave_n2_smoke.js
+skip: is-date-object (require: cannot find module 'has-tostringtag/shams' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+skip: is-regex (require: cannot find module 'call-bind/callBound' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+ok: functions-have-names
+skip: object-is (require: cannot find module 'define-properties' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+skip: es-define-property (require: cannot find module 'get-intrinsic' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+ok: has-proto
+
+batch_wave_n2 smoke: all assertions passed
+./node test/scrypt_smoke.js
+ok: scrypt RFC 7914 vec 1
+ok: scrypt small params (N=2 r=1 p=1, dkLen=32) = 6d1bb878eee9ce4a...
+ok: param validation
+ok: async scrypt
+
+scrypt smoke: all assertions passed
+./node test/aes_cbc_smoke.js
+ok: NIST AES-256-CBC vector
+ok: AES-256-CBC round-trip (PKCS#7 padding)
+ok: AES-128-CBC round-trip
+ok: unsupported modes throw
+ok: getCiphers
+
+aes_cbc smoke: all assertions passed
+./node test/aes_ctr_hkdf_smoke.js
+ok: NIST AES-256-CTR vector
+ok: AES-256-CTR round-trip
+ok: AES-128-CTR odd-length
+ok: HKDF RFC 5869 TC1
+ok: HKDF-SHA512 derived 64 bytes
+ok: hkdf async matches sync
+
+aes_ctr_hkdf smoke: all assertions passed
+./node test/aes_gcm_smoke.js
+ok: NIST AES-128-GCM Test Case 3
+ok: AES-256-GCM round-trip with AAD
+ok: GCM rejects bad authTag
+ok: GCM rejects wrong AAD
+
+aes_gcm smoke: all assertions passed
+./node test/subtle_crypto_smoke.js
+ok: subtle.digest
+ok: subtle.sign + verify (HMAC-SHA256)
+ok: subtle.encrypt + decrypt (AES-GCM)
+ok: subtle.deriveBits (PBKDF2-SHA256)
+ok: subtle.importKey + exportKey (raw)
+
+subtle_crypto smoke: all assertions passed
+./node test/batch_wave_u_smoke.js
+ok: base32.js encode
+ok: crc-32 of 'hello'
+ok: ieee754
+skip: json-bigint (require: cannot find module './lib/stringify.js' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+ok: md5 lib
+ok: ulid
+skip: sha.js (require: cannot find module './sha' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+skip: xxhashjs (require: cannot find module './xxhash' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+skip: otplib (require: cannot find module '@otplib/preset-default' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+
+batch_wave_u smoke: done
+./node test/subtle_jwk_kw_smoke.js
+ok: subtle JWK export/import round-trip
+ok: subtle.wrapKey + unwrapKey (AES-KW)
+ok: AES-KW tamper detection
+
+subtle_jwk_kw smoke: all assertions passed
+./node test/batch_wave_v_smoke.js
+ok: tweetnacl (surface)
+ok: fast-json-stable-stringify
+ok: stable-sort
+ok: emoji-regex v10
+
+batch_wave_v smoke: done
+./node test/webstreams_smoke.js
+ok: ReadableStream lock/unlock
+ok: ReadableStream error propagation
+ok: ReadableStream basic read
+ok: TransformStream
+ok: tee
+ok: WritableStream write + close
+ok: ReadableStream pull
+ok: pipeTo
+ok: pipeThrough
+
+webstreams smoke: done
+./node test/module_smoke.js
+ok: module core surface
+ok: createRequire loads core module
+ok: createRequire loads relative path
+ok: createRequire accepts file:// URL
+ok: require.resolve
+
+module smoke: all assertions passed
+./node test/perf_hooks_smoke.js
+ok: perf_hooks surface
+ok: performance.now basics
+ok: globalThis.performance === perf_hooks.performance
+ok: mark/measure/getEntries (stubs)
+ok: PerformanceObserver shape
+ok: timeOrigin reasonable
+ok: now() around a loop (took 55ms, sum=4999950000)
+
+perf_hooks smoke: all assertions passed
+./node test/batch_wave_w_smoke.js
+ok: escape-html
+ok: escape-string-regexp
+ok: is-plain-object
+ok: mri
+ok: kleur
+ok: dayjs
+ok: nanoid (non-secure)
+
+batch_wave_w smoke: done
+./node test/es_modern_smoke.js
+ok: Object.hasOwn
+ok: Array.prototype.at
+ok: String.prototype.at
+ok: String.prototype.replaceAll
+ok: Array findLast / findLastIndex
+ok: Array change-by-copy methods
+<ionpower-node bootstrap>:3797: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: structuredClone
+ok: Promise.any (one winner)
+ok: Promise.any (all rejected)
+
+es_modern smoke: done
+./node test/dgram_smoke.js
+ok: dgram round-trip
+
+dgram smoke: all assertions passed
+./node test/ed25519_smoke.js
+ok: crypto.generateKeyPairSync('ed25519')
+ok: sign / verify round-trip
+ok: tamper detection
+ok: createPrivateKey / createPublicKey (raw bytes)
+ok: 32-byte seed -> private key expansion
+ok: JWK export / import round-trip
+ok: crypto.generateKeyPair (async)
+
+ed25519 smoke: done
+./node test/subtle_curve_smoke.js
+ok: subtle Ed25519 generate + sign + verify
+ok: subtle X25519 ECDH shared-secret match
+ok: subtle Ed25519 JWK round-trip
+
+subtle_curve smoke: done
+./node test/batch_wave_x_smoke.js
+ok: ms
+ok: picocolors
+ok: clsx
+ok: escape-goat (loaded)
+ok: strnum
+ok: punycode
+ok: ansi-colors
+ok: charenc
+ok: tiny-lru
+
+batch_wave_x smoke: done
+./node test/nacl_box_smoke.js
+ok: nacl.secretbox round-trip + tamper
+ok: nacl.box round-trip + wrong-sender rejected
+ok: nacl.hash (SHA-512)
+ok: nacl.sign.detached round-trip
+
+nacl_box smoke: all assertions passed
+./node test/readline_smoke.js
+ok: readline line-by-line read over piped stdin
+ok: readline TTY escape codes
+
+readline smoke: all assertions passed
+./node test/batch_wave_y_smoke.js
+ok: eventemitter3
+ok: mitt
+ok: tiny-emitter
+ok: is-number
+ok: hexoid
+ok: jsesc
+/Users/macuser/tmp/ionpower-node/test/vendor/js-tokens.js:8: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: js-tokens (loaded)
+ok: seedrandom
+ok: assert.rejects / doesNotReject / match
+
+batch_wave_y smoke: done
+./node test/node_test_smoke.js
+ok: node:test runner TAP output
+ok: node: prefix alias
+
+node_test smoke: all assertions passed
+./node test/websocket_smoke.js
+ok: WebSocket round-trip (text + binary) + close
+
+websocket smoke: all assertions passed
+./node test/batch_wave_z_smoke.js
+ok: Buffer.indexOf accepts strings/Buffers/bytes
+ok: after
+ok: path-is-absolute
+ok: has-flag
+ok: color-string
+ok: pend
+
+batch_wave_z smoke: done
+./node test/small_refinements_smoke.js
+ok: http.Agent shape
+ok: crypto.hash one-shot
+ok: AbortSignal.any
+
+small_refinements smoke: all assertions passed
+./node test/style_text_smoke.js
+ok: util.styleText
+ok: callsites
+ok: listenercount
+ok: abbreviate-number
+/Users/macuser/tmp/ionpower-node/test/vendor/p-map-latest.js:19: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+
+style_text smoke: inline done (pMap resolves on next tick)
+ok: p-map
+./node test/vm_module_smoke.js
+ok: vm.runInThisContext / runInNewContext
+ok: vm.Script
+ok: vm.createContext / runInContext
+ok: vm.compileFunction
+ok: module.isBuiltin
+ok: utf8
+skip: object-keys (require: cannot find module './isArguments' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+ok: has-own-prop
+
+vm_module smoke: inline done
+ok: queue-microtask
+./node test/stubs_smoke.js
+ok: worker_threads shape (Worker is real as of v0.57)
+ok: inspector stubs
+ok: tty
+ok: human-id (loaded)
+skip: slugify-lib (require: cannot find module './is-slug' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+/Users/macuser/tmp/ionpower-node/test/vendor/minisearch.js:3: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: minisearch
+skip: tr46 (require: cannot find module 'punycode/' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+
+stubs smoke: all inline assertions passed
+./node test/fs_watch_smoke.js
+ok: lowercase-keys
+ok: string-natural-compare
+ok: to-regex-range
+ok: fill-range
+ok: fs.watch change event (3 events observed)
+
+fs_watch smoke: all assertions passed
+./node test/batch_wave_aa_smoke.js
+ok: detect-node (returned false)
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: is-generator-fn
+ok: is-retry-allowed
+ok: json-parse-better-errors
+skip: chardet (require: cannot find module './fs/node' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+
+batch_wave_aa smoke: inline done
+ok: run-parallel
+./node test/fs_cp_rm_smoke.js
+ok: fs.cpSync (recursive)
+ok: fs.rmSync (recursive)
+ok: fs.rmSync (single file)
+ok: fs.rmSync force
+skip: has-symbols (require: cannot find module './shams' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: find-replace
+ok: map-cache
+ok: obuf (loaded)
+
+fs_cp_rm smoke: inline done
+ok: fs.cp (async callback)
+./node test/promise_wrappers_smoke.js
+ok: fastest-stable-stringify
+skip: object-inspect (require: cannot find module './util.inspect' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+
+promise_wrappers smoke: inline done
+ok: timers/promises.setImmediate
+ok: dns/promises.lookup (got 127.0.0.1)
+ok: timers/promises AbortSignal cancellation
+ok: timers/promises.setTimeout
+./node test/batch_wave_bb_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: array-uniq
+ok: eol
+ok: is-linux
+ok: is-windows
+skip: semver-regex (invalid regexp group)
+skip: entities (require: cannot find module './decode.js' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+
+batch_wave_bb smoke: done
+./node test/events_on_smoke.js
+
+events_on smoke: inline registered (3 async assertions pending)
+ok: events.on AbortSignal cancellation
+ok: events.on rejects on emitter 'error' event
+ok: events.on yields each emission
+./node test/event_target_smoke.js
+ok: Event / CustomEvent / EventTarget globals
+ok: new Event + preventDefault
+ok: CustomEvent + detail
+ok: EventTarget add/remove/dispatch
+ok: addEventListener once option
+ok: preventDefault flips dispatchEvent return
+ok: stopImmediatePropagation
+ok: addEventListener with handleEvent object
+
+event_target smoke: all assertions passed
+./node test/batch_wave_cc_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: convert-source-map
+ok: humanize-number
+ok: hash-it
+ok: parse-srcset
+ok: random-int
+ok: rgb2hex
+
+batch_wave_cc smoke: done
+ok: array-from-async
+./node test/node_test_hooks_smoke.js
+ok: node:test before/after/beforeEach/afterEach order
+ok: hooks don't break TAP output
+
+node_test_hooks smoke: all assertions passed
+./node test/broadcast_channel_smoke.js
+ok: parse-bool
+ok: fast-stringify
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: tinyspy
+
+broadcast_channel smoke: inline registered
+ok: BroadcastChannel addEventListener
+ok: BroadcastChannel cross-instance messaging
+ok: BroadcastChannel close stops delivery
+./node test/cpu_usage_smoke.js
+ok: process.cpuUsage (user delta 61054 us across 1M-iter loop)
+ok: process.resourceUsage
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+skip: tinybench (identifier starts immediately after numeric literal)
+
+cpu_usage smoke: all assertions passed
+./node test/stream_helpers_smoke.js
+
+stream_helpers smoke: 4 async tests pending
+ok: stream.Readable.from(string)
+ok: stream.Readable.from(Buffer)
+ok: stream.Readable.from(array)
+ok: from(array) | PassThrough -> toArray
+./node test/batch_wave_dd_smoke.js
+skip: empty-functions (require: cannot find module './noop' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+ok: is-empty
+skip: jju (require: cannot find module './lib/parse' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: mute-stream
+skip: noop3 (require: cannot find module './factory' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+ok: shallow-equal
+ok: utf8-byte-length
+ok: deep-eql
+ok: stable-stringify
+
+batch_wave_dd smoke: done
+./node test/async_await_smoke.js
+/Users/macuser/tmp/ionpower-node/test/async_await_smoke.js:13: SyntaxError: async functions are not enabled in the parser
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: async function basics (5 + 5 await ops)
+ok: try/await rejection caught
+ok: for-await over events.on iterator
+ok: for-await over ReadableStream
+
+async_await smoke: all assertions passed
+./node test/worker_threads_smoke.js
+ok: Worker round-trip postMessage
+
+worker_threads smoke: all assertions passed
+./node test/async_local_storage_smoke.js
+ok: ALS sync run + getStore
+ok: ALS exit() clears + restores
+ok: AsyncResource shape
+
+async_local_storage smoke: inline registered (4 async assertions pending)
+ok: ALS propagates across Promise.then chain
+ok: ALS propagates across setImmediate
+ok: ALS parallel contexts don't bleed
+ok: ALS propagates across setTimeout
+./node test/diag_channel_smoke.js
+ok: channel publish/subscribe
+ok: channel unsubscribe
+ok: channel cached by name
+ok: dc.subscribe
+ok: TracingChannel.traceSync
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+skip: strip-comments (require: cannot find module './lib/compile' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+skip: cli-truncate (require: cannot find module 'slice-ansi' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+
+diag_channel smoke: all assertions passed
+./node test/process_report_smoke.js
+ok: process.report.getReport
+ok: process.report.writeReport
+ok: process.kill(self, 0)
+ok: process.kill nonexistent throws ESRCH
+
+process_report smoke: all assertions passed
+./node test/array_fromasync_smoke.js
+skip: negotiator (require: cannot find module './lib/charset' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+skip: accepts (Negotiator is not a constructor)
+
+array_fromasync smoke: inline registered (5 async assertions pending)
+ok: Array.fromAsync(array)
+ok: Array.fromAsync(array, mapFn)
+ok: Array.fromAsync mapFn returning Promise
+ok: Array.fromAsync(array-like)
+ok: Array.fromAsync(asyncIter)
+./node test/uncaught_smoke.js
+ok: uncaughtException
+ok: unhandledRejection
+ok: rejectionHandled (late .catch)
+ok: handler suppresses default stderr
+
+uncaught smoke: all assertions passed
+./node test/iterator_helpers_smoke.js
+ok: Iterator.from + map
+ok: filter
+ok: take
+ok: drop
+ok: lazy chain
+ok: flatMap
+ok: some / every / find
+ok: reduce
+ok: forEach
+ok: Symbol.iterator (for...of)
+
+iterator_helpers smoke: all assertions passed
+./node test/dispose_smoke.js
+ok: Symbol.dispose / Symbol.asyncDispose
+ok: custom [Symbol.dispose]() call
+ok: DisposableStack LIFO + use/defer/adopt
+DisposableStack: @/Users/macuser/tmp/ionpower-node/test/dispose_smoke.js:50:52
+_DisposableStack.prototype.dispose@<ionpower-node bootstrap>:3316:15
+@/Users/macuser/tmp/ionpower-node/test/dispose_smoke.js:52:1
+
+ok: DisposableStack errors don't abort others
+ok: DisposableStack.move()
+
+dispose smoke: inline registered (1 async test pending)
+ok: AsyncDisposableStack disposeAsync LIFO
+./node test/rsa_smoke.js
+Generating RSA-1024 (this is slow on PPC)...
+RSA keygen took 4387 ms
+ok: crypto.generateKeyPairSync('rsa')
+ok: crypto.sign / verify (sha256)
+ok: tamper rejected
+ok: PEM export
+ok: DER export
+
+rsa smoke: all assertions passed (keygen 4387 ms)
+./node test/rsa_encrypt_smoke.js
+Generating RSA-1024 (slow on PPC)...
+keygen took 3325 ms
+ok: publicEncrypt produced 128-byte ciphertext
+ok: privateDecrypt round-trip
+ok: OAEP randomization
+ok: wrong-key decrypt rejected (threw)
+ok: createPublicKey / createPrivateKey from PEM
+ok: encrypt/decrypt round-trip with PEM-imported keys
+ok: sign/verify with PEM-imported keys
+ok: createPublicKey(privateKO) projects to public
+ok: oaepHash override (sha256)
+
+rsa_encrypt smoke: all assertions passed
+./node test/x509_smoke.js
+Generating RSA-1024 + self-signed cert (slow on PPC)...
+cert generation took 15272 ms
+ok: subject + issuer
+ok: validity (validFrom=Apr 25 10:03:39 2026 GMT)
+ok: serialNumber=01
+ok: fingerprint sha1/sha256/sha512
+ok: raw DER (663 bytes)
+ok: subjectAltName=DNS:ionpower-node-test.example.com, DNS:*.ionpower-node-test.example.com, IP Address:127.0.0.1
+ok: ca flag
+ok: toString / toJSON
+ok: cert.publicKey usable for verify
+ok: checkIssued
+ok: checkPrivateKey
+ok: checkHost
+ok: construct from DER Buffer
+ok: construct from PEM Buffer
+
+x509 smoke: all assertions passed
+./node test/zlib_real_smoke.js
+ok: gzipSync compressed 8192 bytes -> 44 bytes
+ok: gunzipSync round-trip
+ok: deflateSync compressed -> 32 bytes
+ok: inflateSync round-trip
+ok: deflateRawSync compressed -> 26 bytes
+ok: inflateRawSync round-trip
+ok: lipsum 5K -> 324 bytes
+ok: lipsum round-trip
+ok: cross-tool gunzip(1) accepts our gzip output
+ok: empty input round-trip
+ok: async gzip/gunzip round-trip
+
+zlib_real smoke: all assertions passed
+./node test/jwt_rs256_smoke.js
+Generating RSA-1024 (slow on PPC)...
+RSA keygen took 4037 ms
+ok: RS256 sign  (275 chars)
+ok: RS256 verify + payload identity
+ok: RS256 tamper rejected
+ok: RS256 with PEM-imported keys
+ok: EdDSA sign  (183 chars)
+ok: EdDSA verify + payload identity
+ok: EdDSA tamper rejected
+ok: HS256 (HMAC sha256)
+ok: cross-algo rejection
+
+jwt_rs256 smoke: all assertions passed
+./node test/module_class_smoke.js
+ok: new Module(id, parent)
+ok: Module.wrap
+ok: Module.wrapper
+ok: Module._cache shared with require cache
+ok: Module static helpers
+ok: Module.createRequire produces working require
+ok: Module._extensions
+
+module_class smoke: all assertions passed
+./node test/subpath_modules_smoke.js
+ok: require('fs/promises')
+ok: require('node:fs/promises')
+ok: require('path/posix') / path/win32
+ok: require('stream/web')
+ok: stream/web ReadableStream pumping works
+ok: require('stream/promises')
+ok: require('stream/consumers')
+ok: consumers.text round-trip
+ok: consumers.buffer round-trip
+ok: consumers.json round-trip
+ok: consumers.arrayBuffer round-trip
+
+subpath_modules smoke: all assertions passed
+./node test/test_mock_smoke.js
+TAP version 13
+1..9
+ok 1 - mock.fn tracks calls + arguments
+ok 2 - mock.fn captures thrown errors
+ok 3 - mock.fn() with no args is a noop spy
+ok 4 - mock.method replaces + auto-restores at test end
+ok 5 - mock.getter intercepts property reads
+ok 6 - mock.setter intercepts property writes
+ok 7 - mock.method auto-restores between tests (verify in next test)
+ok 8 - auto-restore from previous test took effect
+ok 9 - mock.fn mockImplementation switches behavior
+# pass 9
+# fail 0
+./node test/cluster_stub_smoke.js
+ok: cluster master-half shape
+ok: cluster.fork rejects
+ok: cluster is EventEmitter
+ok: setupMaster / setupPrimary
+ok: cluster.disconnect (single-process)
+
+cluster stub smoke: all assertions passed

@@ -43,3 +43,60 @@ ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy
 ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g3/lib/libjs_static.a(Promise.o) and (default) in src/node_compat/timers.o
   [install_name_tool] @executable_path -> /opt/mozjs-45-ionpower-g3/lib
 === [ibookg37/g3/0.71] test-all ===
+ok: queue-microtask
+./node test/stubs_smoke.js
+ok: worker_threads shape (Worker is real as of v0.57)
+ok: inspector stubs
+ok: tty
+ok: human-id (loaded)
+skip: slugify-lib (require: cannot find module './is-slug' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: minisearch
+skip: tr46 (require: cannot find module 'punycode/' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+
+stubs smoke: all inline assertions passed
+./node test/fs_watch_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: lowercase-keys
+ok: string-natural-compare
+ok: to-regex-range
+ok: fill-range
+FAIL: fs.watch detected at least 1 change (got 0)
+make: *** [test-libs] Error 1
+=== [ibookg37/g3/0.71] TEST-ALL FAILED, attempting one retry (flake?) ===
+1..9
+ok 1 - mock.fn tracks calls + arguments
+ok 2 - mock.fn captures thrown errors
+ok 3 - mock.fn() with no args is a noop spy
+ok 4 - mock.method replaces + auto-restores at test end
+ok 5 - mock.getter intercepts property reads
+ok 6 - mock.setter intercepts property writes
+ok 7 - mock.method auto-restores between tests (verify in next test)
+ok 8 - auto-restore from previous test took effect
+ok 9 - mock.fn mockImplementation switches behavior
+# pass 9
+# fail 0
+./node test/cluster_stub_smoke.js
+ok: cluster master-half shape
+ok: cluster.fork rejects
+ok: cluster is EventEmitter
+ok: setupMaster / setupPrimary
+ok: cluster.disconnect (single-process)
+
+cluster stub smoke: all assertions passed
+=== [ibookg37/g3/0.71] install ===
+ln -sf ionpower-node /opt/ionpower-node-0.71/bin/node
+cp test/vendor/babel.js      /opt/ionpower-node-0.71/share/ionpower-node/vendor/
+cp test/vendor/tweetnacl.js  /opt/ionpower-node-0.71/share/ionpower-node/vendor/
+cp -r test/vendor/node-forge /opt/ionpower-node-0.71/share/ionpower-node/vendor/
+cp README.md LICENSE   /opt/ionpower-node-0.71/share/ionpower-node/ 2>/dev/null || true
+
+installed ionpower-node 0.71 to /opt/ionpower-node-0.71
+  binary:   /opt/ionpower-node-0.71/bin/node (-> ionpower-node)
+  babel:    /opt/ionpower-node-0.71/share/ionpower-node/vendor/babel.js
+  mozjs:    expected at /opt/mozjs-45-ionpower-g3/
+
+Run:  /opt/ionpower-node-0.71/bin/node <script.js>
+=== [ibookg37/g3/0.71] tarball ===
+-rw-r--r--   1 macuser  wheel  4802121 Apr 25 05:04 /tmp/ionpower-node-0.71-g3-ppc.tar.gz
+=== [ibookg37/g3/0.71] DONE ===
