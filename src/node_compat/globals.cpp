@@ -4475,6 +4475,41 @@ static const char kBootstrapJS[] =
     "    }\n"
     "  };\n"
     "  __require_cache__['vm']             = vmModule;\n"
+    // timers/promises — promise-returning variants of setTimeout /
+    // setImmediate. setInterval would need an async iterator, which we
+    // can't really polyfill cleanly without async generators; we expose
+    // an async-iterable-shape stub that emits forever via a queue.
+    "  var timersPromises = {\n"
+    "    setTimeout: function (delay, value, options) {\n"
+    "      var ms = (typeof delay === 'number') ? delay : 0;\n"
+    "      return new Promise(function (resolve, reject) {\n"
+    "        var t = setTimeout(function () { resolve(value); }, ms);\n"
+    "        if (options && options.signal) {\n"
+    "          if (options.signal.aborted) {\n"
+    "            clearTimeout(t);\n"
+    "            reject(options.signal.reason || new Error('AbortError'));\n"
+    "            return;\n"
+    "          }\n"
+    "          options.signal.addEventListener('abort', function () {\n"
+    "            clearTimeout(t);\n"
+    "            reject(options.signal.reason || new Error('AbortError'));\n"
+    "          });\n"
+    "        }\n"
+    "      });\n"
+    "    },\n"
+    "    setImmediate: function (value, options) {\n"
+    "      return new Promise(function (resolve, reject) {\n"
+    "        var t = setImmediate(function () { resolve(value); });\n"
+    "        if (options && options.signal && options.signal.aborted) {\n"
+    "          reject(options.signal.reason || new Error('AbortError'));\n"
+    "        }\n"
+    "      });\n"
+    "    }\n"
+    "  };\n"
+    "  __require_cache__['timers/promises'] = timersPromises;\n"
+    // (dns/promises is registered later, right after the dns module
+    // itself populates __require_cache__.)
+
     // worker_threads: we have no real threads, so the surface is the
     // "isMainThread = true" half. Libraries doing `if (isMainThread)`
     // branch correctly to their synchronous fallback; libraries that
@@ -6616,6 +6651,37 @@ static const char kBootstrapJS[] =
     "    resolve6: _dnsPromise(function (h, cb) { _dns_resolve(h, 'AAAA', cb); })\n"
     "  };\n"
     "  __require_cache__['dns']            = dnsModule;\n"
+    // dns/promises — promise-returning wrappers over dnsModule.lookup/
+    // resolve4/resolve6. .reverse stays not-implemented for now.\n"
+    "  var dnsPromises = {\n"
+    "    lookup: function (host, opts) {\n"
+    "      return new Promise(function (resolve, reject) {\n"
+    "        dnsModule.lookup(host, opts, function (err, addr, family) {\n"
+    "          if (err) reject(err);\n"
+    "          else resolve({ address: addr, family: family });\n"
+    "        });\n"
+    "      });\n"
+    "    },\n"
+    "    resolve4: function (host) {\n"
+    "      return new Promise(function (resolve, reject) {\n"
+    "        dnsModule.resolve4(host, function (err, addrs) {\n"
+    "          if (err) reject(err); else resolve(addrs);\n"
+    "        });\n"
+    "      });\n"
+    "    },\n"
+    "    resolve6: function (host) {\n"
+    "      return new Promise(function (resolve, reject) {\n"
+    "        dnsModule.resolve6(host, function (err, addrs) {\n"
+    "          if (err) reject(err); else resolve(addrs);\n"
+    "        });\n"
+    "      });\n"
+    "    },\n"
+    "    reverse: function (ip) {\n"
+    "      return Promise.reject(new Error('dns.reverse not implemented'));\n"
+    "    }\n"
+    "  };\n"
+    "  dnsModule.promises = dnsPromises;\n"
+    "  __require_cache__['dns/promises']   = dnsPromises;\n"
     // (tty is registered earlier — full impl with ReadStream/WriteStream
     // that set .columns/.rows/.isTTY in the constructor.)
 
