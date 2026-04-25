@@ -19,27 +19,32 @@ assert(typeof fs.watchFile === "function", "fs.watchFile");
 assert(typeof fs.unwatchFile === "function", "fs.unwatchFile");
 
 // ---- Watch + change roundtrip ----
+// Tiger HFS+ stores mtime at 1-second granularity, so if the "initial"
+// write and the "mutate" write land in the same wall-clock second, only
+// the size change will trigger 'change'. Writing progressively longer
+// strings guarantees a size delta on every mutation.
 var tmpPath = "/tmp/ionpower_watch_test_" + process.pid + ".txt";
+try { fs.unlinkSync(tmpPath); } catch (e) {}
 fs.writeFileSync(tmpPath, "initial");
 
 var fired = [];
-var w = fs.watch(tmpPath, { interval: 100 }, function (ev, name) {
+var w = fs.watch(tmpPath, { interval: 50 }, function (ev, name) {
     fired.push(ev);
 });
 
-// Mutate the file after 200ms.
-setTimeout(function () {
-    fs.writeFileSync(tmpPath, "changed at " + Date.now());
-}, 150);
+// Three progressively larger writes over a total ~900ms.
+setTimeout(function () { fs.writeFileSync(tmpPath, "initialAA"); },       100);
+setTimeout(function () { fs.writeFileSync(tmpPath, "initialAABBBB"); },   300);
+setTimeout(function () { fs.writeFileSync(tmpPath, "initialAABBBBCCCCCC"); }, 600);
 
 setTimeout(function () {
     w.close();
     try { fs.unlinkSync(tmpPath); } catch (e) {}
     assert(fired.length >= 1, "fs.watch detected at least 1 change (got " + fired.length + ")");
     assert(fired.indexOf("change") >= 0, "'change' event fired");
-    console.log("ok: fs.watch change event");
+    console.log("ok: fs.watch change event (" + fired.length + " events observed)");
     console.log("\nfs_watch smoke: all assertions passed");
-}, 600);
+}, 1200);
 
 // ---- lowercase-keys ----
 try {
