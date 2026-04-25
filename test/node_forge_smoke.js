@@ -1,6 +1,6 @@
 // node-forge: pure-JS PKI/crypto (X.509, PEM, ASN.1, AES/DES/RSA, etc.)
 
-var forge = require("./vendor/node-forge.js");
+var forge = require("./vendor/node-forge");
 
 function assert(cond, msg) { if (!cond) { console.error("FAIL:", msg); process.exit(1); } }
 
