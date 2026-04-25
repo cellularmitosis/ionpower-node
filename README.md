@@ -12,16 +12,22 @@ bridge on top (CommonJS `require`, `console`, `process`, a sync
 
 ## Status
 
-**Pre-alpha.** Phase 1 of the plan in [docs/plan.md](docs/plan.md) is
-in progress. The SpiderMonkey library is being built on imacg52
-(G5) from the TenFourFox source tree. The Node-compat C++ bridge
-source is written against the SpiderMonkey 45 JSAPI but not yet
-linked/tested because the library is still building.
+**Alpha — usable.** Releases ship triad-built tarballs for **G3
+(PPC 750)**, **G4 (PPC 7450)**, and **G5 (PPC 970)** on every tag.
+SpiderMonkey 45 + IonPower JIT is built once per arch and lives at
+`/opt/mozjs-45-ionpower-{g3,g4,g5}/`; the runtime tarball unpacks
+beside it at `/opt/ionpower-node-<version>/`.
+
+Real event loop (select-based, wall-clock timers, fd I/O), real
+async `fs` / `http` / `net` / `dgram` / `child_process` / `dns`,
+WHATWG Streams, real RSA / Ed25519 / X.509 / AES-GCM crypto, real
+DEFLATE compression, and a TAP `node:test` runner with mocks. See
+the table below for the current per-module accounting.
+
+[Full release archive on GitHub](https://github.com/cellularmitosis/ionpower-node/releases).
 
 See [docs/build-notes.md](docs/build-notes.md) for a running log
 of what we had to discover to configure the build on Tiger.
-
-See [docs/status-report.md](docs/status-report.md) once available.
 
 ## Why
 
@@ -37,56 +43,75 @@ Node's public surface to run simple CommonJS programs end-to-end.
 ## Layout
 
 ```
-docs/           Design docs, build notes, status reports.
+docs/           Design docs, build notes, session summaries.
 external/       Upstream source references (sparse-checked-out).
   tenfourfox/   Mozilla tree containing js/src/, js/public/, mfbt/, ...
-scripts/        Scripts shipped to fleet hosts.
+scripts/        One-shot setup scripts shipped to fleet hosts.
   build-autoconf-213.sh     Build autoconf 2.13 into /opt on a Tiger host.
-  build-mozjs.sh            Configure+build standalone SpiderMonkey.
+  build-mozjs.sh            Configure + build standalone SpiderMonkey for
+                            the host arch (G3 / G4 / G5).
 src/            C++ bridge source for the runtime.
   main.cpp                  Entry point: JS_Init, runtime, global, run.
   node_compat/              Node-shaped API surface.
-    console.cpp             console.log/error/warn/info/debug.
-    process.cpp             process.argv/env/cwd/exit/platform/...
-    fs.cpp                  fs.readFileSync/writeFileSync/statSync/...
-    path.cpp                path.join/dirname/basename/resolve/...
-    buffer.cpp              Buffer.from/alloc over Uint8Array.
-    require.cpp             CommonJS require() with relative resolution.
-    globals.{cpp,h}         Install/wire it all onto the global.
+    console.cpp / process.cpp / fs.cpp / path.cpp / buffer.cpp /
+    require.cpp / event_loop.cpp / timers.cpp / net.cpp / http.cpp /
+    crypto.cpp / child_process.cpp / zlib.cpp /
+    globals.{cpp,h}         Install + wire it all onto the global.
 Makefile        Target-host build rules (needs a built mozjs).
-test/           Smoke tests: hello, require_chain, fs_smoke, jit_smoke.
+test/           400+ smoke files. Most pair with a vendored library:
+  test/<thing>_smoke.js     One-file end-to-end exercise of a feature
+                            or vendored package.
+  test/vendor/              Vendored npm packages, used both at runtime
+                            (require fallback) and as smoke targets.
 ```
 
-## Build (target: imacg52)
+## Build (triad: imacg3 / emac / pmacg5)
+
+Each host has a matching SpiderMonkey at `/opt/mozjs-45-ionpower-{g3,g4,g5}/`
+already built. The runtime tarball unpacks beside it.
 
 ```bash
-# 1) Prereqs on the Tiger host (one-shot):
-ssh imacg52 'tiger.sh python2-2.7.18'
-scp scripts/build-autoconf-213.sh imacg52:/Users/macuser/tmp/
-ssh imacg52 '/Users/macuser/tmp/build-autoconf-213.sh'
+# Prebuilt: grab from the latest Releases page
+#   https://github.com/cellularmitosis/ionpower-node/releases
+# Untar the matching {g3|g4|g5} tarball into /opt and run
+#   /opt/ionpower-node-<version>/bin/node test/hello.js
 
-# 2) Ship the source:
-~/bin/tiger-rsync.sh --delete --exclude=.git \
-    external/tenfourfox/ imacg52:/Users/macuser/tmp/tenfourfox/
-
-# 3) Build SpiderMonkey (takes hours on a G5, many more on a G3):
-scp scripts/build-mozjs.sh imacg52:/Users/macuser/tmp/
-ssh imacg52 'nohup /Users/macuser/tmp/build-mozjs.sh > /Users/macuser/tmp/build-mozjs.log 2>&1 &'
-
-# 4) Build the bridge:
-~/bin/tiger-rsync.sh --exclude=.git . imacg52:~/tmp/ionpower-node/
-ssh imacg52 'cd ~/tmp/ionpower-node && make'
-
-# 5) Run:
-ssh imacg52 'cd ~/tmp/ionpower-node && ./node test/hello.js'
+# From source (on a Tiger PPC host that already has the matching mozjs):
+~/bin/tiger-rsync.sh --exclude=.git . <host>:~/tmp/ionpower-node/
+ssh <host> 'cd ~/tmp/ionpower-node && make MOZJS_PREFIX=/opt/mozjs-45-ionpower-g3 CPU_FLAGS="-mcpu=750 -mtune=750"'
+ssh <host> 'cd ~/tmp/ionpower-node && ./node test/hello.js'
+ssh <host> 'cd ~/tmp/ionpower-node && make test-all'   # full smoke suite
 ```
+
+The triad-build helper script in `/tmp/triad-build.sh` automates the
+above against one of {imacg3, emac, pmacg5} per release tag.
 
 ## Scope limits
 
-Sync only. No event loop yet, so no `setTimeout`, no async `fs`.
-No node_modules traversal; only relative paths for `require`. No
-native addons. No `http`/`net`/`dns`/`child_process`. See
-`docs/plan.md` for the explicit scope.
+We're not re-implementing all of Node. Things that are *not* on
+the runtime, today:
+
+- **TLS / `https.createServer` / `wss://`** — no OpenSSL binding;
+  client-side `https.request` falls back to a sync curl shim.
+- **ECDSA / NIST ECDH** (P-256 / P-384) — only Ed25519 + X25519
+  curves. RSA is full sign / verify / encrypt / decrypt.
+- **Brotli** — `zlib.brotliCompressSync` / `brotliDecompressSync`
+  throw. `gzip` / `deflate` work for real.
+- **`Intl`** — SM45 was built `--without-intl-api`. Blocks luxon,
+  ICU-dependent date / number formatters.
+- **Native addons** — no N-API.
+- **Top-level `await`, `import.meta`, dynamic `import()`** —
+  the Babel-on-parse-failure path lowers `async function` / `await`
+  / `import` / `export` but not these three.
+- **Worker shared memory** — `worker_threads` is process-backed
+  (each Worker is a fresh `node` child), so `transferList` /
+  `MessageChannel` / `MessagePort` / `Atomics` don't apply. Use
+  `BroadcastChannel` for in-process pub/sub.
+- **`cluster.fork()`** — single-process degenerate; `isPrimary`
+  always wins, `fork()` throws.
+
+See [`docs/plan.md`](docs/plan.md) for the original Phase-1 scope
+target, which is now well exceeded.
 
 ## Node API implementation status
 
@@ -98,12 +123,12 @@ release lands.
 
 | Module | Status | Notes |
 |---|---|---|
-| `fs` (sync) | ✅ Working | `readFileSync`, `writeFileSync`, `existsSync`, `readdirSync`, `statSync`, `lstatSync` (alias), `unlinkSync`, `mkdirSync` (+ recursive), `rmdirSync`, `appendFileSync`, `copyFileSync`, `chmodSync`, `renameSync`, `realpathSync` (passthrough). Errors carry Node-style `.code`/`.errno`/`.syscall`/`.path`. |
-| `fs` (async) | ✅ Working | Callback-style `readFile`/`writeFile`/`readdir`/`stat`/`lstat`/`unlink`/`mkdir`/`rmdir`/`rename`/`appendFile`/`copyFile`/`chmod`/`access`/`realpath`/`exists`. Each wraps the sync version + fires the callback via the timer queue. |
-| `fs.promises` | ✅ Working | Promise-wrapped version of every callback form. |
+| `fs` (sync) | ✅ Working | `readFileSync`, `writeFileSync`, `existsSync`, `readdirSync`, `statSync`, `lstatSync` (alias), `unlinkSync`, `mkdirSync` (+ recursive), `rmdirSync` / `rmSync` (+ recursive), `appendFileSync`, `copyFileSync`, `cpSync` (recursive), `chmodSync`, `renameSync`, `realpathSync` (passthrough). Errors carry Node-style `.code`/`.errno`/`.syscall`/`.path`. |
+| `fs` (async) | ✅ Working | Callback-style `readFile`/`writeFile`/`readdir`/`stat`/`lstat`/`unlink`/`mkdir`/`rmdir`/`rm`/`rename`/`appendFile`/`copyFile`/`cp`/`chmod`/`access`/`realpath`/`exists`. Each wraps the sync version + fires the callback via the timer queue. |
+| `fs.promises` / `require('fs/promises')` | ✅ Working | Promise-wrapped version of every callback form. The `fs/promises` and `node:fs/promises` subpath specifiers resolve to `fs.promises`. |
 | `fs.constants` | ✅ Working | `F_OK`/`R_OK`/`W_OK`/`X_OK`/`O_RDONLY`/`O_WRONLY`/`O_RDWR`. |
 | `fs.createReadStream`/`WriteStream` | ✅ Working | `createReadStream(path, {highWaterMark, encoding, start, end})` emits `'open'`/`'data'`/`'end'`/`'close'`. `createWriteStream(path, {flags})` supports `'w'` (write) / `'a'` (append); flushes on `.end()`. Whole-file-in-memory under the hood — not truly streaming to disk, but fine for realistic file sizes on Tiger-era kit. `.pipe()` works. |
-| `path` | ✅ Working | `join`, `resolve`, `normalize`, `dirname`, `basename`, `extname`, `relative`, `parse`, `format`, `sep`, `delimiter`, `isAbsolute`. |
+| `path` | ✅ Working | `join`, `resolve`, `normalize`, `dirname`, `basename`, `extname`, `relative`, `parse`, `format`, `sep`, `delimiter`, `isAbsolute`. POSIX-only runtime, so `require('path/posix')` and `require('path/win32')` both alias to the same `path`. |
 | `os` | ✅ Working | `platform` (`darwin`), `arch` (`ppc`), `type`, `release`, `version`, `machine`, `endianness` (`BE`), `homedir`, `tmpdir`, `hostname`, `cpus`, `uptime`, `loadavg`, `freemem`, `totalmem`, `userInfo`, `networkInterfaces` (empty stub), `EOL`, `devNull`, `availableParallelism`, `constants.signals/errno/priority`. |
 | `events` | ✅ Working | `EventEmitter` with `on`/`once`/`off`/`emit`/`addListener`/`removeListener`/`removeAllListeners`/`listenerCount`/`listeners`/`rawListeners`/`eventNames`/`prependListener`/`prependOnceListener`. Module exports `events.once(emitter, name)` (Promise), `events.getEventListeners`, `events.setMaxListeners`, `events.defaultMaxListeners`. |
 | `util` | ✅ Working | `format`, `inspect` (depth-limited, cycle-safe), `inherits`, `promisify` (+ `.custom`), `callbackify`, `deprecate`, `types.*`, `isDeepStrictEqual`, `stripVTControlCharacters`, `parseArgs`, `TextEncoder`/`TextDecoder`, plus all the legacy `isX` predicates. |
@@ -115,11 +140,10 @@ release lands.
 | `net` | ✅ Working | `net.Socket` (Duplex over event-loop `ioWatch`) + `net.createServer` / `createConnection`. BSD-socket primitives via `__net_native__`: `socketCreate`/`bind`/`listen`/`accept`/`connect` non-blocking. IPv4 only; `gethostbyname` for DNS. |
 | `dgram` (UDP) | ✅ Working | `dgram.createSocket('udp4')` / `Socket#bind` / `send` / `close`. `'message'` / `'listening'` / `'error'` / `'close'` events. Receives via `ioWatch(fd, READABLE)` + `recvfrom`; sends via `sendto`. IPv4 only; auto-binds to an ephemeral port if `.send()` is called before `.bind()`. |
 | `readline` | ✅ Working | `createInterface({ input, output })`, `'line'` / `'close'` events, `.question(prompt, cb)` (one-shot), `.pause`/`.resume`/`.close`, `.setPrompt`/`.prompt`. Cursor helpers (`cursorTo`, `moveCursor`, `clearLine`, `clearScreenDown`) emit ANSI CSI when the target stream is a TTY, no-op otherwise. |
-| `node:test` / `test` | ✅ Working | Minimal TAP runner. `test(name, fn)`, `test.skip`/`test.todo`, async test functions, nested `t.test(sub, fn)`, `t.diagnostic(msg)`. Registers on import, runs on next tick, prints `TAP version 13` + plan + ok/not-ok + fail counts. Sets `process.exitCode = 1` on any failure. |
+| `node:test` / `test` | ✅ Working | TAP runner. `test(name, fn)`, `test.skip`/`test.todo`, `test.describe`/`test.it`, `test.before`/`after`/`beforeEach`/`afterEach` lifecycle hooks. Async test functions, nested `t.test(sub, fn)`, `t.diagnostic(msg)`. **Mock support**: `t.mock.fn(impl?)` (tracks `.calls`/`.callCount()`/`.resetCalls()`/`.mockImplementation()`), `t.mock.method(obj, name, impl?)`, `t.mock.getter`/`setter`, with auto-restore at test end. Registers on import, runs on next tick, prints TAP 13 + plan + ok/not-ok + fail counts. Sets `process.exitCode = 1` on any failure. |
 | `ws` / `WebSocket` | ✅ Working | RFC 6455 client (`new WebSocket(url)` — browser-style `.onopen`/`.onmessage`/`.onclose`/`.onerror`) + server (`require('ws').WebSocketServer({ port, host })`). Text + binary frames, ping/pong autorespond, close-frame handshake. Server and client share frame encode/decode; client frames are masked per spec. `ws://` only — no TLS (`wss://`) yet. |
-| `dns` | ❌ Missing | |
 | `child_process` | ✅ Working | All sync + async variants except `fork`. `execSync`/`spawnSync`/`execFileSync` via blocking fork+waitpid. `spawn`/`exec`/`execFile` return a `ChildProcess` (EventEmitter) backed by the event loop — `.stdout`/`.stderr` are Readables, `.stdin` is Writable, emits `'exit'`(code,sig) then `'close'`. |
-| `stream` | ✅ Working | Real `Readable` / `Writable` / `Duplex` / `Transform` / `PassThrough` with buffering, `.pipe()`, `.read([n])` / `.push(chunk)` / `.end()`. `stream.pipeline()` and `stream.finished()` also implemented. Backpressure is nominally modeled but collapses to always-drained under the sync runtime; pipe auto-resumes whenever a `'data'` listener is added. |
+| `stream` | ✅ Working | Real `Readable` / `Writable` / `Duplex` / `Transform` / `PassThrough` with buffering, `.pipe()`, `.read([n])` / `.push(chunk)` / `.end()`. `stream.pipeline()` / `stream.finished()` (callback + Promise forms). Subpath specifiers: `require('stream/web')` -> `{ ReadableStream, WritableStream, TransformStream, ByteLengthQueuingStrategy, CountQueuingStrategy }`; `require('stream/promises')` -> `{ pipeline, finished }`; `require('stream/consumers')` -> `{ buffer, arrayBuffer, text, json, blob }` (drains a WHATWG or Node readable into the named type). Backpressure is nominally modeled but collapses to always-drained under the sync runtime; pipe auto-resumes whenever a `'data'` listener is added. |
 | `string_decoder` | ✅ Working | `StringDecoder` over Buffer-to-UTF-8 with partial-multibyte buffering across `.write()` calls. |
 | `querystring` | ✅ Working | `parse`/`stringify` with custom sep/eq, array-valued keys, `escape`/`unescape`/`encode`/`decode`. |
 | `url` | ✅ Working | Legacy `parse` (full URL object shape), `format`, `resolve`, `fileURLToPath`, `pathToFileURL`, plus WHATWG `URL`/`URLSearchParams` globals. |
@@ -127,8 +151,10 @@ release lands.
 | `timers` | ✅ Working | `setImmediate`/`setTimeout`/`setInterval` + matching clears enqueue into the event loop. `select()`-based loop blocks until the next `fireAt` (real wallclock), wakes on fd events or `SIGCHLD`, then fires due timers. `setTimeout(fn, 100)` really does wait ~100ms. Intervals re-queue themselves. |
 | `tty` | 🟡 Stub | `ReadStream`/`WriteStream` exported as EE-derived stubs. |
 | `module` | ✅ Working | `createRequire(filename)`, `builtinModules`, `isBuiltin(name)`, `Module` class with `_cache` (mirrors `__require_cache__`), `_extensions`, `wrap(src)`, `wrapper`, plus static `Module.{builtinModules,isBuiltin,createRequire}`. |
-| `worker_threads` | ❌ Missing | |
-| `cluster` | ❌ Missing | |
+| `async_hooks` | ✅ Working | `AsyncLocalStorage` (run/getStore/exit/disable/enterWith). State snapshot is captured at every microtask + timer enqueue (Promise.then chains, setTimeout, setImmediate, queueMicrotask) and restored before the callback fires, so `als.run(store, () => Promise.resolve().then(...))` propagates correctly. Doesn't yet propagate through I/O event-loop `ioWatch` callbacks. `executionAsyncId`/`createHook` callable but no-op. |
+| `diagnostics_channel` | ✅ Working | `channel(name)`, `subscribe`/`unsubscribe`, `hasSubscribers`, `publish(data)`. Channel instances cached by name. Module-level `dc.subscribe(name, fn)` / `dc.unsubscribe`. `tracingChannel(name)` returns `{ start, end, asyncStart, asyncEnd, error }` sub-channels with `.traceSync(fn, ctx)` / `.tracePromise(fn, ctx)` / `.traceCallback(fn, position, ctx, ...args)` helpers. |
+| `worker_threads` | ✅ Working (process-backed) | Real `Worker` spawning a fresh `node` child process; parent ↔ child speak length-prefixed JSON frames over stdin/stdout. `parentPort.on('message')` / `postMessage` round-trips. `isMainThread`, `workerData`, `Worker#terminate()`. No shared memory / `transferList` / `MessageChannel` / `MessagePort` / Atomics — use `BroadcastChannel` for in-process pub/sub instead. Slow startup (~1 s on G3) since each Worker is a process. |
+| `cluster` | 🟡 Stub | Single-process degenerate: `cluster.isMaster=true`, `cluster.isPrimary=true`, `cluster.workers={}`, `cluster.schedulingPolicy`. `cluster.fork()` throws. Enough for libraries that branch on `if (cluster.isMaster)` to take the master path. |
 | `zlib` | ✅ Working | Real RFC 1951 inflate via embedded tiny-inflate. **Real DEFLATE compression** by shelling out to `/usr/bin/gzip` (always present on Tiger), then stripping or rewrapping the framing for `deflateSync`/`deflateRawSync`. Falls back to stored-mode framing if `gzip` is missing — so output is always a valid deflate stream. `gzipSync`/`gunzipSync`/`deflateSync`/`inflateSync`/`deflateRawSync`/`inflateRawSync` + all matching async/Transform variants. Adler-32 (zlib) + CRC-32 (gzip) computed correctly. Brotli still throws. |
 
 ### Globals
@@ -147,6 +173,8 @@ release lands.
 | `crypto` (WebCrypto) | ✅ Working | `crypto.getRandomValues`, `crypto.randomUUID`, `crypto.subtle` with `digest`/`sign`/`verify`/`encrypt`/`decrypt`/`deriveBits`/`importKey`/`exportKey`/`generateKey`/`wrapKey`/`unwrapKey` over SHA-{1,256,384,512}, HMAC, AES-{CBC,CTR,GCM,KW}, PBKDF2, HKDF, **Ed25519** (sign/verify/generateKey/import/export), **X25519** (generateKey/deriveBits — curve25519 ECDH). `"raw"` and `"jwk"` key formats. Node-style `crypto.sign`/`verify`/`generateKeyPair{,Sync}`/`createPrivateKey`/`createPublicKey`/`publicEncrypt`/`privateDecrypt` for Ed25519 and **RSA** (RSA via vendored node-forge — slow keygen on PPC; sign/verify sha256/sha384/sha512; RSA-OAEP encrypt/decrypt with sha1/sha256 oaepHash; PEM/DER export; PEM import via `createPrivateKey('-----BEGIN...')`/`createPublicKey('-----BEGIN...')`). Still missing: ECDSA / NIST ECDH. |
 | `ReadableStream`/`WritableStream`/`TransformStream` | ✅ Polyfill | WHATWG Streams minimal shape. `ReadableStream` supports `start`/`pull`/`cancel` sources, `getReader().read()`, `locked`, `tee()`, `pipeTo`, `pipeThrough`. `WritableStream` supports `start`/`write`/`close`/`abort` sinks, `getWriter().write`/`close`/`abort`/`releaseLock`. `TransformStream` bundles the pair with `start`/`transform`/`flush`. Backpressure is best-effort (no explicit high-water-mark queue). |
 | `atob`/`btoa` | ✅ Working | |
+| `EventTarget` / `Event` / `CustomEvent` | ✅ Working | DOM-style event API. `new EventTarget()`, `addEventListener`/`removeEventListener` (with `once`/`capture`/`signal` options; AbortSignal aborts the listener), `dispatchEvent`. `Event(type, init)` and `CustomEvent(type, { detail })` constructors with `target`/`currentTarget`/`type`/`defaultPrevented`/`preventDefault`/`stopPropagation`/`stopImmediatePropagation`. |
+| `BroadcastChannel` | ✅ Working | In-process pub/sub. `new BroadcastChannel(name)`; `.postMessage(any)` -> all other channels with the same name receive a `'message'` event with `{ data }`. `.close()`, `.onmessage`, EventTarget shape. Cross-`Worker` (= cross-process) pub/sub does **not** work — only between channels in the same JS heap. |
 | `performance` (WHATWG) / `perf_hooks` core | ✅ Polyfill | `performance.now()` returns ms since `performance.timeOrigin` (Date.now() at process start). `mark`/`measure`/`clearMarks`/`clearMeasures`/`getEntries*` are callable stubs. `PerformanceObserver` constructs with no-op `observe`/`disconnect`/`takeRecords`. `require('perf_hooks')` returns `{ performance, PerformanceObserver, constants }`. Resolution is ms (no sub-millisecond precision). |
 | `Error.captureStackTrace` | ✅ Shim | Attaches `.stack` as an own property so error-ex / json-parse-even-better-errors work. |
 | `globalThis` / `global` / `window` / `self` | ✅ All aliased | Any of the four resolves to the global object. |
@@ -164,7 +192,7 @@ release lands.
 | `require('bare-module')` node_modules walk | ✅ Working | Standard upward search. |
 | `require('bare-module')` vendor fallback | ✅ Working | If node_modules lookup fails, walks caller's dir up looking for `<ancestor>/<name>.js` or `<ancestor>/vendor/<name>.js`, plus global dirs (`cwd/test/vendor`, installed `share/ionpower-node/vendor`). Lets unpatched libraries' bare `require('chalk')` etc. resolve to vendored copies. |
 | `require('node:fs')` prefix | ✅ Stripped | `node:` prefix stripped before lookup. |
-| Seeded core modules | ✅ Working | `__require_cache__` pre-populated with fs / path / events / util / child_process / os / crypto / buffer / string_decoder / assert / stream / timers / querystring / supports-color / has-ansi / process / module (with `createRequire` + `builtinModules`). |
+| Seeded core modules | ✅ Working | `__require_cache__` pre-populated with the full Node core surface: fs / fs/promises / path / path/posix / path/win32 / events / util / child_process / cluster / os / crypto / buffer / string_decoder / assert / stream / stream/web / stream/promises / stream/consumers / timers / timers/promises / querystring / dns / dns/promises / http / https / net / dgram / readline / url / zlib / worker_threads / async_hooks / diagnostics_channel / module / supports-color / has-ansi / process / vm / perf_hooks / readable-stream / inherits / node:test / test. The `node:` prefix is stripped before lookup, so `require('node:fs')` and `require('fs')` resolve to the same module. |
 | ESM `import`/`export` | 🟡 Via Babel | Bootstrap lazily loads `@babel/standalone` on parse failure and re-evaluates the ESM-lowered source. Handles `import X from "y"`, `export default`, `export { X }`. Does **not** handle top-level `await`, dynamic `import()`, or `import.meta`. Cached on disk at `~/.ionpower-cache/babel-v1/`. |
 | `async`/`await` / `for await` | ✅ Via Babel | `async function` / `await expr` / `try { await reject } catch` / `for await (chunk of asyncIter)` all work — same path as ESM (Babel lowers on parse failure). `Symbol.asyncIterator` is polyfilled; WebStreams `Readable` and `events.on()` iterators carry the well-known so `for await` recognizes them. |
 | `import.meta` | ❌ Missing | |
@@ -183,8 +211,8 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**658+** as of [v0.70](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.70).
-Full suite: **1880+** assertions across 420 smoke files.
+**658+** as of [v0.71](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.71).
+Full suite: **1900+** assertions across 422 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;
 see each smoke for exactly which surface the library exercises.
