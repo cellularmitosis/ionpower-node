@@ -1,0 +1,38 @@
+v0.64: Symbol.dispose / Symbol.asyncDispose + DisposableStack
+
+ES2026 / Node 22+ explicit-resource-management. The `using` /
+`await using` syntax requires Babel; the runtime classes work today.
+
+  // Manual disposal:
+  const r = { [Symbol.dispose]() { console.log('cleanup'); } };
+  r[Symbol.dispose]();
+
+  // DisposableStack:
+  const stack = new DisposableStack();
+  const fd = stack.use(openFile());      // adopts a Symbol.dispose value
+  stack.adopt(connection, c => c.close()); // arbitrary onDispose
+  stack.defer(() => log('done'));        // bare callback
+  stack.dispose();                       // LIFO order, errors don't abort
+
+  // AsyncDisposableStack:
+  const as = new AsyncDisposableStack();
+  as.use({ [Symbol.asyncDispose]() { return Promise.resolve(); } });
+  await as.disposeAsync();
+
+Full surface:
+- Symbol.dispose / Symbol.asyncDispose well-knowns
+- DisposableStack: use / adopt / defer / move / dispose / disposed
+- AsyncDisposableStack: use / adopt / defer / move / disposeAsync /
+  disposed
+- Both have [Symbol.dispose] / [Symbol.asyncDispose] forwarding to
+  their close method (so they're themselves disposable).
+
+LIFO disposal order matches spec. Errors from one disposer don't
+abort the others (caught + console.error'd).
+
+6 assertions pass.
+
+Library count: 657+ (unchanged). Assertions 1759 -> 1765+ across
+413 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

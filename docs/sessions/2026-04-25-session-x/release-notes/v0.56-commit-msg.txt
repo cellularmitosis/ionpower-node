@@ -1,0 +1,41 @@
+v0.56: async / await / for-await support
+
+This was almost free — the path was already in place, just one
+polyfill missing.
+
+What's working today:
+- async function foo() { ... }                    -> works
+- await Promise.resolve(x)                         -> works
+- try { await Promise.reject(e); } catch (e) {}    -> works
+- for await (var args of events.on(ee, 'data'))    -> works (NEW)
+- for await (var chunk of readableStream)          -> works (NEW)
+
+How: SM45 has no async/await syntax, but our require.cpp falls
+back to @babel/standalone on parse failure (the same path that
+loads ESM modules). Babel lowers async functions to a
+generator/Promise state machine. _IonPromise.then routes through
+our microtask queue, so the lowered code runs correctly against
+our runtime.
+
+The two new smokes (for-await over events.on and ReadableStream)
+needed Symbol.asyncIterator + .next() adapter on the Reader:
+
+1) Polyfill Symbol.asyncIterator in bootstrap (SM45 ships Symbol
+   but no asyncIterator well-known). Babel's lowered runtime
+   helper checks for it.
+
+2) v0.48's events.on iterator was conditionally setting
+   [Symbol.asyncIterator] on the iter; the condition was
+   "if (Symbol.asyncIterator)" — false on SM45, so the assignment
+   was skipped. Now the polyfill makes it true.
+
+3) WebStreams Reader had .read() but not .next(); the async
+   iterator protocol expects .next() returning Promise<{value,done}>.
+   Added .next() = .read() adapter and pinned [Symbol.asyncIterator]
+   on the Reader prototype + a getReader() shortcut on the
+   ReadableStream prototype.
+
+Library count: 657+ (unchanged). Assertions 1715 -> 1719+ across
+405 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

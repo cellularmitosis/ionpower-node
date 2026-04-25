@@ -1,0 +1,29 @@
+v0.41: vm module stubs + module.isBuiltin + library hunt wave 10
+
+require('vm') exposes a minimal set that works for the common
+"evaluate a small expression in a sandbox" pattern without real
+compartment isolation:
+
+- vm.runInThisContext(code) — indirect eval (global scope).
+- vm.runInNewContext(code, sandbox) — parameterizes the sandbox
+  keys as Function() args and invokes the result with sandbox
+  values. Good for expression-shaped code; statements run but
+  don't mutate the sandbox (closures only).
+- vm.Script(code) + runInThisContext / runInNewContext / runInContext
+- vm.createContext / isContext
+- vm.compileFunction(code, paramNames)
+
+module.isBuiltin(spec): returns true if `spec.replace(/^node:/, '')`
+is in `builtinModules`. Matches Node 18+ behaviour.
+
+Library hunt wave 10 — three more vendored libraries:
+- utf8 (encode/decode)
+- queue-microtask (single-call microtask scheduler)
+- has-own-prop (3-line hasOwnProperty wrapper)
+(object-keys skipped — needs ./isArguments companion we don't
+vendor.)
+
+Library count: 619 -> 622+. Assertions 1555 -> 1568+ across 390
+smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

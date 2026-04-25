@@ -1,0 +1,20 @@
+v0.27: library hunt wave 5
+
+Seven more vendored libraries brought under smoke coverage.  Most
+of these files were already in test/vendor/ but untested; this
+wave adds batch_wave_w_smoke.js + updates two with fresh upstream
+versions (escape-string-regexp, nanoid-non-secure).
+
+- escape-html: HTML-encodes < > " ' & (TJ Holowaychuk, ~80 lines)
+- escape-string-regexp: escapes regex metachars (ESM via Babel)
+- is-plain-object: plain-object vs Date/Array/null predicate
+- mri: tiny sub-yargs argument parser
+- kleur: terminal colors (wraps strings via SGR)
+- dayjs: minified day.js date library, format + add
+- nanoid/non-secure: Math.random-backed nanoid (21-char default)
+
+Verified on pmacg5: all 7 tests pass.
+
+Library count: 585 -> 592+. Assertions 1393 -> 1410+ across 376
+smoke files.
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

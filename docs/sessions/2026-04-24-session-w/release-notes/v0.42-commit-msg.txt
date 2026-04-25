@@ -1,0 +1,32 @@
+v0.42: worker_threads + inspector + tty stubs + library hunt wave 11
+
+Three require-core additions, all stub-shaped since we have no threads,
+no V8 inspector, and no real terminal control:
+
+- require('worker_threads') — isMainThread: true, threadId: 0,
+  parentPort: null. Worker / MessageChannel / MessagePort
+  constructors are present but throw on use. Libraries that guard
+  with `if (isMainThread)` branch correctly.
+
+- require('inspector') — Session throws; open/close/url/
+  waitForDebugger are no-ops. Enough for logger libs that sniff
+  for the module.
+
+- require('tty') — was previously an anaemic stub. Now has a full
+  WriteStream / ReadStream with .isTTY / .columns / .rows set in
+  the constructor (80x24 defaults) + getColorDepth/hasColors/
+  getWindowSize. Dropped the duplicate late-registration that was
+  clobbering the earlier correct one.
+
+Library hunt wave 11 — three more vendored libraries under smoke
+coverage:
+- human-id (loaded-only)
+- minisearch (full-text search; real addAll + search round-trip,
+  returns expected 2 hits for 'hello')
+- tr46 (loaded-only — IDNA; skips if missing punycode)
+(slugify-lib skipped — needs ./is-slug companion.)
+
+Library count: 622 -> 624+. Assertions 1568 -> 1580+ across 391
+smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+v0.20: crypto.subtle (WebCrypto)
+
+globalThis.crypto.subtle with full WHATWG shape over our existing
+symmetric primitives. SHA-{1,256,384,512}, HMAC, AES-{CBC,CTR,GCM},
+PBKDF2, HKDF all accessible via Promise-based subtle API.

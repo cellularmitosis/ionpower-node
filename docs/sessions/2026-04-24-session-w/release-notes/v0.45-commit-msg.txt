@@ -1,0 +1,28 @@
+v0.45: fs.cp / fs.rm (Node 14+ / 16+) + library hunt wave 14
+
+fs.rmSync(path, options) — Node 14+
+- options: { recursive, force }
+- Recursively walks directories, falls through to unlinkSync
+  for files. force suppresses ENOENT-on-missing. Matches the
+  Node API including the EISDIR throw when a directory is rm'd
+  without recursive: true.
+
+fs.cpSync(src, dest, options) — Node 16+
+- options: { recursive }
+- Recursive copy: creates dest dir if missing, walks readdirSync,
+  recurses on subdirs, falls through to copyFileSync for files.
+  Throws EISDIR if src is a directory and recursive isn't set.
+
+Both have async (callback-style) variants via the existing
+_fsAsync wrapper: fs.rm(path, options, cb), fs.cp(src, dest, options, cb).
+
+Library hunt wave 14 — three more vendored libraries:
+- has-symbols (skipped — needs ./shams companion)
+- find-replace (predicate-based array find/replace)
+- map-cache (simple Map wrapper)
+- obuf (offset buffer; loaded-only)
+
+Library count: 633 -> 636+. Assertions 1605 -> 1620+ across 394
+smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

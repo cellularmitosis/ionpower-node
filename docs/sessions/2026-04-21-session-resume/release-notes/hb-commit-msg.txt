@@ -1,0 +1,29 @@
+Add handlebars (template engine) as third compatibility target
+
+handlebars v4.7.8 runs on ionpower-node unmodified. 6/6 assertions
+pass covering:
+
+  * Simple interpolation: Hello, {{name}}!
+  * Block helpers: {{#each items}}...{{/each}}
+  * If/else with both branches taken
+  * Custom helper registration + invocation
+  * Default HTML escaping (&lt;script&gt;)
+  * Triple-stash raw output
+
+Why this one matters more than the previous two: Handlebars.compile
+takes a template string, parses it, then calls `new Function(body)`
+on the generated JavaScript to produce the template function. That
+forces SpiderMonkey to parse + JIT-compile arbitrary runtime-supplied
+code on the PPC — a different pipeline from marked (regex) and acorn
+(pure data). If the JIT couldnt handle dynamically-generated source
+on PPC, this test would fail. It doesn't.
+
+Vendored from unpkg (handlebars@4.7.8/dist/handlebars.min.js, 86 KB).
+The CJS entry point at handlebars@4.7.8/dist/cjs/ splits across many
+files and would need node_modules resolution; the browser UMD bundle
+inlines everything and works via our current relative-path require.
+
+Compatibility score so far: 3 / 3 real libraries working with zero
+bridge changes.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

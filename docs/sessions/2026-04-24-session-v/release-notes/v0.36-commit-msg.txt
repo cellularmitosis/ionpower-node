@@ -1,0 +1,35 @@
+v0.36: node:test minimal TAP runner + process.exitCode honoured
+
+Two related additions:
+
+1) require('node:test') / require('test') returns a minimal TAP
+   runner:
+
+   const test = require('node:test');
+   const assert = require('assert');
+
+   test('sync pass', () => { assert.equal(2+2, 4); });
+   test('async',   async () => { await something(); });
+   test('nested', (t) => t.test('inner', () => { /* ... */ }));
+   test.skip('skipped', () => {});
+
+   Output is TAP 13 — "ok N - name", "not ok N - name", a plan
+   line, and "# pass X" / "# fail X" trailers. Failures set
+   process.exitCode = 1.
+
+2) main.cpp now honours process.exitCode on shutdown. Previously
+   only the entry script's return status drove the exit code, so
+   libraries that set process.exitCode = 1 on their way out (tape,
+   node:test, user scripts) appeared to succeed.
+
+Verified:
+- 3 sync / 1 async / 1 deliberate-failure / 1 skip / 1 nested test
+  all produce the right TAP output.
+- Child process exits 1 (not 0) with a failing test.
+- Skip shows as "# SKIP".
+- require('node:test') === require('test').
+
+Library count: 610+ (unchanged). Assertions 1506 -> 1517+ across
+385 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

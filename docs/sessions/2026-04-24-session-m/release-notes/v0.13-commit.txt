@@ -1,0 +1,35 @@
+v0.13: library hunt — 504 → 560+
+
+Session M. After five releases of Node-surface work, this one is
+pure library-count push. ~55 libraries added to smoke coverage
+across 4 batch files, plus 10 fresh HTTP/cookie ecosystem libs
+from npm that pair with v0.12's fetch + http.createServer.
+
+Batches:
+- batch_wave_l_smoke: 24 tiny utilities (indexof, foreach,
+  xtend-mutable, object-assign-v5, is-obj, is-primitive, min-indent,
+  escape-string-regexp-v5, ms2, json-parse-safe/safe, levenshtein,
+  sprintf-js, upper-case-first, no-case, sentence-case,
+  utils-merge-v1, unpipe, stream-shift, destroy, has-ansi,
+  cli-boxes, url-alphabet, colorette)
+- batch_wave_l2_smoke: 15 parsers/data libs (sax-js, rc,
+  safe-buffer, tiny-inflate, zod, bplist-parser-mini, sade,
+  matcher, mime-db, uuid-v4-latest, hashset, number-precision,
+  moment-range, require-directory, defaults)
+- batch_wave_l3_smoke: 11 (crypto-js-core, fp-ts, joi-full, nise,
+  lazy, chalk-template, mime-db-v2, spinners, shortest,
+  jszip-utils, arrify)
+- batch_wave_l4_smoke: 10 fresh HTTP/cookie libs (cookie,
+  set-cookie-parser, cookie-signature, on-headers, delegates,
+  ip, content-type, content-disposition, basic-auth v2,
+  parse-ms v3)
+
+Documented-skip: dotenv (needs ../package.json), readline-sync
+(process.binding), supports-color (has-flag sibling), json pkg
+(requires 'vm').
+
+Library count 504 → 560+. Assertions 1257 → 1315+.
+
+See docs/session-2026-04-24-m-summary.md.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

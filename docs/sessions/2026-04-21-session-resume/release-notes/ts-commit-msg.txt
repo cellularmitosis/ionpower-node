@@ -1,0 +1,43 @@
+Add TypeScript (tsc) as fifth compatibility target
+
+TypeScript 3.9.10 runs on ionpower-node and produces correct
+CommonJS output from TS input. Timings on imacg52 (G5 2.0 GHz):
+
+  loaded typescript.js (8.3 MB)              757 ms
+  transpile trivial const w/ type annotation 473 ms
+  transpile class-with-generics + spread     530 ms
+
+The output of the first transpile is byte-correct against what
+tsc would produce on any other host:
+
+  "use strict";
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.y = void 0;
+  var x = 42;
+  exports.y = x * 2;
+
+A real compiler is running. TypeScript-the-compiler is implemented
+in TypeScript and self-hosts; each transpile invokes the full
+scanner+parser+checker+emitter pipeline inside SpiderMonkey on PPC.
+
+Why TS 3.9.10 specifically:
+
+  * TS 4.9 and 5.3 ship typescript.js bundles that use optional
+    chaining (?.) and nullish coalescing (??) as real operators.
+    SpiderMonkey 45 (ES2016) supports neither, so both fail with
+    "SyntaxError: expected expression, got '?'" at parse time.
+  * TS 3.9.10 contains ?. and ?? only inside string literals and
+    comments (21 and 4 occurrences respectively, all in
+    diagnostics about those operators). Engine parse is clean.
+  * This is the natural bookend of what a non-transpiled TS
+    compiler can target — good enough for TS language features
+    through ES2018. Anything newer needs transpile-on-load.
+
+Vendored from unpkg (typescript@3.9.10/lib/typescript.js, 7.9 MB).
+
+Compatibility score: 5 / 5 real libraries working unmodified (within
+their own JS-version constraints). TypeScript stresses everything:
+massive code size, complex types, visitor patterns, regex, string
+ops, deep recursion.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

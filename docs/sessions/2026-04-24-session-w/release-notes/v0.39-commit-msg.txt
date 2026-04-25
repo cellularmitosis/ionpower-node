@@ -1,0 +1,28 @@
+v0.39: http.Agent stub + crypto.hash one-shot + AbortSignal.any dispatch
+
+Three small refinements.
+
+1) http.Agent stub. Node's Agent pools TCP connections for
+   keep-alive. Our sync-curl path can't pool anything and our
+   async-request path is per-request. Expose the shape so
+   consumers passing `{ agent: new http.Agent({ keepAlive: true }) }`
+   don't TypeError on construction. http.globalAgent is installed
+   as a default instance. Properties: keepAlive, keepAliveMsecs,
+   maxSockets, maxFreeSockets, maxTotalSockets, sockets, freeSockets,
+   requests. Methods: .destroy() (no-op), .getName(opts) (host:port).
+
+2) crypto.hash(algorithm, data, encoding) — Node 20+ one-shot
+   hash. encoding is 'hex' (default) | 'base64' | 'buffer'. Wraps
+   the existing Hash constructor; returns a string (hex/base64) or
+   a Buffer. Verified against FIPS vectors for sha256/sha1/md5.
+
+3) AbortSignal.any was tracking .aborted + .reason on the combined
+   signal, but NOT firing its own 'abort' event listeners. Fixed —
+   now dispatches to both addEventListener('abort', fn) handlers
+   and the .onabort property. Guaranteed fire-once semantics
+   preserved.
+
+Library count: 615+ (unchanged). Assertions 1535 -> 1544+ across
+388 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

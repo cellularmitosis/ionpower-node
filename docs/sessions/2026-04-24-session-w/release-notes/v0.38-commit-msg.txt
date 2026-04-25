@@ -1,0 +1,25 @@
+v0.38: Buffer.indexOf string support + library hunt wave 8
+
+Two things:
+
+1) Buffer.indexOf (and .includes) now accept string / Buffer /
+   Uint8Array needles in addition to the single-byte number case.
+   Previously only the Uint8Array-inherited strict-identity number
+   form worked; searches like `buf.indexOf("\r\n\r\n")` returned
+   -1, which had forced WebSocket and HTTP parser code to route
+   through `buf.toString('latin1').indexOf(...)`.
+
+   Optional 3rd arg is encoding for the string form (default utf8).
+
+2) Library hunt wave 8 — five more vendored libraries:
+   - after        (function-call count helper; 28 lines)
+   - pend         (async queue deferrer)
+   - path-is-absolute (posix + win32 variants)
+   - has-flag     (CLI flag predicate; ESM)
+   - color-string (CSS color parser; imports color-name which is
+     already vendored + uses our Object.hasOwn polyfill)
+
+Library count: 610 -> 615+. Assertions 1523 -> 1535+ across 387
+smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

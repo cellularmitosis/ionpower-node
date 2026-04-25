@@ -1,0 +1,25 @@
+v0.40: util.styleText + library hunt wave 9
+
+util.styleText (Node 21+):
+
+  util.styleText('red', 'hi');
+  util.styleText(['red', 'bold'], 'hi');
+  util.styleText('red', 'hi', { validateStream: false });  // force ANSI
+
+Styles: reset/bold/dim/italic/underline/blink/inverse/hidden/
+strikethrough, plus 8 foreground colors (+ gray/grey) and their
+bg* variants. Unknown names throw TypeError. Without an explicit
+TTY/validateStream override, non-TTY output returns the plain
+text (matches Node's default).
+
+Library hunt wave 9 — four more vendored libraries under smoke
+coverage:
+- callsites (stack CallSite[] — ESM)
+- listenercount (tiny events.listenerCount polyfill)
+- abbreviate-number (1500 -> '1.5k')
+- p-map (latest async concurrency-limited map; ESM)
+
+Library count: 615 -> 619+. Assertions 1544 -> 1555+ across 389
+smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

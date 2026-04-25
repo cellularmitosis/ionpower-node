@@ -1,0 +1,32 @@
+v0.49: EventTarget / Event / CustomEvent globals
+
+DOM-style EventTarget pump exposed on the global, plus matching
+Event / CustomEvent constructors. Cross-target libraries (undici,
+node-fetch internals, jose, various web-API polyfills) reach for
+these without checking — now they don't ReferenceError.
+
+Surface:
+
+  const et = new EventTarget();
+  et.addEventListener('tick', e => { /* ... */ });
+  et.addEventListener('once', fn, { once: true });
+  et.removeEventListener('tick', fn);
+
+  const ev = new Event('click', { bubbles: true, cancelable: true });
+  ev.preventDefault();
+  et.dispatchEvent(ev);             // -> false if any listener prevented
+
+  const ce = new CustomEvent('ping', { detail: { x: 1 } });
+  ce.detail.x;                      // 1
+
+Supports: addEventListener (with once / capture flags), removeEventListener,
+dispatchEvent, preventDefault, stopPropagation, stopImmediatePropagation,
+handleEvent object listeners.
+
+Listener errors don't abort dispatch — they're caught + logged via
+console.error to match Node's resilient behaviour.
+
+Library count: 641+ (unchanged). Assertions 1652 -> 1660+ across
+398 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

@@ -1,0 +1,41 @@
+v0.62: process.on('uncaughtException') + 'unhandledRejection'
+
+Both events now fire correctly through process.emit:
+
+  process.on('uncaughtException', (err, origin) => {
+    // origin is 'microtask' or 'timer' depending on where the
+    // exception escaped.
+  });
+
+  process.on('unhandledRejection', (reason, promise) => {
+    // Fired one microtask after a Promise rejects with no .catch.
+  });
+
+  process.on('rejectionHandled', (promise) => {
+    // Fired when a .catch is attached AFTER unhandledRejection
+    // already fired (matches Node).
+  });
+
+Implementation:
+- Microtask drain catches errors and routes through
+  process.emit('uncaughtException', err, 'microtask'). If a handler
+  is registered, the default stderr fallback is suppressed.
+- Timer drain (both fire-due-timers + general drain) does the same
+  with origin='timer'.
+- _IonPromise.reject schedules a deferred microtask that checks if
+  any handlers got attached; if not, fires unhandledRejection.
+- _IonPromise.then sets the promise's _handled flag; if the promise
+  was previously flagged unhandled, it emits rejectionHandled
+  (matching Node's late-attach behavior).
+
+Verified in-child:
+- uncaughtException catches with origin='timer'.
+- unhandledRejection fires for an uncaught Promise.reject().
+- rejectionHandled fires when .catch attaches across two setImmediate
+  ticks after the rejection.
+- Handler with no return value still suppresses default stderr fallback.
+
+Library count: 657+ (unchanged). Assertions 1745 -> 1749+ across
+411 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

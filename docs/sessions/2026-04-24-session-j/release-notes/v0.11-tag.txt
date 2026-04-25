@@ -1,0 +1,18 @@
+v0.11: Promise microtask queue
+
+504 libraries, 1231 assertions. G3 + G4 validated.
+
+- __microtask_queue__ drained by event loop after each callback
+- Promise .then/.catch/.finally, queueMicrotask, process.nextTick
+  all defer to post-sync-code (matches Node ordering)
+- _IonPromise polyfill installed unconditionally (shadows SM45's
+  native Promise, which also fires synchronously)
+- Event loop drains microtasks after every fd watcher / timer /
+  SIGCHLD reap
+- main.cpp drains microtasks after entry script + around exit flush
+
+Test churn: migrated ~10 smokes from inline .then-then-assert to
+collect-in-closure + assert-at-exit (standard Node idiom).
+
+G5 tarball ships separately on this release (pmacg5 bootstrap in
+progress). See docs/session-2026-04-24-k-summary.md.

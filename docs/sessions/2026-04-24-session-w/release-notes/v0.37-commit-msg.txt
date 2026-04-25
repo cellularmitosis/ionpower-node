@@ -1,0 +1,50 @@
+v0.37: WebSocket (RFC 6455) client + server
+
+Adds the browser-style WebSocket global + a Node-style 'ws' module,
+both built on top of our existing net.Socket.
+
+  const WebSocket = globalThis.WebSocket;
+  const ws = new WebSocket('ws://host:port/path');
+  ws.onopen    = () => ws.send('hello');
+  ws.onmessage = (ev) => console.log(ev.data);
+  ws.onclose   = () => {};
+  ws.onerror   = (err) => {};
+  ws.send(Buffer.from([1,2,3]));   // binary frame
+  ws.close(1000, 'done');
+
+  const { WebSocketServer } = require('ws');
+  const server = new WebSocketServer({ port: 0, host: '127.0.0.1' });
+  server.on('connection', (sws) => {
+      sws.on('message', (data, isBinary) => sws.send(data));
+  });
+
+Covers:
+- HTTP/1.1 upgrade handshake with Sec-WebSocket-Key / -Accept
+  validation (SHA-1 + RFC magic + base64).
+- Frame encode/decode with all three length forms (inline, 16-bit,
+  64-bit). Client frames are masked per spec with a random 4-byte
+  mask.
+- Text (0x1) and binary (0x2) frames — text emits a string,
+  binary emits a Uint8Array.
+- Control frames: ping (0x9) -> autorespond pong (0xA);
+  close (0x8) -> echo back and shut down.
+- readyState enum (CONNECTING/OPEN/CLOSING/CLOSED).
+
+Does not yet do: wss:// (TLS), per-message-deflate extension,
+fragmentation across multiple frames.
+
+Incidental bug caught + fixed: Buffer.indexOf('literal string')
+was returning -1 on our native Buffer (inherits Array's strict-
+identity indexOf). Workaround in the handshake parser is
+`self._buffer.toString('latin1').indexOf('\\r\\n\\r\\n')`. Worth
+patching Buffer.indexOf to accept strings properly in a future
+release — several other sites also route through toString first,
+confirming the limitation.
+
+Verified: in-process server + client exchange text + binary +
+close 1000, all four expected events fire on both sides.
+
+Library count: 610+ (unchanged). Assertions 1517 -> 1523+ across
+386 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

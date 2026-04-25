@@ -1,0 +1,62 @@
+v0.57: process-backed worker_threads (real Worker)
+
+new Worker(scriptPath, opts) now actually spawns a parallel
+ionpower-node child process. Real parallelism — not threads, but
+real OS processes — talking via length-prefixed JSON frames over
+stdin/stdout.
+
+Round-trip:
+
+  // main thread
+  const { Worker } = require('worker_threads');
+  const w = new Worker('./worker.js', { workerData: { n: 7 } });
+  w.on('message', m => console.log(m));
+  w.on('exit',    code => console.log('done', code));
+  w.postMessage({ x: 42 });
+  w.terminate();              // SIGTERM
+
+  // worker.js
+  const { parentPort, workerData } = require('worker_threads');
+  console.log('got', workerData);   // { n: 7 } via env-var hop
+  parentPort.on('message', m => parentPort.postMessage({ doubled: m.x * 2 }));
+
+Implementation pieces:
+
+- Frame format: 4-byte big-endian length + N bytes UTF-8 JSON.
+  Robust to interleaved stderr/log output going around the pipe.
+- Parent: spawns nodeBin (process.argv[0]) with scriptPath as the
+  entry, env carrying IONPOWER_AS_WORKER=1 and IONPOWER_WORKER_DATA
+  (JSON of opts.workerData).
+- Child: bootstrap detects IONPOWER_AS_WORKER=1, sets
+  isMainThread=false, builds parentPort wired to stdin/stdout via
+  the same frame codec. Schedules stdin listener via setImmediate
+  so it lands AFTER process.stdin is fully equipped.
+- terminate(): __child_process_native__.killPid(pid, SIGTERM).
+  Returns Promise resolving on the worker's exit event.
+- New native bindings:
+    __child_process_native__.killPid(pid, sig)
+    spawnAsync now honours opts.env (via setenv in the forked
+      child branch — fork-time only, doesn't pollute the parent's
+      environ).
+
+Limitations:
+- No transferList — payloads are JSON-copied.
+- No SharedArrayBuffer.
+- Slow startup (~1s on G3) — each Worker is a fresh process
+  re-running the whole bootstrap.
+- Worker scripts must be node-runnable file paths (no inline
+  Worker source via Blob URLs).
+- Multiple simultaneous workers spawning concurrently are fine,
+  but each one re-bootstraps independently.
+
+Verified: smoke spawns a worker that doubles numbers and echoes
+workerData. Three round-trip messages settle, worker exits cleanly
+on `bye`, smoke takes ~1.5s wall.
+
+Stubs_smoke updated: previously asserted "Worker construction
+throws not-supported"; now asserts the shape only.
+
+Library count: 657+ (unchanged). Assertions 1719 -> 1722+ across
+406 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

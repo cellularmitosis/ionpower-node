@@ -1,0 +1,6 @@
+v0.17: AES-CBC
+
+createCipheriv / createDecipheriv for aes-{128,192,256}-cbc.
+FIPS 197 pure JS; NIST SP 800-38A F.2.5 vector verified.
+
+See docs/session-2026-04-24-q-summary.md.

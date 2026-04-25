@@ -1,0 +1,46 @@
+v0.9: real event loop + async child_process
+
+Session I. 504 libraries (unchanged), 1205 → 1213 assertions.
+Triad-validated on G3/G4/G5.
+
+Headline: replace the sync-drain-on-exit model with a real
+select()-based event loop, and land async child_process.spawn /
+exec / execFile on top.
+
+Runtime changes:
+- New src/node_compat/event_loop.cpp (~310 LOC). select()-based loop
+  that blocks until the next timer fireAt, waking on fd events
+  (via ioWatch) or SIGCHLD (via a sigaction handler).
+- Wallclock timers: setTimeout(fn, 100) really waits ~100ms.
+  Previously ordering-correct but absolute delays collapsed.
+- JS-side __event_loop_watcher_cbs__ / __event_loop_child_cbs__
+  tables keep callbacks rooted without C++ PersistentRooted.
+- main.cpp calls RunEventLoop() instead of the single-pass
+  __drain_timers__. Ran twice: once for the script body, once
+  after 'exit' handlers flush (which may re-schedule).
+
+Async child_process:
+- spawnAsync / readFd / writeFd / closeFd native primitives in
+  child_process.cpp — non-blocking fork+exec with O_NONBLOCK pipe
+  fds.
+- JS-side child_process.spawn returns a ChildProcess EventEmitter
+  with .stdout/.stderr (Readables, auto-drain via ioWatch), .stdin
+  (Writable via writeFd), .kill (stub). Emits 'exit'(code, sig)
+  then 'close'(code, sig) after fd drain via setImmediate.
+- child_process.exec / execFile thin wrappers on top.
+- Sync variants (execSync/spawnSync/execFileSync) unchanged.
+- fork still throws (requires IPC channel).
+
+Smokes:
+- event_loop_smoke.js — real wallclock timing, ordering, setImmediate
+  priority, clearTimeout.
+- async_child_process_smoke.js — spawn echo, exec pipe, stderr capture
+  + non-zero exit, cat stdin-to-stdout round-trip.
+
+Other changes:
+- cores_smoke.js updated: child_process.spawn no longer throws.
+- README table updated for timers (wallclock), child_process (async).
+
+See docs/session-2026-04-23-i-summary.md for design + judgment calls.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

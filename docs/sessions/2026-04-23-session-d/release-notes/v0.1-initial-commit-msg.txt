@@ -1,0 +1,35 @@
+Initial commit: Node-compat JS runtime on TenFourFox's IonPower JIT
+
+A working prototype of ionpower-node v0.1 targeting 32-bit PowerPC
+Mac OS X 10.4 (Tiger). The runtime embeds SpiderMonkey 45 from the
+TenFourFox tree, reusing Cameron Kaiser's hand-written IonPower PPC
+JIT, and exposes a subset of Node's API surface on top of it.
+
+Tested working on imacg52 (G5 2.0 GHz, 10.4.11):
+
+  * ionpower-node test/integration.js -- 12/12 assertions pass.
+  * IonPower measured at 13.7x over interpreter on a 5M-iteration
+    tight integer loop (0.12s vs 2.22s, same workload).
+  * CommonJS require, sync fs, path, console, process, Buffer,
+    and synchronous setImmediate/setTimeout shims all work
+    end-to-end.
+
+Contents of this snapshot:
+
+  * scripts/ -- bootstrap autoconf-2.13, fetch+build SpiderMonkey
+    standalone with the PPC JIT, link-smoke-test, deploy-and-test.
+  * src/main.cpp + src/node_compat/ -- C++ bridge (console, process,
+    fs, path, buffer, require, timers, globals wiring).
+  * test/ -- hello, require_chain, fs_smoke, timers_smoke,
+    console_formatting, integration, fibonacci, jit_smoke,
+    verify_jit.
+  * docs/ -- plan, architecture, ionpower-overview, setup,
+    build-notes (live log of gotchas fixed), fallback-plans,
+    post-build-checklist, final-status.
+  * external/ (gitignored) -- sparse checkout of classilla/tenfourfox
+    at 51ec6270. Repopulate with scripts/fetch-tenfourfox.sh.
+
+See docs/final-status.md for the full writeup and docs/INDEX.md for
+a reading order.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

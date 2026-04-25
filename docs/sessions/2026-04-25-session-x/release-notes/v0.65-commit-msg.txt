@@ -1,0 +1,40 @@
+v0.65: RSA via vendored node-forge
+
+First RSA support. Uses node-forge (vendored at test/vendor/node-forge/
+and installed under share/ionpower-node/vendor/node-forge/) for the
+heavy bignum + sign/verify pure-JS implementation.
+
+  const crypto = require('crypto');
+  const { publicKey, privateKey } =
+    crypto.generateKeyPairSync('rsa', { modulusLength: 1024 });
+
+  const sig = crypto.sign('sha256', Buffer.from('hi'), privateKey);
+  crypto.verify('sha256', Buffer.from('hi'), publicKey, sig);  // true
+
+  privateKey.export({ format: 'pem' });   // RSA PRIVATE KEY block
+  privateKey.export({ format: 'der' });   // raw bytes Buffer
+
+Performance is realistic-PPC: 1024-bit keygen ~5-6s on a G5,
+~10-30s on a G3. Sign/verify is single-digit ms. Don't use this
+in latency-sensitive paths; do use it for one-off cert generation
+or per-deployment key creation.
+
+Mechanics:
+- Lazy-loaded forge (separate from tweetnacl path) so its 30k+
+  lines don't load unless RSA is actually used.
+- forge's pki.rsa.generateKeyPair tries to call node's native
+  crypto.generateKeyPairSync first. We delegate back to forge,
+  which would recurse — so we set crypto.__ionpower_inhibit_rsa
+  while forge runs, and patched forge's rsa.js to (a) honour
+  that flag and (b) wrap the native call in try/catch so it
+  falls through to its pure-JS path when the host's shim throws.
+- KeyObject wrapper carries the forge key on _forge plus an
+  .export({ format: 'pem' | 'der' }) method.
+
+Verified: keygen + sign + verify + tamper rejection + PEM/DER
+export. 6 smoke assertions pass on pmacg5.
+
+Library count: 657+ (unchanged). Assertions 1765 -> 1772+ across
+414 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

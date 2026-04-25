@@ -1,0 +1,6 @@
+v0.16: scrypt (RFC 7914)
+
+Pure-JS Salsa20/8 + BlockMix + ROMix + PBKDF2 bookends.
+RFC 7914 vec 1 passes.
+
+See docs/session-2026-04-24-p-summary.md.

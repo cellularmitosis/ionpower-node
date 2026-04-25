@@ -1,0 +1,39 @@
+v0.30: Ed25519 sign/verify (first asymmetric crypto)
+
+Wires crypto.sign / crypto.verify / generateKeyPairSync
+("ed25519") via the tweetnacl pure-JS library. This is our first
+asymmetric crypto primitive — RSA / ECDSA / ECDH still throw
+not-supported.
+
+Mechanics:
+- tweetnacl is lazy-loaded via __make_require__(cwd) on first call.
+  That gets the vendor-fallback path, so installed copies pick up
+  share/ionpower-node/vendor/tweetnacl.js while dev runs hit
+  test/vendor/tweetnacl.js.
+- tweetnacl.setPRNG is wired to nativeCrypto.randomBytes so keygen
+  is actually random rather than the no-op stub.
+- Node crypto.sign(null, data, privKey) routes to ed25519 when the
+  key's asymmetricKeyType is 'ed25519'.
+
+New API surface (all on crypto.*):
+- generateKeyPairSync('ed25519') -> { publicKey, privateKey } (KeyObject)
+- generateKeyPair('ed25519', cb)
+- createPrivateKey(rawOr64Seed32OrJWK_OKP)
+- createPublicKey(raw32OrJWK_OKPOrPrivKey)
+- sign(null, data, privKey)
+- verify(null, data, pubKey, signature)
+
+KeyObject.export({ format: 'jwk' }) produces OKP JWK (kty/crv/x/d).
+
+Also: Makefile install now copies tweetnacl.js into
+share/ionpower-node/vendor/ so lazy-load resolves when the binary
+runs out of /opt/ionpower-node-0.30/.
+
+Verified: generateKeyPairSync -> sign -> verify round-trip,
+tamper detection, 32-byte seed expansion, JWK round-trip, async
+keypair generation. 7 new smoke assertions.
+
+Library count: 592+ (unchanged). Assertions 1446 -> 1453+ across
+379 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

@@ -1,0 +1,29 @@
+v0.44: fs.watch smoke robustness + library hunt wave 13
+
+Two things:
+
+1) The v0.43 fs.watch smoke was flaky on the triad (caught by the
+   retry-once loop). Root cause: Tiger HFS+ stores mtime at 1-second
+   granularity. The "initial" write and the "mutate" write often
+   landed in the same wall-clock second, so only the size delta could
+   trigger 'change' — and a single mutate bringing 7 -> 17 bytes
+   was a tight window for the 100ms interval to catch.
+
+   New shape: three progressive writes (7 -> 9 -> 13 -> 18 bytes)
+   over 600ms with a 50ms poller. Watchdog at 1200ms. Reliably
+   fires 3 'change' events.
+
+2) Library hunt wave 13 — six more vendored libraries:
+   - detect-node (loads — assertion checks it returns a boolean
+     since our process doesn't have Symbol.toStringTag = 'process')
+   - is-generator-fn
+   - is-retry-allowed
+   - json-parse-better-errors
+   - chardet (skipped — needs ./fs/node submodule)
+   - run-parallel (uses queue-microtask which we vendored in v0.41
+     — exercised end-to-end, three async tasks resolve in order)
+
+Library count: 628 -> 633+. Assertions 1591 -> 1605+ across 393
+smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

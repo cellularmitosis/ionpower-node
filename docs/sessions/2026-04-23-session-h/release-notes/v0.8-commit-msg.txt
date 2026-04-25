@@ -1,0 +1,54 @@
+v0.8: Node-interface rounding-out (os/util/url/querystring/events/path/child_process)
+
+Session H. 501 → 504 libraries, 1186 → 1205 assertions. Triad
+validated (G3/G4/G5) before tagging.
+
+Five waves of Node-API rounding-out:
+
+Wave 1 — utility modules:
+- os: full (type/release/version/endianness/userInfo/constants/etc)
+- util: parseArgs, isDeepStrictEqual, stripVTControlCharacters,
+  TextEncoder/TextDecoder on util
+- events: once() Promise + prependListener/prependOnceListener/
+  rawListeners/eventNames/off; module exports events.once,
+  getEventListeners, setMaxListeners, defaultMaxListeners
+- url: full legacy parse/format/resolve + fileURLToPath/pathToFileURL
+- querystring: custom sep/eq, array values, escape/unescape/encode/decode
+- path: relative/normalize/parse/format/posix/win32/delimiter
+
+Wave 2 — crypto + string_decoder:
+- SHA-224 via a shared SHA-256 core (different IV + truncate);
+  Hash/Hmac accept sha224; pbkdf2 over sha224; RFC 4231 vector
+  verified
+- crypto.randomInt(max) / randomInt(min,max)
+- crypto.scrypt/scryptSync stubs throw clearly
+- string_decoder: partial-multibyte UTF-8 buffering across .write()
+  calls; .end() emits U+FFFD per leftover byte
+- Buffer.toString('utf8') falls back to lossy decoder on invalid
+  UTF-8 (matches Node's replacement-char behavior)
+
+Wave 3 — zlib stub + process.stdin:
+- zlib module with createGzip/Gunzip/Deflate/Inflate/Brotli stubs;
+  all actual compress/decompress throws "not implemented"; full
+  zlib.constants so probes succeed
+- process.stdin: Readable with fd/isTTY/on/pause/resume/setEncoding;
+  first 'data' listener drains /dev/stdin via fs.readFileSync, emits
+  one chunk, then 'end'
+
+Wave 4 — child_process native:
+- New src/node_compat/child_process.cpp: execSync / spawnSync /
+  execFileSync via real fork+exec+waitpid. Pipes stdout+stderr back,
+  feeds stdin from options.input, honors cwd + encoding.
+- execSync throws with .status/.stdout/.stderr on non-zero exit.
+- spawnSync returns {pid, status, signal, stdout, stderr}.
+- Async spawn/exec/fork still throw (no event loop).
+
+Wave 5 — library additions:
+- filter-obj: object filter by predicate or allowlist
+- is-relative-url: inverse of is-absolute-url (with .default unwrap
+  shim for the ESM-vendored is-absolute-url)
+- titleize: title-case a string
+
+See docs/session-2026-04-23-h-summary.md for full hand-off.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

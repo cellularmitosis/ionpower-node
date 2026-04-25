@@ -1,0 +1,31 @@
+Add marked (markdown parser) as first third-party compatibility target
+
+marked v4.3.0 runs on ionpower-node unmodified. Zero bridge changes
+needed. Every smoke-test assertion passes on first run:
+
+  * # heading -> <h1 id="...">
+  * *italic* / **bold** / `code` / [link](url)
+  * - list items -> <ul><li>
+  * > blockquote -> <blockquote><p>
+  * triple-backtick with language tag -> <pre><code class="language-X">
+
+Benchmark on imacg52 (G5 2.0 GHz): 46 ms/pass rendering a 9.3 KB
+markdown document to 15.8 KB of HTML (~0.19 MiB/s throughput). The
+parser is regex- and state-machine-heavy, which is what IonPower is
+best at.
+
+Why this matters:
+
+  * First validation that a real third-party CommonJS library works
+    end-to-end -- not just our own test scripts.
+  * Exercises SpiderMonkey 45's regex engine (irregexp) and string
+    ops under heavy load on PPC.
+  * The UMD wrapper in marked.min.js uses a globalThis ternary that
+    would blow up in our runtime if the CJS branch weren't taken
+    first -- confirms our `require` resolves CJS cleanly.
+
+test/vendor/marked.js is vendored from unpkg (4.3.0, 49.7 KB).
+Choose marked 4.x specifically because 5+ is dual CJS+ESM and some
+later versions need newer JS syntax than SpiderMonkey 45 supports.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

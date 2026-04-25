@@ -1,0 +1,30 @@
+v0.60: process.report + process.kill
+
+process.report (Node 11+ diagnostic reports):
+- getReport(err?) returns a Node-shaped report object with header
+  (event, processId, cwd, commandLine, version, arch, platform,
+  componentVersions, release.name="ionpower-node"), javascriptStack
+  (with err.message and split stack), resourceUsage (live from
+  v0.53's getrusage binding), environmentVariables, libuv (empty),
+  workers (empty).
+- writeReport(filename?, err?) JSON-stringifies the report and
+  writes it via fs.writeFileSync. Returns the filename.
+- Configuration flags exposed (.directory / .filename / .compact /
+  .reportOnFatalError / .signal / etc.) — read-only matters here.
+
+process.kill(pid, sig?):
+- Wraps the v0.57 __child_process_native__.killPid binding.
+- Accepts string signals ('SIGTERM', 'SIGKILL', 'SIGINT', 'SIGHUP',
+  'SIGUSR1', 'SIGUSR2') or numeric.
+- kill(pid, 0) is the standard "is this pid alive" probe; throws
+  with err.code = 'ESRCH' if not.
+- Throws with err.code = 'EPERM' on permission errors.
+
+Verified: getReport against the running process; writeReport
+round-trips JSON to /tmp; kill(self, 0) success; kill(999999, 0)
+throws ESRCH.
+
+Library count: 657+ (unchanged). Assertions 1736 -> 1740+ across
+409 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

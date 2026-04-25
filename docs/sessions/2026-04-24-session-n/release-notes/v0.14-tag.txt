@@ -1,0 +1,10 @@
+v0.14: zlib compression (stored mode)
+
+Completes zlib — v0.10 did inflate, v0.14 does deflate.
+
+- deflate in RFC 1951 "stored" mode: valid frames, no compression ratio
+- gzipSync/deflateSync/deflateRawSync + async + Transforms
+- Adler-32 (zlib) + CRC-32 (gzip) trailers
+- Round-trip verified: our gzip → real gunzip(1)
+
+See docs/session-2026-04-24-n-summary.md.

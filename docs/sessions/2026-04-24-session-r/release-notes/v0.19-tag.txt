@@ -1,0 +1,6 @@
+v0.19: AES-GCM
+
+NIST GCM Test Case 3 verified. setAAD/setAuthTag/getAuthTag.
+Constant-time tag compare; tamper-detection works.
+
+See docs/session-2026-04-24-s-summary.md.

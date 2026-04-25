@@ -1,0 +1,30 @@
+v0.50: library hunt wave 17 (milestone — half-way to 1.0)
+
+Halfway-to-1.0 milestone release. Seven more vendored libraries
+under smoke coverage:
+
+- array-from-async (ESM; Promise<Array> from sync iterables)
+- convert-source-map (fromObject + toJSON shape)
+- humanize-number (1234567 -> '1,234,567')
+- hash-it (deterministic value hash; collisions on identical
+  content, distinct hashes for different content)
+- parse-srcset (HTML srcset parser; 2-entry round-trip)
+- random-int (range-bounded integer)
+- rgb2hex (rgb(255, 0, 0) -> #ff0000)
+
+Library count: 641 -> 648+. Assertions 1660 -> 1675+ across 399
+smoke files.
+
+Where we are at v0.50:
+- 28 releases this session (v0.23 -> v0.50).
+- Full symmetric crypto + Ed25519 + X25519 ECDH + nacl box/secretbox.
+- HTTP, HTTPS, WebSocket, dgram (UDP), TCP nets.
+- WHATWG Streams, fetch, EventTarget, performance, AbortSignal.
+- node:test TAP runner, vm, readline, perf_hooks, fs.watch / cp / rm.
+- Promise variants for fs / dns / timers.
+- 648+ libraries with passing smoke tests.
+
+Still missing the big-ticket items: RSA / ECDSA, TLS, async generators
+(no 'for await'), worker threads.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

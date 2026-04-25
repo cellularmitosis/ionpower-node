@@ -1,0 +1,25 @@
+v0.32: library hunt wave 6
+
+Nine more vendored libraries brought under smoke coverage. Three
+(ansi-colors, charenc, tiny-lru) are brand new; the rest were
+already sitting in test/vendor/ untested.
+
+New vendor additions:
+- ansi-colors (184-line CJS terminal-color lib — plus its
+  symbols.js companion, renamed to ansi-colors-symbols.js and
+  path-patched in the main file so our vendor resolver finds it)
+- charenc (utf8/bytes helpers used by md5-lib, etc.)
+- tiny-lru (LRU cache)
+
+Fresh smoke coverage for libs already vendored:
+- ms (ms-to-string / string-to-ms; round-trip both directions)
+- picocolors (zero-dep terminal colors)
+- clsx (class-name joiner; strings + objects + arrays)
+- escape-goat (HTML escape)
+- strnum (string-to-number coercion)
+- punycode (bucher.example <-> xn--bcher-kva.example)
+
+Library count: 592 -> 601+. Assertions 1460 -> 1478+ across 381
+smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

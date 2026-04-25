@@ -1,0 +1,21 @@
+v0.19: AES-GCM (authenticated encryption)
+
+Session S. ~130 LOC pure JS.
+
+- _gmul: GF(2^128) multiplication (bit-wise, reducing poly 0xe1..01)
+- _ghash: block accumulator
+- _aes_gcm_encrypt / _aes_gcm_decrypt: full AEAD per NIST SP 800-38D
+- _CipherGCM class: setAAD / setAuthTag / getAuthTag Node API
+- Constant-time tag compare on decrypt
+
+NIST GCM Test Case 3 (AES-128 all-zero) passes byte-exact for both
+ciphertext and auth tag. Round-trip AES-256-GCM with AAD works.
+Tag-mismatch and wrong-AAD both correctly reject.
+
+Crypto surface is now complete:
+- 6 hashes, 6 HMACs, 3 KDFs (PBKDF2/scrypt/HKDF),
+  9 AES cipher modes, 3 RNGs, timingSafeEqual, createSecretKey.
+
+See docs/session-2026-04-24-s-summary.md.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

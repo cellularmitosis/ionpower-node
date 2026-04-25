@@ -1,0 +1,25 @@
+Add acorn (JS parser) as second compatibility target
+
+acorn v8.11.3 runs on ionpower-node unmodified. Three smoke
+assertions pass:
+
+  * Simple parse: `var x = 1 + 2; function f(n) { return n * 2; }`
+    produces a Program with VariableDeclaration + FunctionDeclaration.
+  * Error path: broken source throws SyntaxError with .message and
+    .pos — confirms our try/catch round-trips real engine errors.
+  * Self-parse: acorn parses its own 231 KB source in 1707 ms on the
+    G5 (~136 KB/s). Output is a Program, no exceptions.
+
+Second third-party library working with zero bridge changes. Together
+with marked, this covers:
+
+  * Regex-heavy state machines (marked)
+  * Pratt-parser with full JS grammar support (acorn)
+  * Exception-throwing library APIs
+  * File I/O + require at the same time (self-parse reads from disk)
+
+Vendored from unpkg (acorn@8.11.3/dist/acorn.js, 226 KB). Acorn is
+well-known for staying ES5-compatible in its own source, making it a
+natural fit for SpiderMonkey 45.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

@@ -1,0 +1,40 @@
+v0.33: tweetnacl box/secretbox via require('tweetnacl')
+
+Makes the tweetnacl library a first-class, always-ready require
+target instead of a hidden v0.30 helper.
+
+The wrapped __make_require__ now short-circuits require('tweetnacl')
+to _naclLoad(), so the library comes out of the hook with its PRNG
+already wired to crypto.getRandomValues. Side effect: new callers
+get a working nacl.secretbox / nacl.box / nacl.box.keyPair without
+having to hand-wire setPRNG themselves.
+
+To avoid the wrapped require short-circuiting itself back into
+_naclLoad (infinite recursion), _naclLoad now finds tweetnacl.js by
+walking the vendor directories itself (test/vendor, vendor/, and
+share/ionpower-node/vendor under the exe dir) and calling
+__require_native__ on the resolved absolute path.
+
+New surface available to userland:
+
+  const nacl = require('tweetnacl');
+  const key   = nacl.randomBytes(32);
+  const nonce = nacl.randomBytes(24);
+  const ct    = nacl.secretbox(msg, nonce, key);
+  const pt    = nacl.secretbox.open(ct, nonce, key);  // null on tamper
+
+  const alice = nacl.box.keyPair();
+  const bob   = nacl.box.keyPair();
+  const ctBox = nacl.box(msg, nonce, bob.publicKey, alice.secretKey);
+
+Plus nacl.hash (SHA-512) and nacl.sign.detached already covered by
+v0.30.
+
+Verified: nacl.secretbox round-trip + tamper rejection, nacl.box
+round-trip + wrong-sender rejection, nacl.hash against FIPS "abc"
+prefix, nacl.sign.detached round-trip.
+
+Library count: 601+ -> 602+ (tweetnacl now as a first-class smoke).
+Assertions 1478 -> 1483+ across 382 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

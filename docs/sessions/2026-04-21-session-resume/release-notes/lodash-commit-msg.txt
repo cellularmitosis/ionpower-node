@@ -1,0 +1,30 @@
+Add lodash (utility library) as fourth compatibility target
+
+lodash v4.17.21 runs on ionpower-node unmodified. 35 assertions
+spanning the breadth of lodash's API surface:
+
+  array:      chunk, compact, flatten, flattenDeep, uniq, zip
+  collection: map, filter, reduce, groupBy, countBy, sortBy
+  string:     camelCase, kebabCase, snakeCase, startCase,
+              padStart, truncate, template
+  object:     pick, omit, merge, invert, keys
+  function:   once (2x to verify memoization)
+  math:       sum, mean, max, min
+  lang:       isArray, isString, isFunction, isPlainObject,
+              cloneDeep
+
+All 35/35 pass. `_.template` is especially meaningful: like handlebars,
+it compiles templates via `new Function(body)` at runtime. That now
+works twice in this runtime from two different libraries.
+
+Compatibility score: 4 / 4 real libraries working with zero bridge
+changes. Workloads exercised so far:
+
+  * Regex state machines (marked)
+  * Pratt-parser, AST construction (acorn)
+  * Dynamic Function compilation (handlebars, lodash)
+  * Object / array / string stdlib breadth (lodash)
+
+Vendored from unpkg (lodash@4.17.21/lodash.min.js, 71 KB).
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

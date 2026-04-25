@@ -1,0 +1,24 @@
+v0.55: library hunt wave 19
+
+Nine more vendored libraries fetched; six pass smoke directly,
+three fall into clean skips (multi-file packages we don't fully
+vendor):
+
+Pass:
+- is-empty (predicate over null/undefined/""/[]/{}, distinct from
+  truthy values)
+- mute-stream (mute/unmute methods present)
+- shallow-equal (object identity at depth 1)
+- utf8-byte-length (3 for 'abc', 2 for ©, 3 for 中)
+- deep-eql (recursive equality for nested objects + arrays)
+- stable-stringify (deterministic key order)
+
+Skip (multi-file deps not vendored):
+- empty-functions (./noop)
+- jju (./lib/parse)
+- noop3 (./factory)
+
+Library count: 651 -> 657+. Assertions 1700 -> 1715+ across 404
+smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

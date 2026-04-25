@@ -1,0 +1,11 @@
+v0.21: library hunt wave 3 (575 → 580+)
+
+More fresh crypto/hash/encoding libraries smoke-tested:
+- base32.js (encoder)
+- crc-32 (SheetJS) — CRC-32 of 'hello' verified
+- ieee754 (float read/write)
+- ulid (sortable UUID alternative)
+
+Skipped (sibling deps): json-bigint, md5-lib, sha.js, xxhashjs, otplib.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

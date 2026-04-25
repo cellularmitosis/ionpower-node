@@ -1,0 +1,20 @@
+v0.18: AES-CTR + HKDF
+
+Session R. Two crypto primitives, both RFC-verified.
+
+AES-CTR (counter mode):
+- Uses existing _aes_expandKey / _aes_encryptBlock from v0.17
+- No padding, symmetric (encrypt == decrypt)
+- 128-bit big-endian counter increment
+- NIST SP 800-38A F.5.5 AES-256-CTR vector passes byte-exact
+
+HKDF (RFC 5869):
+- Standard Extract-then-Expand
+- Works over md5/sha1/sha224/sha256/sha384/sha512
+- RFC 5869 Test Case 1 (HKDF-SHA256) passes byte-exact
+
+~60 LOC new code total. No new C++; pure JS.
+
+See docs/session-2026-04-24-r-summary.md.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

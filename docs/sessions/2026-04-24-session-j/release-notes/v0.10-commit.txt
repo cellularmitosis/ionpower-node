@@ -1,0 +1,34 @@
+v0.10: async I/O top to bottom — net + http + fs streams + zlib inflate
+
+Session J. 504 libraries (unchanged), 1213 → 1228 assertions.
+Triad-validated on G3/G4/G5.
+
+The session I event loop + ioWatch primitive pays back:
+
+- net: src/node_compat/net.cpp with non-blocking socket/bind/
+  listen/accept/connect + getsockname/peername/shutdown.
+  JS-side net.Socket (Duplex over ioWatch) + net.Server / 
+  createServer / createConnection / isIP. IPv4-only for now.
+- http: in-house HTTP/1.1 parser over net.Socket. Client
+  (ClientRequest → IncomingMessage response) + server
+  (createServer → IncomingMessage request + ServerResponse).
+  Content-Length and chunked framing. Sync getSync/postSync
+  kept for HTTPS (curl fallback).
+- fs.createReadStream / createWriteStream: whole-file-in-memory
+  variants, chunks emitted via setImmediate, pipe() works.
+  Encoding, start/end slicing, 'w'/'a' flag.
+- zlib real inflate: tiny-inflate (MIT, ES5, 375 LOC) embedded
+  as a C++11 raw string in src/node_compat/zlib.cpp.
+  inflateRawSync/inflateSync/gunzipSync + streaming Gunzip/
+  Inflate. Compression still throws.
+
+New smokes: net_smoke, http_async_smoke, fs_streams_smoke,
+zlib_inflate_smoke.
+
+Bug caught: net.Socket read callback's inner while(true) loop
+called readFd on a -1 fd after a 'data' handler called destroy().
+Fixed by checking _destroyed at loop top.
+
+See docs/session-2026-04-24-j-summary.md for design notes.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

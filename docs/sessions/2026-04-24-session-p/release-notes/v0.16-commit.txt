@@ -1,0 +1,16 @@
+v0.16: scrypt (RFC 7914) pure-JS implementation
+
+Session P. Completes the password-hashing crypto surface.
+
+~150 LOC pure JS: Salsa20/8 (8-round reduction) + BlockMix + ROMix +
+PBKDF2-SHA256 bookends. scryptSync/scrypt wired to use it.
+
+RFC 7914 test vector 1 (P="" S="" N=16 r=1 p=1 dkLen=64) passes
+byte-for-byte. Async/sync match verified.
+
+Default Node params (N=16384 r=8 p=1) work but are slow: ~30s on
+a G3. Memory: N×r×128 = 16 MB at default. Reducible via opts.
+
+See docs/session-2026-04-24-p-summary.md.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

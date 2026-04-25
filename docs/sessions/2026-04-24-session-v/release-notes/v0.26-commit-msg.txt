@@ -1,0 +1,24 @@
+v0.26: perf_hooks + global performance
+
+Adds the Node perf_hooks core module and the WHATWG-compatible
+performance global.
+
+- performance.now() returns monotonic ms since process start.
+- performance.timeOrigin is Date.now() captured at start.
+- mark / measure / clearMarks / clearMeasures / getEntries* are
+  no-op stubs with return shapes correct.
+- PerformanceObserver is constructible; observe / disconnect /
+  takeRecords are no-ops (no actual entry emission).
+- perf_hooks.constants exposes the GC reason enums.
+
+Resolution is ms only (no sub-millisecond precision) since we
+synthesize from Date.now() — SM45 doesn't expose clock_gettime
+directly. Sufficient for per-request timing and coarse
+benchmarking, which is what most consumers use.
+
+7 smoke assertions pass on pmacg5.
+
+Library count: 585+ (unchanged). Assertions 1386 to 1393+ across
+375 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

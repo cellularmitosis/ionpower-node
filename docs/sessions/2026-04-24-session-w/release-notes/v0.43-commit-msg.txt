@@ -1,0 +1,36 @@
+v0.43: poll-based fs.watch + library hunt wave 12
+
+fs.watch + watchFile / unwatchFile + FSWatcher class, all poll-based:
+
+  const w = fs.watch('/tmp/file', { interval: 100 }, (ev, name) => {
+      console.log(ev, name);          // 'change' | 'rename'
+  });
+  w.close();
+
+  fs.watchFile('/tmp/file', (cur, prev) => { ... });
+  fs.unwatchFile('/tmp/file');
+
+Node uses FSEvents / inotify; we stat() on a timer (default 5007 ms,
+overridable via `interval` option) and emit 'change' on
+mtime-or-size deltas, 'rename' when the file appears/disappears.
+
+Good enough for hot-reload loops.  Consumers of fs.watch that need
+millisecond-grain native notification still miss out — the API
+shape matches, the fidelity doesn't.
+
+Library hunt wave 12 — four more vendored libraries under smoke
+coverage:
+- lowercase-keys
+- string-natural-compare
+- to-regex-range
+- fill-range
+
+Incidental fix: original fs.watch insertion referenced `util` /
+`events` before they were defined in the bootstrap IIFE.  Moved
+the whole fs.watch block to right after `util.inherits` lands,
+so util + events are already in scope.
+
+Library count: 624 -> 628+. Assertions 1580 -> 1591+ across 392
+smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

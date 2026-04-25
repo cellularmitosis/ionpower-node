@@ -1,0 +1,49 @@
+v0.71: t.mock + cluster stub + README accuracy pass
+
+Two pieces:
+
+1. node:test mock support. Each test gets its own `t.mock` tracker
+   that auto-restores at end-of-test:
+   - t.mock.fn(impl?) -> spy with .mock.calls / .callCount() /
+                          .resetCalls() / .mockImplementation()
+   - t.mock.method(obj, name, impl?) -> replaces obj[name],
+                          auto-restored at test exit
+   - t.mock.getter / .setter for property descriptors
+   - t.mock.restoreAll / .reset
+
+2. cluster: single-process degenerate stub. Real cluster needs a
+   master + N worker processes sharing a TCP server fd; we have
+   neither. Expose the master half so libraries that branch on
+   `if (cluster.isPrimary)` take the right path:
+   - cluster.isMaster / isPrimary = true
+   - cluster.isWorker = false
+   - cluster.workers = {}
+   - cluster.fork() throws
+   - cluster.setupMaster / setupPrimary
+   - cluster.disconnect(cb) (cb fires)
+   - EventEmitter base
+
+README accuracy pass:
+- Removed stale duplicate `dns Missing` row.
+- Added rows for async_hooks (AsyncLocalStorage), diagnostics_channel,
+  EventTarget / Event / CustomEvent, BroadcastChannel — all shipped
+  in earlier releases but never documented.
+- fs row notes rmSync / cpSync / rm / cp.
+- fs.promises row notes the `fs/promises` and `node:fs/promises`
+  subpath specifiers.
+- path row notes path/posix and path/win32 aliases.
+- stream row notes stream/web, stream/promises, stream/consumers.
+- Seeded core modules row enumerates the actual seed list.
+- Status section: was "Pre-alpha, library is being built, not yet
+  linked/tested" -> now reflects 70 shipped triad-built releases.
+- Scope limits section: was "Sync only. No event loop. No http /
+  net / dns / child_process" -> now accurate list (TLS, ECDSA,
+  Brotli, Intl, native addons, top-level await, worker shared
+  memory, cluster.fork).
+- Build section: replaced single-host imacg52 commands with the
+  triad model + prebuilt tarball pointer.
+- Layout section: refreshed file listing + test description.
+
+Triad: G3 (imacg3), G4 (emac), G5 (pmacg5) all green.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

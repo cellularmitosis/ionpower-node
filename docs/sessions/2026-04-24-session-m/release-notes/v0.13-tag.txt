@@ -1,0 +1,8 @@
+v0.13: library hunt — 504 → 560+
+
+Added ~55 libraries to smoke coverage across 4 batch files, plus
+10 fresh HTTP/cookie ecosystem libs from npm (cookie, set-cookie-parser,
+cookie-signature, on-headers, delegates, ip, content-type,
+content-disposition, basic-auth, parse-ms).
+
+Assertions 1257 → 1317 on G5; G3/G4 to follow.

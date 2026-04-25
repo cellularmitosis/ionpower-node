@@ -1,0 +1,143 @@
+=== [pmacg5/g5/0.65] rsync source ===
+Transfer starting: 1918 files
+deleting test/fib-report.txt
+./
+docs/
+Makefile
+src/
+README.md
+docs/session-2026-04-25-x-summary.md
+src/node_compat/
+src/main.cpp
+src/node_compat/buffer.cpp
+test/
+src/node_compat/globals.cpp
+src/node_compat/net.cpp
+src/node_compat/process.cpp
+test/vendor/node-forge/
+test/vendor/node-forge/lib/
+test/node_forge_smoke.js
+test/rsa_smoke.js
+test/vendor/node-forge/lib/aes.js
+test/vendor/node-forge/lib/aesCipherSuites.js
+test/vendor/node-forge/lib/asn1-validator.js
+test/vendor/node-forge/lib/asn1.js
+test/vendor/node-forge/lib/baseN.js
+test/vendor/node-forge/lib/cipher.js
+test/vendor/node-forge/lib/cipherModes.js
+test/vendor/node-forge/lib/des.js
+test/vendor/node-forge/lib/ed25519.js
+test/vendor/node-forge/lib/forge.js
+test/vendor/node-forge/lib/form.js
+test/vendor/node-forge/lib/hmac.js
+test/vendor/node-forge/lib/http.js
+test/vendor/node-forge/lib/index.all.js
+test/vendor/node-forge/lib/index.js
+test/vendor/node-forge/lib/jsbn.js
+test/vendor/node-forge/lib/kem.js
+test/vendor/node-forge/lib/log.js
+test/vendor/node-forge/lib/md.all.js
+test/vendor/node-forge/lib/md.js
+test/vendor/node-forge/lib/md5.js
+test/vendor/node-forge/lib/mgf.js
+test/vendor/node-forge/lib/mgf1.js
+test/vendor/node-forge/lib/oids.js
+test/vendor/node-forge/lib/pbe.js
+test/vendor/node-forge/lib/pbkdf2.js
+test/vendor/node-forge/lib/pem.js
+test/vendor/node-forge/lib/pkcs1.js
+test/vendor/node-forge/lib/pkcs12.js
+test/vendor/node-forge/lib/pkcs7.js
+test/vendor/node-forge/lib/pkcs7asn1.js
+test/vendor/node-forge/lib/pki.js
+test/vendor/node-forge/lib/prime.js
+test/vendor/node-forge/lib/prime.worker.js
+test/vendor/node-forge/lib/prng.js
+test/vendor/node-forge/lib/pss.js
+test/vendor/node-forge/lib/random.js
+test/vendor/node-forge/lib/rc2.js
+test/vendor/node-forge/lib/rsa.js
+test/vendor/node-forge/lib/sha1.js
+test/vendor/node-forge/lib/sha256.js
+test/vendor/node-forge/lib/sha512.js
+test/vendor/node-forge/lib/socket.js
+test/vendor/node-forge/lib/ssh.js
+test/vendor/node-forge/lib/tls.js
+test/vendor/node-forge/lib/tlssocket.js
+test/vendor/node-forge/lib/util.js
+test/vendor/node-forge/lib/x509.js
+test/vendor/node-forge/lib/xhr.js
+test/vendor/node-forge/package.json
+
+sent 135229 bytes  received 13918 bytes  408509 bytes/sec
+total size is 36836727  speedup is 246.98
+=== [pmacg5/g5/0.65] scp Makefile + process.cpp + globals.cpp + main.cpp + net.cpp (gremlin workaround) ===
+=== [pmacg5/g5/0.65] clean + build  (MOZJS=/opt/mozjs-45-ionpower-g5 CPU='-mcpu=G5 -D_PPC970_') ===
+rm -f src/main.o src/node_compat/console.o src/node_compat/process.o src/node_compat/fs.o src/node_compat/path.o src/node_compat/buffer.o src/node_compat/require.o src/node_compat/timers.o src/node_compat/crypto.o src/node_compat/http.o src/node_compat/child_process.o src/node_compat/event_loop.o src/node_compat/net.o src/node_compat/zlib.o src/node_compat/globals.o node
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,575) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,575) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1206)=k(0,46) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: duplicate dylib /opt/gcc-4.9.4/lib/libstdc++.6.dylib
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src32.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src21.o) and (default) in src/node_compat/timers.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/buffer.o
+ld: warning: js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >::trace(js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >*, JSTracer*) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/http.o
+  [install_name_tool] @executable_path -> /opt/mozjs-45-ionpower-g5/lib
+=== [pmacg5/g5/0.65] test-all ===
+ok: DisposableStack LIFO + use/defer/adopt
+DisposableStack: @/Users/macuser/tmp/ionpower-node/test/dispose_smoke.js:50:52
+_DisposableStack.prototype.dispose@<ionpower-node bootstrap>:3082:15
+@/Users/macuser/tmp/ionpower-node/test/dispose_smoke.js:52:1
+
+ok: DisposableStack errors don't abort others
+ok: DisposableStack.move()
+
+dispose smoke: inline registered (1 async test pending)
+ok: AsyncDisposableStack disposeAsync LIFO
+./node test/rsa_smoke.js
+Generating RSA-1024 (this is slow on PPC)...
+RSA keygen took 4190 ms
+ok: crypto.generateKeyPairSync('rsa')
+ok: crypto.sign / verify (sha256)
+ok: tamper rejected
+ok: PEM export
+ok: DER export
+
+rsa smoke: all assertions passed (keygen 4190 ms)
+=== [pmacg5/g5/0.65] install ===
+ln -sf ionpower-node /opt/ionpower-node-0.65/bin/node
+cp test/vendor/babel.js      /opt/ionpower-node-0.65/share/ionpower-node/vendor/
+cp test/vendor/tweetnacl.js  /opt/ionpower-node-0.65/share/ionpower-node/vendor/
+cp -r test/vendor/node-forge /opt/ionpower-node-0.65/share/ionpower-node/vendor/
+cp README.md LICENSE   /opt/ionpower-node-0.65/share/ionpower-node/ 2>/dev/null || true
+
+installed ionpower-node 0.65 to /opt/ionpower-node-0.65
+  binary:   /opt/ionpower-node-0.65/bin/node (-> ionpower-node)
+  babel:    /opt/ionpower-node-0.65/share/ionpower-node/vendor/babel.js
+  mozjs:    expected at /opt/mozjs-45-ionpower-g5/
+
+Run:  /opt/ionpower-node-0.65/bin/node <script.js>
+=== [pmacg5/g5/0.65] tarball ===
+-rw-r--r--   1 macuser  wheel  4933670 Apr 25 00:56 /tmp/ionpower-node-0.65-g5-ppc.tar.gz
+=== [pmacg5/g5/0.65] DONE ===

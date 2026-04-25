@@ -1,0 +1,24 @@
+v0.53: process.cpuUsage + process.resourceUsage
+
+Both backed by getrusage(RUSAGE_SELF, &ru) on the native side
+(process.cpp).
+
+  process.cpuUsage()           // { user: us, system: us }
+  process.cpuUsage(prevUsage)  // delta from prior snapshot
+
+  process.resourceUsage()      // { userCPUTime, systemCPUTime,
+                                //   maxRSS (KB), minorPageFault,
+                                //   majorPageFault, voluntaryContextSwitches,
+                                //   involuntaryContextSwitches, ... }
+
+Field set matches Node's documented surface as far as the BSD
+struct rusage carries: ru_maxrss is converted from bytes to KB
+on Darwin to match Node.
+
+(tinybench was attempted but its bundle uses a numeric-literal
+adjacency syntax SM45 doesn't accept; falls into skip cleanly.)
+
+Library count: 651+ (unchanged). Assertions 1690 -> 1696+ across
+402 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

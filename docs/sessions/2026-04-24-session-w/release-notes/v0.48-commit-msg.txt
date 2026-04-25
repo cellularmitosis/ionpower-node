@@ -1,0 +1,33 @@
+v0.48: events.on async iterator
+
+events.on(emitter, name, options?) returns an async iterator that
+yields each event payload as Promise<{ value, done }>:
+
+  const ee = new events.EventEmitter();
+  const iter = events.on(ee, 'data');
+  ee.emit('data', 1); ee.emit('data', 2);
+  // Drive the iterator manually (no async generators / 'for await'
+  // in SM45):
+  iter.next().then(r => { /* r.value === [1] */ });
+
+Built by hand since SM45 has no async generators. The iterator
+exposes:
+- .next()                 -> Promise<{ value: args[], done }>
+- .return()               -> stops iteration, removes listeners
+- .throw(err)             -> rejects all pending waiters
+- [Symbol.asyncIterator]  -> returns self (so 'for await' works once
+                             we have async iteration)
+
+Cancellation via { signal: AbortSignal } in options:
+
+  const c = new AbortController();
+  const it = events.on(ee, 'x', { signal: c.signal });
+  c.abort();      // it.next() rejects with AbortError
+
+Error-event propagation: an 'error' event on the emitter rejects
+all pending .next() calls, matching Node behaviour.
+
+Library count: 641+ (unchanged). Assertions 1644 -> 1652+ across
+397 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

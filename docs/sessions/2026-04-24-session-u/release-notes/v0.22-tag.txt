@@ -1,0 +1,4 @@
+v0.22: JWK + AES-KW
+
+crypto.subtle gets jwk format for symmetric keys + wrapKey/unwrapKey
+via AES-KW (RFC 3394). Tamper detection works.

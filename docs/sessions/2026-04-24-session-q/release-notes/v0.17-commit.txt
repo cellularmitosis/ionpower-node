@@ -1,0 +1,16 @@
+v0.17: AES-CBC (createCipheriv / createDecipheriv)
+
+Session Q. ~260 LOC pure JS, FIPS 197.
+
+- AES 128/192/256 via S-box + key expansion + full encrypt/decrypt
+  block pipelines
+- GF(2^8) arithmetic via xtime helper; InvMixColumns Me/Mb/Md/M9
+- CBC mode with IV chaining
+- PKCS#7 padding (auto, toggleable via setAutoPadding)
+- Cipher/Decipher Node-API: .update + .final + .setAutoPadding
+
+Verified: NIST SP 800-38A F.2.5 AES-256-CBC test vector (byte-exact).
+Round-trip AES-128 and AES-256 with PKCS#7 padding. Unsupported
+modes throw cleanly.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

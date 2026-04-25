@@ -1,0 +1,92 @@
+=== [emac/g4/0.42] rsync source ===
+Transfer starting: 1796 files
+./
+src/
+Makefile
+README.md
+src/node_compat/
+src/main.cpp
+test/
+test/vendor/
+src/node_compat/buffer.cpp
+src/node_compat/globals.cpp
+src/node_compat/net.cpp
+src/node_compat/process.cpp
+test/stubs_smoke.js
+test/vendor/human-id.js
+test/vendor/minisearch.js
+test/vendor/slugify-lib.js
+test/vendor/tr46.js
+
+sent 227832 bytes  received 4120 bytes  1239722 bytes/sec
+total size is 35840410  speedup is 154.52
+=== [emac/g4/0.42] scp Makefile + process.cpp + globals.cpp + main.cpp + net.cpp (gremlin workaround) ===
+=== [emac/g4/0.42] clean + build  (MOZJS=/opt/mozjs-45-ionpower-g4 CPU='-mcpu=7450 -mtune=7450') ===
+rm -f src/main.o src/node_compat/console.o src/node_compat/process.o src/node_compat/fs.o src/node_compat/path.o src/node_compat/buffer.o src/node_compat/require.o src/node_compat/timers.o src/node_compat/crypto.o src/node_compat/http.o src/node_compat/child_process.o src/node_compat/event_loop.o src/node_compat/net.o src/node_compat/zlib.o src/node_compat/globals.o node
+                                                                          ^
+/opt/mozjs-45-ionpower-g4/include/mozjs-45/jspubtd.h:474:74: warning: (perhaps the 'offsetof' macro was used incorrectly) [-Winvalid-offsetof]
+/opt/gcc-4.9.4/bin/g++-4.9 -m32 -mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mcpu=7450 -mtune=7450 -force_cpusubtype_ALL -std=gnu++0x -fpermissive -fno-exceptions -fno-rtti -O2 -g -I src -I /opt/mozjs-45-ionpower-g4/include/mozjs-45 src/main.o src/node_compat/console.o src/node_compat/process.o src/node_compat/fs.o src/node_compat/path.o src/node_compat/buffer.o src/node_compat/require.o src/node_compat/timers.o src/node_compat/crypto.o src/node_compat/http.o src/node_compat/child_process.o src/node_compat/event_loop.o src/node_compat/net.o src/node_compat/zlib.o src/node_compat/globals.o -o node -L /opt/mozjs-45-ionpower-g4/lib -m32 -mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -force_cpusubtype_ALL -B /opt/ld64-97.17-tigerbrew/bin/ -ljs_static -lmozglue -lpthread -lm -lz -framework Carbon -framework ExceptionHandling -lobjc -Wl,-stack_size,0x10000000
+ld: warning: object file compiled with -mlong-branch which is no longer needed. To remove this warning, recompile without -mlong-branch: /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/crt1.o
+ld: warning: object file compiled with -mlong-branch which is no longer needed. To remove this warning, recompile without -mlong-branch: /opt/gcc-libs-4.9.4/bin/../lib/gcc/powerpc-apple-darwin8.11.0/4.9.4/crt3.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,547) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,547) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1554)=k(0,94) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1554) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1554) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1554) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1554) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1206)=k(0,46) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/buffer.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/timers.o
+ld: warning: js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >::trace(js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >*, JSTracer*) has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/http.o
+  [install_name_tool] @executable_path -> /opt/mozjs-45-ionpower-g4/lib
+=== [emac/g4/0.42] test-all ===
+ok: vm.createContext / runInContext
+ok: vm.compileFunction
+ok: module.isBuiltin
+ok: utf8
+skip: object-keys (require: cannot find module './isArguments' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+ok: has-own-prop
+
+vm_module smoke: inline done
+ok: queue-microtask
+./node test/stubs_smoke.js
+ok: worker_threads stubs
+ok: inspector stubs
+ok: tty
+ok: human-id (loaded)
+skip: slugify-lib (require: cannot find module './is-slug' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: minisearch
+skip: tr46 (require: cannot find module 'punycode/' from '/Users/macuser/tmp/ionpower-node/test/vendor')
+
+stubs smoke: all inline assertions passed
+=== [emac/g4/0.42] install ===
+cp node /opt/ionpower-node-0.42/bin/ionpower-node
+ln -sf ionpower-node /opt/ionpower-node-0.42/bin/node
+cp test/vendor/babel.js      /opt/ionpower-node-0.42/share/ionpower-node/vendor/
+cp test/vendor/tweetnacl.js  /opt/ionpower-node-0.42/share/ionpower-node/vendor/
+cp README.md LICENSE   /opt/ionpower-node-0.42/share/ionpower-node/ 2>/dev/null || true
+
+installed ionpower-node 0.42 to /opt/ionpower-node-0.42
+  binary:   /opt/ionpower-node-0.42/bin/node (-> ionpower-node)
+  babel:    /opt/ionpower-node-0.42/share/ionpower-node/vendor/babel.js
+  mozjs:    expected at /opt/mozjs-45-ionpower-g4/
+
+Run:  /opt/ionpower-node-0.42/bin/node <script.js>
+=== [emac/g4/0.42] tarball ===
+-rw-r--r--   1 macuser  wheel  4784634 Apr 24 18:24 /tmp/ionpower-node-0.42-g4-ppc.tar.gz
+=== [emac/g4/0.42] DONE ===

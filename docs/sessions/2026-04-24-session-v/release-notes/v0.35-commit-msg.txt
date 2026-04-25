@@ -1,0 +1,29 @@
+v0.35: assert Promise helpers + library hunt wave 7
+
+assert additions:
+- assert.rejects(thenable, expected?, message?) — resolves if the
+  thenable rejects; expected can be a RegExp (matches err.message),
+  an Error ctor (instanceof check), or a shape object (each key/value
+  checked against err).
+- assert.doesNotReject(thenable, message?) — resolves if the thenable
+  fulfills.
+- assert.match(str, regex, message?) / assert.doesNotMatch — regex
+  assertions.
+
+Library hunt wave 7: eight more vendored libraries under smoke
+coverage (libs freshly copied into test/vendor/):
+- eventemitter3 (single-file 336-line emitter)
+- mitt (1-liner minified nanopubsub)
+- tiny-emitter
+- is-number (Schlinkert's numeric coercion predicate)
+- hexoid (fast hex id generator)
+- jsesc (JS string escape)
+- js-tokens (loaded surface only — tokenizer)
+- seedrandom (deterministic Math.random) — preserved the older
+  single-file v0.19-era copy; wave 7's candidate update required
+  multi-file lib/alea which we don't vendor.
+
+Library count: 602 -> 610+. Assertions 1489 -> 1506+ across 384
+smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

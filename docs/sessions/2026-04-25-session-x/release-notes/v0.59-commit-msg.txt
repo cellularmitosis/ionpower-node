@@ -1,0 +1,27 @@
+v0.59: diagnostics_channel
+
+require('diagnostics_channel') exposes Node's instrumentation pub/sub:
+
+  const dc = require('diagnostics_channel');
+  const ch = dc.channel('myapp:request');
+  ch.subscribe((data, name) => console.log('got', name, data));
+  if (ch.hasSubscribers) ch.publish({ user: 'alice' });
+
+Surface:
+- channel(name) — get-or-create singleton Channel
+- Channel.subscribe(fn) / unsubscribe(fn)
+- Channel.publish(data) — synchronous fan-out
+- Channel.hasSubscribers (getter)
+- subscribe/unsubscribe/hasSubscribers module-level shortcuts
+- TracingChannel — start/end/asyncStart/asyncEnd/error sub-channels
+- TracingChannel.traceSync(fn, ctx, thisArg, args) — fires
+  start, then end (or error + end on throw); rethrows.
+
+Listeners that throw are caught + reported via console.error,
+so a misbehaving subscriber doesn't take down the publisher
+(matching Node behaviour).
+
+Library count: 657+ (unchanged). Assertions 1729 -> 1736+ across
+408 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

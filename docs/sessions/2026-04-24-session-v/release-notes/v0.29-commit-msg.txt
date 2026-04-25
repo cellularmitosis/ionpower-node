@@ -1,0 +1,32 @@
+v0.29: dgram (UDP) core module
+
+Real UDP sockets on top of two new native primitives — sendto and
+recvfrom — added to __net_native__. The JS dgram wrapper exposes
+Node's Socket surface over our existing event-loop ioWatch:
+
+  const sock = dgram.createSocket('udp4');
+  sock.on('message', (msg, rinfo) => { ... });
+  sock.bind(0, '127.0.0.1');
+  sock.send('ping', port, '127.0.0.1');
+
+Supports:
+- createSocket('udp4') / new dgram.Socket({ type: 'udp4' })
+- bind(port, address, cb) / bind(opts, cb)
+- send(buf, port, address, cb) and
+  send(buf, offset, length, port, address, cb) argument shapes
+- address() returning { address, family: 'IPv4', port }
+- close(cb)
+- Events: 'listening', 'message', 'error', 'close'
+- Buffer and string payloads
+- Auto-bind to ephemeral port on first send() if not yet bound
+
+Does NOT yet do: multicast, setBroadcast (stubbed), IPv6 (udp6),
+setTTL, setMulticastTTL.
+
+Verified: UDP loopback smoke sends 'ping' from client to server and
+'pong' back, exits cleanly.
+
+Library count: 592+ (unchanged). Assertions 1438 -> 1446+ across
+378 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

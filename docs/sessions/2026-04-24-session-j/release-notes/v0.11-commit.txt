@@ -1,0 +1,44 @@
+v0.11: Promise microtask queue
+
+Session K. 504 libraries (unchanged), 1228 → 1231 assertions. G3 + G4
+validated; G5 tarball to follow (see below).
+
+Microtask queue
+---------------
+- __microtask_queue__ array; drained by the event loop after every
+  fd-watcher callback, timer firing, and SIGCHLD reap.
+- _IonPromise reworked: resolve/reject routes .then callbacks through
+  _enqueueMicrotask instead of firing synchronously. .then on an
+  already-settled promise defers via microtask too.
+- The polyfill is now installed unconditionally — SM45's native Promise
+  also fires synchronously, so shadowing gives us spec-matching
+  ordering.
+- queueMicrotask(fn) and process.nextTick(fn) push to the same queue.
+- main.cpp drains microtasks after the entry script returns and again
+  around process.on('exit') flush.
+
+Ordering now matches Node:
+  Promise.resolve(1).then(v => console.log(v));
+  console.log("sync");
+  // Prints "sync" then "1" (previously "1" then "sync").
+
+Test churn
+----------
+Tests that used "promise.then(v => x=v); assert(x === expected)"
+migrated to collect-in-closure + assert-at-exit — standard Node
+idiom. Covers promise_smoke, pinkie_smoke, p_try_smoke, p_utils_smoke,
+promise_utils_smoke, p_limit_smoke, util_helpers_smoke,
+wave1_api_smoke, jszip_smoke, cores_smoke.
+
+Fleet
+-----
+- Main G5 (imacg52) SSH locked during this session; switching to
+  pmacg5 as the new G5. Bootstrap in progress (autoconf-2.13,
+  python2-2.7.18, make-4.3, tenfourfox-src, mozjs-45-ionpower-g5).
+- G5 tarball will ship as a separate asset on this release once
+  pmacg5's mozjs finishes. Needed a PosixNSPR.cpp pthread_setname_np
+  patch (Tiger-era portability) copied from the existing G3 source.
+
+See docs/session-2026-04-24-k-summary.md for design + judgment calls.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

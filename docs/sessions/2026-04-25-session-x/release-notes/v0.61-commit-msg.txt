@@ -1,0 +1,26 @@
+v0.61: Array.fromAsync (ES2024)
+
+Polyfill for Array.fromAsync — Promise<Array> from sync OR async
+iterables, with optional mapFn:
+
+  await Array.fromAsync([1, 2, 3]);                   // [1, 2, 3]
+  await Array.fromAsync([1, 2, 3], x => x * 10);      // [10, 20, 30]
+  await Array.fromAsync(eventsOnIter);                // drain async iter
+  await Array.fromAsync({ length: 3, 0: 'x', 1: 'y', 2: 'z' });
+
+Implemented with manual Promise chains (no embedded `for await` —
+that would force the bootstrap IIFE through Babel). Detects:
+1. Symbol.asyncIterator via .next() returning Promise<{value,done}>
+2. Symbol.iterator (sync, but mapFn may return Promise)
+3. Array-like (length-based fallback)
+
+mapFn is awaited per-element, so Promise-returning mapFns are
+supported as Node specifies.
+
+5 assertions: array, array+mapFn, async iter, mapFn returning
+Promise, array-like fallback.
+
+Library count: 657+ (unchanged). Assertions 1740 -> 1745+ across
+410 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

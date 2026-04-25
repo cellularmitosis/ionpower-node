@@ -1,0 +1,27 @@
+v0.70: subpath module aliases (fs/promises, stream/web, ...)
+
+Modern packages increasingly import via Node's official subpath
+specifiers -- require('stream/web'), require('fs/promises'),
+etc. -- instead of reaching into the parent module's .promises
+property. Seed __require_cache__ for them so vendored libraries
+that use this convention resolve correctly.
+
+Subpaths added:
+- fs/promises, node:fs/promises    -> fs.promises
+- path/posix, path/win32           -> path (we are POSIX-only)
+- stream/web                       -> { ReadableStream, WritableStream,
+                                        TransformStream,
+                                        ByteLengthQueuingStrategy,
+                                        CountQueuingStrategy }
+- stream/promises                  -> { pipeline, finished } (Promise form)
+- stream/consumers                 -> { buffer, arrayBuffer, text, json,
+                                        blob } that drain a ReadableStream
+                                        (WHATWG or Node) into the named type.
+
+Smoke (test/subpath_modules_smoke.js): require each subpath, verify
+it resolves to the expected shape, and exercise stream/consumers
+end-to-end (text / buffer / json / arrayBuffer over a ReadableStream).
+
+Triad: G3, G4, G5 all green.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

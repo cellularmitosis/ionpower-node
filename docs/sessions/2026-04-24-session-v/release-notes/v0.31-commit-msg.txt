@@ -1,0 +1,32 @@
+v0.31: subtle Ed25519 + X25519 (WebCrypto asymmetric)
+
+Extends SubtleCrypto with Ed25519 sign/verify/generateKey/import/
+export and X25519 generateKey/deriveBits. Backed by the same
+tweetnacl lazy-load shared with v0.30's Node-style API.
+
+subtle.generateKey({ name: 'Ed25519' }, ext, ['sign', 'verify'])
+  -> { publicKey, privateKey } CryptoKey pair.
+subtle.sign({ name: 'Ed25519' }, privKey, data)
+  -> 64-byte ArrayBuffer signature.
+subtle.verify({ name: 'Ed25519' }, pubKey, sig, data)
+  -> boolean.
+subtle.importKey('raw'|'jwk', ..., { name: 'Ed25519' }, ...)
+  -> CryptoKey; JWK OKP form supports both x (public) and d
+  (private seed); Ed25519 32-byte seed expands to 64-byte secretKey.
+subtle.exportKey('raw'|'jwk', key) for Ed25519 keys emits
+  OKP JWK (kty='OKP', crv='Ed25519', x, d) or raw bytes.
+
+subtle.generateKey({ name: 'X25519' }, ext, ['deriveBits'])
+  -> curve25519 keypair (32-byte each).
+subtle.deriveBits({ name: 'X25519', public: peerKey },
+                  privKey, bitLength)
+  -> shared secret via nacl.scalarMult.
+
+Verified: Ed25519 round-trip (generate / sign / verify),
+Ed25519 JWK export-import-reverify, X25519 ECDH (two keypairs
+derive matching shared secrets).
+
+Library count: 592+ (unchanged). Assertions 1453 -> 1460+ across
+380 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

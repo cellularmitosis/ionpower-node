@@ -1,0 +1,6 @@
+v0.15: library hunt wave 2
+
+560 → 575+ libraries. Two new batch smokes covering ~12 fresh
+libraries (auth/crypto/data + a handful of es-shims type predicates).
+
+See /tmp/v0.15-release-notes.md / session summary in docs/.

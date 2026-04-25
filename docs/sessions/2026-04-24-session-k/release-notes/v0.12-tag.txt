@@ -1,0 +1,11 @@
+v0.12: SHA-512 + fetch + dns + HTTP chunked + stdin streaming
+
+504 libraries, 1255+ assertions.
+
+- SHA-512 + SHA-384 via Uint32 hi/lo pairs; FIPS + RFC vectors pass
+- fetch + AbortController + AbortSignal + Headers + Response
+- dns module (lookup/resolve/promises)
+- HTTP chunked server responses + keep-alive pipelining
+- process.stdin streams via ioWatch(0, READABLE)
+
+See docs/session-2026-04-24-l-summary.md.

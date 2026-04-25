@@ -1,0 +1,19 @@
+v0.47: library hunt wave 16
+
+Six more vendored libraries under smoke coverage:
+
+- array-uniq (3-line dedup)
+- eol (line-ending normalizer; .lf / .crlf round-trip)
+- is-linux (returns false on darwin)
+- is-windows (returns false on darwin)
+- semver-regex (loaded; recent versions use \\u escapes our SM45
+  doesn't grok in regex literal — falls into skip cleanly)
+- entities (HTML entity codec; skipped — multi-file)
+
+(child_process.execFile turned out to already exist; deferred
+that planned work.)
+
+Library count: 637 -> 641+. Assertions 1632 -> 1644+ across 396
+smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

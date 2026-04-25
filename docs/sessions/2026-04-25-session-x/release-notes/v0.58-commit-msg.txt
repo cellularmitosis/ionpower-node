@@ -1,0 +1,57 @@
+v0.58: AsyncLocalStorage + async_hooks
+
+require('async_hooks') exposes AsyncLocalStorage with full
+context propagation across Promise.then chains, setTimeout,
+and setImmediate.
+
+  const { AsyncLocalStorage } = require('async_hooks');
+  const als = new AsyncLocalStorage();
+
+  als.run({ user: 'alice' }, async () => {
+    await Promise.resolve();
+    setTimeout(() => {
+      als.getStore();   // { user: 'alice' } — propagates across awaits + timers
+    }, 10);
+  });
+
+How it works:
+
+- _enqueueMicrotask captures every active ALS's current store at
+  enqueue time. When the queued fn fires, we push those stores back
+  on, run the fn, pop them off.
+- __timer_enqueue__ does the same for setTimeout / setInterval /
+  setImmediate.
+- _IonPromise.then (and the whole microtask queue) routes through
+  _enqueueMicrotask, so Promise chains carry context for free.
+
+API:
+- new AsyncLocalStorage()
+- als.run(store, callback, ...args)
+- als.exit(callback, ...args)
+- als.getStore() / als.enterWith() / als.disable()
+- AsyncLocalStorage.bind(fn) / AsyncLocalStorage.snapshot()
+- AsyncResource(type, opts).runInAsyncScope / .asyncId() / .bind()
+- async_hooks.createHook (no-op shape)
+- async_hooks.executionAsyncId / triggerAsyncId / executionAsyncResource
+
+Limitations:
+- Doesn't yet propagate across ioWatch (event-loop I/O) callbacks.
+  Most consumers (express, fastify, pino) hit microtask + timer
+  paths first; we'd need to wrap ioWatch enqueue similarly to
+  cover net.Socket and dgram event handlers.
+- AsyncResource's emitDestroy is a no-op (we don't track resource
+  lifecycle).
+
+7 smoke assertions pass:
+- sync run / getStore
+- propagation across Promise.then chain
+- propagation across setTimeout
+- propagation across setImmediate
+- two parallel als.run contexts isolate (no bleed)
+- exit() temporarily clears + restores
+- AsyncResource shape
+
+Library count: 657+ (unchanged). Assertions 1722 -> 1729+ across
+407 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

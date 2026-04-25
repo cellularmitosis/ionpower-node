@@ -1,0 +1,36 @@
+docs/scripts: pivot to per-session dirs + check in scripts/triad-build.sh
+
+Per-session organization, mirroring the layout in sibling projects
+(ghc-darwin8-ppc, golang-darwin8-ppc):
+
+  docs/sessions/<date>-session-<id>/
+      notes.md         (or summary.md for legacy sessions)
+      build-logs/      per-host build + smoke output
+      release-notes/   GitHub release prose copies
+
+Migrations:
+
+- All 24 loose docs/session-*-summary.md files moved into per-session
+  directories under docs/sessions/, keeping the existing letter
+  identifiers (a-x) for legacy sessions. From here on, new sessions
+  use a within-date counter (session-1, session-2, ...) matching
+  ghc-darwin8-ppc / golang-darwin8-ppc.
+- /tmp/triad-build.sh moved to scripts/triad-build.sh and gains a
+  default-host-per-arch lookup so 'scripts/triad-build.sh g3 0.NN'
+  picks ibookg37 by default. The full three-arg form still works.
+- New session dir for today's v0.66 through v0.71 work containing
+  all the build logs (G3/G4/G5 per release + the ibookg37 validation
+  log) and release-notes copies.
+- scripts/build-autoconf-213.sh, build-mozjs.sh,
+  install-mozjs-45-ionpower-g5.sh, link-smoke-test.sh: chmod +x
+  (previously 644, no functional change).
+
+CLAUDE.md gains:
+
+- "Session artifacts" section: anything that should outlive the
+  conversation goes in the repo, not /tmp. Layout + naming convention
+  written down.
+- "Triad build flow" section: canonical host -> arch table
+  (ibookg37 / emac / pmacg5) and standard release ordering.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

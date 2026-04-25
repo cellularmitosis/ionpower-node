@@ -1,0 +1,18 @@
+v0.20: crypto.subtle (WebCrypto)
+
+Session T. ~170 LOC wrapping existing Node-style primitives in
+WebCrypto Promise/ArrayBuffer shape.
+
+- globalThis.crypto.subtle with digest/sign/verify/encrypt/decrypt
+  /deriveBits/importKey/exportKey/generateKey
+- Supported algs: SHA-1/256/384/512, HMAC, AES-CBC/CTR/GCM, PBKDF2, HKDF
+- GCM tag appended to ciphertext per WebCrypto convention
+- 'raw' key format only; CryptoKey class with extractable flag
+- All ops return Promises (microtask-queued correctly)
+
+Verified: FIPS SHA-256, HMAC round-trip, AES-256-GCM round-trip,
+PBKDF2 derivation, raw import/export.
+
+See docs/session-2026-04-24-t-summary.md.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

@@ -1,0 +1,30 @@
+v0.51: node:test before/after hooks
+
+Adds the four hooks Node's test runner exposes:
+
+  test.before(fn)      // runs once before any test
+  test.after(fn)       // runs once after all tests
+  test.beforeEach(fn)  // runs before each test
+  test.afterEach(fn)   // runs after each test (even on failure)
+
+Hooks register into module-level arrays. The test-runner kicks off
+on next-tick (same as before); we wrap each queued entry in a
+beforeEach/afterEach pair so they fire around every test, then
+sandwich the whole queue between the before and after sets.
+
+afterEach fires whether the test passed or threw — same as Node.
+
+Verified: an in-child run of two tests with all four hooks
+produces the expected order:
+
+  before, beforeEach, one, afterEach, beforeEach, two, afterEach, after
+
+(Investigated vendoring node-forge / jsrsasign for RSA support;
+both bundles are 100KB+ minified and would need real wiring of the
+forge.pki.* APIs into Node-style crypto.sign/verify. Deferred to
+a later release.)
+
+Library count: 648+ (unchanged). Assertions 1675 -> 1679+ across
+400 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

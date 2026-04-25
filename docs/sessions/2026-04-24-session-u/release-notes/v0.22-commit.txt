@@ -1,0 +1,17 @@
+v0.22: JWK key format + AES-KW key wrapping
+
+Extends crypto.subtle with:
+
+- 'jwk' import/export format for symmetric keys (oct kty) with
+  alg derivation for HMAC (HS256/HS384/HS512) and AES
+  (A128CBC / A192CTR / A256GCM / etc).
+- AES-KW (RFC 3394) wrap/unwrap. Tamper detection via IV check
+  (A6A6...A6). 128/192/256-bit KEK sizes.
+- subtle.wrapKey(format, key, wrappingKey, wrapAlg)
+- subtle.unwrapKey(format, wrapped, wrappingKey, wrapAlg, keyAlg, extractable, usages)
+
+All three JWK/KW scenarios pass: JWK round-trip preserves bytes,
+AES-KW 16→24 byte wrap then unwrap recovers original, AES-KW
+rejects tampered wrapped data.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

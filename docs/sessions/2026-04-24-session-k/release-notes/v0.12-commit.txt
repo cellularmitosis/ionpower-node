@@ -1,0 +1,35 @@
+v0.12: SHA-512 + fetch + dns + HTTP chunked + process.stdin streaming
+
+Session L. Batch release of five independent features:
+
+1. SHA-512 / SHA-384 (RFC 6234) via Uint32 hi/lo pairs — 64-bit
+   arithmetic in pure JS. Helpers: _add64, _xor64, _and64, _not64,
+   _rotr64, _shr64. 80 K constants, 80-round compression, 128-byte
+   blocks. createHash/createHmac/pbkdf2 all dispatch across md5,
+   sha1, sha224, sha256, sha384, sha512. FIPS/RFC vectors verified.
+
+2. fetch + AbortController + AbortSignal + Headers + Response
+   (WHATWG-minimal). Global fetch, globalThis.fetch. Response with
+   .text/.json/.arrayBuffer/.buffer/.clone. AbortSignal.timeout(ms)
+   + .abort(reason) factories. HTTPS falls through to sync curl.
+
+3. dns module: lookup / resolve / resolve4 / resolve6 / promises via
+   gethostbyname. resolveMx/Txt/Cname/Srv/Ns return []. ENOTFOUND
+   surfaces errors.
+
+4. HTTP server chunked responses + keep-alive. ServerResponse picks
+   framing mode at flush time (length / chunked / buffered). Server
+   loop handles pipelined requests on a single socket, resets parser
+   state between requests. HTTP/1.1 defaults to keep-alive.
+
+5. process.stdin rewritten on ioWatch(0, READABLE). Chunks stream
+   as they arrive (instead of drain-on-first-listener).
+   .pause/.resume/.pipe all work properly.
+
+Library count unchanged (504). Assertions 1231 → 1255+. New smokes:
+sha512_smoke, fetch_smoke, dns_smoke, http_chunked_smoke,
+stdin_stream_smoke.
+
+See docs/session-2026-04-24-l-summary.md.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

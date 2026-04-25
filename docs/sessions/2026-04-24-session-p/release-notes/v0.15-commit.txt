@@ -1,0 +1,21 @@
+v0.15: library hunt wave 2 (560 → 575+)
+
+Session O. Another pure library-count push.
+
+Two new batch smokes:
+
+batch_wave_n_smoke — auth/crypto/data libs (16 attempted, 10 pass):
+  - accept-language-parser, base64-js, cookiejar, fast-deep-equal,
+    json-schema-traverse, random-bytes, uid-safe, uri-js, hasha,
+    nanoid.
+  - Skipped (missing siblings): crypto-random-string, is-arguments,
+    short-uuid, verror, csrf.
+
+batch_wave_n2_smoke — es-shims (6 attempted, 2 pass):
+  - functions-have-names, has-proto.
+  - Skipped (heavy sibling chain): is-date-object, is-regex,
+    object-is, es-define-property.
+
+Library count 560 → 575+. Assertions 1330 → 1345+.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

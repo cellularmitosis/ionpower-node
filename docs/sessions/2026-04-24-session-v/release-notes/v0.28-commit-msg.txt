@@ -1,0 +1,30 @@
+v0.28: ES2022+ / ES2023 small-API polyfills
+
+SpiderMonkey 45 predates most of the "library authors assume this
+exists" APIs from the last few years.  Added trivial polyfills for
+the common missing surface. All gated by typeof undefined checks so
+a future mozjs bump brings native impls through without breakage.
+
+Added:
+- Object.hasOwn
+- structuredClone (handles plain objects / arrays / Date / RegExp /
+  Map / Set / Buffer; JSON-ish deep clone for everything else)
+- AggregateError (Error subclass with .errors)
+- Promise.any (ES2021 — resolves first fulfilled, else AggregateError)
+- Array.prototype.at (negative indexing)
+- Array.prototype.findLast / findLastIndex
+- Array.prototype.toSorted / toReversed / toSpliced / with
+  (ES2023 change-by-copy)
+- String.prototype.at
+- String.prototype.replaceAll
+
+Also: restored older CJS `escape-string-regexp.js` (the Babel-
+transformed ESM export shape broke chalk's CJS require path).
+
+All 13 es_modern assertions pass on pmacg5. Full test-all exits
+clean with no regressions.
+
+Library count: 592+ (unchanged). Assertions 1410 -> 1438+ across
+377 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

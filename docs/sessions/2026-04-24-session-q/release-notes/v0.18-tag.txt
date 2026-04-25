@@ -1,0 +1,5 @@
+v0.18: AES-CTR + HKDF
+
+AES-CTR: aes-{128,192,256}-ctr via createCipheriv / createDecipheriv.
+HKDF: crypto.hkdfSync / hkdf over all hashes.
+NIST + RFC vectors verified.

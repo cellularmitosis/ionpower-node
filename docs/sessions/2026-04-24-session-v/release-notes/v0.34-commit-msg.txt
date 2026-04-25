@@ -1,0 +1,34 @@
+v0.34: readline core module
+
+Adds the Node 'readline' core on top of our existing stdin/file
+streaming. Common shape:
+
+  const readline = require('readline');
+  const rl = readline.createInterface({ input: process.stdin });
+  rl.on('line', line => console.log('>', line));
+  rl.on('close', () => console.log('done'));
+
+Supports:
+- createInterface({ input, output })
+- 'line' event (per \n, \r\n trimmed)
+- 'close' event when the underlying stream ends
+- .close() cleanly unhooks listeners
+- .question(prompt, cb) — one-shot Q&A (writes prompt to output,
+  resolves on next line)
+- .pause() / .resume() — delegate to input stream
+- .setPrompt(p) / .prompt() — writes prompt to output
+
+Cursor helpers emit ANSI CSI when the target is a TTY, no-op otherwise:
+- cursorTo(stream, x, [y])
+- moveCursor(stream, dx, dy)
+- clearLine(stream, dir)
+- clearScreenDown(stream)
+
+Verified: a piped-stdin child reads four \\n-separated lines and
+emits 'close' with the right count; TTY-dispatched cursor helpers
+emit CSI codes; non-TTY streams see no writes.
+
+Library count: 602+ (unchanged). Assertions 1483 -> 1489+ across
+383 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

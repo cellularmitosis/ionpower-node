@@ -1,0 +1,25 @@
+v0.46: timers/promises + dns/promises + library hunt wave 15
+
+require('timers/promises'):
+- setTimeout(delay, value, options) — Promise that resolves with
+  value after delay ms. Supports { signal: AbortSignal } cancel
+  via early reject + clearTimeout.
+- setImmediate(value, options) — same but next-tick.
+(setInterval skipped — needs an async iterator we can't synthesize
+without async generators.)
+
+require('dns/promises') (also dnsModule.promises):
+- lookup(host, opts) -> Promise<{ address, family }>
+- resolve4 / resolve6 -> Promise<address[]>
+- reverse stays explicitly not-implemented (curl-backed sync DNS
+  has no reverse path).
+
+Library hunt wave 15:
+- fastest-stable-stringify (deterministic key-sorted JSON; verified
+  on nested input)
+- object-inspect (skipped — needs ./util.inspect submodule)
+
+Library count: 636 -> 637+. Assertions 1620 -> 1632+ across 395
+smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

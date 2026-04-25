@@ -1,0 +1,29 @@
+v0.52: BroadcastChannel global + library hunt wave 18
+
+BroadcastChannel: in-process publish/subscribe. Real Node delivers
+across worker threads + processes; we have neither, so every channel
+with the same name in the SAME process sees each other's posts.
+
+  const a = new BroadcastChannel('chan');
+  const b = new BroadcastChannel('chan');
+  b.onmessage = (ev) => console.log(ev.data);
+  a.postMessage('hello');           // b receives 'hello' on next microtask
+
+Spec-compliant where it matters:
+- Sender does NOT receive its own posts.
+- Posts are dispatched on a microtask (not synchronous).
+- close() removes the channel from the registry; further posts
+  don't reach it.
+
+Built on top of v0.49's EventTarget.
+
+Library hunt wave 18 — three more vendored libraries:
+- parse-bool (handles 'true'/'false'/'null'; falls through to
+  Boolean() for everything else)
+- fast-stringify (handles circular references without throwing)
+- tinyspy (test spy library; spyOn + callCount round-trip)
+
+Library count: 648 -> 651+. Assertions 1679 -> 1690+ across 401
+smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
