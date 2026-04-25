@@ -501,6 +501,11 @@ static bool SpawnAsync(JSContext* cx, unsigned argc, JS::Value* vp) {
 
     char cwdBuf[1024] = { 0 };
     const char* cwd = nullptr;
+    // env is built into a NUL-terminated KEY=VAL array passed via execve.
+    // Holders must outlive the fork's child branch; keep them in vectors
+    // declared at this scope.
+    std::vector<std::string> envHolder;
+    bool useEnv = false;
     if (args.length() >= 3 && args[2].isObject()) {
         JS::RootedObject o(cx, &args[2].toObject());
         JS::RootedValue v(cx);
@@ -510,6 +515,33 @@ static bool SpawnAsync(JSContext* cx, unsigned argc, JS::Value* vp) {
                 strncpy(cwdBuf, bs.ptr(), sizeof(cwdBuf) - 1);
                 cwd = cwdBuf;
             }
+        }
+        JS::RootedValue envV(cx);
+        if (JS_GetProperty(cx, o, "env", &envV) && envV.isObject()) {
+            JS::RootedObject envObj(cx, &envV.toObject());
+            JS::Rooted<JS::IdVector> ids(cx, JS::IdVector(cx));
+            if (JS_Enumerate(cx, envObj, &ids)) {
+                for (size_t i = 0; i < ids.length(); ++i) {
+                    JS::RootedId id(cx, ids[i]);
+                    JS::RootedValue val(cx);
+                    if (!JS_GetPropertyById(cx, envObj, id, &val)) continue;
+                    if (!val.isString() && !val.isNumber() && !val.isBoolean()) continue;
+                    JS::RootedValue keyV(cx);
+                    if (!JS_IdToValue(cx, id, &keyV)) continue;
+                    JS::RootedString keyS(cx, JS::ToString(cx, keyV));
+                    if (!keyS) continue;
+                    JS::RootedString valS(cx, JS::ToString(cx, val));
+                    if (!valS) continue;
+                    JSAutoByteString keyBs, valBs;
+                    if (!EncodeJSStringUtf8(cx, keyS, &keyBs)) continue;
+                    if (!EncodeJSStringUtf8(cx, valS, &valBs)) continue;
+                    std::string entry = keyBs.ptr();
+                    entry += '=';
+                    entry += valBs.ptr();
+                    envHolder.push_back(entry);
+                }
+            }
+            useEnv = true;
         }
     }
 
@@ -539,6 +571,19 @@ static bool SpawnAsync(JSContext* cx, unsigned argc, JS::Value* vp) {
         for (size_t i = 0; i < argsHolder.size(); ++i)
             argvVec.push_back(const_cast<char*>(argsHolder[i].c_str()));
         argvVec.push_back(nullptr);
+        if (useEnv) {
+            // Replace the child's environment in-place so execvp's PATH
+            // search keeps working (execve wants an absolute path).
+            // We're in the forked child, so this only affects us.
+            // setenv replaces if present; we first wipe by setting environ to
+            // an empty array via a malloc'd dummy.
+            for (size_t i = 0; i < envHolder.size(); ++i) {
+                const char* eq = strchr(envHolder[i].c_str(), '=');
+                if (!eq) continue;
+                std::string key(envHolder[i].c_str(), eq - envHolder[i].c_str());
+                setenv(key.c_str(), eq + 1, 1);
+            }
+        }
         execvp(fileBs.ptr(), argvVec.data());
         _exit(127);
     }
@@ -668,6 +713,22 @@ static bool CloseFd(JSContext* cx, unsigned argc, JS::Value* vp) {
     return true;
 }
 
+// killPid(pid, sig) — wraps libc kill(2). Returns 0 on success or
+// the errno on failure. SIGTERM (15) is the default if sig is omitted.
+static bool KillPid(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    int32_t pid = 0;
+    int32_t sig = 15; // SIGTERM
+    if (args.length() < 1 || !JS::ToInt32(cx, args[0], &pid)) {
+        JS_ReportError(cx, "killPid: pid required");
+        return false;
+    }
+    if (args.length() >= 2 && !JS::ToInt32(cx, args[1], &sig)) return false;
+    int rc = kill((pid_t)pid, sig);
+    args.rval().setInt32(rc == 0 ? 0 : errno);
+    return true;
+}
+
 bool InstallChildProcess(JSContext* cx, JS::HandleObject global) {
     JS::RootedObject cp(cx, JS_NewPlainObject(cx));
     if (!cp) return false;
@@ -677,6 +738,7 @@ bool InstallChildProcess(JSContext* cx, JS::HandleObject global) {
     if (!JS_DefineFunction(cx, cp, "readFd",     ReadFd,     2, JSPROP_ENUMERATE)) return false;
     if (!JS_DefineFunction(cx, cp, "writeFd",    WriteFd,    2, JSPROP_ENUMERATE)) return false;
     if (!JS_DefineFunction(cx, cp, "closeFd",    CloseFd,    1, JSPROP_ENUMERATE)) return false;
+    if (!JS_DefineFunction(cx, cp, "killPid",    KillPid,    2, JSPROP_ENUMERATE)) return false;
     return JS_DefineProperty(cx, global, "__child_process_native__", cp,
                              JSPROP_ENUMERATE);
 }

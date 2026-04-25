@@ -14,11 +14,10 @@ var wt = require("worker_threads");
 assert(wt.isMainThread === true, "isMainThread true");
 assert(wt.threadId === 0, "threadId 0");
 assert(wt.parentPort === null, "parentPort null on main thread");
-assert(typeof wt.Worker === "function", "Worker ctor present (throws on use)");
-var threw = false;
-try { new wt.Worker("dummy"); } catch (e) { threw = true; }
-assert(threw, "Worker construction throws not-supported");
-console.log("ok: worker_threads stubs");
+assert(typeof wt.Worker === "function", "Worker ctor present");
+// As of v0.57 Worker is real (process-backed). Round-trip is tested
+// in test/worker_threads_smoke.js. Here we just verify shape.
+console.log("ok: worker_threads shape (Worker is real as of v0.57)");
 
 // ---- inspector ----
 var inspector = require("inspector");
