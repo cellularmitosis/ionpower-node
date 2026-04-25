@@ -2,7 +2,7 @@
 // install.js — fetch + decompress + extract + require an npm package
 // from registry.npmjs.org, end-to-end on PowerPC Tiger.
 //
-//   ./node examples/npm-fetch/install.js <package> [version]
+//   ./node demos/npm-fetch/install.js <package> [version]
 //
 // Demonstrates that the v0.66-v0.71 stack — fetch / zlib gunzip /
 // fs.writeFile / require() — is enough to consume the modern Node

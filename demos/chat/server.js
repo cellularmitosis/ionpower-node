@@ -4,7 +4,7 @@
 // gets a nickname; messages are broadcast to everyone.
 //
 // Run:
-//     ./node examples/chat/server.js [port]
+//     ./node demos/chat/server.js [port]
 //
 // Then point any modern browser at http://<host>:<port>/
 

@@ -4,12 +4,12 @@ A minimal real-time chat server, designed to be the "yes, that's
 running on a 1999 PowerBook G3" demo.
 
 ```
-$ ssh ibookg37 './node examples/chat/server.js'
+$ ssh ibookg37 './node demos/chat/server.js'
 === ionpower-node chat ===
-  runtime: ionpower-node-0.71
+  runtime: ionpower-node-0.73
   arch:    ppc (darwin)
-  cpu:     750
-  host:    ibookg37
+  cpu:     PowerPC G3 (750)
+  host:    ibookg37.home
 
   http://0.0.0.0:8080/
   ws://0.0.0.0:8081/  (the chat firehose)

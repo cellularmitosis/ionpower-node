@@ -4,15 +4,15 @@ End-to-end download + decompress + extract + require of an npm
 package, hitting `registry.npmjs.org` from a PowerPC iBook G3.
 
 ```
-$ ssh ibookg37 './node examples/npm-fetch/install.js mri'
+$ ssh ibookg37 './node demos/npm-fetch/install.js mri'
 [1] resolving mri@latest from registry.npmjs.org
-    metadata fetched in 412 ms
+    metadata fetched in 796 ms
     -> mri@1.2.0
        https://registry.npmjs.org/mri/-/mri-1.2.0.tgz
 [2] downloading tarball
-    7193 bytes (.tgz) in 188 ms
+    4448 bytes (.tgz) in 188 ms
 [3] gunzipping via zlib.gunzipSync (tiny-inflate)
-    18432 bytes (.tar) in 31 ms  [2.56x expansion]
+    18432 bytes (.tar) in 31 ms  [4.14x expansion]
 [4] parsing POSIX ustar archive
     7 entries (5 files) in 4 ms
 [5] writing to /Users/macuser/tmp/ionpower-node/node_modules/mri
@@ -22,7 +22,7 @@ $ ssh ibookg37 './node examples/npm-fetch/install.js mri'
     mri parsed: {"_":["extra1","extra2"],"port":"8080","verbose":true}
     OK: mri parsed --port 8080 --verbose into a real options object
 
-=== mri@1.2.0 installed end-to-end in 738 ms ===
+=== mri@1.2.0 installed end-to-end in ~1100 ms ===
 ```
 
 ## What this proves
@@ -45,9 +45,9 @@ involved:
 ## Try other packages
 
 ```
-./node examples/npm-fetch/install.js is-number
-./node examples/npm-fetch/install.js cuid
-./node examples/npm-fetch/install.js <anything-with-no-deps-or-already-vendored>
+./node demos/npm-fetch/install.js is-number
+./node demos/npm-fetch/install.js cuid
+./node demos/npm-fetch/install.js <anything-with-no-deps-or-already-vendored>
 ```
 
 If the package has dependencies that aren't already vendored, the

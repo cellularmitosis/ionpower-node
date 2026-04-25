@@ -130,6 +130,23 @@ ssh <host> 'cd ~/tmp/ionpower-node && make test-all'   # full smoke suite
 The [`scripts/triad-build.sh`](scripts/triad-build.sh) helper automates
 the above against one of {ibookg37, emac, pmacg5} per release tag.
 
+## Demos
+
+The [`demos/`](demos/) directory has runnable showcase pieces. Each
+exercises a slice of the runtime's surface end-to-end.
+
+| Demo | What it shows |
+|---|---|
+| [`demos/chat/`](demos/chat/) | Multi-client WebSocket chat. HTTP + RFC 6455 server + EventEmitter broadcast over the select() event loop, served from a 1999 iBook G3 to as many modern browsers as you point at it. |
+| [`demos/npm-fetch/`](demos/npm-fetch/) | `npm install` from `registry.npmjs.org`, end-to-end on a G3: `fetch` over the curl shim → `zlib.gunzipSync` → POSIX ustar parse → `fs.writeFileSync` → `require()`. ~1 s for a small no-deps package like `mri`. |
+| [`demos/blog/`](demos/blog/) | Static-site generator. Reads markdown posts under `input/`, renders via Handlebars with templates `index.hbs` / `post.hbs`, writes a styled blog tree to `output/`. |
+| [`demos/feed-report/`](demos/feed-report/) | Parses a sample RSS feed (XML), summarises items, prints a digest. |
+| [`demos/http-fetch/`](demos/http-fetch/) | `fetch` + render JSON to a console table. |
+| [`demos/json2yaml/`](demos/json2yaml/) | Tiny CLI; emits YAML for any JSON on stdin. |
+| [`demos/log-scan/`](demos/log-scan/) | Scans a log file for errors with regex + colorized output. |
+| [`demos/ssg/`](demos/ssg/) | A second take on the SSG idea (different template engine). |
+| [`demos/url-dashboard/`](demos/url-dashboard/) | Polls a list of URLs, prints latency + status as a TTY dashboard. |
+
 ## Scope limits
 
 We're not re-implementing all of Node. Things that are *not* on
