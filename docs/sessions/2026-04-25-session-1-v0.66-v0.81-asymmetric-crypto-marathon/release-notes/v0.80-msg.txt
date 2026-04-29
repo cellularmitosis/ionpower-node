@@ -1,0 +1,48 @@
+v0.80: real process.stdin.setRawMode + TIOCGWINSZ terminal sizing
+
+`process.stdin.setRawMode(bool)` was a no-op stub that just flipped
+an `isRaw` flag. CLI prompt libraries (inquirer, prompts, blessed)
+silently broke because they couldn't actually put the terminal in
+raw mode -- their per-keystroke read loops kept seeing the line-
+buffered ICANON-mode TTY.
+
+Native bindings:
+
+- process._setRawMode(fd, raw) -- termios.h tcgetattr/tcsetattr.
+  Saves the original termios on first raw call so a subsequent
+  setRawMode(false) restores it byte-for-byte. Mirrors Node's flag
+  set: clears ICANON / ECHO / ISIG / IEXTEN, OPOST output processing,
+  and the NL/CR translation set; sets CS8 + VMIN=1/VTIME=0 for
+  per-keystroke reads. No-op (returns false) when fd isn't a TTY,
+  matching Node's behaviour for piped stdin.
+
+- process._tty_size(fd) -- sys/ioctl.h ioctl(fd, TIOCGWINSZ).
+  Returns { columns, rows } for a TTY fd, null otherwise. Used at
+  process.stdout / process.stderr install time so the columns/rows
+  fields reflect the actual terminal size instead of a hardcoded
+  80x24.
+
+JS-side:
+
+- process.stdin.setRawMode(raw) now calls process._setRawMode(0, !!raw)
+  and then sets `this.isRaw = !!raw`. The native side handles the
+  non-TTY case silently.
+- process.stdin.isRaw exposed as a normal field (was missing).
+
+README's `tty` row goes from "Stub" to "Working". CLI prompt tools
+that gate behaviour on real raw-mode now work end-to-end.
+
+Smoke (test/raw_mode_smoke.js):
+- Native bindings exposed and callable.
+- _setRawMode on non-TTY stdin no-ops cleanly.
+- _tty_size returns null on non-TTY.
+- process.stdin.setRawMode flag toggling.
+- columns/rows on stdout when running interactively.
+
+(The smoke can't actually exercise raw-mode reads because the test
+runner pipes stdin, but the surface is verified end-to-end.)
+
+Triad: ibookg37 (G3 900 MHz), emac (G4 7450), pmacg5 (G5 970) all
+green. 1980+ assertions across 431 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

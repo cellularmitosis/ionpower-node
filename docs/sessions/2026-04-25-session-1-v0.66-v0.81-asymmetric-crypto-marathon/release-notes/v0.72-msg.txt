@@ -1,0 +1,48 @@
+v0.72: real sysctl-backed os.cpus / hostname / loadavg / freemem / totalmem
+
+Up to v0.71, the `os` module returned placeholder values for
+host-specific properties: `os.cpus()` always claimed "PowerPC G4"
+at 1000 MHz regardless of the actual hardware, `os.totalmem()`
+returned a hardcoded 1 GB, etc. Cosmetic for most code paths but
+gives the wrong answer in any banner / log line / system report.
+
+This release wires each property to a real probe at first call:
+
+  os.cpus():
+    spawnSync /usr/sbin/sysctl -n hw.cpusubtype hw.cpufrequency hw.ncpu
+    Map Mach-O CPU subtype to a friendly model:
+      9   -> 'PowerPC G3 (750)'
+      10  -> 'PowerPC G4 (7400)'
+      11  -> 'PowerPC G4 (7450)'
+      100 -> 'PowerPC G5 (970)'
+    Speed is hw.cpufrequency / 1e6, rounded to nearest MHz.
+    One entry per ncpu.
+
+  os.hostname():
+    Prefer process.env.HOSTNAME, else spawn /bin/hostname,
+    else fall back to 'localhost'.
+
+  os.loadavg():
+    Parse `/usr/bin/uptime` for "load averages: A, B, C" -> [A, B, C].
+
+  os.totalmem():
+    sysctl -n hw.memsize.
+
+  os.freemem():
+    /usr/bin/vm_stat ; (Pages free + Pages speculative) * page size.
+
+cpus / hostname / totalmem cache the first-call result; loadavg /
+freemem are queried on every call (they change).
+
+On ibookg37 (the new canonical G3 build host), the smoke now reports:
+
+  os.cpus()    = [{model: 'PowerPC G3 (750)', speed: 900, times: ...}]
+  os.hostname() = 'ibookg37.home'
+  os.loadavg() = [1.02, 0.82, 0.7]
+  os.totalmem() = 671088640 bytes (640 MB)
+  os.freemem()  = 102739968 bytes (98 MB)
+
+Triad: ibookg37 (G3 — first run as canonical G3 host), emac (G4),
+pmacg5 (G5) all green.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

@@ -1,0 +1,45 @@
+v0.75: ECDSA via vendored elliptic — closes the asymmetric crypto gap
+
+Up to v0.74 we had RSA (forge) + Ed25519 (tweetnacl) + X25519 ECDH
+(tweetnacl), but no NIST-curve ECDSA. JWT ES256/ES384, OAuth flows
+that ship ES256, modern X.509 certs (which increasingly use ECDSA
+over RSA) all needed it. v0.75 vendors `elliptic` (the standard JS
+ECC implementation, used by jws/jwa/jsonwebtoken under the hood)
+plus its 6 deps and wires it into our crypto API.
+
+Curves: P-256, P-384, P-521, secp256k1 (Bitcoin curve).
+Hash algorithms: sha1, sha256, sha384, sha512.
+
+  crypto.generateKeyPairSync('ec', { namedCurve: 'P-256' })
+    -> { publicKey, privateKey }   # KeyObjects, asymmetricKeyType='ec'
+  crypto.sign('sha256', data, privateKey)   -> DER-encoded Buffer
+  crypto.verify('sha256', data, publicKey, sig) -> bool
+
+KeyObject carries asymmetricKeyDetails.namedCurve so libraries can
+introspect the curve.
+
+Performance on ibookg37 (G3 900 MHz): keygen ~100 ms, sign ~3 s,
+verify ~13 s. Slow because bn.js's bignum arithmetic is not tuned
+for 32-bit PowerPC, but functionally correct.
+
+Vendor layout:
+
+  test/vendor/elliptic/
+    package.json
+    lib/elliptic.js + lib/elliptic/{ec,curve,curves,utils,...}
+    node_modules/{bn.js,brorand,hash.js,hmac-drbg,
+                  minimalistic-assert,minimalistic-crypto-utils}/
+
+452 KB total in test/vendor/. Also installed under
+share/ionpower-node/vendor/elliptic/ via the Makefile install rule.
+
+Smoke (test/ecdsa_smoke.js): P-256 keygen + sign + verify + tamper
++ wrong-key + cross-key check + secp256k1 round-trip.
+
+README crypto entry now reads "Still missing: NIST ECDH" (down from
+"ECDSA / NIST ECDH"). Scope-limits prose updated accordingly.
+
+Triad: ibookg37 (G3 900 MHz), emac (G4 7450), pmacg5 (G5 970) all
+green. 1945+ assertions across 426 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

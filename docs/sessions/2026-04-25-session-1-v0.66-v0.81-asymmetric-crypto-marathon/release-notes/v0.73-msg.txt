@@ -1,0 +1,45 @@
+v0.73: fetch() binary bodies + bundle mozjs tarballs as release artifacts
+
+Two pieces:
+
+1. Binary-body fix in the curl-shim HTTPS path. The HttpGetSync C++
+   function tried to UTF-8 decode every response body to populate
+   r.body, which threw a JS exception for any binary content (gzip
+   tarballs, images, tar archives, ...). The exception poisoned
+   the JSContext, so subsequent JS_DefineProperty calls failed and
+   r.bodyBytes never got set -- making fetch().arrayBuffer() return
+   0 bytes for any binary URL.
+
+   Fix: when UTF8CharsToNewTwoByteCharsZ fails, clear the pending
+   exception and set r.body = '' (so consumers reading .body get
+   a sane empty string). The bodyBytes Uint8Array path then works
+   normally and fetch().arrayBuffer() returns the real bytes.
+
+   Validated against the live npm registry from ibookg37:
+       fetch('https://registry.npmjs.org/mri/-/mri-1.2.0.tgz')
+           -> 4448 bytes; gzip header intact; gunzipSync round-trip;
+              first tar entry = 'package/package.json'.
+
+   This unblocks the examples/npm-fetch demo from v0.72-era state.
+
+2. README "Setup on a Tiger PPC host" section explaining the
+   /opt/ layout: a matching /opt/mozjs-45-ionpower-{g3,g4,g5}/
+   needs to be installed beside /opt/ionpower-node-<version>/
+   for the runtime to start.
+
+Once-per-arch SpiderMonkey + IonPower JIT tarballs are now part of
+this release's GitHub artifacts:
+
+    mozjs-45-ionpower-g3.tar.gz   90 MB
+    mozjs-45-ionpower-g4.tar.gz   66 MB
+    mozjs-45-ionpower-g5.tar.gz   66 MB
+
+Future runtime releases just link back to the v0.73 mozjs URLs --
+the SpiderMonkey build is identical across runtime releases, so
+users only need to download a fresh runtime tarball per ionpower-node
+release.
+
+Triad: ibookg37 (G3 900 MHz), emac (G4 7450), pmacg5 (G5 970) all
+green. fetch_binary_smoke passes on G3 against the real registry.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

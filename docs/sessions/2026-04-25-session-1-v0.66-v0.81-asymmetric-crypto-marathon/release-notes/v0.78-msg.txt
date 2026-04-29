@@ -1,0 +1,52 @@
+v0.78: import.meta + dynamic import() via pre-Babel regex rewrites
+
+Closes the last two "Missing" CommonJS items from v0.71's README.
+Both are implemented as regex substitutions in the Babel-on-parse-
+failure preprocessor (`_preprocessImports`), so they cost nothing
+on parses that already succeed.
+
+  import.meta.url       -> ("file://" + __filename)
+  import.meta.filename  -> __filename
+  import.meta.dirname   -> __dirname
+  import.meta            -> { url, filename, dirname }   (object literal)
+  import(spec)           -> __dynamic_import__(spec, require)
+
+`__dynamic_import__` is a new global:
+
+    function __dynamic_import__(spec, req) {
+      return new Promise(function (resolve, reject) {
+        try {
+          var mod = (typeof req === 'function' ? req : require)(spec);
+          resolve(mod && typeof mod === 'object' && 'default' in mod
+                    ? mod : { default: mod });
+        } catch (e) { reject(e); }
+      });
+    }
+
+The local `require` is passed in as a second arg by the regex
+rewrite, so relative specifiers (`import('./foo')`) resolve against
+the importing module's directory. The wrapper-of-`{ default: x }`
+shape matches what real ESM dynamic-import returns, so consumer
+code that does `(await import('./mod')).default` works against
+both ESM-native and our CJS-backed implementations.
+
+The detection runs only when Babel is being invoked anyway (i.e.,
+on parser rejection), and string-literal / comment stripping is
+done before the need-check so that `'import(' inside a string`
+doesn't trigger a pointless rewrite. The substitution itself uses
+\\b token boundaries which are robust enough in practice.
+
+Smoke (test/import_meta_smoke.js) covers, via spawned children:
+- import.meta.url / .filename / .dirname
+- dynamic import('fs') (built-in)
+- dynamic import('/abs/path') (absolute)
+- await import('fs') (combines v0.77 TLA + v0.78 dynamic import)
+
+Limitations: import() with a specifier expression containing nested
+parens or commas isn't matched by the regex. Static `import x from
+'./y'` continues to be lowered by Babel as ESM->CJS.
+
+Triad: ibookg37 (G3 900 MHz), emac (G4 7450), pmacg5 (G5 970) all
+green. 1962+ assertions across 429 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

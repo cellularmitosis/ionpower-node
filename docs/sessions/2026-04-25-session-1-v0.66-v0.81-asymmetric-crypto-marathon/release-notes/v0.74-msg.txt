@@ -1,0 +1,42 @@
+v0.74: Buffer.from(ArrayBuffer) + Buffer.from(TypedArray) -- preserve bytes
+
+Up to v0.73 the Buffer.from() native fell through to the array-like
+branch for any non-string object input. That branch reads .length
+off the input -- which works for plain arrays + Uint8Array but is
+*undefined* for ArrayBuffer (which has .byteLength instead). Buffer
+.from(ab) silently produced a 0-length Buffer, breaking:
+
+  fetch(url).then(r => r.arrayBuffer()).then(ab => Buffer.from(ab))
+
+(the demos/npm-fetch path, plus anyone reading binary network data
+through the WHATWG Response API).
+
+Patch in src/node_compat/buffer.cpp BufferFrom:
+
+- If input is JS_IsArrayBufferObject: read JS_GetArrayBufferByteLength,
+  copy via JS_GetArrayBufferData -> JS_GetUint8ArrayData. Node's
+  Buffer.from(ArrayBuffer) shares memory; we copy because SM45's
+  JS_NewUint8ArrayWithBuffer wants a length parameter we'd have to
+  read separately, and a copy is safe at the sizes Buffer is used at.
+
+- If input is JS_IsTypedArrayObject (incl. our existing Uint8Array
+  Buffers): read JS_GetTypedArrayByteLength, copy via
+  JS_GetArrayBufferViewData -> JS_GetUint8ArrayData. Honors a sliced
+  view's byteOffset / byteLength.
+
+- Plain array-like fallback unchanged.
+
+Validated end-to-end: demos/npm-fetch/install.js now downloads
+mri@1.2.0 from registry.npmjs.org, gunzips, untars, writes to
+node_modules/mri, requires it, and parses --port 8080 --verbose
+into a real options object -- 754 ms total on ibookg37 (iBook G3
+900 MHz).
+
+Smoke (test/buffer_from_ab_smoke.js): Buffer.from on ArrayBuffer,
+empty ArrayBuffer, Uint8Array, Buffer (typed-array case), sliced
+typed-array view, simulated fetch().arrayBuffer() round-trip.
+
+Triad: ibookg37, emac, pmacg5 all green. 1932+ assertions across
+425 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

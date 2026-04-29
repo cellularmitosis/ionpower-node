@@ -1,0 +1,43 @@
+v0.76: NIST ECDH key agreement -- closes the asymmetric crypto roster
+
+Builds directly on v0.75's elliptic vendor: now `crypto.diffieHellman
+({ privateKey, publicKey })` for two EC KeyObjects derives a shared
+secret. Curves: P-256, P-384, P-521, secp256k1.
+
+  var alice = crypto.generateKeyPairSync('ec', { namedCurve: 'P-256' });
+  var bob   = crypto.generateKeyPairSync('ec', { namedCurve: 'P-256' });
+  var sharedAlice = crypto.diffieHellman({
+      privateKey: alice.privateKey,
+      publicKey:  bob.publicKey
+  });
+  var sharedBob   = crypto.diffieHellman({
+      privateKey: bob.privateKey,
+      publicKey:  alice.publicKey
+  });
+  // sharedAlice.equals(sharedBob)  -> true
+
+Returns the X coordinate of the derived point as a Buffer, left-
+padded to the curve's byte length: P-256 -> 32 bytes, P-384 -> 48,
+P-521 -> 66, secp256k1 -> 32. Matches Node's behaviour.
+
+Curve mismatch (e.g. P-256 priv with P-384 pub) raises early with a
+clear message. Non-EC keys (RSA, Ed25519) get a TypeError.
+
+The asymmetric crypto roster on the runtime is now feature-complete
+on the curves we support:
+
+  RSA      sign / verify / encrypt / decrypt        (forge)
+  Ed25519  sign / verify / generate / import        (tweetnacl)
+  X25519   ECDH key agreement                       (tweetnacl)
+  ECDSA    sign / verify on P-256/384/521/secp256k1 (elliptic)
+  ECDH     key agreement on P-256/384/521/secp256k1 (elliptic)
+
+Smoke (test/ecdh_smoke.js): P-256 round-trip + cross-party non-equality
++ secp256k1 round-trip + curve mismatch rejected + non-key inputs
+rejected. README scope-limits prose updated to reflect the new
+feature-complete state on supported curves.
+
+Triad: ibookg37 (G3 900 MHz), emac (G4 7450), pmacg5 (G5 970) all
+green. 1955+ assertions across 427 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

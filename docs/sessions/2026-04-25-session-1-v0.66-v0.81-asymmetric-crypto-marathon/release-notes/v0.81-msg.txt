@@ -1,0 +1,52 @@
+v0.81: subtle EC JWK import/export -- closes the WebCrypto JWK story
+
+After v0.79 wired ECDSA + ECDH into crypto.subtle, the missing piece
+was JWK serialisation: real-world JWS / JWT / JOSE libraries hand
+keys around in `{ kty: 'EC', crv: 'P-256', x, y, d? }` form, and our
+subtle.importKey / exportKey only knew about OKP (Ed25519 / X25519)
+and `oct` (HMAC, AES). v0.81 fills the gap.
+
+  // Export
+  var jwk = await crypto.subtle.exportKey('jwk', privateKey);
+  // -> { kty: 'EC', crv: 'P-256', x: '...', y: '...', d: '...',
+  //      ext: true, key_ops: [...] }
+
+  // Import
+  var key = await crypto.subtle.importKey('jwk', jwk,
+      { name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign']);
+
+  // Round-trip works -- signatures from re-imported priv verify
+  // against the original pub (and vice versa).
+
+  // Raw uncompressed point (public only):
+  var raw = await crypto.subtle.exportKey('raw', publicKey);
+  // -> ArrayBuffer(65): 0x04 || X(32) || Y(32)
+
+  // Raw uncompressed -> CryptoKey:
+  var pub = await crypto.subtle.importKey('raw', raw,
+      { name: 'ECDSA', namedCurve: 'P-256' }, true, ['verify']);
+
+Internals:
+
+- importKey('jwk', ...) on { name: 'ECDSA' | 'ECDH', namedCurve: ... }
+  builds an elliptic.ec keypair from d (private) or { x, y } (public),
+  wraps it in our Node-shape KeyObject, and stashes that on the
+  _CryptoKey._keyObject so the existing _ecdsaSign / _ecdsaVerify /
+  _ecdhDerive helpers Just Work via the v0.79 plumbing.
+- exportKey('jwk', ...) reads the elliptic key's getPrivate('hex') /
+  getPublic().getX/Y(), pads each to the curve byte length, and
+  base64url-encodes into the standard JWK shape.
+- exportKey('raw', publicKey) emits the uncompressed point form
+  0x04 || X || Y -- the canonical wire format for SEC1 / TLS / WebCrypto.
+
+Smoke (test/subtle_ec_jwk_smoke.js):
+- exportKey('jwk', publicKey) -> { kty:'EC', crv:'P-256', x, y } (no d)
+- exportKey('jwk', privateKey) -> ditto + d
+- importKey('jwk', ...) reproduces both halves
+- Sign with re-imported priv, verify with original pub: succeeds
+- exportKey('raw', publicKey) -> 65-byte uncompressed point starting 0x04
+
+Triad: ibookg37 (G3 900 MHz), emac (G4 7450), pmacg5 (G5 970) all
+green. 1990+ assertions across 432 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

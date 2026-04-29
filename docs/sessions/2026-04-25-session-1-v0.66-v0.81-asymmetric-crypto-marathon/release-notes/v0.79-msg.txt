@@ -1,0 +1,39 @@
+v0.79: subtle ECDSA + NIST ECDH -- WebCrypto catches up to Node-side
+
+Lifts the v0.75 (ECDSA) + v0.76 (NIST ECDH) Node-shape crypto into
+the WebCrypto `crypto.subtle` API so browser-style code works the
+same way it does on real Node 20+.
+
+  crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, ...)
+  crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, key, data)
+  crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, key, sig, data)
+  crypto.subtle.generateKey({ name: 'ECDH', namedCurve: 'P-256' }, ...)
+  crypto.subtle.deriveBits({ name: 'ECDH', public: peerPub }, baseKey, 256)
+
+Curves: P-256, P-384, secp256k1 (P-521 works at the elliptic level
+but is very slow on G3 -- ~30 s per verify; we don't smoke it).
+
+Internals:
+
+- _CryptoKey gains an optional `_keyObject` field carrying our
+  Node-shape KeyObject for EC keys. subtle.{sign,verify,deriveBits}
+  delegate to the existing _ecdsaSign / _ecdsaVerify / _ecdhDerive
+  helpers via that handle.
+- _ecdsaDerToRaw + _ecdsaRawToDer convert between Node's DER
+  signatures and WebCrypto's raw r||s padded to the curve byte
+  length. r/s components are left-padded; if the high bit is set,
+  the DER encoder prepends 0x00 to keep the integer non-negative.
+- ECDH branch in deriveBits short-circuits NIST curves (where
+  baseKey._keyObject.asymmetricKeyType === 'ec') through _ecdhDerive,
+  before the existing X25519 (curve25519 via tweetnacl) branch.
+
+Smoke (test/subtle_ecdsa_smoke.js):
+- subtle.generateKey ECDSA P-256
+- subtle.sign -> raw r||s 64 bytes
+- subtle.verify true; tamper rejected
+- subtle.generateKey ECDH P-256 + deriveBits round-trip both sides
+
+Triad: ibookg37 (G3 900 MHz), emac (G4 7450), pmacg5 (G5 970) all
+green. 1971+ assertions across 430 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

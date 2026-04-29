@@ -1,0 +1,37 @@
+v0.77: top-level await for entry-point scripts (via async-IIFE wrap)
+
+Closes one of the three remaining "Missing" CommonJS items in the
+README. The bootstrap now pre-detects top-level await in source
+files and wraps them in an `async function` IIFE before handing them
+to Babel. Works for the common entry-script case:
+
+    var fs = require('fs');
+    var data = await fetch('https://api...').then(r => r.json());
+    fs.writeFileSync('snapshot.json', JSON.stringify(data));
+
+The pre-detection is a brace-depth-tracking scanner that strips
+comments + string literals, then looks for `await` tokens at
+top level (depth 0, not inside an `async function` body). Tracks
+both regular `async function` declarations and `async ... =>`
+arrow forms. Triggers the wrap whenever a TLA token is found.
+
+Limitations:
+- CJS modules can't synchronously export a top-level-await result.
+  The wrapper kicks off async work that finishes after `require()`
+  has already returned. This is a property of CJS, not specific
+  to our runtime. Real Node only supports TLA in ESM.
+- The brace scanner has known imprecisions on async arrow bodies
+  that don't use braces. False-negatives are possible there.
+
+Smoke (test/top_level_await_smoke.js):
+- Top-level `await fakeAsync(21)` -> "DOUBLED=42" via spawnSync.
+- Top-level `for await (var n of gen()) { ... }` -> "SUM=6".
+
+The pre-detection only runs when Babel is invoked (i.e., on parse
+failure of the original source), so non-TLA scripts don't pay any
+extra cost.
+
+Triad: ibookg37 (G3 900 MHz), emac (G4 7450), pmacg5 (G5 970) all
+green. 1957+ assertions across 428 smoke files.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
