@@ -17,4 +17,4 @@ sibling projects (`session-1`, `session-2`, …).
 | 2026-04-23 | d–i | Phase 1 deepening, library hunt waves 1–6 |
 | 2026-04-24 | j–w | Library hunts 7–18, async / await, RSA via forge |
 | 2026-04-25 | x | Compaction-bridging session covering v0.37 through v0.65 |
-| 2026-04-25 | 1 | v0.66–v0.71: RSA encrypt/decrypt, X509Certificate, real DEFLATE, Module class, JWT smoke, subpath modules, t.mock, cluster stub, README accuracy, ibookg37 pivot |
+| 2026-04-25 | 1 | v0.66–v0.81 marathon: asymmetric crypto roster complete (RSA encrypt/decrypt, X509Certificate, ECDSA, ECDH, all on Node + WebCrypto with JWK round-trip), real DEFLATE, real `os.*` probes, top-level await + `import.meta` + dynamic `import()`, real `setRawMode` + `TIOCGWINSZ`, mozjs as release artifact, ibookg37 swap, two demos (chat + npm-fetch), workflow pivot to `docs/sessions/<id>/` + `scripts/triad-build.sh` |
