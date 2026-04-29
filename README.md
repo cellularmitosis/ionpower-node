@@ -139,6 +139,7 @@ exercises a slice of the runtime's surface end-to-end.
 |---|---|
 | [`demos/chat/`](demos/chat/) | Multi-client WebSocket chat. HTTP + RFC 6455 server + EventEmitter broadcast over the select() event loop, served from a 1999 iBook G3 to as many modern browsers as you point at it. |
 | [`demos/npm-fetch/`](demos/npm-fetch/) | `npm install` from `registry.npmjs.org`, end-to-end on a G3: `fetch` over the curl shim → `zlib.gunzipSync` → POSIX ustar parse → `fs.writeFileSync` → `require()`. ~1 s for a small no-deps package like `mri`. |
+| [`demos/paste/`](demos/paste/) | JWT-secured encrypted paste server. Browser POSTs text → AES-256-GCM encrypt → real DEFLATE compress → fs write → ES256 (ECDSA P-256) JWT bearer issued. GET with bearer → ECDSA verify → gunzip → AES-GCM decrypt with auth-tag check. End-to-end exercise of the v0.65–v0.81 crypto + zlib + http stack. |
 | [`demos/blog/`](demos/blog/) | Static-site generator. Reads markdown posts under `input/`, renders via Handlebars with templates `index.hbs` / `post.hbs`, writes a styled blog tree to `output/`. |
 | [`demos/feed-report/`](demos/feed-report/) | Parses a sample RSS feed (XML), summarises items, prints a digest. |
 | [`demos/http-fetch/`](demos/http-fetch/) | `fetch` + render JSON to a console table. |

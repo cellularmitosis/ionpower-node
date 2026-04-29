@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ionpower-node paste</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+    --bg:    #0e1116;
+    --panel: #161b22;
+    --line:  #30363d;
+    --fg:    #c9d1d9;
+    --muted: #6e7681;
+    --acc:   #58a6ff;
+    --ok:    #7ee787;
+    --err:   #f85149;
+}
+* { box-sizing: border-box; }
+body {
+    background: var(--bg); color: var(--fg); margin: 0;
+    font: 14px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    min-height: 100vh; display: flex; flex-direction: column;
+}
+header {
+    background: var(--panel); border-bottom: 1px solid var(--line);
+    padding: 12px 18px; display: flex; align-items: baseline; gap: 14px;
+    flex-wrap: wrap;
+}
+header h1 { font-size: 15px; font-weight: 600; margin: 0; }
+header .banner { font-size: 12px; color: var(--muted); }
+header .banner b { color: var(--acc); }
+main {
+    flex-grow: 1; max-width: 800px; width: 100%; margin: 0 auto;
+    padding: 22px 18px;
+}
+section { margin-bottom: 28px; }
+section h2 { font-size: 13px; color: var(--muted); margin: 0 0 8px;
+             text-transform: uppercase; letter-spacing: 0.05em; }
+textarea, input[type=text] {
+    width: 100%; background: var(--bg); color: var(--fg);
+    border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px;
+    font: inherit; resize: vertical;
+}
+textarea:focus, input:focus { outline: none; border-color: var(--acc); }
+textarea { min-height: 140px; }
+button {
+    background: var(--acc); color: var(--bg); border: none; border-radius: 6px;
+    padding: 8px 16px; font: inherit; font-weight: 600; cursor: pointer;
+    margin-top: 8px;
+}
+button:hover { filter: brightness(1.1); }
+.row { display: flex; gap: 8px; margin-bottom: 8px; }
+.row input { flex-grow: 1; }
+pre {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 12px; overflow-x: auto; margin: 6px 0; font-size: 13px;
+    white-space: pre-wrap; word-break: break-all;
+}
+.muted { color: var(--muted); font-size: 12px; }
+.tok   { color: var(--ok); }
+.err   { color: var(--err); }
+.crypto-box {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    padding: 14px 18px; margin-top: 14px;
+}
+.crypto-box h3 { margin: 0 0 6px; font-size: 13px; color: var(--acc); }
+.crypto-box ul { padding-left: 18px; margin: 4px 0; color: var(--muted); }
+.crypto-box li { margin-bottom: 2px; }
+.crypto-box code { color: var(--fg); }
+</style>
+</head>
+<body>
+<header>
+    <h1>paste</h1>
+    <div class="banner" id="banner">connecting...</div>
+</header>
+<main>
+    <section id="post-section">
+        <h2>1. paste something</h2>
+        <textarea id="text" placeholder="paste text here..."></textarea>
+        <button id="post">encrypt + sign + store</button>
+        <pre id="post-out" hidden></pre>
+    </section>
+
+    <section id="get-section">
+        <h2>2. retrieve a paste</h2>
+        <div class="row">
+            <input type="text" id="url" placeholder="/paste/<id>" autocomplete="off">
+        </div>
+        <div class="row">
+            <input type="text" id="token" placeholder="paste the JWT bearer here" autocomplete="off">
+        </div>
+        <button id="get">verify JWT + read + decrypt</button>
+        <pre id="get-out" hidden></pre>
+    </section>
+
+    <div class="crypto-box">
+        <h3>what just happened on the server</h3>
+        <ul>
+            <li>POST: per-request <code>96-bit IV</code> &rarr; AES-256-GCM encrypt &rarr; <code>zlib.gzipSync</code> compress &rarr; <code>fs.writeFileSync</code></li>
+            <li>POST: ECDSA P-256 sign over <code>{ id, exp }</code> &rarr; ES256 JWT bearer</li>
+            <li>GET: <code>crypto.verify("sha256", ..., pubKey, sig)</code> &rarr; <code>zlib.gunzipSync</code> &rarr; AES-256-GCM decrypt with auth-tag check</li>
+            <li>If the auth tag doesn't match (bit-flip / tampering), GCM <code>final()</code> throws and the server returns 500</li>
+        </ul>
+    </div>
+</main>
+
+<script>
+(function () {
+    var banner = document.getElementById("banner");
+    var post = document.getElementById("post");
+    var get  = document.getElementById("get");
+    var text = document.getElementById("text");
+    var url  = document.getElementById("url");
+    var token = document.getElementById("token");
+    var postOut = document.getElementById("post-out");
+    var getOut  = document.getElementById("get-out");
+
+    fetch("/info").then(function (r) { return r.json(); }).then(function (b) {
+        banner.innerHTML = "served by <b>" + b.runtime + "</b> on " + b.host +
+            " (" + b.arch + ", " + b.cpu + ")";
+    }).catch(function () { banner.textContent = "(banner unavailable)"; });
+
+    post.addEventListener("click", function () {
+        postOut.hidden = false;
+        postOut.className = "muted";
+        postOut.textContent = "encrypting + signing...";
+        fetch("/paste", {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ text: text.value })
+        }).then(function (r) { return r.json(); }).then(function (j) {
+            if (j.error) { postOut.className = "err"; postOut.textContent = "ERR: " + j.error; return; }
+            postOut.className = "";
+            postOut.innerHTML = "<b>url:</b> " + j.url +
+                "\n<b>token:</b> <span class='tok'>" + j.token + "</span>" +
+                "\n\nin: " + j.size + " bytes; stored: " + j.stored + " bytes (" +
+                j.compressionPct + "% saved)" +
+                "\n\nclick the second box's button to retrieve.";
+            url.value   = j.url;
+            token.value = j.token;
+        }).catch(function (e) { postOut.className = "err"; postOut.textContent = "ERR: " + e.message; });
+    });
+
+    get.addEventListener("click", function () {
+        getOut.hidden = false;
+        getOut.className = "muted";
+        getOut.textContent = "verifying + decrypting...";
+        fetch(url.value, {
+            headers: { "Authorization": "Bearer " + token.value }
+        }).then(function (r) {
+            return r.json().then(function (j) { return { status: r.status, body: j }; });
+        }).then(function (out) {
+            if (out.status >= 400) {
+                getOut.className = "err";
+                getOut.textContent = "HTTP " + out.status + ": " + out.body.error;
+                return;
+            }
+            getOut.className = "";
+            getOut.innerHTML = "<b>id:</b> " + out.body.id + "\n<b>plaintext:</b>\n\n" +
+                out.body.text.replace(/[<&]/g, function (c) {
+                    return c === "<" ? "&lt;" : "&amp;";
+                });
+        }).catch(function (e) { getOut.className = "err"; getOut.textContent = "ERR: " + e.message; });
+    });
+})();
+</script>
+</body>
+</html>
