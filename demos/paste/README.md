@@ -49,12 +49,44 @@ client gets plaintext
 
 ```bash
 ssh ibookg37 'cd /Users/macuser/tmp/ionpower-node && ./node demos/paste/server.js 8090'
+# wait ~10 s for ECDSA P-256 keygen on G3
 ```
 
-Then open `http://ibookg37:8090/` in any modern browser. There's an
-inline form: paste text in the top textarea, click "encrypt + sign +
-store", copy the resulting URL + token (or just hit the second
-button which pre-populates them) and watch the round-trip work.
+Then either:
+- **Browser:** open `http://ibookg37:8090/` in any modern browser. The
+  inline form has a paste-and-store textarea up top and a
+  retrieve-with-bearer field below.
+- **CLI client:** `./node demos/paste/client.js http://ibookg37:8090`
+  runs an end-to-end POST + GET round-trip + unauthorized-GET
+  rejection check.
+
+## Validated transcript on ibookg37 (iBook G3 900 MHz)
+
+```
+$ ./node demos/paste/client.js http://127.0.0.1:8090
+=== POST /paste ===
+input:        297 bytes
+post took:    1941 ms
+url:          /paste/b45ef7579cbd920a
+stored:       348 bytes (-7% saved)
+token:        eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI0N...
+
+=== GET /paste/b45ef7579cbd920a ===
+get took:     4479 ms
+status:       200
+ok: round-trip identity (297 bytes)
+
+=== unauthorized GET (no bearer) ===
+ok: rejected (HTTP 401) without bearer
+
+paste round-trip smoke: ok
+```
+
+POST is dominated by ECDSA P-256 sign (~1.5 s on G3); GET is
+dominated by ECDSA verify (~3.5 s) — bn.js bignum on PowerPC isn't
+fast. AES-GCM + zlib are negligible. The "-7% saved" is gzip
+overhead on a 297-byte payload; on real-sized pastes (~5 KB+)
+compression actually wins.
 
 ## What's exercised on the server
 
