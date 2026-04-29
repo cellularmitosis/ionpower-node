@@ -51,6 +51,32 @@ When you start a substantively new session (e.g. after compaction or
 when the user opens a fresh thread), create the session dir up front
 and write to `notes.md` as you go — don't batch it at the end.
 
+## Document everything
+
+Default to capturing liberally in the current session directory.
+Plans, research, running work logs, decisions, dead ends, ambiguity discussions, scope shifts, gotchas-in-the-moment — all worth writing down.
+Surface what you create briefly so I have awareness.
+Err on the side of MORE capture, not less.
+The goal is that a future-me (or a future Claude session) can pick up the thread without me having to re-explain.
+
+## Long-running sweep cadence
+
+When a test sweep / build / migration is going to take more than ~15
+minutes (conformance runs against full WPT or Node corpora; multi-hour
+fleet operations), wake up every 15 minutes and print one short
+progress line. Useful shape:
+
+    127 of ~700 tests done; topic=stream; runner alive (PID 1146);
+    summary.tsv mtime 3 min old
+
+This catches stuck runners (mtime not advancing, no children spawning)
+and gives a sense of the trajectory without over-polling. 15 min stays
+inside the 5-min Anthropic prompt cache TTL only twice — accept the
+warm-cache hit on alternate wake-ups; the sweep is the long pole.
+
+For shorter-running jobs (single triad build, single demo validation),
+default `delaySeconds` heuristics still apply.
+
 ## Triad build flow
 
 `scripts/triad-build.sh <host> <arch> <version>` builds + tests +

@@ -1,0 +1,558 @@
+topic	file	result	exit	time_ms	message
+assert	external/node-tests/test/parallel/test-assert-async.js	fail	1	29601	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-assert-async.js:35: SyntaxError: async functions are not enabled in the parser | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: muta
+assert	external/node-tests/test/parallel/test-assert-checktag.js	fail	1	779	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-assert-checktag.js:15: TypeError: test is not a function
+assert	external/node-tests/test/parallel/test-assert-class-destructuring.js	fail	1	12345	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-assert-class-destructuring.js:23: SyntaxError: expected expression, got ')' | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutatin
+assert	external/node-tests/test/parallel/test-assert-class.js	fail	1	24552	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-assert-class.js:166: SyntaxError: identifier starts immediately after numeric literal | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:
+assert	external/node-tests/test/parallel/test-assert-deep-with-error.js	fail	1	10133	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-assert-deep-with-error.js:22: SyntaxError: expected expression, got ')' | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating th
+assert	external/node-tests/test/parallel/test-assert-deep.js	timeout	1	59561	30s timeout
+assert	external/node-tests/test/parallel/test-assert-esm-cjs-message-verify.js	pass	0	24841	
+assert	external/node-tests/test/parallel/test-assert-fail.js	fail	1	391	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-assert-fail.js:7: TypeError: test is not a function
+assert	external/node-tests/test/parallel/test-assert-first-line.js	fail	1	390	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-assert-first-line.js:10: TypeError: test is not a function
+assert	external/node-tests/test/parallel/test-assert-if-error.js	fail	1	389	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-assert-if-error.js:7: TypeError: test is not a function
+assert	external/node-tests/test/parallel/test-assert-myers-diff.js	fail	1	396	<ionpower-node internal>:2: Error: require: cannot find module 'internal/assert/myers_diff' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+assert	external/node-tests/test/parallel/test-assert-partial-deep-equal.js	timeout	1	38544	30s timeout
+assert	external/node-tests/test/parallel/test-assert-typedarray-deepequal.js	fail	1	389	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-assert-typedarray-deepequal.js:14: TypeError: suite is not a function
+buffer	external/node-tests/test/parallel/test-buffer-alloc-unsafe-is-initialized-with-zero-fill-flag.js	skip	0	366	
+buffer	external/node-tests/test/parallel/test-buffer-alloc-unsafe-is-uninitialized.js	skip	0	360	
+buffer	external/node-tests/test/parallel/test-buffer-alloc.js	timeout	1	37565	30s timeout
+buffer	external/node-tests/test/parallel/test-buffer-arraybuffer.js	fail	1	388	:0: AssertionError: undefined !== [object ArrayBuffer]
+buffer	external/node-tests/test/parallel/test-buffer-ascii.js	fail	1	393	:0: AssertionError: hÃ©ritÃ© !== hC)ritC)
+buffer	external/node-tests/test/parallel/test-buffer-backing-arraybuffer.js	fail	1	396	<ionpower-node internal>:2: Error: require: cannot find module 'internal/test/binding' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+buffer	external/node-tests/test/parallel/test-buffer-badhex.js	fail	1	387	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-badhex.js:10: TypeError: buf.write is not a function
+buffer	external/node-tests/test/parallel/test-buffer-bigint64.js	fail	1	8497	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-bigint64.js:9: SyntaxError: identifier starts immediately after numeric literal | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js
+buffer	external/node-tests/test/parallel/test-buffer-bytelength.js	fail	1	397	:0: AssertionError
+buffer	external/node-tests/test/parallel/test-buffer-compare-offset.js	fail	1	391	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-compare-offset.js:9: TypeError: a.compare is not a function
+buffer	external/node-tests/test/parallel/test-buffer-compare.js	fail	1	388	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-compare.js:11: TypeError: b.compare is not a function
+buffer	external/node-tests/test/parallel/test-buffer-concat.js	fail	1	403	:0: AssertionError
+buffer	external/node-tests/test/parallel/test-buffer-constants.js	fail	1	390	:0: AssertionError: undefined !== number
+buffer	external/node-tests/test/parallel/test-buffer-constructor-deprecation-error.js	fail	1	387	mustCall: expected 1 calls, got 0
+buffer	external/node-tests/test/parallel/test-buffer-constructor-node-modules-paths.js	fail	1	390	<ionpower-node bootstrap>:877: Error: spawnSync: file string required
+buffer	external/node-tests/test/parallel/test-buffer-constructor-node-modules.js	fail	1	18416	/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create | <ionpower
+buffer	external/node-tests/test/parallel/test-buffer-constructor-outside-node-modules.js	fail	1	396	mustCall: expected 1 calls, got 0
+buffer	external/node-tests/test/parallel/test-buffer-copy.js	fail	1	430	:0: AssertionError
+buffer	external/node-tests/test/parallel/test-buffer-equals.js	fail	1	525	:0: AssertionError
+buffer	external/node-tests/test/parallel/test-buffer-failed-alloc-typed-arrays.js	pass	0	11456	
+buffer	external/node-tests/test/parallel/test-buffer-fakes.js	fail	1	389	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-fakes.js:7: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct
+buffer	external/node-tests/test/parallel/test-buffer-fill.js	fail	1	401	<ionpower-node internal>:2: Error: require: cannot find module 'internal/errors' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+buffer	external/node-tests/test/parallel/test-buffer-from.js	fail	1	21218	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-from.js:47: SyntaxError: identifier starts immediately after numeric literal | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1:
+buffer	external/node-tests/test/parallel/test-buffer-generic-methods.js	fail	1	26161	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-generic-methods.js:834: SyntaxError: identifier starts immediately after numeric literal | /Users/macuser/tmp/ionpower-node/test/vendor
+buffer	external/node-tests/test/parallel/test-buffer-includes.js	fail	1	393	:0: AssertionError: assert failed
+buffer	external/node-tests/test/parallel/test-buffer-indexof.js	fail	1	407	:0: AssertionError: 0 !== -1
+buffer	external/node-tests/test/parallel/test-buffer-inheritance.js	pass	0	399	
+buffer	external/node-tests/test/parallel/test-buffer-inspect.js	fail	1	393	:0: AssertionError: Uint8Array(4) [ 210, 210, 210, 210 ] !== <Buffer 31 32 ... 2 more bytes>
+buffer	external/node-tests/test/parallel/test-buffer-isascii.js	fail	1	8227	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-isascii.js:19: SyntaxError: identifier starts immediately after numeric literal | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js
+buffer	external/node-tests/test/parallel/test-buffer-isencoding.js	fail	1	388	:0: AssertionError: false !== true
+buffer	external/node-tests/test/parallel/test-buffer-isutf8.js	fail	1	9161	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-isutf8.js:73: SyntaxError: expected expression, got ')' | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Proto
+buffer	external/node-tests/test/parallel/test-buffer-iterator.js	pass	0	391	
+buffer	external/node-tests/test/parallel/test-buffer-new.js	fail	1	390	:0: AssertionError
+buffer	external/node-tests/test/parallel/test-buffer-no-negative-allocation.js	fail	1	389	:0: AssertionError
+buffer	external/node-tests/test/parallel/test-buffer-nopendingdep-map.js	pass	0	393	
+buffer	external/node-tests/test/parallel/test-buffer-of-no-deprecation.js	fail	1	385	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-of-no-deprecation.js:7: TypeError: Buffer.of is not a function
+buffer	external/node-tests/test/parallel/test-buffer-over-max-length.js	pass	0	384	
+buffer	external/node-tests/test/parallel/test-buffer-parent-property.js	fail	1	383	:0: AssertionError: assert failed
+buffer	external/node-tests/test/parallel/test-buffer-pending-deprecation.js	fail	1	384	mustCall: expected 1 calls, got 0
+buffer	external/node-tests/test/parallel/test-buffer-pool-untransferable.js	fail	1	387	:0: AssertionError: [object ArrayBuffer] !== [object ArrayBuffer]
+buffer	external/node-tests/test/parallel/test-buffer-prototype-inspect.js	fail	1	391	:0: AssertionError: Uint8Array(9) [ 102, 104, 113, 119, 104, 103, 97, 100, 115 ] !== <Buffer 66 68 71 77 68 67 61 64 73>
+buffer	external/node-tests/test/parallel/test-buffer-read.js	fail	1	390	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-read.js:9: TypeError: buff[funx] is not a function
+buffer	external/node-tests/test/parallel/test-buffer-readdouble.js	fail	1	388	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-readdouble.js:17: TypeError: buffer.readDoubleBE is not a function
+buffer	external/node-tests/test/parallel/test-buffer-readfloat.js	fail	1	386	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-readfloat.js:13: TypeError: buffer.readFloatBE is not a function
+buffer	external/node-tests/test/parallel/test-buffer-readint.js	fail	1	404	:0: AssertionError
+buffer	external/node-tests/test/parallel/test-buffer-readuint.js	fail	1	391	:0: AssertionError
+buffer	external/node-tests/test/parallel/test-buffer-resizable.js	pass	0	432	
+buffer	external/node-tests/test/parallel/test-buffer-safe-unsafe.js	pass	0	392	
+buffer	external/node-tests/test/parallel/test-buffer-set-inspect-max-bytes.js	fail	1	383	:0: AssertionError
+buffer	external/node-tests/test/parallel/test-buffer-sharedarraybuffer.js	fail	1	381	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-sharedarraybuffer.js:6: ReferenceError: SharedArrayBuffer is not defined
+buffer	external/node-tests/test/parallel/test-buffer-slice.js	fail	1	408	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-slice.js:75: TypeError: Buffer.compare is not a function
+buffer	external/node-tests/test/parallel/test-buffer-slow.js	fail	1	408	:0: AssertionError
+buffer	external/node-tests/test/parallel/test-buffer-swap-fast.js	fail	1	388	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-swap-fast.js:1: SyntaxError: expected expression, got '%'
+buffer	external/node-tests/test/parallel/test-buffer-swap.js	fail	1	395	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-swap.js:11: TypeError: buf.swap16 is not a function
+buffer	external/node-tests/test/parallel/test-buffer-tojson.js	fail	1	387	:0: AssertionError: {} !== {"type":"Buffer","data":[]}
+buffer	external/node-tests/test/parallel/test-buffer-tostring-4gb.js	fail	1	382	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-tostring-4gb.js:9: TypeError: common.skipIf32Bits is not a function
+buffer	external/node-tests/test/parallel/test-buffer-tostring-range.js	fail	1	385	:0: AssertionError: abc !== 
+buffer	external/node-tests/test/parallel/test-buffer-tostring-rangeerror.js	fail	1	386	:0: AssertionError
+buffer	external/node-tests/test/parallel/test-buffer-tostring.js	fail	1	403	:0: AssertionError
+buffer	external/node-tests/test/parallel/test-buffer-write-fast.js	fail	1	400	<ionpower-node internal>:2: Error: require: cannot find module 'internal/test/binding' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+buffer	external/node-tests/test/parallel/test-buffer-write.js	fail	1	403	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-write.js:35: TypeError: buf.write is not a function
+buffer	external/node-tests/test/parallel/test-buffer-writedouble.js	fail	1	397	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-writedouble.js:10: TypeError: buffer.writeDoubleBE is not a function
+buffer	external/node-tests/test/parallel/test-buffer-writefloat.js	fail	1	386	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-writefloat.js:10: TypeError: buffer.writeFloatBE is not a function
+buffer	external/node-tests/test/parallel/test-buffer-writeint.js	fail	1	393	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-buffer-writeint.js:18: TypeError: buffer.writeInt8 is not a function
+buffer	external/node-tests/test/parallel/test-buffer-writeuint.js	fail	1	397	:0: AssertionError
+buffer	external/node-tests/test/parallel/test-buffer-zero-fill-cli.js	pass	0	445	
+buffer	external/node-tests/test/parallel/test-buffer-zero-fill-reset.js	pass	0	399	
+buffer	external/node-tests/test/parallel/test-buffer-zero-fill.js	pass	0	384	
+path	external/node-tests/test/parallel/test-path-basename.js	fail	1	389	:0: AssertionError:  !== bbb
+path	external/node-tests/test/parallel/test-path-dirname.js	fail	1	397	:0: AssertionError: / !== //
+path	external/node-tests/test/parallel/test-path-extname.js	fail	1	403	:0: AssertionError:  | path.win32.extname("\\path.to\\file") |   expect=""
+path	external/node-tests/test/parallel/test-path-glob.js	fail	1	396	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-path-glob.js:37: TypeError: path[platform].matchesGlob is not a function
+path	external/node-tests/test/parallel/test-path-isabsolute.js	fail	1	387	:0: AssertionError: false !== true
+path	external/node-tests/test/parallel/test-path-join.js	fail	1	419	:0: AssertionError:  | path.posix.join(".","x/b","..","/b/c.js") |   expect="x/b/c.js"
+path	external/node-tests/test/parallel/test-path-makelong.js	fail	1	403	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-path-makelong.js:76: TypeError: path.win32.toNamespacedPath is not a function
+path	external/node-tests/test/parallel/test-path-normalize.js	fail	1	391	:0: AssertionError: fixtures/b/c.js !== fixtures\b\c.js
+path	external/node-tests/test/parallel/test-path-parse-format.js	fail	1	397	:0: AssertionError: ./C:\path\dir\index.html !== C:\path\dir\index.html
+path	external/node-tests/test/parallel/test-path-posix-exists.js	pass	0	383	
+path	external/node-tests/test/parallel/test-path-posix-relative-on-windows.js	pass	0	391	
+path	external/node-tests/test/parallel/test-path-relative.js	fail	1	516	:0: AssertionError:  | path.win32.relative("c:/blah\\blah","d:/games") |   expect="d:\\games"
+path	external/node-tests/test/parallel/test-path-resolve.js	fail	1	459	:0: AssertionError: path.win32.resolve("c:/blah\\blah","d:/games","c:../a") |   expect="c:\\blah\\a" |   actual="/Users/macuser/tmp/ionpower-node/c:/blah\\blah/d:/games/c:../a"
+path	external/node-tests/test/parallel/test-path-win32-exists.js	fail	1	386	:0: AssertionError: [object Object] !== [object Object]
+path	external/node-tests/test/parallel/test-path-win32-normalize-device-names.js	skip	0	366	
+path	external/node-tests/test/parallel/test-path-zero-length-strings.js	fail	1	396	:0: AssertionError: /Users/macuser/tmp/ionpower-node/ !== /Users/macuser/tmp/ionpower-node
+querystring	external/node-tests/test/parallel/test-querystring-escape.js	fail	1	555	<ionpower-node bootstrap>:6147: URIError: malformed URI sequence
+querystring	external/node-tests/test/parallel/test-querystring-maxKeys-non-finite.js	pass	0	777	
+querystring	external/node-tests/test/parallel/test-querystring-multichar-separator.js	fail	1	391	:0: AssertionError: assert failed
+url	external/node-tests/test/parallel/test-url-domain-ascii-unicode.js	fail	1	385	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-url-domain-ascii-unicode.js:20: TypeError: test is not a function
+url	external/node-tests/test/parallel/test-url-fileurltopath.js	fail	1	399	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-url-fileurltopath.js:8: TypeError: test is not a function
+url	external/node-tests/test/parallel/test-url-format-invalid-input.js	fail	1	389	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-url-format-invalid-input.js:9: TypeError: test is not a function
+url	external/node-tests/test/parallel/test-url-format-whatwg.js	fail	1	396	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-url-format-whatwg.js:11: TypeError: test is not a function
+url	external/node-tests/test/parallel/test-url-format.js	fail	1	391	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-url-format.js:9: TypeError: test is not a function
+url	external/node-tests/test/parallel/test-url-invalid-file-url-path-input.js	fail	1	391	:0: AssertionError
+url	external/node-tests/test/parallel/test-url-is-url-internal.js	fail	1	426	<ionpower-node internal>:2: Error: require: cannot find module 'internal/url' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+url	external/node-tests/test/parallel/test-url-parse-deprecation.js	fail	1	404	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/index.js:153: Error: spawnPromisified: not supported
+url	external/node-tests/test/parallel/test-url-parse-format.js	fail	1	402	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-url-parse-format.js:1009: TypeError: test is not a function
+url	external/node-tests/test/parallel/test-url-parse-invalid-input.js	fail	1	391	:0: AssertionError
+url	external/node-tests/test/parallel/test-url-parse-query.js	fail	1	406	:0: AssertionError: [object Object] === [object Object]
+url	external/node-tests/test/parallel/test-url-pathtofileurl.js	fail	1	19535	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-url-pathtofileurl.js:214: SyntaxError: identifier starts immediately after numeric literal | /Users/macuser/tmp/ionpower-node/test/vendor/babe
+url	external/node-tests/test/parallel/test-url-relative.js	fail	1	394	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-url-relative.js:8: TypeError: url.resolveObject is not a function
+url	external/node-tests/test/parallel/test-url-revokeobjecturl.js	pass	0	382	
+url	external/node-tests/test/parallel/test-url-urltooptions.js	fail	1	13121	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-url-urltooptions.js:26: SyntaxError: invalid property id | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]]
+events	external/node-tests/test/parallel/test-events-customevent.js	fail	1	21096	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-events-customevent.js:125: SyntaxError: expected expression, got ')' | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [
+events	external/node-tests/test/parallel/test-events-getmaxlisteners.js	fail	1	396	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-events-getmaxlisteners.js:9: TypeError: getMaxListeners is not a function
+events	external/node-tests/test/parallel/test-events-list.js	fail	1	404	:0: AssertionError: deepEqual failed
+events	external/node-tests/test/parallel/test-events-listener-count-with-listener.js	fail	1	408	:0: AssertionError: 1 !== 0 | mustCall: expected 3 calls, got 0 | mustCall: expected 1 calls, got 0
+events	external/node-tests/test/parallel/test-events-on-async-iterator.js	timeout	1	61253	30s timeout
+events	external/node-tests/test/parallel/test-events-once.js	timeout	1	38689	30s timeout
+events	external/node-tests/test/parallel/test-events-static-geteventlisteners.js	fail	1	393	<ionpower-node internal>:2: Error: require: cannot find module 'internal/event_target' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+events	external/node-tests/test/parallel/test-events-uncaught-exception-stack.js	fail	1	388	mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-add-abort-signal.js	fail	1	396	<ionpower-node internal>:2: Error: require: cannot find module 'internal/streams/add-abort-signal' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+stream	external/node-tests/test/parallel/test-stream-auto-destroy.js	fail	1	458	mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-await-drain-writers-in-synchronously-recursion-write.js	pass	0	411	
+stream	external/node-tests/test/parallel/test-stream-backpressure.js	fail	1	411	mustCall: expected 11 calls, got 2 | mustCall: expected 410 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-base-prototype-accessors-enumerability.js	fail	1	401	<ionpower-node internal>:2: Error: require: cannot find module 'internal/test/binding' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+stream	external/node-tests/test/parallel/test-stream-base-typechecking.js	timeout	-1	40120	30s timeout
+stream	external/node-tests/test/parallel/test-stream-big-packet.js	fail	1	13959	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-big-packet.js:32: SyntaxError: expected expression, got '=' | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[P
+stream	external/node-tests/test/parallel/test-stream-big-push.js	fail	1	402	:0: AssertionError: assert failed | mustCall: expected 3 calls, got 0 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-catch-rejections.js	fail	1	22044	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-catch-rejections.js:23: SyntaxError: async functions are not enabled in the parser | /Users/macuser/tmp/ionpower-node/test/vendor/babel
+stream	external/node-tests/test/parallel/test-stream-compose.js	timeout	-1	40013	30s timeout
+stream	external/node-tests/test/parallel/test-stream-construct.js	timeout	1	36159	30s timeout
+stream	external/node-tests/test/parallel/test-stream-consumers.js	timeout	1	37279	30s timeout
+stream	external/node-tests/test/parallel/test-stream-decoder-objectmode.js	fail	1	395	:0: AssertionError: a
+stream	external/node-tests/test/parallel/test-stream-destroy-event-order.js	pass	0	392	
+stream	external/node-tests/test/parallel/test-stream-destroy.js	fail	1	390	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-destroy.js:14: TypeError: destroy is not a function
+stream	external/node-tests/test/parallel/test-stream-drop-take.js	timeout	-1	40020	30s timeout
+stream	external/node-tests/test/parallel/test-stream-duplex-destroy.js	fail	1	18278	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-duplex-destroy.js:288: SyntaxError: async functions are not enabled in the parser | /Users/macuser/tmp/ionpower-node/test/vendor/babel.
+stream	external/node-tests/test/parallel/test-stream-duplex-end.js	fail	1	778	:0: AssertionError: undefined !== true
+stream	external/node-tests/test/parallel/test-stream-duplex-from.js	timeout	-1	40006	30s timeout
+stream	external/node-tests/test/parallel/test-stream-duplex-props.js	fail	1	950	:0: AssertionError: undefined !== true
+stream	external/node-tests/test/parallel/test-stream-duplex-readable-end.js	timeout	-1	40076	30s timeout
+stream	external/node-tests/test/parallel/test-stream-duplex-readable-writable.js	timeout	-1	40017	30s timeout
+stream	external/node-tests/test/parallel/test-stream-duplex-writable-finished.js	fail	1	1146	:0: AssertionError: assert failed
+stream	external/node-tests/test/parallel/test-stream-duplex.js	fail	1	1000	:0: AssertionError: assert failed
+stream	external/node-tests/test/parallel/test-stream-duplexpair.js	fail	1	1115	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-duplexpair.js:8: TypeError: duplexPair is not a function
+stream	external/node-tests/test/parallel/test-stream-end-of-streams.js	pass	0	1211	
+stream	external/node-tests/test/parallel/test-stream-end-paused.js	fail	1	1231	mustCall: expected 1 calls, got 2 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-err-multiple-callback-construction.js	fail	1	1522	mustCall: expected 1 calls, got 2 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-error-once.js	fail	1	1307	mustCall: expected 1 calls, got 2 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-event-names.js	fail	1	973	:0: AssertionError: deepEqual failed
+stream	external/node-tests/test/parallel/test-stream-events-prepend.js	fail	1	935	mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-filter.js	timeout	-1	40031	30s timeout
+stream	external/node-tests/test/parallel/test-stream-finished-async-local-storage.js	fail	1	979	<ionpower-node internal>:2: Error: require: cannot find module 'internal/async_context_frame' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+stream	external/node-tests/test/parallel/test-stream-finished-bindAsyncResource-path.js	fail	1	1210	<ionpower-node internal>:2: Error: require: cannot find module 'internal/async_hooks' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+stream	external/node-tests/test/parallel/test-stream-finished-default-path.js	fail	1	23562	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-finished-default-path.js:19: SyntaxError: expected expression, got ')' | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutat
+stream	external/node-tests/test/parallel/test-stream-finished.js	timeout	-1	40020	30s timeout
+stream	external/node-tests/test/parallel/test-stream-flatMap.js	timeout	-1	40018	30s timeout
+stream	external/node-tests/test/parallel/test-stream-forEach.js	timeout	-1	40018	30s timeout
+stream	external/node-tests/test/parallel/test-stream-inheritance.js	fail	1	1902	:0: AssertionError: assert failed
+stream	external/node-tests/test/parallel/test-stream-ispaused.js	pass	0	1973	
+stream	external/node-tests/test/parallel/test-stream-iter-broadcast-backpressure.js	timeout	-1	40029	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-broadcast-basic.js	timeout	-1	40018	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-broadcast-coverage.js	timeout	-1	40010	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-broadcast-from.js	timeout	-1	40017	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-consumers-bytes.js	timeout	-1	40029	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-consumers-merge.js	timeout	-1	40018	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-consumers-tap.js	timeout	-1	40018	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-consumers-text.js	timeout	-1	40197	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-cross-realm.js	timeout	-1	40027	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-disabled.js	timeout	-1	40016	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-duplex.js	timeout	-1	40119	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-from-async.js	timeout	-1	40535	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-from-coverage.js	timeout	-1	40006	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-from-sync.js	timeout	-1	40110	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-namespace.js	timeout	-1	40208	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-pipeto-edge.js	timeout	-1	40007	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-pipeto-signal.js	timeout	-1	40077	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-pipeto-writev.js	timeout	-1	40270	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-pipeto.js	timeout	-1	40784	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-pull-async.js	timeout	-1	40361	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-pull-sync.js	timeout	-1	40139	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-push-backpressure.js	timeout	-1	41721	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-push-basic.js	timeout	-1	40006	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-push-writer.js	timeout	-1	40084	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-readable-interop-disabled.js	timeout	-1	40030	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-readable-interop.js	timeout	-1	40037	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-share-async.js	timeout	-1	40019	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-share-coverage.js	timeout	-1	40398	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-share-from.js	timeout	-1	40025	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-share-sync.js	timeout	-1	40039	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-sharedarraybuffer.js	timeout	-1	40028	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-to-readable.js	timeout	-1	40080	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-transform-compat.js	timeout	-1	40268	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-transform-coverage.js	timeout	-1	40064	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-transform-errors.js	timeout	-1	40213	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-transform-output.js	timeout	-1	40184	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-transform-roundtrip.js	timeout	-1	40310	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-transform-sync.js	timeout	-1	40704	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-validation.js	timeout	-1	40184	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-writable-from.js	timeout	-1	40233	30s timeout
+stream	external/node-tests/test/parallel/test-stream-iter-writable-interop.js	timeout	-1	40095	30s timeout
+stream	external/node-tests/test/parallel/test-stream-map.js	timeout	-1	40168	30s timeout
+stream	external/node-tests/test/parallel/test-stream-objectmode-undefined.js	fail	1	3495	mustCall: expected 1 calls, got 2 | mustCall: expected 1 calls, got 2
+stream	external/node-tests/test/parallel/test-stream-once-readable-pipe.js	fail	1	1779	mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-passthrough-drain.js	fail	1	1644	:0: AssertionError: assert failed | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-pipe-after-end.js	fail	1	1673	mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-pipe-await-drain-manual-resume.js	fail	1	1627	mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-pipe-await-drain-push-while-write.js	timeout	1	32875	30s timeout
+stream	external/node-tests/test/parallel/test-stream-pipe-await-drain.js	pass	0	1832	
+stream	external/node-tests/test/parallel/test-stream-pipe-cleanup-pause.js	fail	1	1891	mustCall: expected 3 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-pipe-cleanup.js	fail	1	2436	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-pipe-cleanup.js:34: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the
+stream	external/node-tests/test/parallel/test-stream-pipe-deadlock.js	timeout	-1	40029	30s timeout
+stream	external/node-tests/test/parallel/test-stream-pipe-error-handling.js	fail	1	1408	:0: AssertionError: null !== Error: This stream turned into bacon.
+stream	external/node-tests/test/parallel/test-stream-pipe-error-unhandled.js	timeout	-1	40045	30s timeout
+stream	external/node-tests/test/parallel/test-stream-pipe-event.js	fail	1	1864	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-pipe-event.js:31: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the c
+stream	external/node-tests/test/parallel/test-stream-pipe-flow-after-unpipe.js	fail	1	1783	timer: ws<.write</<@/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-pipe-flow-after-unpipe.js:18:24 | this.__fire_due_timers__@<ionpower-node bootstrap>:4659:13 | timer: ws<.write</<@
+stream	external/node-tests/test/parallel/test-stream-pipe-flow.js	fail	1	1905	nextTick: mustNotCall/<@/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/index.js:50:15 | EventEmitter.prototype.emit@<ionpower-node bootstrap>:418:43 | doFinish@<ionpower-node bootstrap>:5017:7
+stream	external/node-tests/test/parallel/test-stream-pipe-manual-resume.js	fail	1	1403	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-pipe-manual-resume.js:30: TypeError: rs is undefined | timer: @/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node
+stream	external/node-tests/test/parallel/test-stream-pipe-multiple-pipes.js	fail	1	1473	nextTick: @/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-pipe-multiple-pipes.js:39:5 | mustCall/wrapped@/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/index.js:20:
+stream	external/node-tests/test/parallel/test-stream-pipe-needDrain.js	timeout	1	34284	30s timeout
+stream	external/node-tests/test/parallel/test-stream-pipe-objectmode-to-non-objectmode.js	timeout	-1	40017	30s timeout
+stream	external/node-tests/test/parallel/test-stream-pipe-same-destination-twice.js	fail	1	1386	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-pipe-same-destination-twice.js:23: TypeError: passThrough._readableState.pipes is undefined | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-pipe-unpipe-streams.js	fail	1	1555	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-pipe-unpipe-streams.js:11: TypeError: source is undefined
+stream	external/node-tests/test/parallel/test-stream-pipe-without-listenerCount.js	fail	1	1565	mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-pipeline-async-iterator.js	timeout	-1	40048	30s timeout
+stream	external/node-tests/test/parallel/test-stream-pipeline-duplex.js	pass	0	2173	
+stream	external/node-tests/test/parallel/test-stream-pipeline-http2.js	fail	1	1900	<ionpower-node internal>:2: Error: require: cannot find module 'http2' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+stream	external/node-tests/test/parallel/test-stream-pipeline-listeners.js	timeout	-1	40008	30s timeout
+stream	external/node-tests/test/parallel/test-stream-pipeline-process.js	fail	1	1903	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-pipeline-process.js:16: TypeError: common.escapePOSIXShell is not a function
+stream	external/node-tests/test/parallel/test-stream-pipeline-queued-end-in-destroy.js	fail	1	2081	mustCall: expected 1 calls, got 3 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-pipeline-uncaught.js	timeout	-1	40006	30s timeout
+stream	external/node-tests/test/parallel/test-stream-pipeline-with-empty-string.js	timeout	-1	40067	30s timeout
+stream	external/node-tests/test/parallel/test-stream-pipeline.js	timeout	-1	40031	30s timeout
+stream	external/node-tests/test/parallel/test-stream-preprocess.js	fail	1	2609	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/fixtures.js:21: Error: ENOENT: No such file or directory, open '/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/../fixtures/file-to-read-without-bom.txt'
+stream	external/node-tests/test/parallel/test-stream-promises.js	timeout	-1	40075	30s timeout
+stream	external/node-tests/test/parallel/test-stream-push-order.js	pass	0	2359	
+stream	external/node-tests/test/parallel/test-stream-push-strings.js	pass	0	2022	
+stream	external/node-tests/test/parallel/test-stream-readable-aborted.js	fail	1	2301	:0: AssertionError: undefined !== false
+stream	external/node-tests/test/parallel/test-stream-readable-add-chunk-during-data.js	fail	1	2477	:0: AssertionError: undefined !== 0
+stream	external/node-tests/test/parallel/test-stream-readable-async-iterators.js	timeout	-1	40076	30s timeout
+stream	external/node-tests/test/parallel/test-stream-readable-compose.js	timeout	-1	40048	30s timeout
+stream	external/node-tests/test/parallel/test-stream-readable-constructor-set-methods.js	pass	0	2653	
+stream	external/node-tests/test/parallel/test-stream-readable-data.js	fail	1	2450	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-readable-data.js:12: TypeError: readable.setEncoding is not a function
+stream	external/node-tests/test/parallel/test-stream-readable-default-encoding.js	fail	1	2698	:0: AssertionError
+stream	external/node-tests/test/parallel/test-stream-readable-destroy.js	timeout	-1	40042	30s timeout
+stream	external/node-tests/test/parallel/test-stream-readable-didRead.js	fail	1	2759	:0: AssertionError: undefined !== false
+stream	external/node-tests/test/parallel/test-stream-readable-dispose.js	timeout	-1	40017	30s timeout
+stream	external/node-tests/test/parallel/test-stream-readable-emit-readable-short-stream.js	fail	1	3580	mustCall: expected 1 calls, got 2 | mustCall: expected 1 calls, got 2 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-readable-emittedReadable.js	fail	1	2991	:0: AssertionError: undefined !== false
+stream	external/node-tests/test/parallel/test-stream-readable-end-destroyed.js	fail	1	2779	mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-readable-ended.js	fail	1	2686	:0: AssertionError: assert failed
+stream	external/node-tests/test/parallel/test-stream-readable-error-end.js	fail	1	2623	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/index.js:50: Error: mustNotCall:  called with [] | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-readable-event.js	fail	1	2981	timer: { |   "name": "AssertionError", |   "message": "assert failed"
+stream	external/node-tests/test/parallel/test-stream-readable-flow-recursion.js	pass	0	2786	
+stream	external/node-tests/test/parallel/test-stream-readable-from-web-termination.js	fail	1	2893	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-readable-from-web-termination.js:8: TypeError: Readable.toWeb is not a function
+stream	external/node-tests/test/parallel/test-stream-readable-hwm-0-async.js	fail	1	2985	nextTick: mustCall/wrapped@/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/index.js:20:16 | EventEmitter.prototype.emit@<ionpower-node bootstrap>:418:43 | _Readable.prototype._emitFlow@<ionpower-node bootstrap>:5071:9
+stream	external/node-tests/test/parallel/test-stream-readable-hwm-0-no-flow-data.js	fail	1	2713	:0: AssertionError: undefined !== null | mustCall: expected 2 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-readable-hwm-0.js	fail	1	2590	mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-readable-infinite-read.js	fail	1	2484	mustCall: expected 12 calls, got 0 | mustCall: expected 11 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-readable-invalid-chunk.js	fail	1	2806	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-readable-invalid-chunk.js:29: TypeError: readable.unshift is not a function
+stream	external/node-tests/test/parallel/test-stream-readable-needReadable.js	fail	1	2576	:0: AssertionError: undefined !== false
+stream	external/node-tests/test/parallel/test-stream-readable-next-no-null.js	timeout	-1	40068	30s timeout
+stream	external/node-tests/test/parallel/test-stream-readable-no-unneeded-readable.js	fail	1	3216	mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-readable-object-multi-push-async.js	fail	1	3950	timer: { |   "name": "AssertionError", |   "message": "520 !== 50"
+stream	external/node-tests/test/parallel/test-stream-readable-pause-and-resume.js	fail	1	3380	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-readable-pause-and-resume.js:50: TypeError: readable.setEncoding is not a function | mustCall: expected 1 calls, got 2 | mustCall: expe
+stream	external/node-tests/test/parallel/test-stream-readable-readable-one.js	pass	0	3227	
+stream	external/node-tests/test/parallel/test-stream-readable-readable-then-resume.js	pass	0	3038	
+stream	external/node-tests/test/parallel/test-stream-readable-readable.js	fail	1	2862	:0: AssertionError: undefined !== true
+stream	external/node-tests/test/parallel/test-stream-readable-reading-readingMore.js	fail	1	3176	:0: AssertionError: undefined !== false
+stream	external/node-tests/test/parallel/test-stream-readable-resume-hwm.js	fail	1	3412	mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-readable-resumeScheduled.js	fail	1	2731	:0: AssertionError: undefined !== false
+stream	external/node-tests/test/parallel/test-stream-readable-setEncoding-existing-buffers.js	fail	1	3064	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-readable-setEncoding-existing-buffers.js:13: TypeError: r.setEncoding is not a function
+stream	external/node-tests/test/parallel/test-stream-readable-setEncoding-null.js	fail	1	2483	:0: AssertionError: undefined !== hex
+stream	external/node-tests/test/parallel/test-stream-readable-strategy-option.js	fail	1	2626	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-readable-strategy-option.js:21: ReferenceError: ByteLengthQueuingStrategy is not defined | mustCall: expected 4 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-readable-to-web-byob.js	fail	1	3034	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-readable-to-web-byob.js:34: TypeError: Readable.toWeb is not a function
+stream	external/node-tests/test/parallel/test-stream-readable-to-web-termination-byob.js	fail	1	2704	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-readable-to-web-termination-byob.js:11: TypeError: Readable.toWeb is not a function | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-readable-to-web-termination.js	fail	1	2652	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-readable-to-web-termination.js:10: TypeError: Readable.toWeb is not a function
+stream	external/node-tests/test/parallel/test-stream-readable-unpipe-resume.js	fail	1	2881	mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-readable-unshift.js	fail	1	3515	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-readable-unshift.js:18: TypeError: readable.unshift is not a function | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-readable-with-unimplemented-_read.js	fail	1	3025	mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-readableListening-state.js	fail	1	3067	:0: AssertionError: undefined !== false
+stream	external/node-tests/test/parallel/test-stream-reduce.js	timeout	-1	40062	30s timeout
+stream	external/node-tests/test/parallel/test-stream-set-default-hwm.js	fail	1	4947	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-set-default-hwm.js:14: TypeError: getDefaultHighWaterMark is not a function
+stream	external/node-tests/test/parallel/test-stream-toArray.js	timeout	-1	40026	30s timeout
+stream	external/node-tests/test/parallel/test-stream-toWeb-allows-server-response.js	timeout	-1	40015	30s timeout
+stream	external/node-tests/test/parallel/test-stream-transform-callback-twice.js	pass	0	2863	
+stream	external/node-tests/test/parallel/test-stream-transform-constructor-set-methods.js	fail	1	2987	:0: AssertionError
+stream	external/node-tests/test/parallel/test-stream-transform-destroy.js	timeout	-1	40035	30s timeout
+stream	external/node-tests/test/parallel/test-stream-transform-final-sync.js	fail	1	3526	:0: AssertionError: 11 !== 16 | nextTick: { |   "name": "AssertionError",
+stream	external/node-tests/test/parallel/test-stream-transform-final.js	fail	1	3336	:0: AssertionError: 11 !== 16 | nextTick: { |   "name": "AssertionError",
+stream	external/node-tests/test/parallel/test-stream-transform-flush-data.js	pass	0	2991	
+stream	external/node-tests/test/parallel/test-stream-transform-hwm0.js	fail	1	2614	:0: AssertionError: true !== false
+stream	external/node-tests/test/parallel/test-stream-transform-objectmode-falsey-value.js	timeout	-1	40018	30s timeout
+stream	external/node-tests/test/parallel/test-stream-transform-split-highwatermark.js	fail	1	2747	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-transform-split-highwatermark.js:7: TypeError: getDefaultHighWaterMark is not a function
+stream	external/node-tests/test/parallel/test-stream-transform-split-objectmode.js	fail	1	2826	:0: AssertionError: assert failed
+stream	external/node-tests/test/parallel/test-stream-typedarray.js	fail	1	3137	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-typedarray.js:84: TypeError: readable.unshift is not a function | mustCall: expected 1 calls, got 11 | mustCall: expected 1 calls, got 
+stream	external/node-tests/test/parallel/test-stream-uint8array.js	fail	1	2892	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-uint8array.js:71: TypeError: callback is not a function | mustCall: expected 1 calls, got 3 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-unpipe-event.js	fail	1	2770	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-unpipe-event.js:47: TypeError: src.unpipe is not a function | timer: @/Users/macuser/tmp/ionpower-node/scripts/conformance/../../extern
+stream	external/node-tests/test/parallel/test-stream-unshift-empty-chunk.js	fail	1	2954	mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-unshift-read-race.js	fail	1	2843	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-unshift-read-race.js:46: TypeError: r is undefined | mustCallAtLeast: expected >= 1, got 0
+stream	external/node-tests/test/parallel/test-stream-wrap-drain.js	fail	1	2870	<ionpower-node internal>:2: Error: require: cannot find module 'internal/js_stream_socket' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+stream	external/node-tests/test/parallel/test-stream-wrap-encoding.js	fail	1	2949	<ionpower-node internal>:2: Error: require: cannot find module 'internal/js_stream_socket' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+stream	external/node-tests/test/parallel/test-stream-wrap.js	fail	1	2824	<ionpower-node internal>:2: Error: require: cannot find module 'internal/test/binding' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+stream	external/node-tests/test/parallel/test-stream-writable-aborted.js	fail	1	2820	:0: AssertionError: undefined !== false
+stream	external/node-tests/test/parallel/test-stream-writable-change-default-encoding.js	fail	1	2891	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-stream-writable-change-default-encoding.js:52: TypeError: m.setDefaultEncoding is not a function | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-writable-clear-buffer.js	pass	0	3133	
+stream	external/node-tests/test/parallel/test-stream-writable-constructor-set-methods.js	fail	1	2447	:0: AssertionError
+stream	external/node-tests/test/parallel/test-stream-writable-decoded-encoding.js	fail	1	2560	:0: AssertionError
+stream	external/node-tests/test/parallel/test-stream-writable-destroy.js	timeout	-1	40049	30s timeout
+stream	external/node-tests/test/parallel/test-stream-writable-end-cb-error.js	fail	1	2438	:0: AssertionError: undefined !== Error: kaboom
+stream	external/node-tests/test/parallel/test-stream-writable-end-cb-uncaught.js	fail	1	2557	:0: AssertionError: undefined !== Error: kaboom | mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 2
+stream	external/node-tests/test/parallel/test-stream-writable-end-multiple.js	fail	1	2287	mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-writable-ended-state.js	fail	1	1806	:0: AssertionError: undefined !== true | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-writable-final-async.js	timeout	-1	40029	30s timeout
+stream	external/node-tests/test/parallel/test-stream-writable-final-destroy.js	fail	1	2086	microtask: mustNotCall/<@/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/index.js:50:15 | EventEmitter.prototype.emit@<ionpower-node bootstrap>:418:43 | doFinish@<ionpower-node bootstrap>:5017:7
+stream	external/node-tests/test/parallel/test-stream-writable-final-throw.js	fail	1	2147	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/index.js:70: Error: expectsError: no error thrown
+stream	external/node-tests/test/parallel/test-stream-writable-finish-destroyed.js	fail	1	1855	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/index.js:50: Error: mustNotCall:  called with [] | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-writable-finished-state.js	pass	0	1907	
+stream	external/node-tests/test/parallel/test-stream-writable-finished.js	fail	1	1900	:0: AssertionError: assert failed
+stream	external/node-tests/test/parallel/test-stream-writable-invalid-chunk.js	fail	1	1922	:0: AssertionError
+stream	external/node-tests/test/parallel/test-stream-writable-needdrain-state.js	fail	1	1977	:0: AssertionError: undefined !== false
+stream	external/node-tests/test/parallel/test-stream-writable-null.js	timeout	-1	40019	30s timeout
+stream	external/node-tests/test/parallel/test-stream-writable-properties.js	fail	1	2100	:0: AssertionError: undefined !== 0
+stream	external/node-tests/test/parallel/test-stream-writable-samecb-singletick.js	fail	1	2479	<ionpower-node internal>:2: Error: require: cannot find module 'console' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+stream	external/node-tests/test/parallel/test-stream-writable-writable.js	fail	1	2552	:0: AssertionError: undefined !== true
+stream	external/node-tests/test/parallel/test-stream-writable-write-cb-error.js	fail	1	2302	:0: AssertionError: false !== true | mustCall: expected 1 calls, got 2 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-writable-write-cb-twice.js	pass	0	2179	
+stream	external/node-tests/test/parallel/test-stream-writable-write-error.js	fail	1	2423	:0: AssertionError | mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-writable-write-writev-finish.js	fail	1	2355	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/index.js:50: Error: mustNotCall:  called with []
+stream	external/node-tests/test/parallel/test-stream-writableState-ending.js	fail	1	2262	:0: AssertionError: undefined !== true
+stream	external/node-tests/test/parallel/test-stream-writableState-uncorked-bufferedRequestCount.js	fail	1	2444	:0: AssertionError: undefined !== 0 | mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0
+stream	external/node-tests/test/parallel/test-stream-write-destroy.js	fail	1	2377	:0: AssertionError: 0 !== 1
+stream	external/node-tests/test/parallel/test-stream-write-drain.js	pass	0	2433	
+stream	external/node-tests/test/parallel/test-stream-write-final.js	pass	0	2771	
+stream	external/node-tests/test/parallel/test-stream-writev.js	fail	1	2723	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/index.js:50: Error: mustNotCall: Should not call _write called with ["hello, ","ascii",null]
+string-decoder	external/node-tests/test/parallel/test-string-decoder-end.js	fail	1	1677	:0: AssertionError: 4g==mA==gw==8A==nw==kg==qQ==7w==ow==vw== !== 4piD8J+Sqe+jvw==
+string-decoder	external/node-tests/test/parallel/test-string-decoder-fuzz.js	fail	1	2459	:0: AssertionError: Mismatch: | [ '莫뎻긔垊Ꮜ甫', '䬹ⱷ馿ꌿ', 'は⾾쾿펧樳㧉啹쾈屡浫ĸ츢艣տ똚旘ﰺ⽹༂', 'ㅦ꽕␂Ⲏ칽尿됴镳䊺ꗆྔ춥欪嚋푡契펼펔쨥쮪', '뵔', 'ꑦ侟悞⒢ꐬ徲瞼讋䑿燤﫤됐�乤晶ᡌ', '뜝▜饾쪣鐃ﶒ젂�挆', '볃凞뎩蛶缕빴췡绺捤⳯䡇䡛㪮쫉湁圙ó캽', '' ] | [ 'ab83bbb314ae8a57cc132b75', '29f8394b772cbf993fa3', '6f30
+fs	external/node-tests/test/parallel/test-fs-access.js	timeout	-1	40048	30s timeout
+fs	external/node-tests/test/parallel/test-fs-append-file-flush.js	timeout	-1	40019	30s timeout
+fs	external/node-tests/test/parallel/test-fs-append-file-sync.js	timeout	-1	40019	30s timeout
+fs	external/node-tests/test/parallel/test-fs-append-file.js	timeout	-1	40018	30s timeout
+fs	external/node-tests/test/parallel/test-fs-assert-encoding-error.js	timeout	-1	40018	30s timeout
+fs	external/node-tests/test/parallel/test-fs-buffer.js	fail	1	3136	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-fs-buffer.js:14: TypeError: fs.open is not a function | exit handler: onexit@/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/
+fs	external/node-tests/test/parallel/test-fs-buffertype-writesync.js	pass	0	2658	
+fs	external/node-tests/test/parallel/test-fs-chmod-mask.js	fail	1	3054	:0: AssertionError: 25 !== 511 | timer: { |   "name": "AssertionError",
+fs	external/node-tests/test/parallel/test-fs-chmod.js	fail	1	2482	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-fs-chmod.js:50: TypeError: fs._openSync is undefined | exit handler: onexit@/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/t
+fs	external/node-tests/test/parallel/test-fs-chown-negative-one.js	fail	1	2507	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-fs-chown-negative-one.js:21: TypeError: fs.chown is not a function | exit handler: onexit@/Users/macuser/tmp/ionpower-node/external/node-tests
+fs	external/node-tests/test/parallel/test-fs-chown-type-check.js	pass	0	2439	
+fs	external/node-tests/test/parallel/test-fs-close-errors.js	fail	1	2310	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-fs-close-errors.js:23: TypeError: fs.openSync is not a function
+fs	external/node-tests/test/parallel/test-fs-close.js	fail	1	2390	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-fs-close.js:8: TypeError: fs.openSync is not a function
+fs	external/node-tests/test/parallel/test-fs-constants.js	fail	1	2413	:0: AssertionError: undefined === undefined
+fs	external/node-tests/test/parallel/test-fs-copyfile-respect-permissions.js	timeout	-1	40030	30s timeout
+fs	external/node-tests/test/parallel/test-fs-copyfile.js	fail	1	2289	<ionpower-node internal>:2: Error: require: cannot find module 'internal/test/binding' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+fs	external/node-tests/test/parallel/test-fs-cp-sync-dereference.js	fail	1	2058	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-fs-cp-sync-dereference.js:36: TypeError: symlinkSync is not a function | exit handler: onexit@/Users/macuser/tmp/ionpower-node/external/node-t
+fs	external/node-tests/test/parallel/test-fs-empty-readStream.js	fail	1	1901	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-fs-empty-readStream.js:30: TypeError: fs.open is not a function | mustCall: expected 1 calls, got 0
+fs	external/node-tests/test/parallel/test-fs-error-messages.js	fail	1	2558	<ionpower-node internal>:2: Error: require: cannot find module 'internal/test/binding' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel' | exit handler: onexit@/Users/macuser/tmp/ionpower-no
+fs	external/node-tests/test/parallel/test-fs-exists.js	fail	1	2263	:0: AssertionError | timer: fs.exists/<@<ionpower-node bootstrap>:101:32 | this.__fire_due_timers__@<ionpower-node bootstrap>:4659:13
+fs	external/node-tests/test/parallel/test-fs-existssync-false.js	pass	0	2237	
+fs	external/node-tests/test/parallel/test-fs-existssync-memleak-longpath.js	timeout	-1	40018	30s timeout
+fs	external/node-tests/test/parallel/test-fs-fchmod.js	pass	0	1973	
+fs	external/node-tests/test/parallel/test-fs-fchown-negative-one.js	fail	1	2064	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-fs-fchown-negative-one.js:16: TypeError: fs.openSync is not a function | exit handler: onexit@/Users/macuser/tmp/ionpower-node/external/node-t
+fs	external/node-tests/test/parallel/test-fs-fchown.js	pass	0	2120	
+fs	external/node-tests/test/parallel/test-fs-filehandle-use-after-close.js	timeout	-1	40019	30s timeout
+fs	external/node-tests/test/parallel/test-fs-filehandle.js	fail	1	1833	<ionpower-node internal>:2: Error: require: cannot find module 'internal/test/binding' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+fs	external/node-tests/test/parallel/test-fs-fmap.js	pass	0	2158	
+fs	external/node-tests/test/parallel/test-fs-fsync.js	fail	1	2109	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-fs-fsync.js:35: Error: fs.copyFileSync: open /Users/macuser/tmp/ionpower-node/external/node-tests/test/common/../fixtures/a.js: No such file o
+fs	external/node-tests/test/parallel/test-fs-internal-assertencoding.js	pass	0	1740	
+fs	external/node-tests/test/parallel/test-fs-lchmod.js	skip	0	1789	
+fs	external/node-tests/test/parallel/test-fs-lchown-negative-one.js	fail	1	2132	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-fs-lchown-negative-one.js:15: TypeError: fs.symlinkSync is not a function | exit handler: onexit@/Users/macuser/tmp/ionpower-node/external/nod
+fs	external/node-tests/test/parallel/test-fs-lchown.js	timeout	-1	40076	30s timeout
+fs	external/node-tests/test/parallel/test-fs-link.js	fail	1	2622	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-fs-link.js:20: TypeError: fs.link is not a function | exit handler: onexit@/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/tm
+zlib	external/node-tests/test/parallel/test-zlib-brotli-16GB.js	fail	1	832	<ionpower-node bootstrap>:5860: Error: zlib.createBrotliDecompress: not implemented on ionpower-node
+zlib	external/node-tests/test/parallel/test-zlib-brotli-dictionary.js	fail	1	18644	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-brotli-dictionary.js:89: SyntaxError: expected expression, got ')' | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating th
+zlib	external/node-tests/test/parallel/test-zlib-brotli-flush.js	fail	1	506	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/fixtures.js:21: Error: ENOENT: No such file or directory, open '/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/../fixtures/person.jpg'
+zlib	external/node-tests/test/parallel/test-zlib-brotli-from-brotli.js	fail	1	921	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-brotli-from-brotli.js:13: TypeError: zlib.BrotliDecompress is not a constructor | exit handler: onexit@/Users/macuser/tmp/ionpower-node/e
+zlib	external/node-tests/test/parallel/test-zlib-brotli-from-string.js	fail	1	495	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-brotli-from-string.js:27: TypeError: zlib.brotliCompress is not a function | mustCall: expected 1 calls, got 0
+zlib	external/node-tests/test/parallel/test-zlib-brotli-kmaxlength-rangeerror.js	fail	1	390	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-brotli-kmaxlength-rangeerror.js:21: TypeError: zlib.brotliDecompress is not a function | mustCall: expected 1 calls, got 0
+zlib	external/node-tests/test/parallel/test-zlib-brotli.js	fail	1	392	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/fixtures.js:21: Error: ENOENT: No such file or directory, open '/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/../fixtures/pss-vectors.json'
+zlib	external/node-tests/test/parallel/test-zlib-close-after-error.js	fail	1	388	:0: AssertionError: undefined !== false | mustCall: expected 1 calls, got 0
+zlib	external/node-tests/test/parallel/test-zlib-close-after-write.js	fail	1	490	timer: @/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-close-after-write.js:29:3 | mustCall/wrapped@/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/index.js:20:16 | _a
+zlib	external/node-tests/test/parallel/test-zlib-close-in-ondata.js	timeout	-1	40018	30s timeout
+zlib	external/node-tests/test/parallel/test-zlib-const.js	fail	1	410	:0: AssertionError
+zlib	external/node-tests/test/parallel/test-zlib-convenience-methods.js	fail	1	570	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-convenience-methods.js:112: TypeError: invalid 'instanceof' operand zlib[method[2]] | timer: @/Users/macuser/tmp/ionpower-node/scripts/co
+zlib	external/node-tests/test/parallel/test-zlib-crc32.js	fail	1	400	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-crc32.js:193: TypeError: zlib.crc32 is not a function
+zlib	external/node-tests/test/parallel/test-zlib-create-raw.js	fail	1	387	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-create-raw.js:9: TypeError: invalid 'instanceof' operand zlib.InflateRaw
+zlib	external/node-tests/test/parallel/test-zlib-deflate-constructors.js	fail	1	409	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-deflate-constructors.js:9: TypeError: zlib.Deflate is not a function
+zlib	external/node-tests/test/parallel/test-zlib-deflate-raw-inherits.js	fail	1	393	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-deflate-raw-inherits.js:14: TypeError: DeflateRaw is undefined
+zlib	external/node-tests/test/parallel/test-zlib-destroy-pipe.js	timeout	-1	40086	30s timeout
+zlib	external/node-tests/test/parallel/test-zlib-destroy.js	fail	1	390	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-destroy.js:13: TypeError: ts.destroy is not a function
+zlib	external/node-tests/test/parallel/test-zlib-dictionary-fail.js	fail	1	408	mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0
+zlib	external/node-tests/test/parallel/test-zlib-dictionary.js	fail	1	409	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-dictionary.js:56: TypeError: inflate.setEncoding is not a function
+zlib	external/node-tests/test/parallel/test-zlib-empty-buffer.js	fail	1	24656	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-empty-buffer.js:8: SyntaxError: async functions are not enabled in the parser | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: 
+zlib	external/node-tests/test/parallel/test-zlib-failed-init.js	fail	1	415	:0: AssertionError
+zlib	external/node-tests/test/parallel/test-zlib-flush-drain-longblock.js	fail	1	400	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-flush-drain-longblock.js:16: TypeError: zipper.flush is not a function
+zlib	external/node-tests/test/parallel/test-zlib-flush-drain.js	fail	1	391	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-flush-drain.js:28: TypeError: ws is undefined
+zlib	external/node-tests/test/parallel/test-zlib-flush-flags.js	fail	1	386	:0: AssertionError
+zlib	external/node-tests/test/parallel/test-zlib-flush-write-sync-interleaved.js	fail	1	388	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-flush-write-sync-interleaved.js:13: TypeError: decompress.setEncoding is not a function
+zlib	external/node-tests/test/parallel/test-zlib-flush.js	fail	1	23380	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-flush.js:9: SyntaxError: async functions are not enabled in the parser | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutatin
+zlib	external/node-tests/test/parallel/test-zlib-from-concatenated-gzip.js	fail	1	470	:0: AssertionError: abc !== abcdef
+zlib	external/node-tests/test/parallel/test-zlib-from-gzip-with-trailing-garbage.js	fail	1	450	:0: AssertionError:  !== abcdef
+zlib	external/node-tests/test/parallel/test-zlib-from-gzip.js	fail	1	421	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-from-gzip.js:41: Error: ENOENT: No such file or directory, open '/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/../fixt
+zlib	external/node-tests/test/parallel/test-zlib-from-string.js	fail	1	509	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-from-string.js:76: TypeError: zlib.unzip is not a function | mustCall: expected 1 calls, got 0
+zlib	external/node-tests/test/parallel/test-zlib-invalid-arg-value-brotli-compress.js	pass	0	393	
+zlib	external/node-tests/test/parallel/test-zlib-invalid-input-memory.js	fail	1	527	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/gc.js:41: TypeError: onGcAsyncHook is undefined | timer: @/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-invalid-input-
+zlib	external/node-tests/test/parallel/test-zlib-invalid-input.js	fail	1	396	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-invalid-input.js:38: TypeError: zlib.Unzip is not a function
+zlib	external/node-tests/test/parallel/test-zlib-kmaxlength-rangeerror.js	fail	1	412	:0: AssertionError | timer: { |   "name": "AssertionError",
+zlib	external/node-tests/test/parallel/test-zlib-maxOutputLength.js	fail	1	406	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-maxOutputLength.js:9: TypeError: zlib.brotliDecompress is not a function
+zlib	external/node-tests/test/parallel/test-zlib-no-stream.js	pass	0	405	
+zlib	external/node-tests/test/parallel/test-zlib-not-string-or-buffer.js	fail	1	437	:0: AssertionError
+zlib	external/node-tests/test/parallel/test-zlib-object-write.js	fail	1	387	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-object-write.js:7: TypeError: Gunzip is not a constructor
+zlib	external/node-tests/test/parallel/test-zlib-params.js	fail	1	388	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/fixtures.js:21: Error: ENOENT: No such file or directory, open '/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/../fixtures/person.jpg'
+zlib	external/node-tests/test/parallel/test-zlib-premature-end.js	fail	1	422	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-premature-end.js:25: TypeError: stream.setEncoding is not a function
+zlib	external/node-tests/test/parallel/test-zlib-random-byte-pipes.js	fail	1	20965	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-random-byte-pipes.js:44: SyntaxError: expected expression, got '=' | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating th
+zlib	external/node-tests/test/parallel/test-zlib-reset-before-write.js	fail	1	415	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-reset-before-write.js:12: TypeError: z.reset is not a function | mustCall: expected 1 calls, got 0
+zlib	external/node-tests/test/parallel/test-zlib-reset-during-write.js	fail	1	395	<ionpower-node bootstrap>:5860: Error: zlib.createBrotliCompress: not implemented on ionpower-node
+zlib	external/node-tests/test/parallel/test-zlib-sync-no-event.js	fail	1	386	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-sync-no-event.js:9: TypeError: zlib.Gzip is not a constructor
+zlib	external/node-tests/test/parallel/test-zlib-truncated.js	timeout	-1	40025	30s timeout
+zlib	external/node-tests/test/parallel/test-zlib-type-error.js	timeout	-1	40037	30s timeout
+zlib	external/node-tests/test/parallel/test-zlib-unused-weak.js	fail	1	794	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-unused-weak.js:9: TypeError: globalThis.gc is not a function
+zlib	external/node-tests/test/parallel/test-zlib-unzip-one-byte-chunks.js	fail	1	1020	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-unzip-one-byte-chunks.js:15: TypeError: zlib.createUnzip is not a function
+zlib	external/node-tests/test/parallel/test-zlib-write-after-close.js	fail	1	1106	timer: @/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-write-after-close.js:31:1 | mustCall/wrapped@/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/index.js:20:16 | _a
+zlib	external/node-tests/test/parallel/test-zlib-write-after-end.js	timeout	-1	40042	30s timeout
+zlib	external/node-tests/test/parallel/test-zlib-write-after-flush.js	fail	1	1008	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-write-after-flush.js:41: TypeError: gunz.setEncoding is not a function
+zlib	external/node-tests/test/parallel/test-zlib-zero-byte.js	fail	1	886	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-zero-byte.js:36: TypeError: Compressor is not a constructor
+zlib	external/node-tests/test/parallel/test-zlib-zero-windowBits.js	fail	1	988	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-zero-windowBits.js:12: TypeError: test is not a function
+zlib	external/node-tests/test/parallel/test-zlib-zstd-dictionary.js	fail	1	1088	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-zstd-dictionary.js:21: TypeError: zlib.zstdCompress is not a function | mustCall: expected 1 calls, got 0
+zlib	external/node-tests/test/parallel/test-zlib-zstd-flush.js	fail	1	1117	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/fixtures.js:21: Error: ENOENT: No such file or directory, open '/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/../fixtures/person.jpg'
+zlib	external/node-tests/test/parallel/test-zlib-zstd-from-string.js	fail	1	913	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-zstd-from-string.js:27: TypeError: zlib.zstdCompress is not a function | mustCall: expected 1 calls, got 0
+zlib	external/node-tests/test/parallel/test-zlib-zstd-from-zstd.js	fail	1	1213	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-zstd-from-zstd.js:16: TypeError: zlib.ZstdDecompress is not a constructor | exit handler: onexit@/Users/macuser/tmp/ionpower-node/externa
+zlib	external/node-tests/test/parallel/test-zlib-zstd-kmaxlength-rangeerror.js	fail	1	937	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-zlib-zstd-kmaxlength-rangeerror.js:22: TypeError: zlib.zstdDecompress is not a function | mustCall: expected 1 calls, got 0
+zlib	external/node-tests/test/parallel/test-zlib-zstd-pledged-src-size.js	fail	1	1110	mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0 | mustCall: expected 1 calls, got 0
+zlib	external/node-tests/test/parallel/test-zlib-zstd.js	fail	1	1252	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/fixtures.js:21: Error: ENOENT: No such file or directory, open '/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/../fixtures/pss-vectors.json'
+crypto	external/node-tests/test/parallel/test-crypto-aes-wrap.js	skip	0	1340	
+crypto	external/node-tests/test/parallel/test-crypto-argon2-job.js	timeout	1	36401	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-argon2-unsupported.js	fail	1	721	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-argon2.js	timeout	1	36532	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-async-sign-verify.js	timeout	1	36791	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-authenticated-stream.js	skip	0	700	
+crypto	external/node-tests/test/parallel/test-crypto-authenticated.js	timeout	-1	40086	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-certificate.js	timeout	1	32250	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-cipheriv-decipheriv.js	fail	1	1151	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-classes.js	fail	1	1067	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-default-shake-lengths-oneshot.js	fail	1	1072	<ionpower-node bootstrap>:1471: Error: crypto: algorithm shake128 not supported (md5/sha1/sha224/sha256/sha384/sha512 inline)
+crypto	external/node-tests/test/parallel/test-crypto-default-shake-lengths.js	skip	0	1043	
+crypto	external/node-tests/test/parallel/test-crypto-dep0203.js	timeout	-1	40043	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-dep0204.js	timeout	-1	40028	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-des3-wrap.js	skip	0	817	
+crypto	external/node-tests/test/parallel/test-crypto-dh-constructor.js	fail	1	1225	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-dh-curves.js	fail	1	1165	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-dh-curves.js:16: TypeError: crypto.createDiffieHellman is not a function
+crypto	external/node-tests/test/parallel/test-crypto-dh-errors.js	fail	1	1104	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-dh-generate-keys.js	fail	1	1103	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-dh-group-setters.js	fail	1	1559	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-dh-group-setters.js:10: TypeError: crypto.getDiffieHellman is not a function
+crypto	external/node-tests/test/parallel/test-crypto-dh-leak.js	fail	1	1169	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-dh-modp2-views.js	fail	1	973	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-dh-modp2-views.js:10: TypeError: crypto.createDiffieHellmanGroup is not a function
+crypto	external/node-tests/test/parallel/test-crypto-dh-modp2.js	fail	1	816	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-dh-modp2.js:9: TypeError: crypto.createDiffieHellmanGroup is not a function
+crypto	external/node-tests/test/parallel/test-crypto-dh-odd-key.js	fail	1	744	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-dh-padding.js	fail	1	643	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-dh-padding.js:101: TypeError: crypto.getDiffieHellman is not a function
+crypto	external/node-tests/test/parallel/test-crypto-dh-shared.js	fail	1	685	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-dh-shared.js:9: TypeError: crypto.createDiffieHellmanGroup is not a function
+crypto	external/node-tests/test/parallel/test-crypto-dh-stateless.js	timeout	-1	40087	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-dh.js	fail	1	1052	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-domain.js	fail	1	1049	<ionpower-node internal>:2: Error: require: cannot find module 'domain' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+crypto	external/node-tests/test/parallel/test-crypto-domains.js	fail	1	988	<ionpower-node internal>:2: Error: require: cannot find module 'domain' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+crypto	external/node-tests/test/parallel/test-crypto-ecb.js	fail	1	1021	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-ecdh-convert-key.js	fail	1	1072	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-ecdh-convert-key.js:43: TypeError: getCurves is not a function
+crypto	external/node-tests/test/parallel/test-crypto-ecdh-setpublickey-deprecation.js	fail	1	18081	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-ecdh-setpublickey-deprecation.js:22: SyntaxError: missing ( before catch | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mut
+crypto	external/node-tests/test/parallel/test-crypto-eddsa-variants.js	fail	1	782	<ionpower-node bootstrap>:2940: Error: Buffer.from base64: bad character
+crypto	external/node-tests/test/parallel/test-crypto-encap-decap.js	fail	1	12283	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-encap-decap.js:125: SyntaxError: invalid property id | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototyp
+crypto	external/node-tests/test/parallel/test-crypto-encoding-validation-error.js	fail	1	738	:0: AssertionError
+crypto	external/node-tests/test/parallel/test-crypto-fips.js	timeout	1	33867	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-from-binary.js	pass	0	10565	
+crypto	external/node-tests/test/parallel/test-crypto-gcm-explicit-short-tag.js	fail	1	659	:0: AssertionError
+crypto	external/node-tests/test/parallel/test-crypto-gcm-implicit-short-tag.js	fail	1	734	:0: AssertionError
+crypto	external/node-tests/test/parallel/test-crypto-getcipherinfo.js	fail	1	707	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-getcipherinfo.js:16: TypeError: getCipherInfo is not a function
+crypto	external/node-tests/test/parallel/test-crypto-hash-stream-pipe.js	fail	1	712	<ionpower-node bootstrap>:1471: Error: crypto: algorithm sha3-512 not supported (md5/sha1/sha224/sha256/sha384/sha512 inline)
+crypto	external/node-tests/test/parallel/test-crypto-hash.js	fail	1	781	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-hash.js:33: TypeError: a5.end is not a function
+crypto	external/node-tests/test/parallel/test-crypto-hkdf.js	fail	1	832	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-hmac.js	timeout	1	38820	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-job-error-parity.js	fail	1	715	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/fixtures.js:25: Error: ENOENT: No such file or directory, open '/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/../fixtures/keys/ed25519_private.pem'
+crypto	external/node-tests/test/parallel/test-crypto-key-objects-messageport.js	fail	1	12290	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-key-objects-messageport.js:44: SyntaxError: async functions are not enabled in the parser | /Users/macuser/tmp/ionpower-node/test/vendo
+crypto	external/node-tests/test/parallel/test-crypto-key-objects-raw.js	fail	1	752	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/fixtures.js:25: Error: ENOENT: No such file or directory, open '/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/../fixtures/keys/ec_p256_public.pem'
+crypto	external/node-tests/test/parallel/test-crypto-key-objects-to-crypto-key.js	fail	1	748	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-key-objects-to-crypto-key.js:35: TypeError: key.toCryptoKey is not a function
+crypto	external/node-tests/test/parallel/test-crypto-key-objects.js	timeout	-1	40038	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-keygen-async-dsa-key-object.js	fail	1	985	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-keygen-async-dsa.js	timeout	1	39339	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-keygen-async-elliptic-curve-jwk-ec.js	timeout	-1	40018	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-keygen-async-elliptic-curve-jwk-rsa.js	fail	1	19780	timer: { |   "name": "AssertionError", |   "message": "undefined !== RSA"
+crypto	external/node-tests/test/parallel/test-crypto-keygen-async-elliptic-curve-jwk.js	fail	1	2111	timer: { |   "name": "AssertionError", |   "message": "assert failed"
+crypto	external/node-tests/test/parallel/test-crypto-keygen-async-encrypted-private-key-der.js	fail	1	6389	timer: { |   "name": "AssertionError", |   "message": "assert failed"
+crypto	external/node-tests/test/parallel/test-crypto-keygen-async-encrypted-private-key.js	fail	1	4353	timer: { |   "name": "AssertionError", |   "message": "assert failed"
+crypto	external/node-tests/test/parallel/test-crypto-keygen-async-explicit-elliptic-curve-encrypted-p256.js	fail	1	725	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-keygen-async-explicit-elliptic-curve-encrypted.js.js	fail	1	772	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-keygen-async-explicit-elliptic-curve.js	fail	1	25796	timer: { |   "name": "AssertionError", |   "message": "object !== string"
+crypto	external/node-tests/test/parallel/test-crypto-keygen-async-named-elliptic-curve-encrypted-p256.js	fail	1	742	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-keygen-async-named-elliptic-curve-encrypted.js	fail	1	750	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-keygen-async-named-elliptic-curve.js	fail	1	25154	timer: { |   "name": "AssertionError", |   "message": "object !== string"
+crypto	external/node-tests/test/parallel/test-crypto-keygen-async-rsa.js	fail	1	700	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-keygen-bit-length.js	fail	1	694	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-keygen-dh-classic.js	pass	0	674	
+crypto	external/node-tests/test/parallel/test-crypto-keygen-eddsa.js	fail	1	1873	timer: { |   "name": "AssertionError", |   "message": "deepEqual failed"
+crypto	external/node-tests/test/parallel/test-crypto-keygen-empty-passphrase-no-error.js	fail	1	13289	timer: { |   "name": "AssertionError", |   "message": "object !== string"
+crypto	external/node-tests/test/parallel/test-crypto-keygen-empty-passphrase-no-prompt.js	fail	1	703	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-keygen-invalid-parameter-encoding-dsa.js	pass	0	716	
+crypto	external/node-tests/test/parallel/test-crypto-keygen-invalid-parameter-encoding-ec.js	pass	0	1039	
+crypto	external/node-tests/test/parallel/test-crypto-keygen-key-object-without-encoding.js	fail	1	17775	timer: { |   "name": "AssertionError", |   "message": "object !== string"
+crypto	external/node-tests/test/parallel/test-crypto-keygen-key-objects.js	fail	1	17561	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-keygen-key-objects.js:23: SyntaxError: identifier starts immediately after numeric literal | /Users/macuser/tmp/ionpower-node/test/vend
+crypto	external/node-tests/test/parallel/test-crypto-keygen-missing-oid.js	fail	1	679	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-keygen-no-rsassa-pss-params.js	fail	1	15298	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-keygen-no-rsassa-pss-params.js:20: SyntaxError: identifier starts immediately after numeric literal | /Users/macuser/tmp/ionpower-node/
+crypto	external/node-tests/test/parallel/test-crypto-keygen-non-standard-public-exponent.js	fail	1	17497	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-keygen-non-standard-public-exponent.js:25: SyntaxError: identifier starts immediately after numeric literal | /Users/macuser/tmp/ionpow
+crypto	external/node-tests/test/parallel/test-crypto-keygen-promisify.js	pass	0	6402	
+crypto	external/node-tests/test/parallel/test-crypto-keygen-raw.js	fail	1	729	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-keygen-raw.js:19: TypeError: process.features is undefined
+crypto	external/node-tests/test/parallel/test-crypto-keygen-rfc8017-9-1.js	fail	1	15092	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-keygen-rfc8017-9-1.js:24: SyntaxError: identifier starts immediately after numeric literal | /Users/macuser/tmp/ionpower-node/test/vend
+crypto	external/node-tests/test/parallel/test-crypto-keygen-rfc8017-a-2-3.js	fail	1	15674	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-keygen-rfc8017-a-2-3.js:21: SyntaxError: identifier starts immediately after numeric literal | /Users/macuser/tmp/ionpower-node/test/ve
+crypto	external/node-tests/test/parallel/test-crypto-keygen-rsa-pss.js	fail	1	17556	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-keygen-rsa-pss.js:29: SyntaxError: identifier starts immediately after numeric literal | /Users/macuser/tmp/ionpower-node/test/vendor/b
+crypto	external/node-tests/test/parallel/test-crypto-keygen-sync.js	fail	1	7774	:0: AssertionError: object !== string
+crypto	external/node-tests/test/parallel/test-crypto-keygen.js	fail	1	742	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-lazy-transform-writable.js	fail	1	749	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-lazy-transform-writable.js:15: TypeError: hasher1.write is not a function
+crypto	external/node-tests/test/parallel/test-crypto-no-algorithm.js	fail	1	708	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-oaep-zero-length.js	timeout	-1	40048	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-oneshot-hash-xof.js	fail	1	1315	<ionpower-node bootstrap>:1471: Error: crypto: algorithm shake128 not supported (md5/sha1/sha224/sha256/sha384/sha512 inline)
+crypto	external/node-tests/test/parallel/test-crypto-oneshot-hash.js	fail	1	1253	:0: AssertionError
+crypto	external/node-tests/test/parallel/test-crypto-op-during-process-exit.js	timeout	-1	40040	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-padding-aes256.js	skip	0	839	
+crypto	external/node-tests/test/parallel/test-crypto-padding.js	fail	1	1019	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-pbkdf2.js	fail	1	1046	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-pqc-key-objects-ml-dsa.js	timeout	-1	40028	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-pqc-key-objects-ml-kem.js	timeout	-1	40028	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-pqc-key-objects-slh-dsa.js	timeout	-1	40059	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-pqc-keygen-ml-dsa.js	fail	1	1077	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-pqc-keygen-ml-kem.js	fail	1	1223	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-pqc-keygen-slh-dsa.js	fail	1	1226	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-pqc-sign-verify-ml-dsa.js	timeout	-1	40069	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-prime.js	timeout	-1	40028	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-private-decrypt-gh32240.js	fail	1	1472	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-psychic-signatures.js	timeout	-1	40087	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-publicDecrypt-fails-first-time.js	fail	1	1075	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-random.js	timeout	-1	40052	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-randomfillsync-regression.js	pass	0	1450	
+crypto	external/node-tests/test/parallel/test-crypto-randomuuid.js	timeout	1	32781	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-randomuuidv7.js	fail	1	23108	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-randomuuidv7.js:22: SyntaxError: expected expression, got ')' | /Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [
+crypto	external/node-tests/test/parallel/test-crypto-rsa-dsa.js	fail	1	819	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-rsa-pss-default-salt-length.js	fail	1	696	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/fixtures.js:25: Error: ENOENT: No such file or directory, open '/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/../fixtures/keys/rsa_private.pem'
+crypto	external/node-tests/test/parallel/test-crypto-scrypt.js	timeout	-1	40039	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-sec-level.js	fail	1	1070	<ionpower-node internal>:2: Error: require: cannot find module 'internal/crypto/util' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+crypto	external/node-tests/test/parallel/test-crypto-secret-keygen.js	fail	1	1111	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-secret-keygen.js:90: TypeError: generateKeySync is not a function
+crypto	external/node-tests/test/parallel/test-crypto-secure-heap.js	fail	1	1075	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-sign-verify.js	fail	1	1453	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:144: TypeError: process.config is undefined
+crypto	external/node-tests/test/parallel/test-crypto-stream.js	fail	1	1092	/Users/macuser/tmp/ionpower-node/external/node-tests/test/common/crypto.js:6: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Obje
+crypto	external/node-tests/test/parallel/test-crypto-subtle-cross-realm.js	timeout	-1	40088	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-subtle-zero-length.js	timeout	-1	40029	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-update-encoding.js	fail	1	1889	/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel/test-crypto-update-encoding.js:15: TypeError: crypto.createSign is not a function
+crypto	external/node-tests/test/parallel/test-crypto-verify-failure.js	fail	1	1625	<ionpower-node internal>:2: Error: require: cannot find module 'tls' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
+crypto	external/node-tests/test/parallel/test-crypto-webcrypto-aes-decrypt-tag-too-small.js	fail	1	2174	mustCall: expected 1 calls, got 0
+crypto	external/node-tests/test/parallel/test-crypto-worker-thread.js	timeout	-1	40086	30s timeout
+crypto	external/node-tests/test/parallel/test-crypto-x509.js	fail	1	1883	<ionpower-node internal>:2: Error: require: cannot find module 'internal/crypto/x509' from '/Users/macuser/tmp/ionpower-node/scripts/conformance/../../external/node-tests/test/parallel'
