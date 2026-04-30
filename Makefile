@@ -3,6 +3,9 @@
 # at $(MOZJS_PREFIX) (see scripts/build-mozjs.sh).
 
 MOZJS_PREFIX ?= /opt/mozjs-45-ionpower
+# OpenSSL prefix for tls / https. Installed via tiger.sh or by manually
+# unpacking leopard.sh/binpkgs/openssl-1.1.1t.tiger.<arch>.tar.gz under /opt.
+OPENSSL_PREFIX ?= /opt/openssl-1.1.1t
 # Use := so make's built-in default (CXX=g++) doesn't shadow this.
 CXX          := /opt/gcc-4.9.4/bin/g++-4.9
 CC           := /opt/gcc-4.9.4/bin/gcc-4.9
@@ -17,7 +20,7 @@ MACOSX_SDK ?= /Developer/SDKs/MacOSX10.4u.sdk
 CXXFLAGS = -m32 -mmacosx-version-min=10.4 -isysroot $(MACOSX_SDK) $(CPU_FLAGS) -force_cpusubtype_ALL \
            -std=gnu++0x -fpermissive -fno-exceptions -fno-rtti \
            -O2 -g \
-           -I src -I $(MOZJS_PREFIX)/include/mozjs-45
+           -I src -I $(MOZJS_PREFIX)/include/mozjs-45 -I $(OPENSSL_PREFIX)/include
 
 # emac (and any Xcode-less host) has no /usr/bin/ld that groks modern
 # mach-o coalesced-section relocs in the mozjs static archive. If the
@@ -26,7 +29,8 @@ CXXFLAGS = -m32 -mmacosx-version-min=10.4 -isysroot $(MACOSX_SDK) $(CPU_FLAGS) -
 LD_SEARCH := $(shell test -x /opt/ld64-97.17-tigerbrew/bin/ld && \
                      echo -B /opt/ld64-97.17-tigerbrew/bin/)
 
-LDFLAGS  = -L $(MOZJS_PREFIX)/lib -m32 -mmacosx-version-min=10.4 \
+LDFLAGS  = -L $(MOZJS_PREFIX)/lib -L $(OPENSSL_PREFIX)/lib \
+           -m32 -mmacosx-version-min=10.4 \
            -isysroot $(MACOSX_SDK) \
            -force_cpusubtype_ALL $(LD_SEARCH)
 # Mozilla's install renames libjs_static.a to lib${JS_LIBRARY_NAME}.a
@@ -38,7 +42,13 @@ MOZJS_LIB := $(shell \
     else echo -lmozjs-45; fi)
 # js-config reports "-lm" as the required trailing libs for mozjs-45's
 # standalone (posix-wrapper NSPR embedded into libjs_static).
+# Static-link OpenSSL so the binary doesn't depend on @rpath/libssl at run
+# time. The .a archives at $(OPENSSL_PREFIX)/lib are picked up before any
+# .dylib via -l (Apple ld defaults to dylib-first, so reach the static
+# archives by absolute path).
+OPENSSL_LIBS := $(OPENSSL_PREFIX)/lib/libssl.a $(OPENSSL_PREFIX)/lib/libcrypto.a
 LDLIBS   = $(MOZJS_LIB) -lmozglue -lpthread -lm -lz \
+           $(OPENSSL_LIBS) \
            -framework Carbon -framework ExceptionHandling -lobjc \
            -Wl,-stack_size,0x10000000
 
@@ -55,6 +65,7 @@ SRCS = src/main.cpp \
        src/node_compat/child_process.cpp \
        src/node_compat/event_loop.cpp \
        src/node_compat/net.cpp \
+       src/node_compat/tls.cpp \
        src/node_compat/zlib.cpp \
        src/node_compat/globals.cpp
 
@@ -89,7 +100,7 @@ clean:
 # Install to $(PREFIX) (default /opt/ionpower-node-$(VERSION)).
 # Ships the `node` binary + babel.js fallback + README. Runtime still
 # depends on /opt/mozjs-45-ionpower* being present separately.
-VERSION ?= 0.82
+VERSION ?= 0.83
 PREFIX  ?= /opt/ionpower-node-$(VERSION)
 install: $(BIN)
 	mkdir -p $(PREFIX)/bin $(PREFIX)/share/ionpower-node/vendor
@@ -575,6 +586,9 @@ test-libs: $(BIN)
 	./$(BIN) test/subtle_ecdsa_smoke.js
 	./$(BIN) test/raw_mode_smoke.js
 	./$(BIN) test/subtle_ec_jwk_smoke.js
+	./$(BIN) test/tls_smoke.js
+	./$(BIN) test/https_get_smoke.js
+	./$(BIN) test/https_server_smoke.js
 
 test-all: test test-libs
 

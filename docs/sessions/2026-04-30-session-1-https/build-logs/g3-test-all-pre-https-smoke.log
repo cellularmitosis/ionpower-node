@@ -1,0 +1,477 @@
+./node test/hello.js
+hello, ionpower-node
+argv: ["./node","test/hello.js"]
+platform: darwin arch: ppc pid: 3842 version: ionpower-node-0.83
+cwd: /Users/macuser/tmp/ionpower-node
+PATH env: /Users/macuser/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
+./node test/require_chain.js
+adder(2, 3) = 5
+greet('world') = hello, world
+util.shout('hi') = HI!!
+./node test/nm_resolution_smoke.js
+got: Hi PPC! -- signed
+ok: bare-specifier node_modules resolution works
+./node test/fs_smoke.js
+wrote /tmp/ionpower-node-fs-smoke.txt
+readback length: 44 match: true
+size: 44 isFile: true isDir: false
+/tmp has 22 entries (sample: [
+  "ec-server.log",
+  "err.log",
+  "express-chat-server.log"
+] )
+path.join = a/b/c.txt
+path.dirname(tmp) = /tmp
+path.basename(tmp) = ionpower-node-fs-smoke.txt
+path.extname(tmp) = .txt
+path.isAbsolute(tmp) = true
+unlinked. exists now?  false
+./node test/fs_dirs_smoke.js
+ok: mkdirSync recursive created /tmp/ionpower-node-fs-dirs-test/a/b/c
+ok: renameSync -> /tmp/ionpower-node-fs-dirs-test/a/b/c-renamed
+ok: rmdirSync removed the nested chain
+
+fs_dirs smoke: all assertions passed
+./node test/fs_extras_smoke.js
+ok: appendFileSync
+ok: copyFileSync
+ok: chmodSync
+
+fs_extras smoke: all assertions passed
+./node test/timers_smoke.js
+main start
+main end
+setImmediate fired, args= one two
+setTimeout fired
+./node test/console_formatting.js
+primitive: 42 true null undefined
+string: hello
+object: {
+  "a": 1,
+  "b": "two",
+  "c": [
+    1,
+    2,
+    3
+  ]
+}
+array: [
+  10,
+  20,
+  30
+]
+nested: {
+  "outer": {
+    "inner": {
+      "leaf": "yes"
+    }
+  }
+}
+function: [Function: foo]
+anon function: [Function]
+arrow (named via decl): [Function: bar]
+user record: {
+  "name": "alice",
+  "pid": 3849,
+  "platform": "darwin"
+}
+warn goes to stderr: {
+  "level": "warn"
+}
+./node test/util_inspect_smoke.js
+ok: primitives
+ok: functions
+ok: arrays
+ok: plain objects
+ok: depth limit
+ok: cycles
+ok: dates
+ok: regexps
+ok: errors
+ok: map
+ok: set
+ok: uint8array
+
+util_inspect smoke: all assertions passed
+./node test/promise_smoke.js
+ok: resolve + then
+ok: constructor
+ok: reject catch
+ok: chain
+ok: all
+ok: race
+ok: allSettled
+ok: finally
+ok: thenable interop
+
+promise smoke: all assertions passed
+./node test/cores_smoke.js
+ok: EventEmitter.on / emit
+ok: EventEmitter.once
+ok: EventEmitter.removeListener
+ok: util.inherits + inherited emit
+ok: util.format
+ok: util.inspect
+ok: os basics
+ok: child_process execSync (+spawn exposed)
+
+cores smoke: all assertions passed
+./node test/integration.js
+ok: util.shout round-trip
+ok: path.join 3
+ok: path.dirname
+ok: path.extname
+ok: path.isAbsolute true
+ok: path.isAbsolute false
+ok: JSON name round-trip
+ok: JSON array length
+ok: JSON bool
+ok: unlink + existsSync
+ok: Buffer.from utf8 length
+ok: Buffer.toString utf8
+ok: setImmediate is deferred (queued)
+
+all integration assertions passed
+./node test/fibonacci.js
+fib(0) = 0
+fib(1) = 1
+fib(2) = 1
+fib(3) = 2
+fib(4) = 3
+fib(5) = 5
+fib(6) = 8
+fib(7) = 13
+fib(8) = 21
+fib(9) = 34
+fib(10) = 55
+fib(11) = 89
+fib(12) = 144
+fib(13) = 233
+fib(14) = 377
+fib(15) = 610
+fib(16) = 987
+fib(17) = 1597
+fib(18) = 2584
+fib(19) = 4181
+fib(20) = 6765
+fib(21) = 10946
+fib(22) = 17711
+fib(23) = 28657
+fib(24) = 46368
+fib(25) = 75025
+fib(26) = 121393
+fib(27) = 196418
+fib(28) = 317811
+fib(29) = 514229
+fib(30) = 832040
+fib(31) = 1346269
+fib(32) = 2178309
+elapsed: 1617 ms
+wrote test/fib-report.txt
+./node test/jit_smoke.js
+sumTo(5000000) = 1642668640 in 212 ms
+./node test/marked_smoke.js
+<h1 id="hello-powerpc">Hello, PowerPC</h1>
+<p>This is <em>italic</em> and <strong>bold</strong> and <code>code</code>.</p>
+<ul>
+<li>item one</li>
+<li>item two</li>
+</ul>
+<blockquote>
+<p>a blockquote</p>
+</blockquote>
+<pre><code class="language-js">console.log(&#39;hi&#39;);
+</code></pre>
+
+
+marked smoke: all assertions passed
+./node test/acorn_smoke.js
+ok: simple parse  two statements, right node types
+ok: parse error thrown correctly: SyntaxError: Unexpected token (1:9)...
+parsing acorn.js (231201 bytes)...
+ok: acorn parsed its own source in 8351 ms
+    top-level statements: 1
+
+acorn smoke: all assertions passed
+./node test/handlebars_smoke.js
+ok: simple interpolation -> Hello, PowerPC!
+ok: each block -> "- alpha\n- beta\n- gamma\n"
+ok: if-else both branches
+ok: custom helper -> say HELLO!!
+ok: html escape -> <p>&lt;script&gt;alert(1)&lt;/script&gt;</p>
+ok: triple-stash raw -> <p><b>raw</b></p>
+
+handlebars smoke: all assertions passed
+version: 4.7.8
+./node test/lodash_smoke.js
+ok: chunk
+ok: compact
+ok: flatten
+ok: flattenDeep
+ok: uniq
+ok: zip
+ok: map
+ok: filter
+ok: reduce
+ok: groupBy
+ok: countBy
+ok: sortBy
+ok: camelCase
+ok: kebabCase
+ok: snakeCase
+ok: startCase
+ok: padStart
+ok: truncate
+ok: template
+ok: pick
+ok: omit
+ok: merge
+ok: invert
+ok: keys
+ok: once-1st
+ok: once-2nd
+ok: sum
+ok: mean
+ok: max
+ok: min
+ok: isArray
+ok: isString
+ok: isFunction
+ok: isPlainObj
+ok: cloneDeep
+
+lodash smoke: 35/35 passed
+./node test/semver_smoke.js
+ok: major
+ok: minor
+ok: patch
+ok: prerelease
+ok: build
+ok: valid ok
+ok: valid fail
+ok: lt
+ok: gt
+ok: eq
+ok: rcompare sorts low..high
+ok: ~1.2.3 satisfies 1.2.9
+ok: ~1.2.3 blocks 1.3.0
+ok: ^1.2.3 satisfies 1.9.9
+ok: ^1.2.3 blocks 2.0.0
+ok: >=1.0.0 <2.0.0 satisfies 1.5.0
+ok: inc patch
+ok: inc minor
+ok: inc major
+ok: inc prerelease
+ok: coerce
+ok: coerce bad
+
+semver smoke: 22/22 passed
+./node test/prettier_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/prettier.js:2364: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+{ parser: "babylon" } is deprecated; we now treat it as { parser: "babel" }.
+format small snippet in 1580 ms:
+const x = { a: 1, b: 2, c: 3 };
+function f(x, y) {
+  return x + y;
+}
+
+
+format realistic input in 1022 ms:
+function fibonacci(n) {
+  if (n < 2) return n;
+  let a = 0,
+    b = 1;
+  for (let i = 2; i <= n; i++) {
+    const c = a + b;
+    a = b;
+    b = c;
+  }
+  return b;
+}
+const arr = [1, 2, 3, 4, 5]
+  .map(x => x * x)
+  .filter(x => x > 4)
+  .reduce((a, b) => a + b, 0);
+module.exports = { fibonacci, arr };
+
+
+prettier smoke: all assertions passed
+version: 1.19.1
+./node test/typescript_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/typescript.js:31995: unreachable code after return statement
+/Users/macuser/tmp/ionpower-node/test/vendor/typescript.js:60756: unreachable code after return statement
+/Users/macuser/tmp/ionpower-node/test/vendor/typescript.js:96536: unreachable code after return statement
+/Users/macuser/tmp/ionpower-node/test/vendor/typescript.js:31995: unreachable code after return statement
+/Users/macuser/tmp/ionpower-node/test/vendor/typescript.js:82: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+loaded typescript v3.9.10 in 4888 ms
+/Users/macuser/tmp/ionpower-node/test/vendor/typescript.js:60756: unreachable code after return statement
+/Users/macuser/tmp/ionpower-node/test/vendor/typescript.js:96536: unreachable code after return statement
+transpile 1 in 2125 ms
+ok: simple transpile ->
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.y = void 0;
+var x = 42;
+exports.y = x * 2;
+
+transpile 2 in 2359 ms
+ok: class-with-generic compiled; output length = 766
+
+typescript smoke: all assertions passed
+./node test/minimist_smoke.js
+ok: positional only
+ok: --flag
+ok: --key value
+ok: --key=value
+ok: -v
+ok: -n 5
+ok: --no-color
+ok: with alias + default
+ok: string-typed value
+
+minimist smoke: 9/9 passed
+./node test/json5_smoke.js
+ok: strict JSON
+ok: unquoted keys
+ok: single quotes
+ok: trailing comma
+ok: line comment
+ok: hex number
+ok: trailing dot
+ok: leading dot
+ok: stringify round-trip
+ok: pretty indent
+
+json5 smoke: 10/10 passed
+./node test/mustache_smoke.js
+ok: interp + escape
+ok: triple-stash
+ok: each section
+ok: inverted empty
+ok: inverted missing
+ok: nested
+ok: lambda
+ok: partials
+
+mustache smoke: 8/8 passed
+./node test/jsyaml_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/esprima.js:421: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: flow scalar
+ok: flow mapping
+ok: flow sequence
+ok: block map
+ok: nested block
+ok: literal block
+ok: bools and null
+ok: anchor alias
+ok: dump round-trip
+dumped:
+name: ionpower
+works: true
+libs:
+  - marked
+  - acorn
+depth:
+  nested: 42
+
+
+js-yaml smoke: 9/9 passed
+./node test/kleur_smoke.js
+enabled (default): false
+ok: colors disabled in non-TTY mode  API is transparent
+ok: FORCE_COLOR=1 re-eval produced ANSI-wrapped output
+sample: "\u001b[31mhello\u001b[39m"
+
+kleur smoke: all assertions passed
+./node test/commander_smoke.js
+ok: flags and options parsed correctly
+ok: version configured
+ok: subcommand with action
+
+commander smoke: all assertions passed
+./node test/qs_smoke.js
+ok: parse simple
+ok: parse nested
+ok: parse deep nested
+ok: parse array
+ok: parse encoded
+ok: stringify simple
+ok: stringify nested
+ok: stringify array
+ok: round-trip name
+ok: round-trip id
+ok: round-trip tags
+
+qs smoke: 11/11 passed
+./node test/diff_smoke.js
+ok: diffChars: has 3 changes
+ok: diffChars: first chunk equal
+ok: diffChars: second chunk removed 'r'
+ok: diffChars: third chunk added 'z'
+ok: diffLines removed contains 'b\n'
+ok: diffLines added   contains 'B\n'
+ok: diffWords identifies brown->red
+ok: createPatch includes 'note.txt'
+ok: createPatch shows - world
+ok: createPatch shows + POWERPC
+ok: applyPatch reproduces target
+
+diff smoke: 11/11 passed
+./node test/esprima_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/esprima.js:421: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+ok: simple parse
+ok: module parse
+ok: tokenize
+ok: parse error reports line
+self-parsing esprima.js (283563 bytes)...
+ok: self-parse in 12505 ms
+    top-level stmts: 2
+
+esprima smoke: all assertions passed
+./node test/dayjs_smoke.js
+ok: year
+ok: month
+ok: date
+ok: day
+ok: format YYYY-MM-DD
+ok: format HH:mm
+ok: add 7 days
+ok: subtract 1 mo
+ok: isBefore
+ok: isAfter
+ok: isSame
+ok: parse yyyymmdd
+ok: diff days
+ok: diff hours
+
+dayjs smoke: 14/14 passed
+./node test/beautify_smoke.js
+function hi(name) {
+  if (!name) {
+    name = 'world'
+  }
+  return 'hello, ' + name
+}
+ok: function reformat
+ok: object literal
+ok: idempotent on already-pretty input
+
+js-beautify smoke: all assertions passed
+./node test/babel_smoke.js
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+loaded @babel/standalone v7.23.9 in 14102 ms
+transform 1 (?. -> ES5) in 5733 ms
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.y = void 0;
+var _x$a;
+var x = {
+  a: {
+    b: 42
+  }
+};
+var y = exports.y = x === null || x === void 0 || (_x$a = x.a) === null || _x$a === void 0 ? void 0 : _x$a.b;
+ok: optional chaining transpiled away

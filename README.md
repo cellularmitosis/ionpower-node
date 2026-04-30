@@ -19,10 +19,11 @@ SpiderMonkey 45 + IonPower JIT is built once per arch and lives at
 beside it at `/opt/ionpower-node-<version>/`.
 
 Real event loop (select-based, wall-clock timers, fd I/O), real
-async `fs` / `http` / `net` / `dgram` / `child_process` / `dns`,
-WHATWG Streams, real RSA / Ed25519 / X.509 / AES-GCM crypto, real
-DEFLATE compression, and a TAP `node:test` runner with mocks. See
-the table below for the current per-module accounting.
+async `fs` / `http` / `https` / `net` / `tls` / `dgram` /
+`child_process` / `dns`, WHATWG Streams, real RSA / Ed25519 / X.509
+/ AES-GCM crypto, real DEFLATE compression, real OpenSSL-backed
+TLS 1.2 + 1.3, and a TAP `node:test` runner with mocks. See the
+table below for the current per-module accounting.
 
 [Full release archive on GitHub](https://github.com/cellularmitosis/ionpower-node/releases).
 
@@ -78,8 +79,12 @@ rarely changes), then unpack a fresh runtime tarball per release.
 /opt/
 ├── mozjs-45-ionpower-g3/        <- SpiderMonkey + IonPower JIT (-mcpu=750)
 │   ├── bin/, include/, lib/...
-└── ionpower-node-0.82/          <- Node-compat runtime
-    └── bin/node                 <- expects sibling /opt/mozjs-45-ionpower-g3/
+├── openssl-1.1.1t/              <- TLS / HTTPS (since v0.83)
+│   ├── bin/, include/, lib/...
+├── ca-certificates-20230110/    <- CA bundle (default trust store)
+│   └── share/cacert.pem
+└── ionpower-node-0.83/          <- Node-compat runtime
+    └── bin/node                 <- expects sibling mozjs + openssl
 ```
 
 The fastest path: grab prebuilt tarballs.
@@ -89,11 +94,18 @@ The fastest path: grab prebuilt tarballs.
 curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/download/v0.73/mozjs-45-ionpower-g3.tar.gz
 sudo tar xzpf mozjs-45-ionpower-g3.tar.gz -C /opt/
 
-# Per release: the runtime
-curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-0.82-g3-ppc.tar.gz
-sudo tar xzpf ionpower-node-0.82-g3-ppc.tar.gz -C /opt/
+# One-time: OpenSSL + CA bundle for tls / https (since v0.83). Either:
+#   tiger.sh install openssl-1.1.1t
+# or, without tiger.sh:
+cd /opt && \
+  curl http://leopard.sh/dist/ca-certificates-20230110.tar.gz | gunzip | tar x && \
+  curl http://leopard.sh/binpkgs/openssl-1.1.1t.tiger.g3.tar.gz | gunzip | tar x
 
-/opt/ionpower-node-0.82/bin/node test/hello.js
+# Per release: the runtime
+curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-0.83-g3-ppc.tar.gz
+sudo tar xzpf ionpower-node-0.83-g3-ppc.tar.gz -C /opt/
+
+/opt/ionpower-node-0.83/bin/node test/hello.js
 ```
 
 For G4 use `mozjs-45-ionpower-g4` (`-mcpu=7450`); for G5,
@@ -120,6 +132,7 @@ exercises a slice of the runtime's surface end-to-end.
 | [`demos/npm-fetch/`](demos/npm-fetch/) | `npm install` from `registry.npmjs.org`, end-to-end on a G3: `fetch` over the curl shim → `zlib.gunzipSync` → POSIX ustar parse → `fs.writeFileSync` → `require()`. ~1 s for a small no-deps package like `mri`. |
 | [`demos/paste/`](demos/paste/) | JWT-secured encrypted paste server. Browser POSTs text → AES-256-GCM encrypt → real DEFLATE compress → fs write → ES256 (ECDSA P-256) JWT bearer issued. GET with bearer → ECDSA verify → gunzip → AES-GCM decrypt with auth-tag check. End-to-end exercise of the v0.65–v0.81 crypto + zlib + http stack. |
 | [`demos/express-chat/`](demos/express-chat/) | **Real Express 4 app** running on the runtime — anonymous chat board in 4chan / 8chan style. Optional tripcodes (`name#secret` → SHA-256 hashed), sequential post numbers, `>>N` auto-linking, in-memory ring buffer, per-IP rate limit. ~25 vendored Express deps under `test/vendor/express/node_modules/`. |
+| [`demos/https/`](demos/https/) | **HTTPS server + client over real OpenSSL.** Self-signed cert generated at startup (`tls.generateSelfSigned`), then `https.createServer` over `tls.TLSSocket`. CLI client speaks to the local server *or* any public HTTPS URL — prints status, headers, TLS info (protocol / cipher / peer cert), body. Showcases the v0.83 `tls`/`https` surface. |
 | [`demos/blog/`](demos/blog/) | Static-site generator. Reads markdown posts under `input/`, renders via Handlebars with templates `index.hbs` / `post.hbs`, writes a styled blog tree to `output/`. |
 | [`demos/feed-report/`](demos/feed-report/) | Parses a sample RSS feed (XML), summarises items, prints a digest. |
 | [`demos/http-fetch/`](demos/http-fetch/) | `fetch` + render JSON to a console table. |
@@ -133,12 +146,17 @@ exercises a slice of the runtime's surface end-to-end.
 We're not re-implementing all of Node. Things that are *not* on
 the runtime, today:
 
-- **TLS / `https.createServer` / `wss://`** — no OpenSSL binding;
-  client-side `https.request` falls back to a sync curl shim.
-- (Asymmetric crypto is now feature-complete on the curves we
-  support: RSA + Ed25519 + ECDSA + ECDH all work for sign / verify
-  / encrypt / decrypt / agree. RSA / ECDSA / ECDH are slow on G3
-  because bn.js bignum isn't tuned for 32-bit PowerPC.)
+- **`wss://` (TLS WebSocket)** — `ws://` works, `wss://` doesn't yet.
+  Straightforward to add — `ws` would need to use `tls.TLSSocket`
+  instead of `net.Socket`. Not implemented for v0.83.
+- **mTLS / client certs** — `tls.connect` doesn't take a `cert`/`key`
+  pair on the client side yet. Server-side cert auth only.
+- (Asymmetric crypto is feature-complete on the curves we support:
+  RSA + Ed25519 + ECDSA + ECDH all work for sign / verify / encrypt
+  / decrypt / agree. RSA / ECDSA / ECDH are slow on G3 because
+  bn.js bignum isn't tuned for 32-bit PowerPC. RSA-2048 keygen via
+  the OpenSSL `tls.generateSelfSigned` helper is much faster than
+  the bn.js path — ~3 s on G3.)
 - **Brotli** — `zlib.brotliCompressSync` / `brotliDecompressSync`
   throw. `gzip` / `deflate` work for real.
 - **`Intl`** — SM45 was built `--without-intl-api`. Blocks luxon,
@@ -182,13 +200,14 @@ release lands.
 | `buffer` | ✅ Working | `Buffer` class: `from` (string/array/Buffer/ArrayBuffer), `alloc`, `allocUnsafe`, `isBuffer`, `concat`, `byteLength`, `compare`, `isEncoding`. Instance: `toString`, `slice`, `write`, `copy`, `fill`, `indexOf`, `includes`, `equals`, `.length`. |
 | `crypto` | ✅ Working | `randomBytes` (real entropy), `pseudoRandomBytes`, `randomUUID` (v4), `randomInt`, `createHash` (**md5/sha1/sha224/sha256/sha384/sha512**), `createHmac` across all of those, `pbkdf2Sync`/`pbkdf2` across all of those, `scryptSync`/`scrypt` (RFC 7914), `createCipheriv`/`createDecipheriv` (**AES-128/192/256 in CBC / CTR / GCM**; NIST SP 800-38A F.2.5 / F.5.5 + NIST GCM Test Case 3 vectors verified; PKCS#7 padding for CBC; setAAD/setAuthTag/getAuthTag for GCM), `hkdfSync`/`hkdf` (RFC 5869 across all hashes; TC1 verified), `timingSafeEqual`, `createSecretKey`, `createPrivateKey`, `createPublicKey` (raw/JWK Ed25519 + PEM RSA), `generateKeyPair{,Sync}` (Ed25519 native, **RSA** via node-forge), `sign`/`verify` (Ed25519 native + RSA via forge across sha256/sha384/sha512), `publicEncrypt`/`privateDecrypt` (RSA-OAEP across sha1/sha256), **ECDSA** via vendored elliptic on `P-256`/`P-384`/`P-521`/`secp256k1` (slow on G3 — ~3 s sign, ~13 s verify for P-256), `crypto.diffieHellman({ privateKey, publicKey })` for **NIST ECDH** on the same curves (returns left-padded X-coordinate Buffer), `X509Certificate` (PEM/DER ctor; `subject`/`issuer`/`validFrom`/`validTo`/`serialNumber`/`fingerprint{,256,512}`/`raw`/`subjectAltName`/`publicKey`/`ca`; `toString`/`toJSON` -> PEM; `checkIssued`/`checkPrivateKey`/`checkHost`/`verify`), `getHashes`, `getCiphers`. |
 | `http` | ✅ Working | Real async `http.request`/`http.get`/`http.createServer` on top of `net.Socket` + an in-house HTTP/1.1 parser. Content-Length and chunked Transfer-Encoding on both sides. Server supports auto-chunked responses (stream `.write()` without Content-Length) and keep-alive pipelining. `IncomingMessage` / `ServerResponse` / `ClientRequest` classes present. Sync `http.getSync`/`postSync` retained (curl-backed, handles HTTPS). |
-| `https` | 🟡 Partial | Async `https.request`/etc falls back to the sync curl shim (TLS without OpenSSL binding). |
+| `https` | ✅ Working | Real async `https.request`/`https.get`/`https.createServer` over `tls.TLSSocket` + the same HTTP/1.1 parser as `http`. Sync curl wrappers (`getSync`/`postSync`) retained for the simple sync path. |
+| `tls` | ✅ Working | `tls.connect(opts)`, `tls.createServer({ cert, key })`, `tls.TLSSocket` extending `net.Socket` (emits `'secureConnect'` after handshake; same `'data'`/`'end'`/`'close'`/`'error'` event surface). Linked against OpenSSL 1.1.1t (`/opt/openssl-1.1.1t/`). TLS 1.2 + 1.3, SNI, peer cert verify against the bundled `/opt/ca-certificates-20230110/share/cacert.pem`. `socket.getPeerCertificate()` / `getCipher()` / `getProtocol()` introspection. `tls.generateSelfSigned(cn, days)` helper for demos. |
 | `dns` | ✅ Working | `lookup` / `resolve` / `resolve4` / `resolve6` / `promises.lookup` via `gethostbyname` (blocking under the hood; called from event-loop `setImmediate`). MX/TXT/CNAME/SRV/NS `resolve*` return empty arrays for compatibility. |
 | `net` | ✅ Working | `net.Socket` (Duplex over event-loop `ioWatch`) + `net.createServer` / `createConnection`. BSD-socket primitives via `__net_native__`: `socketCreate`/`bind`/`listen`/`accept`/`connect` non-blocking. IPv4 only; `gethostbyname` for DNS. |
 | `dgram` (UDP) | ✅ Working | `dgram.createSocket('udp4')` / `Socket#bind` / `send` / `close`. `'message'` / `'listening'` / `'error'` / `'close'` events. Receives via `ioWatch(fd, READABLE)` + `recvfrom`; sends via `sendto`. IPv4 only; auto-binds to an ephemeral port if `.send()` is called before `.bind()`. |
 | `readline` | ✅ Working | `createInterface({ input, output })`, `'line'` / `'close'` events, `.question(prompt, cb)` (one-shot), `.pause`/`.resume`/`.close`, `.setPrompt`/`.prompt`. Cursor helpers (`cursorTo`, `moveCursor`, `clearLine`, `clearScreenDown`) emit ANSI CSI when the target stream is a TTY, no-op otherwise. |
 | `node:test` / `test` | ✅ Working | TAP runner. `test(name, fn)`, `test.skip`/`test.todo`, `test.describe`/`test.it`, `test.before`/`after`/`beforeEach`/`afterEach` lifecycle hooks. Async test functions, nested `t.test(sub, fn)`, `t.diagnostic(msg)`. **Mock support**: `t.mock.fn(impl?)` (tracks `.calls`/`.callCount()`/`.resetCalls()`/`.mockImplementation()`), `t.mock.method(obj, name, impl?)`, `t.mock.getter`/`setter`, with auto-restore at test end. Registers on import, runs on next tick, prints TAP 13 + plan + ok/not-ok + fail counts. Sets `process.exitCode = 1` on any failure. |
-| `ws` / `WebSocket` | ✅ Working | RFC 6455 client (`new WebSocket(url)` — browser-style `.onopen`/`.onmessage`/`.onclose`/`.onerror`) + server (`require('ws').WebSocketServer({ port, host })`). Text + binary frames, ping/pong autorespond, close-frame handshake. Server and client share frame encode/decode; client frames are masked per spec. `ws://` only — no TLS (`wss://`) yet. |
+| `ws` / `WebSocket` | ✅ Working | RFC 6455 client (`new WebSocket(url)` — browser-style `.onopen`/`.onmessage`/`.onclose`/`.onerror`) + server (`require('ws').WebSocketServer({ port, host })`). Text + binary frames, ping/pong autorespond, close-frame handshake. Server and client share frame encode/decode; client frames are masked per spec. `ws://` only; `wss://` would need a tweak to wire the client/server through `tls.TLSSocket` instead of `net.Socket` — straightforward but not done yet. |
 | `child_process` | ✅ Working | All sync + async variants except `fork`. `execSync`/`spawnSync`/`execFileSync` via blocking fork+waitpid. `spawn`/`exec`/`execFile` return a `ChildProcess` (EventEmitter) backed by the event loop — `.stdout`/`.stderr` are Readables, `.stdin` is Writable, emits `'exit'`(code,sig) then `'close'`. |
 | `stream` | ✅ Working | Real `Readable` / `Writable` / `Duplex` / `Transform` / `PassThrough` with buffering, `.pipe()`, `.read([n])` / `.push(chunk)` / `.end()`. `stream.pipeline()` / `stream.finished()` (callback + Promise forms). Subpath specifiers: `require('stream/web')` -> `{ ReadableStream, WritableStream, TransformStream, ByteLengthQueuingStrategy, CountQueuingStrategy }`; `require('stream/promises')` -> `{ pipeline, finished }`; `require('stream/consumers')` -> `{ buffer, arrayBuffer, text, json, blob }` (drains a WHATWG or Node readable into the named type). Backpressure is nominally modeled but collapses to always-drained under the sync runtime; pipe auto-resumes whenever a `'data'` listener is added. |
 | `string_decoder` | ✅ Working | `StringDecoder` over Buffer-to-UTF-8 with partial-multibyte buffering across `.write()` calls. |
@@ -209,7 +228,7 @@ release lands.
 | Global | Status | Notes |
 |---|---|---|
 | `process` | ✅ Working | `argv`, `env`, `cwd`, `exit`, `exitCode`, `platform`, `arch`, `version`, `versions` (`node`/`ionpower`/`spidermonkey`/`v8`), `release`, `pid`, `stdout`/`stderr`/`stdin` (all with `.fd`/`.isTTY`; `stdin` is a real Readable streaming via `ioWatch(0, READABLE)` + non-blocking reads, emits `'data'` chunks + `'end'` on EOF), `nextTick` (microtask-queued), `umask`, `hrtime` (+ `.bigint`), `uptime`, `title`, `memoryUsage` (zero-filled), event-emitter surface (`on`/`once`/`off`/`emit` including `'exit'` flush). |
-| `fetch` / `AbortController` / `AbortSignal` | ✅ Working | WHATWG-minimal `fetch(url, init)` → `Response` with `.text()`/`.json()`/`.arrayBuffer()`/`.buffer()`. `Headers` Map-ish API. `AbortController.abort(reason)` propagates to an in-flight fetch. `AbortSignal.timeout(ms)` and `.abort(reason)` static factories. HTTPS delegates to the sync curl path. |
+| `fetch` / `AbortController` / `AbortSignal` | ✅ Working | WHATWG-minimal `fetch(url, init)` → `Response` with `.text()`/`.json()`/`.arrayBuffer()`/`.buffer()`. `Headers` Map-ish API. `AbortController.abort(reason)` propagates to an in-flight fetch. `AbortSignal.timeout(ms)` and `.abort(reason)` static factories. Both `http://` and `https://` URLs go through the real async `http`/`https` modules. |
 | `Buffer` | ✅ Working | See `buffer` above. |
 | `console` | ✅ Working | `log`/`error`/`warn`/`info`/`debug`/`trace`/`dir`/`time`/`timeEnd`/`assert`. |
 | `Promise` | ✅ Polyfill | `.then`/`.catch`/`.finally` callbacks are routed through the event loop's microtask queue; fire after the current synchronous code returns, before setTimeout-queued work. `Promise.resolve`/`reject`/`all`/`race`/`allSettled`. |
@@ -258,7 +277,7 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**658+** as of [v0.82](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.82).
+**658+** as of [v0.83](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.83).
 Full suite: **1990+** assertions across 432 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;

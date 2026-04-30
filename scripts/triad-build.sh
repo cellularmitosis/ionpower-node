@@ -48,12 +48,13 @@ echo "=== [$HOST/$ARCH/$VERSION] rsync source ==="
 
 # tiger-rsync.sh has a long-standing gremlin where a small handful of
 # files don't always update through the rsync. Force them via scp.
-echo "=== [$HOST/$ARCH/$VERSION] scp Makefile + process.cpp + globals.cpp + main.cpp + net.cpp (gremlin workaround) ==="
+echo "=== [$HOST/$ARCH/$VERSION] scp Makefile + process.cpp + globals.cpp + main.cpp + net.cpp + tls.cpp (gremlin workaround) ==="
 scp /Users/cell/claude/ionpower-node/Makefile                     "$HOST:$REMOTE/Makefile"
 scp /Users/cell/claude/ionpower-node/src/main.cpp                 "$HOST:$REMOTE/src/main.cpp"
 scp /Users/cell/claude/ionpower-node/src/node_compat/process.cpp  "$HOST:$REMOTE/src/node_compat/process.cpp"
 scp /Users/cell/claude/ionpower-node/src/node_compat/globals.cpp  "$HOST:$REMOTE/src/node_compat/globals.cpp"
 scp /Users/cell/claude/ionpower-node/src/node_compat/net.cpp      "$HOST:$REMOTE/src/node_compat/net.cpp"
+scp /Users/cell/claude/ionpower-node/src/node_compat/tls.cpp      "$HOST:$REMOTE/src/node_compat/tls.cpp"
 scp /Users/cell/claude/ionpower-node/src/node_compat/buffer.cpp   "$HOST:$REMOTE/src/node_compat/buffer.cpp"
 
 echo "=== [$HOST/$ARCH/$VERSION] clean + build  (MOZJS=$MOZJS CPU='$CPU') ==="

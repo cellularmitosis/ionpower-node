@@ -74,6 +74,9 @@ test/x509_smoke.js             self-signed cert generation + verify
 test/jwt_rs256_smoke.js        manual RS256 + EdDSA JWT round-trip
 test/zlib_real_smoke.js        gzip 8 KB -> ~44 bytes (real DEFLATE)
 test/websocket_smoke.js        ws server + client round-trip
+test/tls_smoke.js              TLS client to example.com:443; verify cert + cipher
+test/https_get_smoke.js        https.get round-trip (200 + body)
+test/https_server_smoke.js     self-signed https.createServer + client; end-to-end
 test/subtle_ecdsa_smoke.js     crypto.subtle ECDSA + ECDH via WebCrypto
 test/subtle_ec_jwk_smoke.js    EC JWK import/export round-trip
 test/dispose_smoke.js          Symbol.dispose + DisposableStack
@@ -101,7 +104,8 @@ assertions passed` on success.
 
 ## Demo round-trips
 
-Three demos under [`demos/`](demos/) with their own client smokes.
+Four demos under [`demos/`](demos/) with their own client smokes or
+browser tests.
 
 ### `demos/chat` — multi-client WebSocket chat
 
@@ -152,6 +156,29 @@ The `demos/express-chat` client smoke is the closest thing the project
 has to an "is the whole stack working?" integration test — it
 exercises Express 4 + body-parser + handlebars + node:crypto
 (SHA-256) + http + ws across one round-trip.
+
+### `demos/https` — TLS-secured server + client (since v0.83)
+
+```bash
+# Server (generates a self-signed cert at startup, ~6 s on G3)
+./node demos/https/server.js 8443
+# -> listening on https://0.0.0.0:8443/
+
+# CLI client — auto-skips cert validation when talking to localhost
+./node demos/https/client.js https://127.0.0.1:8443/info
+# Prints status, headers, TLS info (protocol/cipher/peer cert), body.
+
+# Or any public HTTPS URL:
+./node demos/https/client.js https://example.com/
+
+# Browser
+open https://<host>:8443/
+# Accept the self-signed cert warning to see TLS-info status page.
+```
+
+This is the simplest "is HTTPS actually working" check that pulls in
+both `tls.generateSelfSigned`, `https.createServer`, `https.get`,
+`socket.getPeerCertificate`, etc.
 
 ---
 

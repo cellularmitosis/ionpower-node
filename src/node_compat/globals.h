@@ -29,6 +29,7 @@ bool InstallHttp(JSContext* cx, JS::HandleObject global);
 bool InstallChildProcess(JSContext* cx, JS::HandleObject global);
 bool InstallEventLoop(JSContext* cx, JS::HandleObject global);
 bool InstallNet(JSContext* cx, JS::HandleObject global);
+bool InstallTls(JSContext* cx, JS::HandleObject global);
 bool InstallZlibInflate(JSContext* cx, JS::HandleObject global);
 
 // Run the event loop until no pending timers / watchers / children remain.

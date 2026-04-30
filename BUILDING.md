@@ -18,8 +18,8 @@ For testing the result once you've built it, see
 
 ## Install prebuilt
 
-No compiler needed. Two steps: install SpiderMonkey + IonPower JIT
-once, then drop in a runtime tarball per release.
+No compiler needed. Three one-time installs (SpiderMonkey + IonPower
+JIT, OpenSSL, CA bundle) plus the runtime tarball per release.
 
 ### One-time: SpiderMonkey + IonPower JIT
 
@@ -42,16 +42,58 @@ sudo tar xzpf mozjs-45-ionpower-g3.tar.gz -C /opt/
 This unpacks to `/opt/mozjs-45-ionpower-g3/` (or `g4`/`g5`). The
 runtime tarball expects to find this directory there.
 
+### One-time: OpenSSL + CA bundle (since v0.83)
+
+The runtime links against OpenSSL 1.1.1t for `tls.*` and `https.*`.
+Two ways to install it:
+
+**Option 1: `tiger.sh` (recommended)**
+
+If you've got `tiger.sh` (the project-friendly Tiger PPC package
+manager) installed, one command:
+
+```bash
+tiger.sh install openssl-1.1.1t
+```
+
+This installs `/opt/openssl-1.1.1t/` and pulls
+`/opt/ca-certificates-20230110/` as a dependency.
+
+**Option 2: manual tarball install**
+
+If you don't want to set up `tiger.sh`, the same artifacts are
+available as plain tarballs:
+
+```bash
+cd /opt
+# CA bundle (arch-independent):
+curl http://leopard.sh/dist/ca-certificates-20230110.tar.gz | gunzip | tar x
+
+# OpenSSL — pick the one matching your CPU. G3 example:
+curl http://leopard.sh/binpkgs/openssl-1.1.1t.tiger.g3.tar.gz | gunzip | tar x
+# For G4: openssl-1.1.1t.tiger.g4.tar.gz
+# For G5: openssl-1.1.1t.tiger.g5.tar.gz
+```
+
+Either way, you should end up with `/opt/openssl-1.1.1t/lib/libssl.a`
+and `/opt/ca-certificates-20230110/share/cacert.pem`. Sanity check:
+
+```bash
+/opt/openssl-1.1.1t/bin/openssl version
+# OpenSSL 1.1.1t  7 Feb 2023
+ls /opt/ca-certificates-20230110/share/cacert.pem
+```
+
 ### Per release: the runtime
 
 ```bash
-curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-0.82-g3-ppc.tar.gz
-sudo tar xzpf ionpower-node-0.82-g3-ppc.tar.gz -C /opt/
+curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-0.83-g3-ppc.tar.gz
+sudo tar xzpf ionpower-node-0.83-g3-ppc.tar.gz -C /opt/
 
 # Sanity check
 echo "console.log(process.version, process.arch)" > /tmp/v.js
-/opt/ionpower-node-0.82/bin/node /tmp/v.js
-# -> ionpower-node-0.82 ppc
+/opt/ionpower-node-0.83/bin/node /tmp/v.js
+# -> ionpower-node-0.83 ppc
 ```
 
 ### Final layout
@@ -60,8 +102,13 @@ echo "console.log(process.version, process.arch)" > /tmp/v.js
 /opt/
 ├── mozjs-45-ionpower-g3/        ← SpiderMonkey + IonPower JIT (-mcpu=750)
 │   ├── bin/, include/, lib/...
-└── ionpower-node-0.82/          ← runtime
+├── openssl-1.1.1t/             ← TLS / HTTPS support (since v0.83)
+│   ├── bin/, include/, lib/...
+├── ca-certificates-20230110/   ← CA bundle (default trust store)
+│   └── share/cacert.pem
+└── ionpower-node-0.83/          ← runtime
     └── bin/node                 ← expects sibling /opt/mozjs-45-ionpower-g3/
+                                   and /opt/openssl-1.1.1t/
 ```
 
 For G4 hosts, both `mozjs-45-ionpower-g4` and the matching G4 runtime
@@ -89,9 +136,10 @@ that runs everywhere.
 
 ## Build on one host
 
-Same prereq as above: `/opt/mozjs-45-ionpower-{g3,g4,g5}/` already
-present. Plus a working `gcc-4.9` toolchain (Tiger's stock gcc-4.0
-won't compile our `globals.cpp`).
+Same prereqs as above: `/opt/mozjs-45-ionpower-{g3,g4,g5}/` and
+`/opt/openssl-1.1.1t/` already present (plus the matching CA bundle).
+Plus a working `gcc-4.9` toolchain (Tiger's stock gcc-4.0 won't compile
+our `globals.cpp`).
 
 ### Toolchain check
 
@@ -126,6 +174,9 @@ make MOZJS_PREFIX=/opt/mozjs-45-ionpower-g3 CPU_FLAGS="-mcpu=750 -mtune=750"
 #                  └─ change for g4 / g5 ─┘  └────── change for g4 / g5 ─────┘
 ```
 
+The Makefile defaults `OPENSSL_PREFIX=/opt/openssl-1.1.1t`. Override
+on the command line if you have OpenSSL elsewhere.
+
 Arch-specific flag table:
 
 | Arch | `MOZJS_PREFIX` | `CPU_FLAGS` | `MAKE` |
@@ -133,6 +184,10 @@ Arch-specific flag table:
 | `g3` | `/opt/mozjs-45-ionpower-g3` | `-mcpu=750 -mtune=750` | `make` (stock) |
 | `g4` | `/opt/mozjs-45-ionpower-g4` | `-mcpu=7450 -mtune=7450` | `make` (stock) |
 | `g5` | `/opt/mozjs-45-ionpower-g5` | `-mcpu=G5 -D_PPC970_` | `/opt/make-4.3/bin/make` |
+
+`OPENSSL_PREFIX` is the same on all three arches (the project's
+OpenSSL binpkgs are arch-specific, but they all install to the same
+path).
 
 A clean build takes:
 - ~6 min on a G3 600 MHz iMac
@@ -180,6 +235,7 @@ your hosts. Defaults are the project's:
 
 Each host needs:
 - `/opt/mozjs-45-ionpower-{g3,g4,g5}/` installed (one-time)
+- `/opt/openssl-1.1.1t/` + `/opt/ca-certificates-20230110/` (one-time)
 - Working `gcc-4.9` toolchain
 - (G5 only) `/opt/make-4.3/bin/make`
 - ssh-reachable from your dev box, with key auth (no password prompts
