@@ -97,8 +97,11 @@ sudo tar xzpf ionpower-node-0.82-g3-ppc.tar.gz -C /opt/
 ```
 
 For G4 use `mozjs-45-ionpower-g4` (`-mcpu=7450`); for G5,
-`mozjs-45-ionpower-g5` (`-mcpu=G5 -D_PPC970_`). The runtime tarball
-is arch-specific too — the G3 build expects the G3 mozjs.
+`mozjs-45-ionpower-g5` (`-mcpu=G5 -D_PPC970_`). Native arch pairs are
+fastest, but the PPC instruction set is forward-compatible — a G3
+runtime + G3 mozjs runs fine on G4 / G5 hardware (just slower than a
+native build). See [`BUILDING.md`](BUILDING.md) for the full
+compatibility table.
 
 **Building from source, the triad release flow, troubleshooting:**
 see [`BUILDING.md`](BUILDING.md).

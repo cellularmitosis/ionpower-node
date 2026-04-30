@@ -65,8 +65,25 @@ echo "console.log(process.version, process.arch)" > /tmp/v.js
 ```
 
 For G4 hosts, both `mozjs-45-ionpower-g4` and the matching G4 runtime
-tarball; ditto G5. The runtime is arch-specific — a G3 binary won't
-run on a G4 host.
+tarball; ditto G5. Native pairs are fastest, but the PPC instruction
+set is forward-compatible:
+
+| Build | Runs on G3 | Runs on G4 | Runs on G5 |
+|---|:---:|:---:|:---:|
+| G3 (`-mcpu=750`, no AltiVec) | ✅ | ✅ | ✅ |
+| G4 (`-mcpu=7450`, uses AltiVec) | ❌ | ✅ | ✅ |
+| G5 (`-mcpu=G5`, 64-bit-aware) | ❌ | ❌ | ✅ |
+
+In practice the install *feels* arch-locked because the bundled
+SpiderMonkey at `/opt/mozjs-45-ionpower-{g3,g4,g5}/` was compiled
+with each arch's `-mcpu` flag — the G4 mozjs uses AltiVec in
+autovec'd loops, which crashes on G3. So the lock comes from mozjs,
+not from our runtime binary.
+
+Concretely: a G3 *runtime tarball* paired with the G3 *mozjs install*
+runs fine on a G5 box. Just slower than a G5-native pair. If you've
+got a heterogenous fleet, the G3 build is the lowest-common-denominator
+that runs everywhere.
 
 ---
 
