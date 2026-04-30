@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ionpower-node express-chat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+    <h1>ionpower-node express-chat</h1>
+    <div class="banner" id="banner">loading…</div>
+    <span class="status" id="status">offline</span>
+</header>
+<main>
+    <div id="feed"></div>
+</main>
+<form id="postform" autocomplete="off">
+    <input type="text" id="name-in" placeholder="Name (blank=Anonymous)" maxlength="24">
+    <input type="text" id="trip-in" placeholder="Tripcode (optional secret)">
+    <textarea id="text-in" placeholder="say something…" maxlength="1024" rows="2"></textarea>
+    <button type="submit">Post</button>
+</form>
+<script>
+window.__BANNER__    = {{{banner}}};
+window.__POSTS__     = [];
+window.__WS_PORT__   = {{wsport}};
+</script>
+<script src="/static/client.js"></script>
+</body>
+</html>
