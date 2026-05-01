@@ -4495,13 +4495,19 @@ static const char kBootstrapJS[] =
 
     // AggregateError — pure polyfill (no Promise dependency). Promise.any
     // is installed later, after the Promise polyfill block.
+    //
+    // Constructor sets message/name/errors/stack on `this` rather than
+    // creating a new Error and reassigning its [[Prototype]]. The previous
+    // implementation called Object.setPrototypeOf inside the ctor, which
+    // SM45 flags as a perf deopt every time AggregateError is constructed.
     "  if (typeof AggregateError === 'undefined') {\n"
     "    function _AggregateError(errors, message) {\n"
-    "      var e = new Error(message || '');\n"
-    "      e.name = 'AggregateError';\n"
-    "      e.errors = Array.from(errors || []);\n"
-    "      if (Object.setPrototypeOf) Object.setPrototypeOf(e, _AggregateError.prototype);\n"
-    "      return e;\n"
+    "      if (!(this instanceof _AggregateError)) return new _AggregateError(errors, message);\n"
+    "      this.name    = 'AggregateError';\n"
+    "      this.message = String(message == null ? '' : message);\n"
+    "      this.errors  = Array.from(errors || []);\n"
+    "      if (Error.captureStackTrace) Error.captureStackTrace(this, _AggregateError);\n"
+    "      else { try { throw new Error(); } catch (e) { this.stack = e.stack; } }\n"
     "    }\n"
     "    _AggregateError.prototype = Object.create(Error.prototype);\n"
     "    _AggregateError.prototype.name = 'AggregateError';\n"

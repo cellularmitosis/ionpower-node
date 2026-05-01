@@ -83,7 +83,7 @@ rarely changes), then unpack a fresh runtime tarball per release.
 │   ├── bin/, include/, lib/...
 ├── ca-certificates-20230110/    <- CA bundle (default trust store)
 │   └── share/cacert.pem
-└── ionpower-node-0.84/          <- Node-compat runtime
+└── ionpower-node-0.85/          <- Node-compat runtime
     └── bin/node                 <- expects sibling mozjs + openssl
 ```
 
@@ -102,10 +102,10 @@ cd /opt && \
   curl http://leopard.sh/binpkgs/openssl-1.1.1t.tiger.g3.tar.gz | gunzip | tar x
 
 # Per release: the runtime
-curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-0.84-g3-ppc.tar.gz
-sudo tar xzpf ionpower-node-0.84-g3-ppc.tar.gz -C /opt/
+curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-0.85-g3-ppc.tar.gz
+sudo tar xzpf ionpower-node-0.85-g3-ppc.tar.gz -C /opt/
 
-/opt/ionpower-node-0.84/bin/node test/hello.js
+/opt/ionpower-node-0.85/bin/node test/hello.js
 ```
 
 For G4 use `mozjs-45-ionpower-g4` (`-mcpu=7450`); for G5,
@@ -274,7 +274,7 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**660+** as of [v0.84](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.84) (axios + node-fetch landed in test/vendor/).
+**660+** as of [v0.85](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.85).
 Full suite: **1990+** assertions across 432 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;

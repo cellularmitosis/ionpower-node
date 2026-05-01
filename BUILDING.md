@@ -87,13 +87,13 @@ ls /opt/ca-certificates-20230110/share/cacert.pem
 ### Per release: the runtime
 
 ```bash
-curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-0.84-g3-ppc.tar.gz
-sudo tar xzpf ionpower-node-0.84-g3-ppc.tar.gz -C /opt/
+curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-0.85-g3-ppc.tar.gz
+sudo tar xzpf ionpower-node-0.85-g3-ppc.tar.gz -C /opt/
 
 # Sanity check
 echo "console.log(process.version, process.arch)" > /tmp/v.js
-/opt/ionpower-node-0.84/bin/node /tmp/v.js
-# -> ionpower-node-0.84 ppc
+/opt/ionpower-node-0.85/bin/node /tmp/v.js
+# -> ionpower-node-0.85 ppc
 ```
 
 ### Final layout
@@ -106,7 +106,7 @@ echo "console.log(process.version, process.arch)" > /tmp/v.js
 │   ├── bin/, include/, lib/...
 ├── ca-certificates-20230110/   ← CA bundle (default trust store)
 │   └── share/cacert.pem
-└── ionpower-node-0.84/          ← runtime
+└── ionpower-node-0.85/          ← runtime
     └── bin/node                 ← expects sibling /opt/mozjs-45-ionpower-g3/
                                    and /opt/openssl-1.1.1t/
 ```

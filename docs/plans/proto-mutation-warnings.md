@@ -1,5 +1,23 @@
 # Plan: investigate `[[Prototype]]` mutation warnings
 
+## Status: closed (2026-04-30)
+
+Investigated in `docs/sessions/2026-04-30-session-3-proto-deopt/notes.md`.
+TL;DR: full `make test-all` emits 33 `[[Prototype]]` warnings across
+30 unique source sites; **all 33 come from third-party vendored
+libraries**. We had exactly one offender in our own code
+(`_AggregateError` constructor calling `Object.setPrototypeOf`),
+which has been fixed in `globals.cpp`.
+
+The remaining warnings are accepted as the cost of running real-world
+JS libraries on SM45 — patching them is brittle (vendored libs get
+re-fetched) and the deopt is a one-time cost during library load,
+not a steady-state hit. The list of accepted third-party deopt sites
+is in the session notes.
+
+## Original plan (kept for archive)
+
+
 ## What we're seeing
 
 During `make test-all` on G3/G4/G5, the runtime prints a flood of

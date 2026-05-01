@@ -14,6 +14,7 @@
 #include "jsapi.h"
 #include "js/Conversions.h"
 #include "js/Initialization.h"
+#include "js/Debug.h"
 
 #include "node_compat/globals.h"
 
@@ -34,6 +35,28 @@ static void ReportError(JSContext* cx, const char* message, JSErrorReport* repor
             report->filename ? report->filename : "<no filename>",
             (unsigned)report->lineno,
             message);
+
+    // Optional: dump a JS stack trace when this looks like a perf
+    // warning we're hunting for ([[Prototype]] mutation deopts).
+    // Set IONPOWER_TRACE_PROTO_WARN=1 to enable.
+    if (message && strstr(message, "[[Prototype]]") != nullptr) {
+        const char* trace = getenv("IONPOWER_TRACE_PROTO_WARN");
+        if (trace && *trace && *trace != '0') {
+            JS::RootedObject stack(cx);
+            if (JS::CaptureCurrentStack(cx, &stack)) {
+                JS::RootedString stackStr(cx);
+                if (JS::BuildStackString(cx, stack, &stackStr) && stackStr) {
+                    JSAutoByteString bs;
+                    if (bs.encodeUtf8(cx, stackStr)) {
+                        fprintf(stderr, "  -- JS stack at warning site --\n%s",
+                                bs.ptr());
+                        if (bs.ptr()[strlen(bs.ptr()) - 1] != '\n') fputc('\n', stderr);
+                        fprintf(stderr, "  -- end stack --\n");
+                    }
+                }
+            }
+        }
+    }
 }
 
 static int RunMain(JSContext* cx, int argc, char** argv)
