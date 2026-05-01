@@ -9,17 +9,27 @@
 <body>
 <header>
     <h1>ionpower-node express-chat</h1>
-    <div class="banner" id="banner">loading…</div>
+    <span class="banner" id="banner">loading&hellip;</span>
     <span class="status" id="status">offline</span>
 </header>
 <main>
     <div id="feed"></div>
 </main>
 <form id="postform" autocomplete="off">
-    <input type="text" id="name-in" placeholder="Name (blank=Anonymous)" maxlength="24">
-    <input type="text" id="trip-in" placeholder="Tripcode (optional secret)">
-    <textarea id="text-in" placeholder="say something…" maxlength="1024" rows="2"></textarea>
-    <button type="submit">Post</button>
+    <div class="form-row form-row-half">
+        <label for="name-in">Name (blank = Anonymous)</label>
+        <input type="text" id="name-in" maxlength="24">
+    </div>
+    <div class="form-row form-row-half">
+        <label for="trip-in">Tripcode (optional secret)</label>
+        <input type="text" id="trip-in">
+    </div>
+    <div class="form-row form-row-message">
+        <label for="text-in">Message &mdash; Ctrl/Cmd+Enter to post</label>
+        <div class="form-row-message-inner">
+            <textarea id="text-in" maxlength="1024" rows="2"></textarea><button type="submit">Post</button>
+        </div>
+    </div>
 </form>
 <script>
 window.__BANNER__    = {{{banner}}};

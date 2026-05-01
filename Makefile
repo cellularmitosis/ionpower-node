@@ -102,6 +102,46 @@ clean:
 # depends on /opt/mozjs-45-ionpower* being present separately.
 VERSION ?= 0.85
 PREFIX  ?= /opt/ionpower-node-$(VERSION)
+# test/vendor/ entries the demos require at runtime. Demos use
+# `__dirname/../../test/vendor/...` for their imports, so we recreate
+# that relative layout under share/ionpower-node/test/vendor/. Keep
+# this list in sync with what the demos actually require.
+#
+# Two groups:
+#   1. Direct imports from demos/*/*.js
+#   2. Shim targets — express's bundled node_modules/<x>/index.js
+#      shims walk up to test/vendor/<x>.js, so we must ship those too.
+DEMO_VENDOR_FILES = \
+    ansi-styles.js     chalk.js           color-hash.js     commander.js \
+    handlebars.js      hash-sum.js        js-yaml.js        kleur.js \
+    markdown-it.js     pretty-ms.js       prism.js          slugify.js \
+    sort-keys.js       split2.js          string-width.js   strip-ansi.js \
+    text-table.js      xmldoc.js \
+    bytes.js           content-type.js    cookie-signature.js cookie.js \
+    destroy.js         encodeurl.js       escape-html.js    etag.js \
+    finalhandler.js    forwarded.js       fresh.js          ipaddr.js \
+    merge-descriptors.js  methods.js      on-finished.js    parseurl.js \
+    qs-v6.js           range-parser.js    safe-buffer.js    safer-buffer.js \
+    statuses.js        toidentifier.js    unpipe.js         utils-merge.js \
+    vary.js \
+    \
+    ee-first.js        parse-ms.js        is-plain-obj.js \
+    emoji-regex.js     is-fullwidth-code-point.js \
+    ansi-regex.js      sax.js
+# JSON sidecars some standalone vendor .js files require directly:
+#   statuses.js  -> codes.json    (express → http-errors → statuses)
+#   mime-types.js -> mime-db.json (anything serving static files)
+#   cli-boxes.js -> cli-boxes.json
+#   cli-spinners.js -> spinners.json
+#   (mime-db-v2.json shipped alongside in case a demo grabs the legacy v2)
+# Express's bundled node_modules/ has its own JSON files that get copied
+# recursively as part of test/vendor/express, so those are already covered.
+DEMO_VENDOR_JSON = \
+    cli-boxes.json     codes.json         mime-db.json      mime-db-v2.json \
+    spinners.json
+DEMO_VENDOR_DIRS = express
+DEMO_VENDOR_NM_DIRS = xml2js xmlbuilder sax
+
 install: $(BIN)
 	mkdir -p $(PREFIX)/bin $(PREFIX)/share/ionpower-node/vendor
 	cp $(BIN) $(PREFIX)/bin/ionpower-node
@@ -111,10 +151,30 @@ install: $(BIN)
 	cp -r test/vendor/node-forge $(PREFIX)/share/ionpower-node/vendor/
 	cp -r test/vendor/elliptic   $(PREFIX)/share/ionpower-node/vendor/
 	cp README.md LICENSE   $(PREFIX)/share/ionpower-node/ 2>/dev/null || true
+	@# --- Demos --------------------------------------------------------
+	@# Ship the demos/ tree plus the closure of test/vendor/* entries
+	@# they require, preserving the demos' "../../test/vendor/..."
+	@# relative-import layout. ~2.5 MB extra vs runtime-only install.
+	cp -r demos $(PREFIX)/share/ionpower-node/demos
+	mkdir -p $(PREFIX)/share/ionpower-node/test/vendor/nm/node_modules
+	@for f in $(DEMO_VENDOR_FILES); do \
+	    cp test/vendor/$$f $(PREFIX)/share/ionpower-node/test/vendor/; \
+	done
+	@for f in $(DEMO_VENDOR_JSON); do \
+	    cp test/vendor/$$f $(PREFIX)/share/ionpower-node/test/vendor/; \
+	done
+	@for d in $(DEMO_VENDOR_DIRS); do \
+	    cp -r test/vendor/$$d $(PREFIX)/share/ionpower-node/test/vendor/; \
+	done
+	@for d in $(DEMO_VENDOR_NM_DIRS); do \
+	    cp -r test/vendor/nm/node_modules/$$d \
+	          $(PREFIX)/share/ionpower-node/test/vendor/nm/node_modules/; \
+	done
 	@echo
 	@echo "installed ionpower-node $(VERSION) to $(PREFIX)"
 	@echo "  binary:   $(PREFIX)/bin/node (-> ionpower-node)"
 	@echo "  babel:    $(PREFIX)/share/ionpower-node/vendor/babel.js"
+	@echo "  demos:    $(PREFIX)/share/ionpower-node/demos/"
 	@echo "  mozjs:    expected at $(MOZJS_PREFIX)/"
 	@echo
 	@echo "Run:  $(PREFIX)/bin/node <script.js>"
@@ -129,470 +189,32 @@ check-mozjs:
 	@echo "ok: $(MOZJS_PREFIX) looks usable"
 
 test: $(BIN)
-	./$(BIN) test/hello.js
-	./$(BIN) test/require_chain.js
-	./$(BIN) test/nm_resolution_smoke.js
-	./$(BIN) test/fs_smoke.js
-	./$(BIN) test/fs_dirs_smoke.js
-	./$(BIN) test/fs_extras_smoke.js
-	./$(BIN) test/timers_smoke.js
-	./$(BIN) test/console_formatting.js
-	./$(BIN) test/util_inspect_smoke.js
-	./$(BIN) test/promise_smoke.js
-	./$(BIN) test/cores_smoke.js
-	./$(BIN) test/integration.js
-	./$(BIN) test/fibonacci.js
-	./$(BIN) test/jit_smoke.js
+	./scripts/smoke-test-runner.sh ./scripts/test-list-core.txt
 
 test-libs: $(BIN)
-	./$(BIN) test/marked_smoke.js
-	./$(BIN) test/acorn_smoke.js
-	./$(BIN) test/handlebars_smoke.js
-	./$(BIN) test/lodash_smoke.js
-	./$(BIN) test/semver_smoke.js
-	./$(BIN) test/prettier_smoke.js
-	./$(BIN) test/typescript_smoke.js
-	./$(BIN) test/minimist_smoke.js
-	./$(BIN) test/json5_smoke.js
-	./$(BIN) test/mustache_smoke.js
-	./$(BIN) test/jsyaml_smoke.js
-	./$(BIN) test/kleur_smoke.js
-	./$(BIN) test/commander_smoke.js
-	./$(BIN) test/qs_smoke.js
-	./$(BIN) test/diff_smoke.js
-	./$(BIN) test/esprima_smoke.js
-	./$(BIN) test/dayjs_smoke.js
-	./$(BIN) test/beautify_smoke.js
-	./$(BIN) test/babel_smoke.js
-	./$(BIN) test/uuid_smoke.js
-	./$(BIN) test/papaparse_smoke.js
-	./$(BIN) test/tinycolor_smoke.js
-	./$(BIN) test/spark_md5_smoke.js
-	./$(BIN) test/fflate_smoke.js
-	./$(BIN) test/pako_smoke.js
-	./$(BIN) test/he_smoke.js
-	./$(BIN) test/cryptojs_smoke.js
-	./$(BIN) test/ajv_smoke.js
-	./$(BIN) test/pegjs_smoke.js
-	./$(BIN) test/nanoid_smoke.js
-	./$(BIN) test/ms_smoke.js
-	./$(BIN) test/strip_ansi_smoke.js
-	./$(BIN) test/deepmerge_smoke.js
-	./$(BIN) test/fast_deep_equal_smoke.js
-	./$(BIN) test/color_convert_smoke.js
-	./$(BIN) test/lunr_smoke.js
-	./$(BIN) test/moment_smoke.js
-	./$(BIN) test/showdown_smoke.js
-	./$(BIN) test/object_hash_smoke.js
-	./$(BIN) test/minimatch_smoke.js
-	./$(BIN) test/validator_smoke.js
-	./$(BIN) test/qrcode_smoke.js
-	./$(BIN) test/tweetnacl_smoke.js
-	./$(BIN) test/big_smoke.js
-	./$(BIN) test/mime_types_smoke.js
-	./$(BIN) test/markdown_it_smoke.js
-	./$(BIN) test/sax_smoke.js
-	./$(BIN) test/xml2js_smoke.js
-	./$(BIN) test/prism_smoke.js
-	./$(BIN) test/immer_smoke.js
-	./$(BIN) test/chance_smoke.js
-	./$(BIN) test/ini_smoke.js
-	./$(BIN) test/slugify_smoke.js
-	./$(BIN) test/mitt_smoke.js
-	./$(BIN) test/ramda_smoke.js
-	./$(BIN) test/pluralize_smoke.js
-	./$(BIN) test/debug_smoke.js
-	./$(BIN) test/basex_smoke.js
-	./$(BIN) test/moo_smoke.js
-	./$(BIN) test/clone_smoke.js
-	./$(BIN) test/ejs_smoke.js
-	./$(BIN) test/dequal_smoke.js
-	./$(BIN) test/sm45_destructuring_defaults_repro.js
-	./$(BIN) test/babel_fallback_smoke.js
-	./$(BIN) test/iconv_smoke.js
-	./$(BIN) test/nearley_smoke.js
-	./$(BIN) test/bignumber_smoke.js
-	./$(BIN) test/decimal_smoke.js
-	./$(BIN) test/camelcase_smoke.js
-	./$(BIN) test/pretty_bytes_smoke.js
-	./$(BIN) test/figlet_smoke.js
-	./$(BIN) test/fecha_smoke.js
-	./$(BIN) test/randomcolor_smoke.js
-	./$(BIN) test/classnames_smoke.js
-	./$(BIN) test/tiny_emitter_smoke.js
-	./$(BIN) test/stable_stringify_smoke.js
-	./$(BIN) test/uniq_smoke.js
-	./$(BIN) test/jszip_smoke.js
-	./$(BIN) test/hashids_smoke.js
-	./$(BIN) test/jmespath_smoke.js
-	./$(BIN) test/seedrandom_smoke.js
-	./$(BIN) test/alea_smoke.js
-	./$(BIN) test/escape_html_smoke.js
-	./$(BIN) test/rfc6902_smoke.js
-	./$(BIN) test/fast_memoize_smoke.js
-	./$(BIN) test/tiny_warning_smoke.js
-	./$(BIN) test/crypto_hash_smoke.js
-	./$(BIN) test/htmlparser2_smoke.js
-	./$(BIN) test/jsonwebtoken_smoke.js
-	./$(BIN) test/eventemitter3_smoke.js
-	./$(BIN) test/indent_string_smoke.js
-	./$(BIN) test/safe_json_stringify_smoke.js
-	./$(BIN) test/leven_smoke.js
-	./$(BIN) test/strnum_smoke.js
-	./$(BIN) test/xregexp_smoke.js
-	./$(BIN) test/htmlescape_smoke.js
-	./$(BIN) test/qhash_smoke.js
-	./$(BIN) test/escape_regexp_smoke.js
-	./$(BIN) test/object_path_smoke.js
-	./$(BIN) test/currency_smoke.js
-	./$(BIN) test/arr_union_diff_smoke.js
-	./$(BIN) test/deep_extend_smoke.js
-	./$(BIN) test/http_smoke.js
-	./$(BIN) test/cookie_smoke.js
-	./$(BIN) test/cookie_signature_smoke.js
-	./$(BIN) test/bytes_smoke.js
-	./$(BIN) test/content_type_smoke.js
-	./$(BIN) test/base64js_smoke.js
-	./$(BIN) test/json_logic_smoke.js
-	./$(BIN) test/is_plain_obj_smoke.js
-	./$(BIN) test/emoji_regex_smoke.js
-	./$(BIN) test/murmurhash_smoke.js
-	./$(BIN) test/xxhashjs_smoke.js
-	./$(BIN) test/jsbn_smoke.js
-	./$(BIN) test/crc32_smoke.js
-	./$(BIN) test/fastest_levenshtein_smoke.js
-	./$(BIN) test/flatten_smoke.js
-	./$(BIN) test/fnv_plus_smoke.js
-	./$(BIN) test/left_pad_smoke.js
-	./$(BIN) test/just_smoke.js
-	./$(BIN) test/format_util_smoke.js
-	./$(BIN) test/jsonpointer_smoke.js
-	./$(BIN) test/traverse_smoke.js
-	./$(BIN) test/fraction_smoke.js
-	./$(BIN) test/bit_buffer_smoke.js
-	./$(BIN) test/clsx_smoke.js
-	./$(BIN) test/tiny_invariant_smoke.js
-	./$(BIN) test/diff_match_patch_smoke.js
-	./$(BIN) test/circular_json_smoke.js
-	./$(BIN) test/flatted_smoke.js
-	./$(BIN) test/big_integer_smoke.js
-	./$(BIN) test/diff_sequences_smoke.js
-	./$(BIN) test/reselect_smoke.js
-	./$(BIN) test/array_move_smoke.js
-	./$(BIN) test/split_on_first_smoke.js
-	./$(BIN) test/url_parse_smoke.js
-	./$(BIN) test/ipaddr_smoke.js
-	./$(BIN) test/tinypure_smoke.js
-	./$(BIN) test/unorm_smoke.js
-	./$(BIN) test/glob_to_regexp_smoke.js
-	./$(BIN) test/assert_plus_smoke.js
-	./$(BIN) test/longest_streak_smoke.js
-	./$(BIN) test/zero_fill_smoke.js
-	./$(BIN) test/ua_parser_smoke.js
-	./$(BIN) test/preact_smoke.js
-	./$(BIN) test/extend_smoke.js
-	./$(BIN) test/dot_smoke.js
-	./$(BIN) test/lz_string_smoke.js
-	./$(BIN) test/parse_ms_smoke.js
-	./$(BIN) test/ip_regex_smoke.js
-	./$(BIN) test/char_regex_smoke.js
-	./$(BIN) test/safer_buffer_smoke.js
-	./$(BIN) test/cookiejar_smoke.js
-	./$(BIN) test/arg_smoke.js
-	./$(BIN) test/atob_btoa_smoke.js
-	./$(BIN) test/urldecode_smoke.js
-	./$(BIN) test/safe_stable_stringify_smoke.js
-	./$(BIN) test/tinypreds_smoke.js
-	./$(BIN) test/buffer_crc32_smoke.js
-	./$(BIN) test/tsv_smoke.js
-	./$(BIN) test/object_assign_smoke.js
-	./$(BIN) test/small_utils_smoke.js
-	./$(BIN) test/simple_statistics_smoke.js
-	./$(BIN) test/heap_smoke.js
-	./$(BIN) test/tinydate_smoke.js
-	./$(BIN) test/sjcl_smoke.js
-	./$(BIN) test/number_to_words_smoke.js
-	./$(BIN) test/is_url_smoke.js
-	./$(BIN) test/humanize_duration_smoke.js
-	./$(BIN) test/slug_smoke.js
-	./$(BIN) test/jwt_decode_smoke.js
-	./$(BIN) test/color_utils_smoke.js
-	./$(BIN) test/base64_smoke.js
-	./$(BIN) test/case_smoke.js
-	./$(BIN) test/tslib_smoke.js
-	./$(BIN) test/anchorme_smoke.js
-	./$(BIN) test/numeral_smoke.js
-	./$(BIN) test/inflection_smoke.js
-	./$(BIN) test/oauth_sign_smoke.js
-	./$(BIN) test/fromentries_smoke.js
-	./$(BIN) test/fast_equals_smoke.js
-	./$(BIN) test/diff2html_smoke.js
-	./$(BIN) test/hoopy_smoke.js
-	./$(BIN) test/fast_sort_smoke.js
-	./$(BIN) test/jsonparse_smoke.js
-	./$(BIN) test/pretty_compact_smoke.js
-	./$(BIN) test/path_libs_smoke.js
-	./$(BIN) test/ansi_escapes_smoke.js
-	./$(BIN) test/yocto_queue_smoke.js
-	./$(BIN) test/cron_smoke.js
-	./$(BIN) test/string_similarity_smoke.js
-	./$(BIN) test/jwt_simple_smoke.js
-	./$(BIN) test/tweetnacl_util_smoke.js
-	./$(BIN) test/fast_copy_smoke.js
-	./$(BIN) test/is_promise_smoke.js
-	./$(BIN) test/fast_sha256_smoke.js
-	./$(BIN) test/graphlib_smoke.js
-	./$(BIN) test/dagre_smoke.js
-	./$(BIN) test/wordwrap_smoke.js
-	./$(BIN) test/tiny_typed_emitter_smoke.js
-	./$(BIN) test/natural_compare_smoke.js
-	./$(BIN) test/deep_clone_smoke.js
-	./$(BIN) test/spacetime_smoke.js
-	./$(BIN) test/cli_width_smoke.js
-	./$(BIN) test/array_union_smoke.js
-	./$(BIN) test/is_directory_smoke.js
-	./$(BIN) test/eventemitter2_smoke.js
-	./$(BIN) test/deep_diff_smoke.js
-	./$(BIN) test/rambda_smoke.js
-	./$(BIN) test/jshashes_smoke.js
-	./$(BIN) test/immutable_smoke.js
-	./$(BIN) test/string_hash_smoke.js
-	./$(BIN) test/punycode_smoke.js
-	./$(BIN) test/small_batch_smoke.js
-	./$(BIN) test/html_tokenizer_smoke.js
-	./$(BIN) test/promise_utils_smoke.js
-	./$(BIN) test/mri_smoke.js
-	./$(BIN) test/dedent_smoke.js
-	./$(BIN) test/mimic_fn_smoke.js
-	./$(BIN) test/tsscmp_smoke.js
-	./$(BIN) test/node_forge_smoke.js
-	./$(BIN) test/js_levenshtein_smoke.js
-	./$(BIN) test/map_obj_smoke.js
-	./$(BIN) test/mkdirp_classic_smoke.js
-	./$(BIN) test/ansi_utils_smoke.js
-	./$(BIN) test/glob_path_smoke.js
-	./$(BIN) test/shell_quote_smoke.js
-	./$(BIN) test/sort_keys_smoke.js
-	./$(BIN) test/hash_sum_smoke.js
-	./$(BIN) test/string_width_smoke.js
-	./$(BIN) test/indent_smoke.js
-	./$(BIN) test/pretty_ms_smoke.js
-	./$(BIN) test/pupa_smoke.js
-	./$(BIN) test/linkifyjs_smoke.js
-	./$(BIN) test/keys_smoke.js
-	./$(BIN) test/quick_lru_smoke.js
-	./$(BIN) test/xmldoc_smoke.js
-	./$(BIN) test/is_email_smoke.js
-	./$(BIN) test/color_hash_smoke.js
-	./$(BIN) test/case_lib_smoke.js
-	./$(BIN) test/twig_smoke.js
-	./$(BIN) test/p_limit_smoke.js
-	./$(BIN) test/acorn_walk_smoke.js
-	./$(BIN) test/bn_js_smoke.js
-	./$(BIN) test/is_arrayish_smoke.js
-	./$(BIN) test/ansi_align_smoke.js
-	./$(BIN) test/cli_columns_smoke.js
-	./$(BIN) test/micro_memoize_smoke.js
-	./$(BIN) test/json_parse_better_smoke.js
-	./$(BIN) test/error_ex_smoke.js
-	./$(BIN) test/astring_smoke.js
-	./$(BIN) test/escape_string_regexp_smoke.js
-	./$(BIN) test/p_try_smoke.js
-	./$(BIN) test/remove_accents_smoke.js
-	./$(BIN) test/url_utils_smoke.js
-	./$(BIN) test/yargs_parser_smoke.js
-	./$(BIN) test/delay_smoke.js
-	./$(BIN) test/widest_line_smoke.js
-	./$(BIN) test/kind_of_smoke.js
-	./$(BIN) test/type_detect_smoke.js
-	./$(BIN) test/has_values_smoke.js
-	./$(BIN) test/onetime_smoke.js
-	./$(BIN) test/isobject_smoke.js
-	./$(BIN) test/pinkie_smoke.js
-	./$(BIN) test/array_unique_smoke.js
-	./$(BIN) test/stable_sort_smoke.js
-	./$(BIN) test/split_lines_smoke.js
-	./$(BIN) test/escape_latex_smoke.js
-	./$(BIN) test/fuse_smoke.js
-	./$(BIN) test/wrap_ansi_smoke.js
-	./$(BIN) test/aproba_smoke.js
-	./$(BIN) test/deep_freeze_smoke.js
-	./$(BIN) test/number_is_integer_smoke.js
-	./$(BIN) test/lodash_defaults_smoke.js
-	./$(BIN) test/hooker_smoke.js
-	./$(BIN) test/dot_prop_smoke.js
-	./$(BIN) test/get_set_value_smoke.js
-	./$(BIN) test/tiny_queue_smoke.js
-	./$(BIN) test/linked_list_smoke.js
-	./$(BIN) test/mime_smoke.js
-	./$(BIN) test/text_table_smoke.js
-	./$(BIN) test/utils_merge_smoke.js
-	./$(BIN) test/uniqid_smoke.js
-	./$(BIN) test/url_polyfill_smoke.js
-	./$(BIN) test/util_helpers_smoke.js
-	./$(BIN) test/chalk_smoke.js
-	./$(BIN) test/normalize_url_smoke.js
-	./$(BIN) test/file_url_smoke.js
-	./$(BIN) test/boxen_smoke.js
-	./$(BIN) test/log_symbols_smoke.js
-	./$(BIN) test/is_unicode_supported_smoke.js
-	./$(BIN) test/strip_final_newline_smoke.js
-	./$(BIN) test/cli_spinners_smoke.js
-	./$(BIN) test/env_paths_smoke.js
-	./$(BIN) test/just_suite_smoke.js
-	./$(BIN) test/iota_array_smoke.js
-	./$(BIN) test/inline_style_parser_smoke.js
-	./$(BIN) test/rgbcolor_smoke.js
-	./$(BIN) test/parse_duration_smoke.js
-	./$(BIN) test/fast_safe_stringify_smoke.js
-	./$(BIN) test/minipass_smoke.js
-	./$(BIN) test/eastasianwidth_smoke.js
-	./$(BIN) test/content_disposition_smoke.js
-	./$(BIN) test/dequal_lite_smoke.js
-	./$(BIN) test/rrule_smoke.js
-	./$(BIN) test/string_transforms_smoke.js
-	./$(BIN) test/is_json_smoke.js
-	./$(BIN) test/iso8601_duration_smoke.js
-	./$(BIN) test/process_smoke.js
-	./$(BIN) test/string_template_smoke.js
-	./$(BIN) test/url_template_smoke.js
-	./$(BIN) test/make_error_smoke.js
-	./$(BIN) test/prr_smoke.js
-	./$(BIN) test/mnemonist_set_smoke.js
-	./$(BIN) test/valid_url_smoke.js
-	./$(BIN) test/throttle_debounce_smoke.js
-	./$(BIN) test/property_expr_smoke.js
-	./$(BIN) test/filename_helpers_smoke.js
-	./$(BIN) test/tiny_utils_smoke.js
-	./$(BIN) test/pad_lr_smoke.js
-	./$(BIN) test/mixin_deep_smoke.js
-	./$(BIN) test/is_negative_zero_smoke.js
-	./$(BIN) test/md5_hex_smoke.js
-	./$(BIN) test/batch24_smoke.js
-	./$(BIN) test/batch25_smoke.js
-	./$(BIN) test/case_suite_smoke.js
-	./$(BIN) test/format_file_size_smoke.js
-	./$(BIN) test/streams_smoke.js
-	./$(BIN) test/async_fs_smoke.js
-	./$(BIN) test/stream_libs_smoke.js
-	./$(BIN) test/crypto_expand_smoke.js
-	./$(BIN) test/csv_ndjson_smoke.js
-	./$(BIN) test/bcryptjs_smoke.js
-	./$(BIN) test/lodash_subs_smoke.js
-	./$(BIN) test/picocolors_smoke.js
-	./$(BIN) test/lines_and_columns_smoke.js
-	./$(BIN) test/http_utils_smoke.js
-	./$(BIN) test/defu_iterall_smoke.js
-	./$(BIN) test/express_utils_smoke.js
-	./$(BIN) test/express_more_smoke.js
-	./$(BIN) test/batch_big_smoke.js
-	./$(BIN) test/batch_more_smoke.js
-	./$(BIN) test/batch_mini_smoke.js
-	./$(BIN) test/p_utils_smoke.js
-	./$(BIN) test/utility_batch_smoke.js
-	./$(BIN) test/batch_late_smoke.js
-	./$(BIN) test/batch_tail_smoke.js
-	./$(BIN) test/final_push_smoke.js
-	./$(BIN) test/v500_smoke.js
-	./$(BIN) test/milestone500_smoke.js
-	./$(BIN) test/lodash_getset_smoke.js
-	./$(BIN) test/wave1_api_smoke.js
-	./$(BIN) test/wave2_crypto_smoke.js
-	./$(BIN) test/wave3_child_process_smoke.js
-	./$(BIN) test/wave5_libs_smoke.js
-	./$(BIN) test/event_loop_smoke.js
-	./$(BIN) test/async_child_process_smoke.js
-	./$(BIN) test/net_smoke.js
-	./$(BIN) test/http_async_smoke.js
-	./$(BIN) test/fs_streams_smoke.js
-	./$(BIN) test/zlib_inflate_smoke.js
-	./$(BIN) test/microtask_smoke.js
-	./$(BIN) test/sha512_smoke.js
-	./$(BIN) test/fetch_smoke.js
-	./$(BIN) test/dns_smoke.js
-	./$(BIN) test/http_chunked_smoke.js
-	./$(BIN) test/batch_wave_l_smoke.js
-	./$(BIN) test/batch_wave_l2_smoke.js
-	./$(BIN) test/batch_wave_l3_smoke.js
-	./$(BIN) test/batch_wave_l4_smoke.js
-	./$(BIN) test/zlib_deflate_smoke.js
-	./$(BIN) test/batch_wave_n_smoke.js
-	./$(BIN) test/batch_wave_n2_smoke.js
-	./$(BIN) test/scrypt_smoke.js
-	./$(BIN) test/aes_cbc_smoke.js
-	./$(BIN) test/aes_ctr_hkdf_smoke.js
-	./$(BIN) test/aes_gcm_smoke.js
-	./$(BIN) test/subtle_crypto_smoke.js
-	./$(BIN) test/batch_wave_u_smoke.js
-	./$(BIN) test/subtle_jwk_kw_smoke.js
-	./$(BIN) test/batch_wave_v_smoke.js
-	./$(BIN) test/webstreams_smoke.js
-	./$(BIN) test/module_smoke.js
-	./$(BIN) test/perf_hooks_smoke.js
-	./$(BIN) test/batch_wave_w_smoke.js
-	./$(BIN) test/es_modern_smoke.js
-	./$(BIN) test/dgram_smoke.js
-	./$(BIN) test/ed25519_smoke.js
-	./$(BIN) test/subtle_curve_smoke.js
-	./$(BIN) test/batch_wave_x_smoke.js
-	./$(BIN) test/nacl_box_smoke.js
-	./$(BIN) test/readline_smoke.js
-	./$(BIN) test/batch_wave_y_smoke.js
-	./$(BIN) test/node_test_smoke.js
-	./$(BIN) test/websocket_smoke.js
-	./$(BIN) test/batch_wave_z_smoke.js
-	./$(BIN) test/small_refinements_smoke.js
-	./$(BIN) test/style_text_smoke.js
-	./$(BIN) test/vm_module_smoke.js
-	./$(BIN) test/stubs_smoke.js
-	./$(BIN) test/fs_watch_smoke.js
-	./$(BIN) test/batch_wave_aa_smoke.js
-	./$(BIN) test/fs_cp_rm_smoke.js
-	./$(BIN) test/promise_wrappers_smoke.js
-	./$(BIN) test/batch_wave_bb_smoke.js
-	./$(BIN) test/events_on_smoke.js
-	./$(BIN) test/event_target_smoke.js
-	./$(BIN) test/batch_wave_cc_smoke.js
-	./$(BIN) test/node_test_hooks_smoke.js
-	./$(BIN) test/broadcast_channel_smoke.js
-	./$(BIN) test/cpu_usage_smoke.js
-	./$(BIN) test/stream_helpers_smoke.js
-	./$(BIN) test/batch_wave_dd_smoke.js
-	./$(BIN) test/async_await_smoke.js
-	./$(BIN) test/worker_threads_smoke.js
-	./$(BIN) test/async_local_storage_smoke.js
-	./$(BIN) test/diag_channel_smoke.js
-	./$(BIN) test/process_report_smoke.js
-	./$(BIN) test/array_fromasync_smoke.js
-	./$(BIN) test/uncaught_smoke.js
-	./$(BIN) test/iterator_helpers_smoke.js
-	./$(BIN) test/dispose_smoke.js
-	./$(BIN) test/rsa_smoke.js
-	./$(BIN) test/rsa_encrypt_smoke.js
-	./$(BIN) test/x509_smoke.js
-	./$(BIN) test/zlib_real_smoke.js
-	./$(BIN) test/jwt_rs256_smoke.js
-	./$(BIN) test/module_class_smoke.js
-	./$(BIN) test/subpath_modules_smoke.js
-	./$(BIN) test/test_mock_smoke.js
-	./$(BIN) test/cluster_stub_smoke.js
-	./$(BIN) test/os_real_smoke.js
-	./$(BIN) test/fetch_binary_smoke.js
-	./$(BIN) test/buffer_from_ab_smoke.js
-	./$(BIN) test/ecdsa_smoke.js
-	./$(BIN) test/ecdh_smoke.js
-	./$(BIN) test/top_level_await_smoke.js
-	./$(BIN) test/import_meta_smoke.js
-	./$(BIN) test/subtle_ecdsa_smoke.js
-	./$(BIN) test/raw_mode_smoke.js
-	./$(BIN) test/subtle_ec_jwk_smoke.js
-	./$(BIN) test/tls_smoke.js
-	./$(BIN) test/https_get_smoke.js
-	./$(BIN) test/https_server_smoke.js
-	./$(BIN) test/wss_smoke.js
-	./$(BIN) test/axios_smoke.js
-	./$(BIN) test/node_fetch_smoke.js
+	./scripts/smoke-test-runner.sh ./scripts/test-list-more.txt
 
 test-all: test test-libs
 
-.PHONY: all clean check-mozjs test test-libs test-all
+# Audit: check that every test/*.js is either wired into a
+# scripts/test-list-*.txt or on the intentional-skip allowlist.
+# Triad-build runs this before doing any expensive remote work.
+check-coverage:
+	./scripts/check-test-coverage.sh
+
+# Audit: walk demos/**/*.js + their transitive test/vendor/ deps and
+# verify every reached file is shipped by the install rule. Caught
+# the codes.json + ee-first.js gaps that bit us during v0.85.
+check-demo-deps:
+	./scripts/check-demo-deps.sh
+
+# Emit the four DEMO_VENDOR_* lists in a stable shape for
+# scripts/check-demo-deps.sh — keeps the Makefile as the source of
+# truth instead of re-parsing it from bash.
+print-demo-deps:
+	@echo "FILES:  $(DEMO_VENDOR_FILES)"
+	@echo "JSON:   $(DEMO_VENDOR_JSON)"
+	@echo "DIRS:   $(DEMO_VENDOR_DIRS)"
+	@echo "NMDIRS: $(DEMO_VENDOR_NM_DIRS)"
+
+.PHONY: all clean check-mozjs check-coverage check-demo-deps print-demo-deps test test-libs test-all

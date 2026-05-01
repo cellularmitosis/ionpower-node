@@ -3,8 +3,8 @@
 Three layers of test coverage, from fastest to longest:
 
 1. **[Smoke suite](#smoke-suite)** (`make test-all`) — ~3-5 min. The
-   project's primary regression net. ~432 wired smoke files,
-   1990+ assertions.
+   project's primary regression net. ~463 wired smoke files,
+   2000+ assertions.
 2. **[Demo round-trips](#demo-round-trips)** — a few seconds each.
    Three demos (chat, paste, express-chat) with their own CLI clients
    that exercise an end-to-end pipeline.
@@ -20,7 +20,14 @@ source tree) — see [`BUILDING.md`](BUILDING.md).
 
 ## Smoke suite
 
-The project's primary regression test. Wired into the Makefile.
+The project's primary regression test. Two list files under
+`scripts/` enumerate every smoke; the Makefile passes each list to
+[`scripts/smoke-test-runner.sh`](scripts/smoke-test-runner.sh),
+which runs them one at a time and captures STDOUT, STDERR,
+combined OUTPUT, TIME, and exit STATUS into per-test directories
+under `/tmp/nodesmoke-<unix-ts>/`. Failures don't stop the run —
+the runner finishes the whole list, prints a pass/fail summary,
+and exits non-zero if anything failed.
 
 ```bash
 # From the project root, with arch-specific flags:
@@ -28,11 +35,39 @@ make MOZJS_PREFIX=/opt/mozjs-45-ionpower-g3 CPU_FLAGS="-mcpu=750 -mtune=750" tes
 ```
 
 `test-all` is `make test` plus `make test-libs`. Run them separately
-if you want:
+if you want.
+
+### Test lists
+
+The two text files under `scripts/` are the source of truth for
+what gets run:
+
+| List | Used by | What's in it |
+|---|---|---|
+| [`scripts/test-list-core.txt`](scripts/test-list-core.txt) | `make test` | 14 fast core-runtime smokes (process, fs, timers, JIT, …) |
+| [`scripts/test-list-more.txt`](scripts/test-list-more.txt) | `make test-libs` | ~449 vendored-library + Node-API surface smokes |
+
+Each line is a path relative to the repo root, e.g. `test/hello.js`.
+Blank lines and comments are not currently supported — keep it one
+test path per line.
+
+**Adding a new smoke**: drop the file in `test/`, then append its
+path to either `scripts/test-list-core.txt` (for runtime primitives,
+fast) or `scripts/test-list-more.txt` (everything else). No Makefile
+edit needed. Run `scripts/check-test-coverage.sh` to verify nothing
+in `test/*.js` got forgotten — it lists any smoke that exists on disk
+but isn't wired into a test list.
+
+**Intentionally excluded** (in `test/` but not in any list):
+
+- `test/babel_load_modern.js` — Babel-on-the-fly transpile demo, no assertions.
+- `test/marked_bench.js` — benchmark; prints timings, isn't a smoke.
+- `test/stdin_stream_smoke.js` — needs piped stdin, can't run unattended.
+- `test/verify_jit.js` — for verifying the underlying mozjs JIT install in a stock SpiderMonkey shell, not the runtime.
 
 ### `make test` (the core)
 
-13 fast smokes that exercise the runtime's primitives:
+14 fast smokes that exercise the runtime's primitives:
 
 ```
 test/hello.js                  basic output + process exit
@@ -55,10 +90,12 @@ Total: under 5 seconds combined on G3.
 
 ### `make test-libs` (the broad sweep)
 
-432+ smoke files covering the third-party libraries we vendor + the
+449+ smoke files covering the third-party libraries we vendor + the
 Node-API surface we expose. Each file is one
 `./node test/<thing>_smoke.js`. Output is the smoke's own
-"ok: ..." prints; failure exits non-zero and stops the suite.
+"ok: ..." prints; the runner records each test's exit status and
+keeps going on failure, so you see the full picture in one run
+rather than stopping at the first red.
 
 A few representative examples:
 
@@ -89,8 +126,7 @@ Total: ~3-5 min on G3, ~2 min on G4, under 1 min on G5.
 
 ### Per-test invocation
 
-If `make test-libs` fails on a specific test, re-run just that one
-to iterate:
+If a smoke fails, re-run just that one to iterate:
 
 ```bash
 ./node test/handlebars_smoke.js
@@ -99,6 +135,32 @@ to iterate:
 Each smoke is self-contained (no shared state). They emit
 human-readable `ok: ...` lines and end with `<name> smoke: all
 assertions passed` on success.
+
+### Investigating a `make test*` failure
+
+The runner prints the path to the run-output dir at the top of the
+output (e.g. `/tmp/nodesmoke-1777614143`) and a pointer at the
+bottom for fast triage. Per-test layout:
+
+```
+/tmp/nodesmoke-<ts>/
+├── <test>.js/
+│   ├── STDOUT     # exactly what the test wrote to fd 1
+│   ├── STDERR     # exactly what the test wrote to fd 2
+│   ├── OUTPUT     # interleaved combined view of the two
+│   ├── TIME       # /usr/bin/time -p -l report (real/user/sys + rusage)
+│   ├── STATUS     # the exit code, as text
+│   └── PASS|FAIL  # marker file (zero-byte; presence is the signal)
+└── …
+```
+
+Quick failure list:
+
+```bash
+find /tmp/nodesmoke-<ts> -name FAIL -exec dirname {} \; | sed 's|.*/||'
+```
+
+The dirs are kept around — `/tmp/nodesmoke-*` survive until reboot.
 
 ---
 

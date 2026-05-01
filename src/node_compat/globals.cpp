@@ -5082,6 +5082,20 @@ static const char kBootstrapJS[] =
     "    }\n"
     "    return n;\n"
     "  };\n"
+    // Format an error for the various trampoline catch wrappers below.
+    // SM45's `Error.prototype.stack` is just frames — no leading
+    // `name: message` line — so emitting only `e.stack` swallows the
+    // actual "TypeError: foo is not a function" message every time.
+    // This helper preserves the message AND the frames.
+    "  function __formatErr(e) {\n"
+    "    if (!e) return e;\n"
+    "    if (typeof e === 'string') return e;\n"
+    "    if (e.name || e.message) {\n"
+    "      var msg = (e.name || 'Error') + ': ' + (e.message || '?');\n"
+    "      return e.stack ? msg + '\\n' + e.stack : msg;\n"
+    "    }\n"
+    "    return e.stack || e;\n"
+    "  }\n"
     // Event-loop callback tables + trampolines. Keeping callbacks in JS
     // objects (vs C++-rooted JSObject*s) dodges SM45's PersistentRooted
     // ergonomics and keeps all GC reachability story in JS land.
@@ -5092,14 +5106,14 @@ static const char kBootstrapJS[] =
     "    var cb = __event_loop_watcher_cbs__[id];\n"
     "    if (typeof cb !== 'function') return;\n"
     "    try { cb(); }\n"
-    "    catch (e) { console.error('io-watcher:', e && e.stack || e); }\n"
+    "    catch (e) { console.error('io-watcher:', __formatErr(e)); }\n"
     "  };\n"
     "  this.__event_loop_fire_child__ = function (pid, exitCode, signalNum) {\n"
     "    var cb = __event_loop_child_cbs__[pid];\n"
     "    delete __event_loop_child_cbs__[pid];\n"
     "    if (typeof cb !== 'function') return;\n"
     "    try { cb(exitCode, signalNum); }\n"
-    "    catch (e) { console.error('child-exit:', e && e.stack || e); }\n"
+    "    catch (e) { console.error('child-exit:', __formatErr(e)); }\n"
     "  };\n"
     // User-facing event-loop primitives wrapped for symmetry + cleanup.
     "  this.ioWatch = function (fd, events, cb) {\n"
@@ -5161,7 +5175,7 @@ static const char kBootstrapJS[] =
     "    var args = Array.prototype.slice.call(arguments, 1);\n"
     "    _enqueueMicrotask(function () {\n"
     "      try { fn.apply(null, args); }\n"
-    "      catch (e) { console.error('nextTick:', e && e.stack || e); }\n"
+    "      catch (e) { console.error('nextTick:', __formatErr(e)); }\n"
     "    });\n"
     "  };\n"
     // process.on('exit', fn) — queue exit handlers. main.cpp calls
@@ -5198,7 +5212,7 @@ static const char kBootstrapJS[] =
     "      var copy = arr.slice();\n"
     "      for (var i = 0; i < copy.length; ++i)\n"
     "        try { copy[i].apply(this, args); }\n"
-    "        catch (e) { console.error('process.emit('+ev+'):', e && e.stack || e); }\n"
+    "        catch (e) { console.error('process.emit('+ev+'):', __formatErr(e)); }\n"
     "      return true;\n"
     "    };\n"
     "    this.__process_flush_exit__ = function () {\n"
@@ -5206,7 +5220,7 @@ static const char kBootstrapJS[] =
     "      var copy = arr.slice();\n"
     "      for (var i = 0; i < copy.length; ++i)\n"
     "        try { copy[i](process.exitCode | 0); }\n"
-    "        catch (e) { console.error('exit handler:', e && e.stack || e); }\n"
+    "        catch (e) { console.error('exit handler:', __formatErr(e)); }\n"
     "    };\n"
     "  }\n"
     // process.umask: Node uses libuv for the real umask. We don't have a\n"

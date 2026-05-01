@@ -75,6 +75,30 @@ as the canonical source while making them resolvable via Node's
 - No moderation, no persistence, no threads, no file uploads (intentional for
   the demo scope).
 
+## Tiger Safari (PowerPC) support
+
+`views/index.hbs` + `static/style.css` + `static/client.js` are a
+single source that works in modern browsers AND Safari 4 on Mac OS X
+10.4 Tiger PPC, the actual browser running on the iBook G3 itself.
+Safari 4 lacks WebSocket, CSS variables, modern flexbox, `fetch`,
+`Promise`, `e.key`, and `new Event()`.
+
+`client.js` tries WebSocket first; if it doesn't open within 4 s, or
+closes before opening (Tiger Safari has a `WebSocket` *constructor*
+but the handshake is incompatible with modern servers), it falls
+back to short-poll over XHR — `GET /api/posts?since=N` every 2 s,
+which already exists for the REST API. Posting goes through the
+same `POST /api/post` (JSON body via XHR) on both code paths.
+
+Modern clients keep using WS push and don't notice the fallback
+machinery. Tiger clients see a "* polling mode (reason)" note at
+the top of the feed and otherwise behave identically.
+
+CSS uses absolute positioning + floats (CSS 2.1) for the
+header / scroll / form layout instead of flex/grid; colors are
+hardcoded hex; `border-radius` is duplicated with the
+`-webkit-border-radius` prefix.
+
 ## Validated transcript on ibookg37 (iBook G3 900 MHz)
 
 Server startup (Express require chain takes ~10 s on G3):

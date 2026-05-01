@@ -5,120 +5,151 @@
 <title>ionpower-node chat</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-:root {
-    --bg:    #0e1116;
-    --panel: #161b22;
-    --line:  #30363d;
-    --fg:    #c9d1d9;
-    --muted: #6e7681;
-    --you:   #58a6ff;
-    --them:  #7ee787;
-    --sys:   #d29922;
-    --err:   #f85149;
-}
-* { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; }
+/*
+ * Single source: works on modern browsers AND Tiger Safari 4 (2009).
+ *
+ * Tiger constraints:
+ *   - No CSS variables (Safari 9.1+).
+ *   - No `display: flex` / `gap` / Grid (Safari 6+ / 10.1+).
+ *   - `border-radius` works but wants `-webkit-border-radius` too.
+ *   - `box-sizing` wants `-webkit-box-sizing` for older Safari.
+ *
+ * Layout uses absolute positioning for the header / scroll / form
+ * stack, which has worked since CSS 2.1.
+ */
+
+* { -webkit-box-sizing: border-box; box-sizing: border-box; }
+html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
 body {
-    background: var(--bg);
-    color: var(--fg);
-    font: 14px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    display: flex;
-    flex-direction: column;
+    background: #0e1116;
+    color:      #c9d1d9;
+    font: 14px/1.5 Menlo, Monaco, "Courier New", monospace;
 }
+
+/* Top bar — fixed height. */
 header {
-    background: var(--panel);
-    border-bottom: 1px solid var(--line);
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40px;
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
     padding: 8px 14px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-shrink: 0;
+    overflow: hidden;
+    white-space: nowrap;
 }
 header h1 {
     font-size: 14px;
     font-weight: 600;
     margin: 0;
-    color: var(--fg);
+    color: #c9d1d9;
+    display: inline;
+    margin-right: 12px;
 }
 header .banner {
     font-size: 12px;
-    color: var(--muted);
-    flex-grow: 1;
+    color: #6e7681;
+    display: inline;
 }
-header .banner b { color: var(--you); }
+header .banner b { color: #58a6ff; }
 header .status {
     font-size: 12px;
     padding: 2px 8px;
+    border: 1px solid #30363d;
+    -webkit-border-radius: 999px;
     border-radius: 999px;
-    border: 1px solid var(--line);
+    float: right;
+    margin-top: 2px;
 }
-header .status.connected { color: var(--them); border-color: var(--them); }
-header .status.disconnected { color: var(--err); border-color: var(--err); }
-main {
-    flex-grow: 1;
-    display: grid;
-    grid-template-columns: 1fr 200px;
-    overflow: hidden;
-}
+header .status.connected    { color: #7ee787; border-color: #7ee787; }
+header .status.disconnected { color: #f85149; border-color: #f85149; }
+
+/* Message list — scrolls between header and form. */
 #log {
-    overflow-y: auto;
-    padding: 14px;
+    position: absolute;
+    top: 40px;
+    bottom: 80px;
+    left: 0;
+    right: 200px;
     margin: 0;
+    padding: 14px;
     list-style: none;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 #log li { margin-bottom: 4px; }
-#log .nick    { color: var(--them); font-weight: 600; }
-#log .youNick { color: var(--you);  font-weight: 600; }
-#log .ts      { color: var(--muted); font-size: 11px; margin-right: 6px; }
-#log .sys     { color: var(--sys); font-style: italic; }
-#log .err     { color: var(--err); }
+#log .nick    { color: #7ee787; font-weight: 600; }
+#log .youNick { color: #58a6ff; font-weight: 600; }
+#log .ts      { color: #6e7681; font-size: 11px; margin-right: 6px; }
+#log .sys     { color: #d29922; font-style: italic; }
+
+/* Online roster — pinned right. */
 aside {
-    background: var(--panel);
-    border-left: 1px solid var(--line);
+    position: absolute;
+    top: 40px;
+    bottom: 80px;
+    right: 0;
+    width: 200px;
+    background: #161b22;
+    border-left: 1px solid #30363d;
     padding: 14px;
     overflow-y: auto;
 }
 aside h2 {
     font-size: 12px;
-    color: var(--muted);
+    color: #6e7681;
     margin: 0 0 8px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 aside ul { list-style: none; padding: 0; margin: 0; }
 aside li { padding: 2px 0; }
-aside li.me { color: var(--you); font-weight: 600; }
+aside li.me { color: #58a6ff; font-weight: 600; }
+
+/* Bottom form — fixed height. */
 form {
-    display: flex;
-    border-top: 1px solid var(--line);
-    background: var(--panel);
-    padding: 8px;
-    gap: 8px;
-    flex-shrink: 0;
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: #161b22;
+    border-top: 1px solid #30363d;
+    padding: 8px 14px;
+}
+form label {
+    display: block;
+    font-size: 11px;
+    color: #6e7681;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 input[type=text] {
-    flex-grow: 1;
-    background: var(--bg);
-    color: var(--fg);
-    border: 1px solid var(--line);
+    width: 76%;
+    background: #0e1116;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    -webkit-border-radius: 6px;
     border-radius: 6px;
     padding: 8px 12px;
     font: inherit;
+    margin-right: 4px;
+    vertical-align: middle;
 }
-input[type=text]:focus { outline: none; border-color: var(--you); }
 button {
-    background: var(--you);
-    color: var(--bg);
+    background: #58a6ff;
+    color: #0e1116;
     border: none;
+    -webkit-border-radius: 6px;
     border-radius: 6px;
     padding: 8px 16px;
     font: inherit;
     font-weight: 600;
     cursor: pointer;
+    vertical-align: middle;
 }
-button:hover { filter: brightness(1.1); }
+
+/* Narrow viewport: hide roster (covers Tiger Safari at 800px wide too). */
 @media (max-width: 600px) {
-    main { grid-template-columns: 1fr; }
+    #log { right: 0; }
     aside { display: none; }
 }
 </style>
@@ -126,37 +157,42 @@ button:hover { filter: brightness(1.1); }
 <body>
 <header>
     <h1>ionpower-node chat</h1>
-    <div class="banner" id="banner">connecting…</div>
+    <span class="banner" id="banner">connecting&hellip;</span>
     <span class="status" id="status">offline</span>
 </header>
-<main>
-    <ul id="log"></ul>
-    <aside>
-        <h2>online</h2>
-        <ul id="roster"></ul>
-    </aside>
-</main>
+<ul id="log"></ul>
+<aside>
+    <h2>online</h2>
+    <ul id="roster"></ul>
+</aside>
 <form id="form" autocomplete="off">
-    <input type="text" id="input" placeholder="type a message; /nick yourname to rename" autofocus maxlength="1024">
+    <label for="input">Message &mdash; type <code>/nick yourname</code> to rename yourself</label>
+    <input type="text" id="input" maxlength="1024">
     <button type="submit">send</button>
 </form>
+
 <script>
+/*
+ * Single source: WebSocket on modern browsers, XHR short-poll on
+ * Tiger Safari 4 (which has no `WebSocket`, no `fetch`, no Promise).
+ *
+ * Avoid: arrow fns, `const`/`let`, template literals, destructuring,
+ *        `Date.now()` (use +new Date()), `new Event()`, `e.key`.
+ */
 (function () {
     var log     = document.getElementById("log");
     var roster  = document.getElementById("roster");
     var input   = document.getElementById("input");
     var form    = document.getElementById("form");
-    var status  = document.getElementById("status");
+    var statusEl = document.getElementById("status");
     var banner  = document.getElementById("banner");
 
     var myNick = null;
-
-    var wsUrl = "ws://" + location.hostname + ":" + (parseInt(location.port || "80", 10) + 1) + "/";
-    var ws    = new WebSocket(wsUrl);
+    var hasWS  = (typeof WebSocket !== "undefined");
 
     function pad(n) { return n < 10 ? "0" + n : "" + n; }
     function fmtTs(ms) {
-        var d = new Date(ms || Date.now());
+        var d = new Date(ms || (+new Date()));
         return pad(d.getHours()) + ":" + pad(d.getMinutes());
     }
     function append(el) {
@@ -166,86 +202,229 @@ button:hover { filter: brightness(1.1); }
     function addSys(text) {
         var li = document.createElement("li");
         li.className = "sys";
-        li.textContent = "* " + text;
+        li.appendChild(document.createTextNode("* " + text));
         append(li);
     }
     function addMsg(nick, text, ts, isYou) {
         var li = document.createElement("li");
-        var s1 = document.createElement("span"); s1.className = "ts";    s1.textContent = "[" + fmtTs(ts) + "]";
-        var s2 = document.createElement("span"); s2.className = isYou ? "youNick" : "nick"; s2.textContent = " <" + nick + "> ";
-        var s3 = document.createElement("span"); s3.textContent = text;
+        var s1 = document.createElement("span"); s1.className = "ts";
+        s1.appendChild(document.createTextNode("[" + fmtTs(ts) + "]"));
+        var s2 = document.createElement("span");
+        s2.className = isYou ? "youNick" : "nick";
+        s2.appendChild(document.createTextNode(" <" + nick + "> "));
+        var s3 = document.createElement("span");
+        s3.appendChild(document.createTextNode(text));
         li.appendChild(s1); li.appendChild(s2); li.appendChild(s3);
         append(li);
     }
     function setRoster(nicks) {
+        // innerHTML="" works back to Safari 1; the whole rebuild is fine.
         roster.innerHTML = "";
         for (var i = 0; i < nicks.length; i++) {
             var li = document.createElement("li");
             if (nicks[i] === myNick) li.className = "me";
-            li.textContent = nicks[i];
+            li.appendChild(document.createTextNode(nicks[i]));
             roster.appendChild(li);
         }
     }
+    function setStatus(text, cls) {
+        statusEl.firstChild
+            ? (statusEl.firstChild.nodeValue = text)
+            : statusEl.appendChild(document.createTextNode(text));
+        statusEl.className = "status " + cls;
+    }
+    function showBanner(data) {
+        // Tiger Safari handles innerHTML fine; keep <b> for the runtime.
+        banner.innerHTML = "served by <b>" +
+            data.runtime + "</b> on " + data.host +
+            " (" + data.arch + ", " + data.cpus + ")";
+    }
 
-    ws.onopen = function () {
-        status.textContent = "online";
-        status.className = "status connected";
-        addSys("connected");
-    };
-    ws.onclose = function () {
-        status.textContent = "offline";
-        status.className = "status disconnected";
-        addSys("disconnected");
-    };
-    ws.onerror = function () {
-        status.textContent = "error";
-        status.className = "status disconnected";
-    };
-    ws.onmessage = function (ev) {
-        var msg;
-        try { msg = JSON.parse(ev.data); } catch (e) { return; }
-        switch (msg.type) {
-            case "banner":
-                banner.innerHTML = "served by <b>" + msg.data.runtime + "</b> on " +
-                    msg.data.host + " (" + msg.data.arch + ", " + msg.data.cpus + ")";
-                break;
-            case "you":
-                myNick = msg.nick;
-                addSys("you are " + myNick + " — type /nick yourname to change");
-                break;
-            case "msg":
-                addMsg(msg.nick, msg.text, msg.ts, msg.nick === myNick);
-                break;
-            case "join":
-                addSys(msg.nick + " joined");
-                setRoster(msg.roster);
-                break;
-            case "leave":
-                addSys(msg.nick + " left");
-                setRoster(msg.roster);
-                break;
-            case "nick":
-                if (msg.oldNick === myNick) myNick = msg.newNick;
-                addSys(msg.oldNick + " is now " + msg.newNick);
-                setRoster(msg.roster);
-                break;
-            case "roster":
-                setRoster(msg.nicks);
-                break;
-        }
-    };
+    /* ============================================================ */
+    /*  Path A: WebSocket (modern browsers).                        */
+    /*                                                              */
+    /*  Tiger Safari has a `WebSocket` *constructor* (so the typeof */
+    /*  check below passes) but the actual handshake fails. So if   */
+    /*  WS doesn't open within 4 s, we silently fall back to        */
+    /*  polling. Same if open + close before any message arrives.   */
+    /* ============================================================ */
+    function startWS() {
+        var wsPort = (parseInt(location.port || "80", 10) + 1);
+        var wsUrl = "ws://" + location.hostname + ":" + wsPort + "/";
+        var ws;
+        var opened = false;
+        var fellBack = false;
 
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        var text = input.value.trim();
-        if (!text) return;
-        if (text.indexOf("/nick ") === 0) {
-            ws.send(JSON.stringify({ type: "nick", nick: text.slice(6) }));
-        } else {
-            ws.send(JSON.stringify({ type: "msg", text: text }));
+        function fallback(reason) {
+            if (fellBack) return;
+            fellBack = true;
+            try { if (ws) ws.close(); } catch (e) {}
+            startPoll(reason);
         }
-        input.value = "";
-    });
+        var t = setTimeout(function () {
+            if (!opened) fallback("WS connect timeout");
+        }, 4000);
+
+        try { ws = new WebSocket(wsUrl); }
+        catch (e) { clearTimeout(t); fallback("WS unsupported"); return; }
+
+        ws.onopen = function () {
+            opened = true;
+            clearTimeout(t);
+            setStatus("online", "connected");
+            addSys("connected");
+        };
+        ws.onclose = function () {
+            clearTimeout(t);
+            if (!opened) { fallback("WS closed before open"); return; }
+            setStatus("offline", "disconnected");
+            addSys("disconnected");
+        };
+        ws.onerror = function () {
+            clearTimeout(t);
+            if (!opened) { fallback("WS error before open"); return; }
+            setStatus("error", "disconnected");
+        };
+        ws.onmessage = function (ev) {
+            var msg;
+            try { msg = JSON.parse(ev.data); } catch (e) { return; }
+            handleMsg(msg);
+        };
+
+        function handleMsg(msg) {
+            switch (msg.type) {
+            case "banner":  showBanner(msg.data); break;
+            case "you":     myNick = msg.nick;
+                            addSys("you are " + myNick + " — type /nick yourname to change");
+                            break;
+            case "msg":     addMsg(msg.nick, msg.text, msg.ts, msg.nick === myNick); break;
+            case "join":    addSys(msg.nick + " joined");  setRoster(msg.roster); break;
+            case "leave":   addSys(msg.nick + " left");    setRoster(msg.roster); break;
+            case "nick":    if (msg.oldNick === myNick) myNick = msg.newNick;
+                            addSys(msg.oldNick + " is now " + msg.newNick);
+                            setRoster(msg.roster);
+                            break;
+            case "roster":  setRoster(msg.nicks); break;
+            }
+        }
+
+        form.onsubmit = function (e) {
+            if (e && e.preventDefault) e.preventDefault();
+            var text = input.value;
+            text = text.replace(/^\s+|\s+$/g, "");
+            if (!text) return false;
+            if (text.indexOf("/nick ") === 0) {
+                ws.send(JSON.stringify({ type: "nick", nick: text.substring(6) }));
+            } else {
+                ws.send(JSON.stringify({ type: "msg", text: text }));
+            }
+            input.value = "";
+            return false;
+        };
+    }
+
+    /* ============================================================ */
+    /*  Path B: XHR short-poll (Tiger Safari 4, IE 6+, anything     */
+    /*          without a usable WebSocket).                        */
+    /*                                                              */
+    /*   GET  /poll?since=N&nick=X  -> { messages, roster, you, nextSince }
+     *   POST /post (form-encoded: nick=X&text=Y)
+     */
+    /* ============================================================ */
+    function startPoll(reason) {
+        addSys("polling mode" + (reason ? " (" + reason + ")" : ""));
+        var sinceN = 0;
+        var lastRosterStr = "";
+
+        function xhr(method, url, body, cb) {
+            var x = new XMLHttpRequest();
+            x.open(method, url, true);
+            x.onreadystatechange = function () {
+                if (x.readyState !== 4) return;
+                if (x.status >= 200 && x.status < 300) {
+                    var j;
+                    try { j = JSON.parse(x.responseText); } catch (e) { cb("parse"); return; }
+                    cb(null, j);
+                } else {
+                    cb(x.status || "net");
+                }
+            };
+            if (body) {
+                x.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                x.send(body);
+            } else {
+                x.send();
+            }
+        }
+
+        function tick() {
+            var url = "/poll?since=" + sinceN +
+                      (myNick ? "&nick=" + encodeURIComponent(myNick) : "");
+            xhr("GET", url, null, function (err, data) {
+                if (err) {
+                    setStatus("offline", "disconnected");
+                    setTimeout(tick, 5000);
+                    return;
+                }
+                setStatus("online", "connected");
+                if (data.you && !myNick) {
+                    myNick = data.you;
+                    addSys("you are " + myNick + " — type /nick yourname to change");
+                    if (data.banner) showBanner(data.banner);
+                }
+                var msgs = data.messages || [];
+                for (var i = 0; i < msgs.length; i++) {
+                    var m = msgs[i];
+                    if (m.kind === "sys") {
+                        addSys(m.text);
+                    } else {
+                        addMsg(m.nick, m.text, m.ts, m.nick === myNick);
+                    }
+                }
+                if (typeof data.nextSince === "number") sinceN = data.nextSince;
+                if (data.roster) {
+                    var rs = data.roster.join(",");
+                    if (rs !== lastRosterStr) {
+                        setRoster(data.roster);
+                        lastRosterStr = rs;
+                    }
+                }
+                setTimeout(tick, 2000);
+            });
+        }
+
+        form.onsubmit = function (e) {
+            if (e && e.preventDefault) e.preventDefault();
+            var text = input.value;
+            text = text.replace(/^\s+|\s+$/g, "");
+            if (!text) return false;
+            var body;
+            if (text.indexOf("/nick ") === 0) {
+                body = "nick=" + encodeURIComponent(myNick || "") +
+                       "&newNick=" + encodeURIComponent(text.substring(6));
+            } else {
+                body = "nick=" + encodeURIComponent(myNick || "") +
+                       "&text=" + encodeURIComponent(text);
+            }
+            input.value = "";
+            xhr("POST", "/post", body, function (err, data) {
+                if (err) addSys("post failed (" + err + ")");
+                else if (data && data.youNick) myNick = data.youNick;
+                // The next /poll cycle will pick up the new message.
+            });
+            return false;
+        };
+
+        // Pre-populate banner from /info (cosmetic — polling will also send it).
+        xhr("GET", "/info", null, function (err, data) {
+            if (!err && data) showBanner(data);
+        });
+
+        tick();
+    }
+
+    if (hasWS) startWS();
+    else       startPoll();
 })();
 </script>
 </body>

@@ -57,3 +57,27 @@ a G3 600 MHz. The select() loop is the bottleneck above ~100 fds.
 There's no shared state across processes; this is a single-process
 chat — fine for the demo, would need a backing channel for real
 production use.
+
+## Tiger Safari (PowerPC) support
+
+The page is one source that works in modern browsers AND Safari 4 on
+Mac OS X 10.4 Tiger PPC, the actual browser people would have on the
+iBook G3 itself. Safari 4 lacks WebSocket (`new WebSocket(...)` opens
+a constructor but the handshake fails against modern servers), CSS
+variables, modern flexbox, and a few JS niceties (`fetch`, `Promise`,
+`e.key`, `new Event()`).
+
+The client tries WebSocket first; if it doesn't open within 4 s, or
+closes before opening, it falls back to short-poll over XHR — the
+same `GET /poll?since=N&nick=X` + `POST /post` (form-encoded)
+endpoints the server exposes alongside the WebSocket. Polling
+clients show up in the same roster as WS clients and see the same
+messages; nick assignment + `/nick` rename both work over polling.
+
+If you see a `* polling mode (...)` line in the chat feed, that's
+the fallback notifying. Modern browsers won't see it.
+
+CSS uses absolute positioning for the header / scroll / form stack
+(works back to CSS 2.1) instead of flex/grid. Colors are hardcoded
+hex; no `:root` variables. `border-radius` is duplicated with the
+`-webkit-border-radius` prefix for the Safari 4 era.

@@ -10,9 +10,28 @@ SpiderMonkey's Ion and Baseline JITs — and layer a small Node-shaped
 bridge on top (CommonJS `require`, `console`, `process`, a sync
 `fs`, `path`, and a Buffer shim).
 
+## Try it out!
+
+On any G3, G4, or G5 Mac running Tiger or Leopard:
+
+```
+sudo mkdir -p /opt
+sudo chmod ugo+rwx /opt
+cd /opt
+curl http://leopard.sh/binpkgs/gcc-libs-4.9.4.tiger.g3.tar.gz | gunzip | tar x
+ln -s gcc-libs-4.9.4 gcc-4.9.4
+curl http://leopard.sh/dist/ca-certificates-20230110.tar.gz | gunzip | tar x
+curl http://leopard.sh/misc/beta/mozjs-45-ionpower-g3.tar.gz | gunzip | tar x
+curl http://leopard.sh/misc/beta/ionpower-node-0.85-g3-ppc.tar.gz | gunzip | tar x
+cd /opt/ionpower-node-0.85/bin
+./node ../share/ionpower-node/demos/express-chat/server.js
+```
+
+![](docs/media/express-chat-demo.png)
+
 ## Status
 
-**Alpha — usable.** Releases ship triad-built tarballs for **G3
+**Beta — usable.** Releases ship triad-built tarballs for **G3
 (PPC 750)**, **G4 (PPC 7450)**, and **G5 (PPC 970)** on every tag.
 SpiderMonkey 45 + IonPower JIT is built once per arch and lives at
 `/opt/mozjs-45-ionpower-{g3,g4,g5}/`; the runtime tarball unpacks
@@ -22,8 +41,9 @@ Real event loop (select-based, wall-clock timers, fd I/O), real
 async `fs` / `http` / `https` / `net` / `tls` / `dgram` /
 `child_process` / `dns`, WHATWG Streams, real RSA / Ed25519 / X.509
 / AES-GCM crypto, real DEFLATE compression, real OpenSSL-backed
-TLS 1.2 + 1.3, and a TAP `node:test` runner with mocks. See the
-table below for the current per-module accounting.
+TLS 1.2 + 1.3 (statically linked into the runtime since v0.85),
+and a TAP `node:test` runner with mocks. See the table below for
+the current per-module accounting.
 
 [Full release archive on GitHub](https://github.com/cellularmitosis/ionpower-node/releases).
 
@@ -79,27 +99,25 @@ rarely changes), then unpack a fresh runtime tarball per release.
 /opt/
 ├── mozjs-45-ionpower-g3/        <- SpiderMonkey + IonPower JIT (-mcpu=750)
 │   ├── bin/, include/, lib/...
-├── openssl-1.1.1t/              <- TLS / HTTPS (since v0.83)
-│   ├── bin/, include/, lib/...
 ├── ca-certificates-20230110/    <- CA bundle (default trust store)
 │   └── share/cacert.pem
-└── ionpower-node-0.85/          <- Node-compat runtime
-    └── bin/node                 <- expects sibling mozjs + openssl
+└── ionpower-node-0.85/          <- Node-compat runtime (statically links OpenSSL 1.1.1t)
+    └── bin/node                 <- expects sibling mozjs
 ```
 
-The fastest path: grab prebuilt tarballs.
+The fastest path: grab prebuilt tarballs. Both the runtime and the
+matching SpiderMonkey are attached to the [v0.85 release](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.85).
 
 ```bash
 # One-time: SpiderMonkey + IonPower JIT (G3 example)
-curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/download/v0.73/mozjs-45-ionpower-g3.tar.gz
+curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/download/v0.85/mozjs-45-ionpower-g3.tar.gz
 sudo tar xzpf mozjs-45-ionpower-g3.tar.gz -C /opt/
 
-# One-time: OpenSSL + CA bundle for tls / https (since v0.83). Either:
-#   tiger.sh install openssl-1.1.1t
+# One-time: CA bundle for tls / https. Either:
+#   tiger.sh install ca-certificates
 # or, without tiger.sh:
 cd /opt && \
-  curl http://leopard.sh/dist/ca-certificates-20230110.tar.gz | gunzip | tar x && \
-  curl http://leopard.sh/binpkgs/openssl-1.1.1t.tiger.g3.tar.gz | gunzip | tar x
+  curl http://leopard.sh/dist/ca-certificates-20230110.tar.gz | gunzip | tar x
 
 # Per release: the runtime
 curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-0.85-g3-ppc.tar.gz
@@ -116,7 +134,10 @@ native build). See [`BUILDING.md`](BUILDING.md) for the full
 compatibility table.
 
 **Building from source, the triad release flow, troubleshooting:**
-see [`BUILDING.md`](BUILDING.md).
+see [`BUILDING.md`](BUILDING.md). (The build still needs OpenSSL
+1.1.1t headers + libs at `/opt/openssl-1.1.1t/` to link against;
+prebuilt runtimes statically embed it so end users don't need a
+separate OpenSSL install.)
 
 **Running the smoke suite, the demo round-trips, or the WPT / Node
 conformance sweeps:** see [`TESTING.md`](TESTING.md).
@@ -128,10 +149,10 @@ exercises a slice of the runtime's surface end-to-end.
 
 | Demo | What it shows |
 |---|---|
-| [`demos/chat/`](demos/chat/) | Multi-client WebSocket chat. HTTP + RFC 6455 server + EventEmitter broadcast over the select() event loop, served from a 1999 iBook G3 to as many modern browsers as you point at it. |
+| [`demos/chat/`](demos/chat/) | Multi-client WebSocket chat. HTTP + RFC 6455 server + EventEmitter broadcast over the select() event loop, served from a 1999 iBook G3 to as many modern browsers as you point at it. The page also works in **Safari 4 on Tiger PPC** — feature-detects WebSocket and falls back to XHR short-poll over the same `/poll` + `/post` endpoints. |
 | [`demos/npm-fetch/`](demos/npm-fetch/) | `npm install` from `registry.npmjs.org`, end-to-end on a G3: `fetch` over the curl shim → `zlib.gunzipSync` → POSIX ustar parse → `fs.writeFileSync` → `require()`. ~1 s for a small no-deps package like `mri`. |
 | [`demos/paste/`](demos/paste/) | JWT-secured encrypted paste server. Browser POSTs text → AES-256-GCM encrypt → real DEFLATE compress → fs write → ES256 (ECDSA P-256) JWT bearer issued. GET with bearer → ECDSA verify → gunzip → AES-GCM decrypt with auth-tag check. End-to-end exercise of the v0.65–v0.81 crypto + zlib + http stack. |
-| [`demos/express-chat/`](demos/express-chat/) | **Real Express 4 app** running on the runtime — anonymous chat board in 4chan / 8chan style. Optional tripcodes (`name#secret` → SHA-256 hashed), sequential post numbers, `>>N` auto-linking, in-memory ring buffer, per-IP rate limit. ~25 vendored Express deps under `test/vendor/express/node_modules/`. |
+| [`demos/express-chat/`](demos/express-chat/) | **Real Express 4 app** running on the runtime — anonymous chat board in 4chan / 8chan style. Optional tripcodes (`name#secret` → SHA-256 hashed), sequential post numbers, `>>N` auto-linking, in-memory ring buffer, per-IP rate limit. ~25 vendored Express deps under `test/vendor/express/node_modules/`. Also works in **Safari 4 on Tiger PPC** via the same WS-or-poll fallback. |
 | [`demos/https/`](demos/https/) | **HTTPS server + client over real OpenSSL.** Self-signed cert generated at startup (`tls.generateSelfSigned`), then `https.createServer` over `tls.TLSSocket`. CLI client speaks to the local server *or* any public HTTPS URL — prints status, headers, TLS info (protocol / cipher / peer cert), body. Showcases the v0.83 `tls`/`https` surface. |
 | [`demos/blog/`](demos/blog/) | Static-site generator. Reads markdown posts under `input/`, renders via Handlebars with templates `index.hbs` / `post.hbs`, writes a styled blog tree to `output/`. |
 | [`demos/feed-report/`](demos/feed-report/) | Parses a sample RSS feed (XML), summarises items, prints a digest. |

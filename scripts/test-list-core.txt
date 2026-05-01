@@ -1,0 +1,14 @@
+test/hello.js
+test/require_chain.js
+test/nm_resolution_smoke.js
+test/fs_smoke.js
+test/fs_dirs_smoke.js
+test/fs_extras_smoke.js
+test/timers_smoke.js
+test/console_formatting.js
+test/util_inspect_smoke.js
+test/promise_smoke.js
+test/cores_smoke.js
+test/integration.js
+test/fibonacci.js
+test/jit_smoke.js

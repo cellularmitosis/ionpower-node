@@ -1,136 +1,168 @@
-/* express-chat/static/style.css — dark theme matching demos/chat/ */
-:root {
-    --bg:    #0e1116;
-    --panel: #161b22;
-    --line:  #30363d;
-    --fg:    #c9d1d9;
-    --muted: #6e7681;
-    --you:   #58a6ff;
-    --them:  #7ee787;
-    --sys:   #d29922;
-    --err:   #f85149;
-    --trip:  #d2a8ff;
-}
-* { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; }
+/*
+ * express-chat dark theme — single source for modern + Tiger Safari 4.
+ *
+ * Tiger constraints (same as demos/chat/):
+ *   - No CSS variables  (Safari 9.1+).
+ *   - No `display: flex` / `gap` / Grid (Safari 6+ / 10.1+).
+ *   - `border-radius` works but wants `-webkit-border-radius` too.
+ *
+ * Layout uses absolute positioning (CSS 2.1) for the header/scroll/form
+ * stack instead of flex. The post boxes are normal block boxes.
+ */
+
+* { -webkit-box-sizing: border-box; box-sizing: border-box; }
+html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
 body {
-    background: var(--bg);
-    color: var(--fg);
-    font: 14px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    display: flex;
-    flex-direction: column;
+    background: #0e1116;
+    color:      #c9d1d9;
+    font: 14px/1.5 Menlo, Monaco, "Courier New", monospace;
 }
+
+/* ============ Top bar ============ */
 header {
-    background: var(--panel);
-    border-bottom: 1px solid var(--line);
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40px;
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
     padding: 8px 14px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-shrink: 0;
+    overflow: hidden;
+    white-space: nowrap;
 }
 header h1 {
     font-size: 14px;
     font-weight: 600;
     margin: 0;
-    color: var(--fg);
-    white-space: nowrap;
+    color: #c9d1d9;
+    display: inline;
+    margin-right: 12px;
 }
 header .banner {
     font-size: 12px;
-    color: var(--muted);
-    flex-grow: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    color: #6e7681;
+    display: inline;
 }
-header .banner b { color: var(--you); }
+header .banner b { color: #58a6ff; }
 header .status {
     font-size: 12px;
     padding: 2px 8px;
+    border: 1px solid #30363d;
+    -webkit-border-radius: 999px;
     border-radius: 999px;
-    border: 1px solid var(--line);
-    white-space: nowrap;
-    flex-shrink: 0;
+    float: right;
+    margin-top: 2px;
 }
-header .status.connected    { color: var(--them); border-color: var(--them); }
-header .status.disconnected { color: var(--err);  border-color: var(--err);  }
+header .status.connected    { color: #7ee787; border-color: #7ee787; }
+header .status.disconnected { color: #f85149; border-color: #f85149; }
+
+/* ============ Scrollable feed ============ */
 main {
-    flex-grow: 1;
+    position: absolute;
+    top: 40px;
+    bottom: 175px;
+    left: 0; right: 0;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 14px;
 }
-.post {
-    border: 1px solid var(--line);
+
+/* ============ Bottom form ============
+ *
+ * Three labelled rows: name + trip side-by-side (50/50), then a
+ * message textarea + Post button row.
+ */
+form {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 175px;
+    background: #161b22;
+    border-top: 1px solid #30363d;
+    padding: 8px 14px;
+}
+.form-row { margin-bottom: 4px; overflow: hidden; }
+.form-row label {
+    display: block;
+    font-size: 11px;
+    color: #6e7681;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.form-row-half {
+    float: left;
+    width: 49%;
+}
+.form-row-half:first-child { margin-right: 1%; }
+.form-row-half input[type=text] { width: 100%; }
+.form-row-message { clear: both; }
+.form-row-message-inner { overflow: hidden; }
+
+input[type=text], textarea {
+    background: #0e1116;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    -webkit-border-radius: 6px;
     border-radius: 6px;
-    background: var(--panel);
+    padding: 6px 10px;
+    font: inherit;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.form-row-message-inner textarea {
+    width: 79%;
+    height: 48px;
+    margin-right: 1%;
+    resize: none;
+    vertical-align: top;
+}
+input[type=text]:focus, textarea:focus {
+    outline: none;
+    border-color: #58a6ff;
+}
+.form-row-message-inner button {
+    background: #58a6ff;
+    color: #0e1116;
+    border: none;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    width: 19%;
+    height: 48px;
+    vertical-align: top;
+}
+
+/* ============ Post boxes ============ */
+.post {
+    border: 1px solid #30363d;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    background: #161b22;
     padding: 8px 12px;
     margin-bottom: 10px;
 }
 .post-header {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
     margin-bottom: 4px;
     font-size: 12px;
+    overflow: hidden;
 }
-.post-no   { color: var(--you); font-weight: 600; }
-.post-name { color: var(--them); font-weight: 600; }
-.post-trip { color: var(--trip); font-size: 11px; }
-.post-ts   { color: var(--muted); font-size: 11px; margin-left: auto; }
+.post-no   { color: #58a6ff; font-weight: 600; margin-right: 8px; }
+.post-name { color: #7ee787; font-weight: 600; margin-right: 8px; }
+.post-trip { color: #d2a8ff; font-size: 11px; margin-right: 8px; }
+.post-ts   { color: #6e7681; font-size: 11px; float: right; }
 .post-text {
     white-space: pre-wrap;
     word-break: break-word;
     line-height: 1.5;
 }
-.post-text a { color: var(--you); }
-#postform {
-    display: flex;
-    flex-direction: column;
-    border-top: 1px solid var(--line);
-    background: var(--panel);
-    padding: 8px 14px;
-    gap: 6px;
-    flex-shrink: 0;
-}
-.form-row {
-    display: flex;
-    gap: 6px;
-}
-input[type=text], textarea {
-    flex-grow: 1;
-    background: var(--bg);
-    color: var(--fg);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    padding: 6px 10px;
-    font: inherit;
-    resize: none;
-}
-input[type=text]:focus, textarea:focus {
-    outline: none;
-    border-color: var(--you);
-}
-button {
-    background: var(--you);
-    color: var(--bg);
-    border: none;
-    border-radius: 6px;
-    padding: 8px 20px;
-    font: inherit;
-    font-weight: 600;
-    cursor: pointer;
-    flex-shrink: 0;
-}
-button:hover { filter: brightness(1.1); }
-button:disabled { opacity: 0.5; cursor: not-allowed; }
+.post-text a { color: #58a6ff; }
+
 .sys-msg {
-    color: var(--sys);
+    color: #d29922;
     font-style: italic;
     font-size: 12px;
     margin-bottom: 6px;
     padding: 0 4px;
-}
-@media (max-width: 600px) {
-    .form-row { flex-direction: column; }
 }

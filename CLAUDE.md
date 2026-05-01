@@ -77,6 +77,36 @@ warm-cache hit on alternate wake-ups; the sweep is the long pole.
 For shorter-running jobs (single triad build, single demo validation),
 default `delaySeconds` heuristics still apply.
 
+## Test-list workflow
+
+The Makefile's `test` and `test-libs` targets do **not** contain a
+list of tests. Instead they invoke
+`scripts/smoke-test-runner.sh <list-file>`, where the list file is
+one of:
+
+- `scripts/test-list-core.txt` — fast core runtime primitives
+  (driven by `make test`).
+- `scripts/test-list-more.txt` — vendored libraries + Node-API
+  surface (driven by `make test-libs`).
+
+**When adding a smoke**: drop the file in `test/`, then append its
+path (one per line, e.g. `test/foo_smoke.js`) to one of those two
+list files. **Do not edit the Makefile** — there's nothing to
+change there.
+
+**When auditing**: every now and then run
+`scripts/check-test-coverage.sh` to spot files in `test/*.js` that
+got forgotten. There's a small allowlist of files that are
+intentionally excluded (helpers, benchmarks, the stdin-pipe smoke,
+the standalone JIT verifier) — see TESTING.md for the canonical
+list.
+
+The runner captures STDOUT, STDERR, OUTPUT (interleaved), TIME,
+STATUS, and a PASS/FAIL marker per test under
+`/tmp/nodesmoke-<unix-ts>/<test>.js/`. It does *not* stop at the
+first failure — it runs the full list, prints a summary, and exits
+non-zero if anything failed.
+
 ## Triad build flow
 
 `scripts/triad-build.sh <host> <arch> <version>` builds + tests +

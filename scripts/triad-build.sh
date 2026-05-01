@@ -37,6 +37,28 @@ esac
 REMOTE=/Users/macuser/tmp/ionpower-node
 TARBALL=ionpower-node-${VERSION}-${ARCH}-ppc.tar.gz
 
+# Coverage gate: fail fast (locally, before any remote work) if a
+# test/*.js file got added without being wired into a test-list-*.txt
+# or added to the intentional-skip allowlist. Cheap (~5 ms) but saves
+# a 5-15 minute round-trip when someone forgets.
+echo "=== [$HOST/$ARCH/$VERSION] check-test-coverage ==="
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+"$SCRIPT_DIR/check-test-coverage.sh" || {
+    echo "=== ABORT: test/*.js files are not all covered ===" >&2
+    exit 1
+}
+
+# Demo-dep gate: fail fast if a new demo (or a new transitive require
+# from an existing one) pulls in a test/vendor/ file that the install
+# rule's DEMO_VENDOR_* lists don't cover. Caught the codes.json +
+# ee-first.js gaps post-hoc during v0.85 — this catches them before
+# anything ships. Cheap (~50 ms).
+echo "=== [$HOST/$ARCH/$VERSION] check-demo-deps ==="
+"$SCRIPT_DIR/check-demo-deps.sh" || {
+    echo "=== ABORT: demos reach test/vendor/ files not in DEMO_VENDOR_* ===" >&2
+    exit 1
+}
+
 MAKE_ARGS="MOZJS_PREFIX=$MOZJS CPU_FLAGS=\"$CPU\""
 RSYNC_DELETE=""
 [ "$USE_DELETE" = "yes" ] && RSYNC_DELETE="--delete"
