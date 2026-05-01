@@ -83,7 +83,7 @@ rarely changes), then unpack a fresh runtime tarball per release.
 │   ├── bin/, include/, lib/...
 ├── ca-certificates-20230110/    <- CA bundle (default trust store)
 │   └── share/cacert.pem
-└── ionpower-node-0.83/          <- Node-compat runtime
+└── ionpower-node-0.84/          <- Node-compat runtime
     └── bin/node                 <- expects sibling mozjs + openssl
 ```
 
@@ -102,10 +102,10 @@ cd /opt && \
   curl http://leopard.sh/binpkgs/openssl-1.1.1t.tiger.g3.tar.gz | gunzip | tar x
 
 # Per release: the runtime
-curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-0.83-g3-ppc.tar.gz
-sudo tar xzpf ionpower-node-0.83-g3-ppc.tar.gz -C /opt/
+curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-0.84-g3-ppc.tar.gz
+sudo tar xzpf ionpower-node-0.84-g3-ppc.tar.gz -C /opt/
 
-/opt/ionpower-node-0.83/bin/node test/hello.js
+/opt/ionpower-node-0.84/bin/node test/hello.js
 ```
 
 For G4 use `mozjs-45-ionpower-g4` (`-mcpu=7450`); for G5,
@@ -146,9 +146,6 @@ exercises a slice of the runtime's surface end-to-end.
 We're not re-implementing all of Node. Things that are *not* on
 the runtime, today:
 
-- **`wss://` (TLS WebSocket)** — `ws://` works, `wss://` doesn't yet.
-  Straightforward to add — `ws` would need to use `tls.TLSSocket`
-  instead of `net.Socket`. Not implemented for v0.83.
 - **mTLS / client certs** — `tls.connect` doesn't take a `cert`/`key`
   pair on the client side yet. Server-side cert auth only.
 - (Asymmetric crypto is feature-complete on the curves we support:
@@ -207,7 +204,7 @@ release lands.
 | `dgram` (UDP) | ✅ Working | `dgram.createSocket('udp4')` / `Socket#bind` / `send` / `close`. `'message'` / `'listening'` / `'error'` / `'close'` events. Receives via `ioWatch(fd, READABLE)` + `recvfrom`; sends via `sendto`. IPv4 only; auto-binds to an ephemeral port if `.send()` is called before `.bind()`. |
 | `readline` | ✅ Working | `createInterface({ input, output })`, `'line'` / `'close'` events, `.question(prompt, cb)` (one-shot), `.pause`/`.resume`/`.close`, `.setPrompt`/`.prompt`. Cursor helpers (`cursorTo`, `moveCursor`, `clearLine`, `clearScreenDown`) emit ANSI CSI when the target stream is a TTY, no-op otherwise. |
 | `node:test` / `test` | ✅ Working | TAP runner. `test(name, fn)`, `test.skip`/`test.todo`, `test.describe`/`test.it`, `test.before`/`after`/`beforeEach`/`afterEach` lifecycle hooks. Async test functions, nested `t.test(sub, fn)`, `t.diagnostic(msg)`. **Mock support**: `t.mock.fn(impl?)` (tracks `.calls`/`.callCount()`/`.resetCalls()`/`.mockImplementation()`), `t.mock.method(obj, name, impl?)`, `t.mock.getter`/`setter`, with auto-restore at test end. Registers on import, runs on next tick, prints TAP 13 + plan + ok/not-ok + fail counts. Sets `process.exitCode = 1` on any failure. |
-| `ws` / `WebSocket` | ✅ Working | RFC 6455 client (`new WebSocket(url)` — browser-style `.onopen`/`.onmessage`/`.onclose`/`.onerror`) + server (`require('ws').WebSocketServer({ port, host })`). Text + binary frames, ping/pong autorespond, close-frame handshake. Server and client share frame encode/decode; client frames are masked per spec. `ws://` only; `wss://` would need a tweak to wire the client/server through `tls.TLSSocket` instead of `net.Socket` — straightforward but not done yet. |
+| `ws` / `WebSocket` | ✅ Working | RFC 6455 client (`new WebSocket(url, protocols, opts)` — browser-style `.onopen`/`.onmessage`/`.onclose`/`.onerror`) + server (`require('ws').WebSocketServer({ port, host, cert?, key? })`). Text + binary frames, ping/pong autorespond, close-frame handshake. Server and client share frame encode/decode; client frames are masked per spec. **`wss://`** works — pass `{ cert, key }` to the server, `wss://` URL to the client; under the hood swaps `net.Socket` for `tls.TLSSocket`. |
 | `child_process` | ✅ Working | All sync + async variants except `fork`. `execSync`/`spawnSync`/`execFileSync` via blocking fork+waitpid. `spawn`/`exec`/`execFile` return a `ChildProcess` (EventEmitter) backed by the event loop — `.stdout`/`.stderr` are Readables, `.stdin` is Writable, emits `'exit'`(code,sig) then `'close'`. |
 | `stream` | ✅ Working | Real `Readable` / `Writable` / `Duplex` / `Transform` / `PassThrough` with buffering, `.pipe()`, `.read([n])` / `.push(chunk)` / `.end()`. `stream.pipeline()` / `stream.finished()` (callback + Promise forms). Subpath specifiers: `require('stream/web')` -> `{ ReadableStream, WritableStream, TransformStream, ByteLengthQueuingStrategy, CountQueuingStrategy }`; `require('stream/promises')` -> `{ pipeline, finished }`; `require('stream/consumers')` -> `{ buffer, arrayBuffer, text, json, blob }` (drains a WHATWG or Node readable into the named type). Backpressure is nominally modeled but collapses to always-drained under the sync runtime; pipe auto-resumes whenever a `'data'` listener is added. |
 | `string_decoder` | ✅ Working | `StringDecoder` over Buffer-to-UTF-8 with partial-multibyte buffering across `.write()` calls. |
@@ -277,7 +274,7 @@ release lands.
 ### Library count
 
 Running total of third-party libraries with a passing smoke test:
-**658+** as of [v0.83](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.83).
+**660+** as of [v0.84](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.84) (axios + node-fetch landed in test/vendor/).
 Full suite: **1990+** assertions across 432 smoke files.
 
 The full roster is the `test/*_smoke.js` + `test/vendor/*.js` trees;

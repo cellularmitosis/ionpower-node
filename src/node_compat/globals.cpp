@@ -5351,6 +5351,15 @@ static const char kBootstrapJS[] =
     "  if (typeof process.release !== 'object' || process.release === null) {\n"
     "    process.release = { name: 'node', lts: 'ionpower-node' };\n"
     "  }\n"
+    /* Symbol.toStringTag = 'process' so that
+       Object.prototype.toString.call(process) === '[object process]'.
+       axios (and a number of other Node libs) detect Node-vs-browser
+       this way; without it the http adapter never gets selected. */
+    "  if (typeof Symbol !== 'undefined' && Symbol.toStringTag &&\n"
+    "      Object.prototype.toString.call(process) !== '[object process]') {\n"
+    "    try { Object.defineProperty(process, Symbol.toStringTag, { value: 'process' }); }\n"
+    "    catch (e) {}\n"
+    "  }\n"
 
     // TextEncoder / TextDecoder: Web-standard string <-> UTF-8 Uint8Array.
     // Several libraries (murmurhash, modern base64 wrappers) reach for
@@ -5515,7 +5524,7 @@ static const char kBootstrapJS[] =
 
     // Writable.
     "  function _Writable(opts) {\n"
-    "    events.EventEmitter.call(this);\n"
+    "    _Stream.call(this);\n"
     "    opts = opts || {};\n"
     "    this._writableState = {\n"
     "      ended: false, finished: false, errored: null,\n"
@@ -5527,7 +5536,9 @@ static const char kBootstrapJS[] =
     "    if (typeof opts.final === 'function') this._final = opts.final;\n"
     "    if (typeof opts.destroy === 'function') this._destroy = opts.destroy;\n"
     "  }\n"
-    "  util.inherits(_Writable, events.EventEmitter);\n"
+    /* Writable inherits from _Stream so writables also pass
+       `instanceof Stream` for libs that branch on it. */
+    "  util.inherits(_Writable, _Stream);\n"
     "  _Writable.prototype._write = function (_chunk, _enc, cb) { cb && cb(); };\n"
     "  _Writable.prototype.write = function (chunk, enc, cb) {\n"
     "    if (this._writableState.ended) {\n"
@@ -5584,7 +5595,7 @@ static const char kBootstrapJS[] =
 
     // Readable.
     "  function _Readable(opts) {\n"
-    "    events.EventEmitter.call(this);\n"
+    "    _Stream.call(this);\n"
     "    opts = opts || {};\n"
     "    this._readableState = {\n"
     "      buffer: [], ended: false, endEmitted: false, flowing: null,\n"
@@ -5595,7 +5606,11 @@ static const char kBootstrapJS[] =
     "    if (typeof opts.read === 'function') this._read = opts.read;\n"
     "    if (typeof opts.destroy === 'function') this._destroy = opts.destroy;\n"
     "  }\n"
-    "  util.inherits(_Readable, events.EventEmitter);\n"
+    /* Readable inherits from _Stream (which inherits from EventEmitter),
+       so that `instance instanceof Stream` is true — node-fetch and a
+       handful of other libs depend on this for their stream-vs-buffer
+       branching. */
+    "  util.inherits(_Readable, _Stream);\n"
     "  _Readable.prototype._read = function (_n) {};\n"
     "  _Readable.prototype.push = function (chunk, enc) {\n"
     "    var s = this._readableState;\n"
@@ -5631,9 +5646,23 @@ static const char kBootstrapJS[] =
     "      if (s.buffer.length === before && !s.ended) break;\n"
     "    }\n"
     "    s._flowing_now = false;\n"
+    /* End-emission heuristic:
+       If a listener is already attached when we'd emit 'end', emit
+       synchronously — matches our (and many older code's) expectation
+       that the typical `r.on('end', x); r.on('data', y);` pattern sees
+       'end' fire right after the last 'data'.
+       If no listener yet (e.g. node-fetch's pattern of attaching
+       'data' first, which triggers a sync drain that would emit 'end'
+       before its 'end' listener is attached), defer to setImmediate
+       so the listener has a chance to attach. */
     "    if (s.ended && s.buffer.length === 0 && !s.endEmitted) {\n"
     "      s.endEmitted = true;\n"
-    "      this.emit('end');\n"
+    "      if (this.listenerCount && this.listenerCount('end') > 0) {\n"
+    "        this.emit('end');\n"
+    "      } else {\n"
+    "        var self = this;\n"
+    "        setImmediate(function () { self.emit('end'); });\n"
+    "      }\n"
     "    }\n"
     "  };\n"
     "  _Readable.prototype.read = function (n) {\n"
@@ -6758,7 +6787,7 @@ static const char kBootstrapJS[] =
     // they come) but covers 95% of http-client-with-gzip use.
     "  function _mkInflateTransform(syncFn) {\n"
     "    return function () {\n"
-    "      var s = new events.EventEmitter();\n"
+    "      var s = new _Stream();\n"  /* extends EventEmitter; instanceof Stream === true */
     "      s.writable = s.readable = true;\n"
     "      var chunks = [];\n"
     "      s.write = function (c, enc) {\n"
@@ -6778,11 +6807,7 @@ static const char kBootstrapJS[] =
     "        });\n"
     "        return this;\n"
     "      };\n"
-    "      s.pipe = function (dest) {\n"
-    "        this.on('data', function (d) { dest.write(d); });\n"
-    "        this.on('end',  function () { if (dest.end) dest.end(); });\n"
-    "        return dest;\n"
-    "      };\n"
+    /* pipe inherited from _Stream.prototype is already correct. */
     "      return s;\n"
     "    };\n"
     "  }\n"
@@ -6790,7 +6815,7 @@ static const char kBootstrapJS[] =
     // (Same shape as the inflate Transforms above.)
     "  function _mkDeflateTransform(syncFn) {\n"
     "    return function () {\n"
-    "      var s = new events.EventEmitter();\n"
+    "      var s = new _Stream();\n"  /* extends EventEmitter; instanceof Stream === true */
     "      s.writable = s.readable = true;\n"
     "      var chunks = [];\n"
     "      s.write = function (c, enc) {\n"
@@ -6810,11 +6835,7 @@ static const char kBootstrapJS[] =
     "        });\n"
     "        return this;\n"
     "      };\n"
-    "      s.pipe = function (dest) {\n"
-    "        this.on('data', function (d) { dest.write(d); });\n"
-    "        this.on('end',  function () { if (dest.end) dest.end(); });\n"
-    "        return dest;\n"
-    "      };\n"
+    /* pipe inherited from _Stream.prototype */
     "      return s;\n"
     "    };\n"
     "  }\n"
@@ -7118,7 +7139,11 @@ static const char kBootstrapJS[] =
     "    this.httpVersion = '1.1';\n"
     "    this.readable = true;\n"
     "  }\n"
-    "  util.inherits(_IncomingMessage, events.EventEmitter);\n"
+    /* Inherit from _Stream rather than plain EventEmitter so libraries
+       like node-fetch that do `body instanceof Stream` see our incoming
+       messages as streams. _Stream itself inherits from EventEmitter,
+       so all the existing event-emitter behaviour is preserved. */
+    "  util.inherits(_IncomingMessage, _Stream);\n"
     "  _IncomingMessage.prototype.setEncoding = function (enc) { this._encoding = enc; return this; };\n"
     "  _IncomingMessage.prototype.pause  = function () { return this; };\n"
     "  _IncomingMessage.prototype.resume = function () { return this; };\n"
@@ -7206,13 +7231,19 @@ static const char kBootstrapJS[] =
     "    if (this._ending) this.socket.end();\n"
     "  };\n"
     "  _ClientRequest.prototype.write = function (chunk, enc) {\n"
-    "    if (typeof chunk === 'string') chunk = Buffer.from(chunk, enc || 'utf8');\n"
+    /* axios calls req.write(null) on GETs — skip null/empty so the
+       null doesn't reach _Socket.write and explode at writeFd time. */
+    "    if (chunk == null) return true;\n"
+    "    if (typeof chunk === 'string') {\n"
+    "      if (chunk.length === 0) return true;\n"
+    "      chunk = Buffer.from(chunk, enc || 'utf8');\n"
+    "    } else if (chunk.length === 0) return true;\n"
     "    if (this._sentHeaders) this.socket.write(chunk);\n"
     "    else this._bodyChunks.push(chunk);\n"
     "    return true;\n"
     "  };\n"
     "  _ClientRequest.prototype.end = function (chunk, enc) {\n"
-    "    if (chunk !== undefined) this.write(chunk, enc);\n"
+    "    if (chunk != null) this.write(chunk, enc);\n"
     "    this._ending = true;\n"
     "    if (this._sentHeaders) this.socket.end();\n"
     "    return this;\n"
@@ -8558,25 +8589,37 @@ static const char kBootstrapJS[] =
     "    }\n"
     "    return { opcode: opcode, payload: payload, totalBytes: offset + len, fin: fin };\n"
     "  }\n"
-    "  function _WebSocket(url, protocols) {\n"
+    "  function _WebSocket(url, protocols, options) {\n"
     "    events.EventEmitter.call(this);\n"
+    "    /* Node-compat: signature is (url, protocols?, options?) where\n"
+    "       options can carry { rejectUnauthorized, ca, caFile, ... } for\n"
+    "       wss:// connections to self-signed servers. */\n"
+    "    if (protocols && typeof protocols === 'object' && !Array.isArray(protocols)) {\n"
+    "      options = protocols; protocols = undefined;\n"
+    "    }\n"
+    "    options = options || {};\n"
     "    this.url = url;\n"
     "    this.readyState = 0; /* CONNECTING */\n"
     "    this._sock = null;\n"
     "    this._buffer = Buffer.alloc(0);\n"
     "    this._isClient = true;\n"
+    "    this._rejectUnauthorized = options.rejectUnauthorized !== false;\n"
+    "    this._ca       = options.ca;\n"
+    "    this._caFile   = options.caFile;\n"
     "    this.onopen = this.onmessage = this.onclose = this.onerror = null;\n"
     "    var self = this;\n"
     // Parse ws[s]://host:port/path\n"
     "    var m = /^wss?:\\/\\/([^\\/:]+)(?::(\\d+))?(\\/.*)?$/.exec(url);\n"
     "    if (!m) { throw new Error('WebSocket: bad URL ' + url); }\n"
-    "    var host = m[1]; var port = m[2] ? parseInt(m[2], 10) : (url.indexOf('wss:') === 0 ? 443 : 80);\n"
+    "    var isWss = url.indexOf('wss:') === 0;\n"
+    "    var host = m[1]; var port = m[2] ? parseInt(m[2], 10) : (isWss ? 443 : 80);\n"
     "    var path = m[3] || '/';\n"
     "    var net = __require_cache__['net'];\n"
+    "    var tls = __require_cache__['tls'];\n"
     "    var key = Buffer.from(crypto.randomBytes(16)).toString('base64');\n"
     "    this._expectedAccept = _wsAcceptKey(key);\n"
     "    this._handshakeDone = false;\n"
-    "    this._sock = net.createConnection(port, host, function () {\n"
+    "    var onConnected = function () {\n"
     "      var req = 'GET ' + path + ' HTTP/1.1\\r\\n' +\n"
     "                'Host: ' + host + (port === 80 || port === 443 ? '' : ':' + port) + '\\r\\n' +\n"
     "                'Upgrade: websocket\\r\\n' +\n"
@@ -8584,7 +8627,16 @@ static const char kBootstrapJS[] =
     "                'Sec-WebSocket-Key: ' + key + '\\r\\n' +\n"
     "                'Sec-WebSocket-Version: 13\\r\\n\\r\\n';\n"
     "      self._sock.write(req);\n"
-    "    });\n"
+    "    };\n"
+    "    if (isWss) {\n"
+    "      this._sock = tls.connect({\n"
+    "        port: port, host: host, servername: host,\n"
+    "        rejectUnauthorized: this._rejectUnauthorized !== false,\n"
+    "        ca: this._ca, caFile: this._caFile\n"
+    "      }, onConnected);\n"
+    "    } else {\n"
+    "      this._sock = net.createConnection(port, host, onConnected);\n"
+    "    }\n"
     "    this._sock.on('data', function (chunk) {\n"
     "      self._buffer = Buffer.concat([self._buffer, chunk]);\n"
     "      if (!self._handshakeDone) {\n"
@@ -8708,7 +8760,11 @@ static const char kBootstrapJS[] =
     "    this.host = opts.host || '127.0.0.1';\n"
     "    var self = this;\n"
     "    var net = __require_cache__['net'];\n"
-    "    this._server = net.createServer(function (sock) {\n"
+    "    var tls = __require_cache__['tls'];\n"
+    /* If cert + key are provided, run wss:// over a TLS server; the
+       per-connection handler is otherwise identical. */
+    "    var useTls = !!(opts.cert && opts.key);\n"
+    "    var connectionHandler = function (sock) {\n"
     "      var ws = {\n"
     "        readyState: 0, _sock: sock, _buffer: Buffer.alloc(0), _isClient: false,\n"
     "        _emitOpen: _WebSocket.prototype._emitOpen,\n"
@@ -8753,7 +8809,12 @@ static const char kBootstrapJS[] =
     "      sock.on('close', function () {\n"
     "        if (ws.readyState !== 3) { ws.readyState = 3; ws._emitClose(1006, ''); }\n"
     "      });\n"
-    "    });\n"
+    "    };\n"
+    "    if (useTls) {\n"
+    "      this._server = tls.createServer({ cert: opts.cert, key: opts.key }, connectionHandler);\n"
+    "    } else {\n"
+    "      this._server = net.createServer(connectionHandler);\n"
+    "    }\n"
     "    if (opts.port != null) {\n"
     "      this._server.listen(opts.port, opts.host || '127.0.0.1', function () {\n"
     "        self.emit('listening');\n"
@@ -9289,7 +9350,15 @@ static const char kBootstrapJS[] =
     "      srcForBabel = '(async function () {\\n' + srcForBabel + '\\n})();';\n"
     "    }\n"
     "    try {\n"
-    "      code = babel.transform(srcForBabel, { presets: ['env'] }).code;\n"
+    /* targets: { ie: '11' } forces @babel/preset-env to lower
+       async/await + generators + spread + template literals + ... down
+       to ES5-ish that SM45 can parse. Without it, Babel uses its
+       default browserslist which lets async/await pass through
+       untouched, defeating the whole point of the parse-failure
+       fallback. */
+    "      code = babel.transform(srcForBabel, {\n"
+    "        presets: [['env', { targets: { ie: '11' }, loose: true }]]\n"
+    "      }).code;\n"
     "    } catch (e) { return null; }\n"
     "    __babel_mem_cache__[absPath] = { mtime: mtime, code: code };\n"
     // Disk cache write (best-effort).

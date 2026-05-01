@@ -100,7 +100,7 @@ clean:
 # Install to $(PREFIX) (default /opt/ionpower-node-$(VERSION)).
 # Ships the `node` binary + babel.js fallback + README. Runtime still
 # depends on /opt/mozjs-45-ionpower* being present separately.
-VERSION ?= 0.83
+VERSION ?= 0.84
 PREFIX  ?= /opt/ionpower-node-$(VERSION)
 install: $(BIN)
 	mkdir -p $(PREFIX)/bin $(PREFIX)/share/ionpower-node/vendor
@@ -589,6 +589,9 @@ test-libs: $(BIN)
 	./$(BIN) test/tls_smoke.js
 	./$(BIN) test/https_get_smoke.js
 	./$(BIN) test/https_server_smoke.js
+	./$(BIN) test/wss_smoke.js
+	./$(BIN) test/axios_smoke.js
+	./$(BIN) test/node_fetch_smoke.js
 
 test-all: test test-libs
 
