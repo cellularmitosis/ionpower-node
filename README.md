@@ -2,6 +2,8 @@
 
 ![](docs/media/ionpower-node.jpg)
 
+_vibe-coded with Claude_
+
 A Node.js-compatible JavaScript runtime for 32-bit PowerPC Mac OS X
 10.4 (Tiger), built on top of the JIT-enabled SpiderMonkey that ships
 in [TenFourFox](https://github.com/classilla/tenfourfox). We reuse
