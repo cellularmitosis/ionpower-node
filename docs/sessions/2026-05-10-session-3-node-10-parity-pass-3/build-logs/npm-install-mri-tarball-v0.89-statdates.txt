@@ -1,0 +1,49 @@
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+--- raw uncaughtException ---
+name: TypeError
+message: fs.link is not a function
+stack: maybeStale/</<@/Users/macuser/tmp/npm-6.14.18/node_modules/lockfile/lockfile.js:224:9
+exports.unlock/<@/Users/macuser/tmp/npm-6.14.18/node_modules/lockfile/lockfile.js:62:47
+_fsAsync/</<@<ionpower-node bootstrap>:105:44
+this.__fire_due_timers__@<ionpower-node bootstrap>:4773:13
+
+--- npmlog.record (last 30) ---
+{"id":9,"level":"silly","prefix":"pacote","message":"file manifest for undefined@file:/Users/macuser/tmp/mri-1.2.0.tgz fetched in 1038ms","messageRaw":["file manifest for undefined@file:/Users/macuser/tmp/mri-1.2.0.tgz fetched in 1038ms"]}
+{"id":10,"level":"timing","prefix":"stage:loadCurrentTree","message":"Completed in '1218ms'","messageRaw":["Completed in","1218ms"]}
+{"id":11,"level":"silly","prefix":"install","message":"loadIdealTree","messageRaw":["loadIdealTree"]}
+{"id":12,"level":"silly","prefix":"install","message":"cloneCurrentTreeToIdealTree","messageRaw":["cloneCurrentTreeToIdealTree"]}
+{"id":13,"level":"timing","prefix":"stage:loadIdealTree:cloneCurrentTree","message":"Completed in '7ms'","messageRaw":["Completed in","7ms"]}
+{"id":14,"level":"silly","prefix":"install","message":"loadShrinkwrap","messageRaw":["loadShrinkwrap"]}
+{"id":15,"level":"timing","prefix":"stage:loadIdealTree:loadShrinkwrap","message":"Completed in '24ms'","messageRaw":["Completed in","24ms"]}
+{"id":16,"level":"silly","prefix":"install","message":"loadAllDepsIntoIdealTree","messageRaw":["loadAllDepsIntoIdealTree"]}
+{"id":17,"level":"silly","prefix":"resolveWithNewModule","message":"mri@1.2.0 'checking installable status'","messageRaw":["mri@1.2.0","checking installable status"]}
+{"id":18,"level":"timing","prefix":"stage:loadIdealTree:loadAllDepsIntoIdealTree","message":"Completed in '125ms'","messageRaw":["Completed in","125ms"]}
+{"id":19,"level":"timing","prefix":"stage:loadIdealTree","message":"Completed in '201ms'","messageRaw":["Completed in","201ms"]}
+{"id":20,"level":"silly","prefix":"currentTree","message":"npm-test","messageRaw":["npm-test"]}
+{"id":21,"level":"silly","prefix":"idealTree","message":"npm-test\n`-- mri@1.2.0","messageRaw":["npm-test\n`-- mri@1.2.0"]}
+{"id":22,"level":"silly","prefix":"install","message":"generateActionsToTake","messageRaw":["generateActionsToTake"]}
+{"id":23,"level":"timing","prefix":"stage:generateActionsToTake","message":"Completed in '90ms'","messageRaw":["Completed in","90ms"]}
+{"id":24,"level":"silly","prefix":"diffTrees","message":"action count 1","messageRaw":["action count",1]}
+{"id":25,"level":"silly","prefix":"diffTrees","message":"add mri@1.2.0","messageRaw":["add mri@1.2.0"]}
+{"id":26,"level":"silly","prefix":"decomposeActions","message":"action count 8","messageRaw":["action count",8]}
+{"id":27,"level":"silly","prefix":"decomposeActions","message":"fetch mri@1.2.0","messageRaw":["fetch mri@1.2.0"]}
+{"id":28,"level":"silly","prefix":"decomposeActions","message":"extract mri@1.2.0","messageRaw":["extract mri@1.2.0"]}
+{"id":29,"level":"silly","prefix":"decomposeActions","message":"preinstall mri@1.2.0","messageRaw":["preinstall mri@1.2.0"]}
+{"id":30,"level":"silly","prefix":"decomposeActions","message":"build mri@1.2.0","messageRaw":["build mri@1.2.0"]}
+{"id":31,"level":"silly","prefix":"decomposeActions","message":"install mri@1.2.0","messageRaw":["install mri@1.2.0"]}
+{"id":32,"level":"silly","prefix":"decomposeActions","message":"postinstall mri@1.2.0","messageRaw":["postinstall mri@1.2.0"]}
+{"id":33,"level":"silly","prefix":"decomposeActions","message":"finalize mri@1.2.0","messageRaw":["finalize mri@1.2.0"]}
+{"id":34,"level":"silly","prefix":"decomposeActions","message":"refresh-package-json mri@1.2.0","messageRaw":["refresh-package-json mri@1.2.0"]}
+{"id":35,"level":"silly","prefix":"install","message":"executeActions","messageRaw":["executeActions"]}
+{"id":36,"level":"silly","prefix":"doSerial","message":"global-install 8","messageRaw":["%s %d","global-install",8]}
+{"id":37,"level":"verbose","prefix":"correctMkdir","message":"/Users/macuser/.npm/_locks 'correctMkdir not in flight; initializing'","messageRaw":["/Users/macuser/.npm/_locks","correctMkdir not in flight; initializing"]}
+{"id":38,"level":"verbose","prefix":"makeCacheDir","message":"UID & GID are irrelevant on 'darwin'","messageRaw":["UID & GID are irrelevant on","darwin"]}
+==EXIT 99==
+==NODE_MODULES==
+ls: node_modules/: No such file or directory
+==MRI==
+ls: node_modules/mri/: No such file or directory
+==PACKAGE_JSON==
+cat: node_modules/mri/package.json: No such file or directory

@@ -1,0 +1,41 @@
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+
+--- npmlog.record (last 30) ---
+{"id":20,"level":"silly","prefix":"currentTree","message":"npm-test","messageRaw":["npm-test"]}
+{"id":21,"level":"silly","prefix":"idealTree","message":"npm-test\n`-- mri@1.2.0","messageRaw":["npm-test\n`-- mri@1.2.0"]}
+{"id":22,"level":"silly","prefix":"install","message":"generateActionsToTake","messageRaw":["generateActionsToTake"]}
+{"id":23,"level":"timing","prefix":"stage:generateActionsToTake","message":"Completed in '89ms'","messageRaw":["Completed in","89ms"]}
+{"id":24,"level":"silly","prefix":"diffTrees","message":"action count 1","messageRaw":["action count",1]}
+{"id":25,"level":"silly","prefix":"diffTrees","message":"add mri@1.2.0","messageRaw":["add mri@1.2.0"]}
+{"id":26,"level":"silly","prefix":"decomposeActions","message":"action count 8","messageRaw":["action count",8]}
+{"id":27,"level":"silly","prefix":"decomposeActions","message":"fetch mri@1.2.0","messageRaw":["fetch mri@1.2.0"]}
+{"id":28,"level":"silly","prefix":"decomposeActions","message":"extract mri@1.2.0","messageRaw":["extract mri@1.2.0"]}
+{"id":29,"level":"silly","prefix":"decomposeActions","message":"preinstall mri@1.2.0","messageRaw":["preinstall mri@1.2.0"]}
+{"id":30,"level":"silly","prefix":"decomposeActions","message":"build mri@1.2.0","messageRaw":["build mri@1.2.0"]}
+{"id":31,"level":"silly","prefix":"decomposeActions","message":"install mri@1.2.0","messageRaw":["install mri@1.2.0"]}
+{"id":32,"level":"silly","prefix":"decomposeActions","message":"postinstall mri@1.2.0","messageRaw":["postinstall mri@1.2.0"]}
+{"id":33,"level":"silly","prefix":"decomposeActions","message":"finalize mri@1.2.0","messageRaw":["finalize mri@1.2.0"]}
+{"id":34,"level":"silly","prefix":"decomposeActions","message":"refresh-package-json mri@1.2.0","messageRaw":["refresh-package-json mri@1.2.0"]}
+{"id":35,"level":"silly","prefix":"install","message":"executeActions","messageRaw":["executeActions"]}
+{"id":36,"level":"silly","prefix":"doSerial","message":"global-install 8","messageRaw":["%s %d","global-install",8]}
+{"id":37,"level":"verbose","prefix":"correctMkdir","message":"/Users/macuser/.npm/_locks 'correctMkdir not in flight; initializing'","messageRaw":["/Users/macuser/.npm/_locks","correctMkdir not in flight; initializing"]}
+{"id":38,"level":"verbose","prefix":"makeCacheDir","message":"UID & GID are irrelevant on 'darwin'","messageRaw":["UID & GID are irrelevant on","darwin"]}
+{"id":39,"level":"verbose","prefix":"lock","message":"using '/Users/macuser/.npm/_locks/staging-0a69f5758970fb2b.lock' 'for' '/Users/macuser/tmp/npm-test/node_modules/.staging'","messageRaw":["using","/Users/macuser/.npm/_locks/staging-0a69f5758970fb2b.lock","for","/Users/macuser/tmp/npm-test/node_modules/.staging"]}
+{"id":40,"level":"silly","prefix":"doParallel","message":"extract 1","messageRaw":["extract 1"]}
+{"id":41,"level":"silly","prefix":"extract","message":"mri@1.2.0","messageRaw":["mri@1.2.0"]}
+{"id":42,"level":"silly","prefix":"tarball","message":"trying file:/Users/macuser/tmp/mri-1.2.0.tgz by hash: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==","messageRaw":["trying file:/Users/macuser/tmp/mri-1.2.0.tgz by hash: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA=="]}
+{"id":43,"level":"notice","prefix":"","message":"This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit","messageRaw":["This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit"]}
+{"id":44,"level":"timing","prefix":"audit submit","message":"Completed in '1405ms'","messageRaw":["Completed in","1405ms"]}
+{"id":45,"level":"http","prefix":"fetch","message":"POST 200 https://registry.npmjs.org/-/npm/v1/security/audits/quick 1403ms","messageRaw":["POST 200 https://registry.npmjs.org/-/npm/v1/security/audits/quick 1403ms"]}
+{"id":46,"level":"timing","prefix":"npm","message":"Completed in '9663ms'","messageRaw":["Completed in","9663ms"]}
+{"id":47,"level":"error","prefix":"","message":"cb() never called!","messageRaw":["cb() never called!"]}
+{"id":48,"level":"error","prefix":"","message":"This is an error with npm itself. Please report this error at:","messageRaw":["This is an error with npm itself. Please report this error at:"]}
+{"id":49,"level":"error","prefix":"","message":"    <https://npm.community>","messageRaw":["    <https://npm.community>"]}
+==EXIT 1==
+==NODE_MODULES==
+==MRI==
+ls: node_modules/mri/: No such file or directory
+==PACKAGE_JSON==
+cat: node_modules/mri/package.json: No such file or directory

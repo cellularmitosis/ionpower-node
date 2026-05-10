@@ -1,0 +1,156 @@
+=== [pmacg5/g5/0.89] check-test-coverage ===
+ok: 485 files in test/ accounted for
+    481 wired via scripts/test-list-*.txt
+    4 in the intentional-skip allowlist
+=== [pmacg5/g5/0.89] check-demo-deps ===
+ok: 51 test/vendor/ files transitively reached by demos, all in install rule (55 shipped at root)
+=== [pmacg5/g5/0.89] rsync source ===
+Transfer starting: 5861 files
+deleting test/fib-report.txt
+./
+.claude/
+docs/convos/
+.claude/scheduled_tasks.lock
+Makefile
+README.md
+docs/sessions/
+docs/convos/claude-conversation-2026-04-22-6b3385af.md
+docs/convos/claude-conversation-2026-04-22-89f676aa.md
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/
+docs/convos/claude-conversation-2026-04-22-9636ef60.md
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/release-notes/
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/
+scripts/
+src/
+src/node_compat/
+test/
+docs/convos/claude-conversation-2026-04-30-agent-a7.md
+docs/convos/claude-conversation-2026-04-30-agent-ac.md
+docs/convos/claude-conversation-2026-05-01-6478620b.md
+docs/convos/claude-conversation-2026-05-10-a12104c8.md
+docs/convos/claude-conversation-2026-05-10-b048cd38.md
+docs/convos/claude-conversation-2026-05-10-e1d8727d.md
+docs/convos/claude-conversation-2026-05-10-f4108a7a.md
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g4-pass2-final.log
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g5-pass2-final.log
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/notes.md
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/release-notes/v0.88.md
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-final.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-fs-link.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-futimes.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-newlistener.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-pathresolve.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-stat-dates.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-stream-newcall-v2.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-stream-newcall.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-tls.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-transform-end.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-transform-final.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-zlib-handle-v2.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-zlib-handle-v3.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-zlib-handle.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g4-pass3-final.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g5-pass3-final.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-fslink.txt
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-futimes.txt
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-newlistener.txt
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-noaudit.txt
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-pathresolve.txt
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-statdates.txt
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-streamnewcall.txt
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-trace.txt
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-transformend.txt
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-transformfinal.txt
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-v2.txt
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-v3.txt
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89.txt
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/notes.md
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/plan.md
+scripts/test-list-more.txt
+src/main.cpp
+src/node_compat/buffer.cpp
+src/node_compat/fs.cpp
+src/node_compat/globals.cpp
+src/node_compat/net.cpp
+src/node_compat/path.cpp
+src/node_compat/process.cpp
+src/node_compat/tls.cpp
+test/event_newlistener_smoke.js
+test/fs_createstream_new_smoke.js
+test/fs_extras2_smoke.js
+test/path_resolve_dotdot_smoke.js
+test/zlib_handle_smoke.js
+
+sent 8957243 bytes  received 7706 bytes  3570128 bytes/sec
+total size is 103113760  speedup is 11.50
+=== [pmacg5/g5/0.89] scp Makefile + process.cpp + globals.cpp + main.cpp + net.cpp + tls.cpp (gremlin workaround) ===
+=== [pmacg5/g5/0.89] clean + build  (MOZJS=/opt/mozjs-45-ionpower-g5 CPU='-mcpu=G5 -D_PPC970_') ===
+rm -f src/main.o src/node_compat/console.o src/node_compat/process.o src/node_compat/fs.o src/node_compat/path.o src/node_compat/buffer.o src/node_compat/require.o src/node_compat/timers.o src/node_compat/crypto.o src/node_compat/http.o src/node_compat/child_process.o src/node_compat/event_loop.o src/node_compat/net.o src/node_compat/tls.o src/node_compat/zlib.o src/node_compat/globals.o node
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1206)=k(0,46) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,814) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,814) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantImLm4EE5valueE:G(0,2064)=k(0,82) in src/node_compat/tls.o
+ld: warning: duplicate dylib /opt/gcc-4.9.4/lib/libstdc++.6.dylib
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src32.o) and (default) in src/node_compat/timers.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/process.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/process.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/timers.o
+ld: warning: js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >::trace(js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >*, JSTracer*) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/http.o
+  [install_name_tool] @executable_path -> /opt/mozjs-45-ionpower-g5/lib
+=== [pmacg5/g5/0.89] test-all ===
+Testing test/ecdh_smoke.js PASS
+Testing test/top_level_await_smoke.js PASS
+Testing test/import_meta_smoke.js PASS
+Testing test/subtle_ecdsa_smoke.js PASS
+Testing test/raw_mode_smoke.js PASS
+Testing test/subtle_ec_jwk_smoke.js PASS
+Testing test/tls_smoke.js PASS
+Testing test/https_get_smoke.js PASS
+Testing test/https_server_smoke.js PASS
+Testing test/wss_smoke.js PASS
+Testing test/axios_smoke.js PASS
+Testing test/node_fetch_smoke.js PASS
+Testing test/dotenv_smoke.js PASS
+Testing test/sprintf_smoke.js PASS
+Testing test/repl_stub_smoke.js PASS
+Testing test/v8_stub_smoke.js PASS
+Testing test/babel_logical_assignment_smoke.js PASS
+
+467 passing tests
+0 failing tests
+=== [pmacg5/g5/0.89] install ===
+cp -r test/vendor/elliptic   /opt/ionpower-node-0.89/share/ionpower-node/vendor/
+cp README.md LICENSE   /opt/ionpower-node-0.89/share/ionpower-node/ 2>/dev/null || true
+cp -r demos /opt/ionpower-node-0.89/share/ionpower-node/demos
+mkdir -p /opt/ionpower-node-0.89/share/ionpower-node/test/vendor/nm/node_modules
+
+installed ionpower-node 0.89 to /opt/ionpower-node-0.89
+  binary:   /opt/ionpower-node-0.89/bin/node (-> ionpower-node)
+  babel:    /opt/ionpower-node-0.89/share/ionpower-node/vendor/babel.js
+  demos:    /opt/ionpower-node-0.89/share/ionpower-node/demos/
+  mozjs:    expected at /opt/mozjs-45-ionpower-g5/
+
+Run:  /opt/ionpower-node-0.89/bin/node <script.js>
+=== [pmacg5/g5/0.89] tarball ===
+-rw-r--r--   1 macuser  wheel  7730293 May 10 14:18 /tmp/ionpower-node-0.89-g5-ppc.tar.gz
+=== [pmacg5/g5/0.89] DONE ===

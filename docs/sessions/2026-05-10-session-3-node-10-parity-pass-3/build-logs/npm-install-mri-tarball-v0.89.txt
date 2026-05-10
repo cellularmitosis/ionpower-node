@@ -1,0 +1,9 @@
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+==EXIT 1==
+==NODE_MODULES==
+ls: node_modules/: No such file or directory
+==MRI==
+ls: node_modules/mri/: No such file or directory
+cat: node_modules/mri/package.json: No such file or directory

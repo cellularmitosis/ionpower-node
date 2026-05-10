@@ -1,0 +1,33 @@
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+--- npmlog.record (last 30) ---
+{"id":0,"level":"info","prefix":"it worked if it ends with","message":"ok","messageRaw":["ok"]}
+{"id":1,"level":"verbose","prefix":"cli","message":"[ '/opt/ionpower-node-0.89/bin/node', '/Users/macuser/tmp/run-npm-trace.js', 'install', '/Users/macuser/tmp/mri-1.2.0.tgz' ]","messageRaw":[["/opt/ionpower-node-0.89/bin/node","/Users/macuser/tmp/run-npm-trace.js","install","/Users/macuser/tmp/mri-1.2.0.tgz"]]}
+{"id":2,"level":"info","prefix":"using","message":"npm@6.14.18","messageRaw":["npm@%s","6.14.18"]}
+{"id":3,"level":"info","prefix":"using","message":"node@v10.24.1","messageRaw":["node@%s","v10.24.1"]}
+{"id":4,"level":"warn","prefix":"invalid config","message":"logstream={\"fd\":2,\"isTTY\":false}","messageRaw":["logstream={\"fd\":2,\"isTTY\":false}"]}
+{"id":5,"level":"warn","prefix":"invalid config","message":"Must be an instance of the Stream class","messageRaw":["Must be an instance of the Stream class"]}
+{"id":6,"level":"verbose","prefix":"npm-session","message":"ddcac31958802890","messageRaw":["ddcac31958802890"]}
+{"id":7,"level":"silly","prefix":"install","message":"loadCurrentTree","messageRaw":["loadCurrentTree"]}
+{"id":8,"level":"silly","prefix":"install","message":"readLocalPackageData","messageRaw":["readLocalPackageData"]}
+{"id":9,"level":"silly","prefix":"fetchPackageMetaData","message":"error for file:/Users/macuser/tmp/mri-1.2.0.tgz 'zlib: gunzip: input too short'","messageRaw":["error for file:/Users/macuser/tmp/mri-1.2.0.tgz","zlib: gunzip: input too short"]}
+{"id":10,"level":"timing","prefix":"stage:rollbackFailedOptional","message":"Completed in '8ms'","messageRaw":["Completed in","8ms"]}
+{"id":11,"level":"timing","prefix":"stage:runTopLevelLifecycles","message":"Completed in '955ms'","messageRaw":["Completed in","955ms"]}
+{"id":12,"level":"verbose","prefix":"stack","message":"Error.captureStackTrace@<ionpower-node bootstrap>:4445:17\nZlibError@/Users/macuser/tmp/npm-6.14.18/node_modules/minizlib/index.js:22:5\nwrite@/Users/macuser/tmp/npm-6.14.18/node_modules/minizlib/index.js:147:22\nflush@/Users/macuser/tmp/npm-6.14.18/node_modules/minizlib/index.js:98:5\nend@/Users/macuser/tmp/npm-6.14.18/node_modules/minizlib/index.js:104:5\nend@/Users/macuser/tmp/npm-6.14.18/node_modules/tar/lib/parse.js:421:9\nonend@/Users/macuser/tmp/npm-6.14.18/node_modules/through2/node_modules/readable-stream/lib/_stream_readable.js:577:5\nwrap@<ionpower-node bootstrap>:467:54\nEventEmitter.prototype.emit@<ionpower-node bootstrap>:487:43\nendReadableNT@/Users/macuser/tmp/npm-6.14.18/node_modules/through2/node_modules/readable-stream/lib/_stream_readable.js:1010:5\nprocess.nextTick/<@<ionpower-node bootstrap>:4776:13\nthis.__drain_microtasks__@<ionpower-node bootstrap>:4478:13\n","messageRaw":["Error.captureStackTrace@<ionpower-node bootstrap>:4445:17\nZlibError@/Users/macuser/tmp/npm-6.14.18/node_modules/minizlib/index.js:22:5\nwrite@/Users/macuser/tmp/npm-6.14.18/node_modules/minizlib/index.js:147:22\nflush@/Users/macuser/tmp/npm-6.14.18/node_modules/minizlib/index.js:98:5\nend@/Users/macuser/tmp/npm-6.14.18/node_modules/minizlib/index.js:104:5\nend@/Users/macuser/tmp/npm-6.14.18/node_modules/tar/lib/parse.js:421:9\nonend@/Users/macuser/tmp/npm-6.14.18/node_modules/through2/node_modules/readable-stream/lib/_stream_readable.js:577:5\nwrap@<ionpower-node bootstrap>:467:54\nEventEmitter.prototype.emit@<ionpower-node bootstrap>:487:43\nendReadableNT@/Users/macuser/tmp/npm-6.14.18/node_modules/through2/node_modules/readable-stream/lib/_stream_readable.js:1010:5\nprocess.nextTick/<@<ionpower-node bootstrap>:4776:13\nthis.__drain_microtasks__@<ionpower-node bootstrap>:4478:13\n"]}
+{"id":13,"level":"verbose","prefix":"cwd","message":"/Users/macuser/tmp/npm-test","messageRaw":["/Users/macuser/tmp/npm-test"]}
+{"id":14,"level":"verbose","prefix":"","message":"Darwin 8.11.0","messageRaw":["Darwin 8.11.0"]}
+{"id":15,"level":"verbose","prefix":"argv","message":"\"/opt/ionpower-node-0.89/bin/node\" \"/Users/macuser/tmp/run-npm-trace.js\" \"install\" \"/Users/macuser/tmp/mri-1.2.0.tgz\"","messageRaw":["\"/opt/ionpower-node-0.89/bin/node\" \"/Users/macuser/tmp/run-npm-trace.js\" \"install\" \"/Users/macuser/tmp/mri-1.2.0.tgz\""]}
+{"id":16,"level":"verbose","prefix":"node","message":"v10.24.1","messageRaw":["v10.24.1"]}
+{"id":17,"level":"verbose","prefix":"npm ","message":"v6.14.18","messageRaw":["v6.14.18"]}
+{"id":18,"level":"error","prefix":"code","message":"ZLIB_ERROR","messageRaw":["ZLIB_ERROR"]}
+{"id":19,"level":"error","prefix":"","message":"zlib: gunzip: input too short","messageRaw":["zlib: gunzip: input too short"]}
+{"id":20,"level":"verbose","prefix":"exit","message":"[ 1, true ]","messageRaw":[[1,true]]}
+{"id":21,"level":"timing","prefix":"npm","message":"Completed in '10026ms'","messageRaw":["Completed in","10026ms"]}
+==EXIT 1==
+==NODE_MODULES==
+ls: node_modules/: No such file or directory
+==MRI==
+ls: node_modules/mri/: No such file or directory
+==PACKAGE_JSON==
+cat: node_modules/mri/package.json: No such file or directory

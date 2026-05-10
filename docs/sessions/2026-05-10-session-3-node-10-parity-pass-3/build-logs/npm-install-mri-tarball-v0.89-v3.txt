@@ -1,0 +1,44 @@
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+--- raw uncaughtException ---
+name: Error
+message: path.resolve: overflow
+stack: findNearestDir@/Users/macuser/tmp/npm-6.14.18/lib/install/check-permissions.js:51:19
+findNearestDir/<@/Users/macuser/tmp/npm-6.14.18/lib/install/check-permissions.js:57:9
+RES@/Users/macuser/tmp/npm-6.14.18/node_modules/inflight/inflight.js:31:9
+once/f@/Users/macuser/tmp/npm-6.14.18/node_modules/once/once.js:25:22
+fs.access/<@<ionpower-node bootstrap>:232:28
+this.__fire_due_timers__@<ionpower-node bootstrap>:4758:13
+
+--- npmlog.record (last 30) ---
+{"id":0,"level":"info","prefix":"it worked if it ends with","message":"ok","messageRaw":["ok"]}
+{"id":1,"level":"verbose","prefix":"cli","message":"[ '/opt/ionpower-node-0.89/bin/node', '/Users/macuser/tmp/run-npm-trace.js', 'install', '/Users/macuser/tmp/mri-1.2.0.tgz' ]","messageRaw":[["/opt/ionpower-node-0.89/bin/node","/Users/macuser/tmp/run-npm-trace.js","install","/Users/macuser/tmp/mri-1.2.0.tgz"]]}
+{"id":2,"level":"info","prefix":"using","message":"npm@6.14.18","messageRaw":["npm@%s","6.14.18"]}
+{"id":3,"level":"info","prefix":"using","message":"node@v10.24.1","messageRaw":["node@%s","v10.24.1"]}
+{"id":4,"level":"warn","prefix":"invalid config","message":"logstream={\"fd\":2,\"isTTY\":false}","messageRaw":["logstream={\"fd\":2,\"isTTY\":false}"]}
+{"id":5,"level":"warn","prefix":"invalid config","message":"Must be an instance of the Stream class","messageRaw":["Must be an instance of the Stream class"]}
+{"id":6,"level":"verbose","prefix":"npm-session","message":"6144f2ffd101fea1","messageRaw":["6144f2ffd101fea1"]}
+{"id":7,"level":"silly","prefix":"install","message":"loadCurrentTree","messageRaw":["loadCurrentTree"]}
+{"id":8,"level":"silly","prefix":"install","message":"readLocalPackageData","messageRaw":["readLocalPackageData"]}
+{"id":9,"level":"silly","prefix":"pacote","message":"file manifest for undefined@file:/Users/macuser/tmp/mri-1.2.0.tgz fetched in 1235ms","messageRaw":["file manifest for undefined@file:/Users/macuser/tmp/mri-1.2.0.tgz fetched in 1235ms"]}
+{"id":10,"level":"timing","prefix":"stage:loadCurrentTree","message":"Completed in '1410ms'","messageRaw":["Completed in","1410ms"]}
+{"id":11,"level":"silly","prefix":"install","message":"loadIdealTree","messageRaw":["loadIdealTree"]}
+{"id":12,"level":"silly","prefix":"install","message":"cloneCurrentTreeToIdealTree","messageRaw":["cloneCurrentTreeToIdealTree"]}
+{"id":13,"level":"timing","prefix":"stage:loadIdealTree:cloneCurrentTree","message":"Completed in '7ms'","messageRaw":["Completed in","7ms"]}
+{"id":14,"level":"silly","prefix":"install","message":"loadShrinkwrap","messageRaw":["loadShrinkwrap"]}
+{"id":15,"level":"timing","prefix":"stage:loadIdealTree:loadShrinkwrap","message":"Completed in '23ms'","messageRaw":["Completed in","23ms"]}
+{"id":16,"level":"silly","prefix":"install","message":"loadAllDepsIntoIdealTree","messageRaw":["loadAllDepsIntoIdealTree"]}
+{"id":17,"level":"silly","prefix":"resolveWithNewModule","message":"mri@1.2.0 'checking installable status'","messageRaw":["mri@1.2.0","checking installable status"]}
+{"id":18,"level":"timing","prefix":"stage:loadIdealTree:loadAllDepsIntoIdealTree","message":"Completed in '128ms'","messageRaw":["Completed in","128ms"]}
+{"id":19,"level":"timing","prefix":"stage:loadIdealTree","message":"Completed in '191ms'","messageRaw":["Completed in","191ms"]}
+{"id":20,"level":"silly","prefix":"currentTree","message":"npm-test","messageRaw":["npm-test"]}
+{"id":21,"level":"silly","prefix":"idealTree","message":"npm-test\n`-- mri@1.2.0","messageRaw":["npm-test\n`-- mri@1.2.0"]}
+{"id":22,"level":"silly","prefix":"install","message":"generateActionsToTake","messageRaw":["generateActionsToTake"]}
+==EXIT 99==
+==NODE_MODULES==
+ls: node_modules/: No such file or directory
+==MRI==
+ls: node_modules/mri/: No such file or directory
+==PACKAGE_JSON==
+cat: node_modules/mri/package.json: No such file or directory
