@@ -1,0 +1,31 @@
+/Users/macuser/tmp/npm-6.14.18/node_modules/node-fetch-npm/src/headers.js:248: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+nextTick: TypeError: expecting a function but got [object Undefined]
+module.exports/Promise.promisify@/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/promisify.js:270:1
+@/Users/macuser/tmp/npm-6.14.18/node_modules/bin-links/index.js:11:14
+__make_require__/f@<ionpower-node internal>:2:36
+__make_require__/wrapped@<ionpower-node bootstrap>:8462:20
+@/Users/macuser/tmp/npm-6.14.18/lib/build.js:17:16
+__make_require__/f@<ionpower-node internal>:2:36
+__make_require__/wrapped@<ionpower-node bootstrap>:8462:20
+@/Users/macuser/tmp/npm-6.14.18/lib/install/action/build.js:3:13
+__make_require__/f@<ionpower-node internal>:2:36
+__make_require__/wrapped@<ionpower-node bootstrap>:8462:20
+@/Users/macuser/tmp/npm-6.14.18/lib/install/actions.js:17:17
+__make_require__/f@<ionpower-node internal>:2:36
+__make_require__/wrapped@<ionpower-node bootstrap>:8462:20
+@/Users/macuser/tmp/npm-6.14.18/lib/install.js:147:23
+__make_require__/f@<ionpower-node internal>:2:36
+__make_require__/wrapped@<ionpower-node bootstrap>:8462:20
+addCommand/<.get@/Users/macuser/tmp/npm-6.14.18/lib/npm.js:124:17
+@/Users/macuser/tmp/npm-6.14.18/bin/npm-cli.js:133:5
+process.nextTick/<@<ionpower-node bootstrap>:4707:13
+this.__drain_microtasks__@<ionpower-node bootstrap>:4409:13
+
+glob error {
+  "stack": "_fsAsync/<@<ionpower-node bootstrap>:95:19\ngo$readdir@/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/graceful-fs.js:206:1\nreaddir@/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/graceful-fs.js:211:1\nGlob.prototype._readdir@/Users/macuser/tmp/npm-6.14.18/node_modules/glob/glob.js:547:3\nGlob.prototype._processReaddir@/Users/macuser/tmp/npm-6.14.18/node_modules/glob/glob.js:370:3\nGlob.prototype._process@/Users/macuser/tmp/npm-6.14.18/node_modules/glob/glob.js:365:5\nGlob@/Users/macuser/tmp/npm-6.14.18/node_modules/glob/glob.js:167:5\nglob@/Users/macuser/tmp/npm-6.14.18/node_modules/glob/glob.js:72:10\nload/</<@/Users/macuser/tmp/npm-6.14.18/lib/npm.js:355:1\nload/cb</<@/Users/macuser/tmp/npm-6.14.18/lib/config/core.js:81:7\nload/cb<@/Users/macuser/tmp/npm-6.14.18/lib/config/core.js:80:5\nonce/f@/Users/macuser/tmp/npm-6.14.18/node_modules/once/once.js:25:22\nfinalize@/Users/macuser/tmp/npm-6.14.18/lib/config/core.js:191:5\nafterExtras@/Users/macuser/tmp/npm-6.14.18/lib/config/core.js:182:5\nmkdirP/</<@/Users/macuser/tmp/npm-6.14.18/node_modules/mkdirp/index.js:51:26\ncallback@/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:306:17\n_fsAsync/</<@<ionpower-node bootstrap>:96:44\nthis.__fire_due_timers__@<ionpower-node bootstrap>:4689:13\n"
+}
+==EXIT 1==
+==NODE_MODULES==
+ls: node_modules/: No such file or directory

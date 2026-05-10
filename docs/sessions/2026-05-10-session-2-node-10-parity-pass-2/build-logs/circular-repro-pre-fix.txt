@@ -1,0 +1,52 @@
+## Pre-fix circular-require reproducer (vs v0.88 readdir-fix build)
+
+Run on ibookg37 with the v0.88 binary that had the readdir errno
+fix but NOT yet the circular-require cache fix:
+
+```
+ssh ibookg37 'cat > /tmp/circ-a.js <<EOF
+"use strict";
+var EventEmitter = require("events");
+module.exports = new EventEmitter();
+var b = require("./circ-b.js");
+module.exports.flagSetByA = true;
+EOF
+cat > /tmp/circ-b.js <<EOF
+var a = require("./circ-a.js");
+module.exports = function () { return a; };
+EOF
+cat > /tmp/circ-main.js <<EOF
+var a = require("/tmp/circ-a.js");
+var b = require("/tmp/circ-b.js");
+console.log("a is EventEmitter:", a && typeof a.on === "function");
+console.log("a.flagSetByA:", a && a.flagSetByA);
+console.log("b()===a:", b() === a);
+console.log("b().flagSetByA:", b() && b().flagSetByA);
+EOF
+/opt/ionpower-node-0.88/bin/node /tmp/circ-main.js'
+```
+
+Output:
+
+```
+a is EventEmitter: true
+a.flagSetByA: true
+b()===a: false
+b().flagSetByA: undefined
+```
+
+In Node, all four lines should be `true`. Pre-fix:
+
+- `a is EventEmitter: true` — outer require sees user-reassigned exports. ✓
+- `a.flagSetByA: true` — outer require also sees later mutations. ✓
+- `b()===a: false` — circular require captured the empty `{}` snapshot
+  from BEFORE `module.exports = new EventEmitter()` ran, so b's `a` is
+  a DIFFERENT object than the outer `a`. ✗
+- `b().flagSetByA: undefined` — and that orphaned `{}` of course
+  doesn't see mutations made on the EventEmitter. ✗
+
+This is exactly the npm.config-undefined shape:
+`lib/utils/metrics.js` did `const npm = require('../npm.js')` while
+npm.js was still evaluating, captured the empty `{}`, and never saw
+`npm.config = ...` get added to the EventEmitter that npm.js
+eventually exported.

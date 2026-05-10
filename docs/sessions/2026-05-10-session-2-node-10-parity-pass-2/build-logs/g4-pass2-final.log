@@ -1,0 +1,169 @@
+=== [emac/g4/0.88] check-test-coverage ===
+ok: 481 files in test/ accounted for
+    477 wired via scripts/test-list-*.txt
+    4 in the intentional-skip allowlist
+=== [emac/g4/0.88] check-demo-deps ===
+ok: 51 test/vendor/ files transitively reached by demos, all in install rule (55 shipped at root)
+=== [emac/g4/0.88] rsync source ===
+Transfer starting: 5821 files
+./
+.claude/
+demos/chat/
+.claude/scheduled_tasks.lock
+Makefile
+README.md
+demos/express-chat/
+demos/chat/README.md
+demos/chat/index.html
+demos/chat/server.js
+demos/express-chat/static/
+demos/express-chat/README.md
+demos/express-chat/views/
+demos/express-chat/static/client.js
+demos/express-chat/static/style.css
+docs/
+demos/express-chat/views/index.hbs
+docs/convos/
+docs/convos/claude-conversation-2026-04-22-6b3385af.md -> ../../../convos/claude-conversation-2026-04-22-6b3385af.md
+docs/convos/claude-conversation-2026-04-22-89f676aa.md -> ../../../convos/claude-conversation-2026-04-22-89f676aa.md
+docs/convos/claude-conversation-2026-04-22-9636ef60.md -> ../../../convos/claude-conversation-2026-04-22-9636ef60.md
+docs/convos/claude-conversation-2026-04-30-agent-a7.md -> ../../../convos/claude-conversation-2026-04-30-agent-a7.md
+docs/convos/claude-conversation-2026-04-30-agent-ac.md -> ../../../convos/claude-conversation-2026-04-30-agent-ac.md
+docs/convos/claude-conversation-2026-05-01-6478620b.md -> ../../../convos/claude-conversation-2026-05-01-6478620b.md
+docs/convos/claude-conversation-2026-05-10-a12104c8.md -> ../../../convos/claude-conversation-2026-05-10-a12104c8.md
+docs/convos/claude-conversation-2026-05-10-b048cd38.md -> ../../../convos/claude-conversation-2026-05-10-b048cd38.md
+docs/convos/claude-conversation-2026-05-10-e1d8727d.md -> ../../../convos/claude-conversation-2026-05-10-e1d8727d.md
+docs/inbox/
+docs/media/
+docs/plans/
+docs/sessions/
+docs/media/.DS_Store
+docs/media/express-chat-demo.png
+docs/plans/node-target-version.md
+docs/sessions/2026-04-30-session-3-proto-deopt/
+docs/sessions/2026-05-09-session-1-handoff-from-lumo/
+docs/sessions/2026-05-09-session-1-handoff-from-lumo/build-logs/
+docs/sessions/2026-05-09-session-1-handoff-from-lumo/release-notes/
+docs/sessions/2026-04-30-session-3-proto-deopt/followups.md
+docs/sessions/2026-05-09-session-2-npm-6-bootstrap/
+docs/sessions/2026-05-09-session-2-npm-6-bootstrap/build-logs/
+docs/sessions/2026-04-30-session-3-proto-deopt/release-notes/v0.85.md
+docs/sessions/2026-05-09-session-1-handoff-from-lumo/build-logs/ibookg37-triad.log
+docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/
+docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/build-logs/
+docs/sessions/2026-05-09-session-1-handoff-from-lumo/followups.md
+docs/sessions/2026-05-09-session-1-handoff-from-lumo/handoff-from-lumo.md
+docs/sessions/2026-05-09-session-1-handoff-from-lumo/notes.md
+docs/sessions/2026-05-09-session-1-handoff-from-lumo/plan.md
+docs/sessions/2026-05-09-session-1-handoff-from-lumo/release-notes/v0.86.md
+docs/sessions/2026-05-09-session-2-npm-6-bootstrap/build-logs/run-npm.js
+docs/sessions/2026-05-09-session-2-npm-6-bootstrap/notes.md
+docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/release-notes/
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/
+docs/sessions/2026-05-09-session-2-npm-6-bootstrap/plan.md
+docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/build-logs/g3-pass1-rerun.log
+docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/build-logs/g3-pass1.log
+docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/build-logs/npm-install-mri-v0.87.txt
+docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/build-logs/run-npm-v0.87-deployed.js
+docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/build-logs/run-npm-v0.87.js
+docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/notes.md
+docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/plan.md
+docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/release-notes/v0.87.md
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/release-notes/
+scripts/
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/circular-repro-pre-fix.txt
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-circ-fix-v2.log
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-circ-fix.log
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-debuglog.log
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-fd.log
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-readdir-fix.log
+src/
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-rerun.log
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-util-extend.log
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-zlib-classes.log
+src/node_compat/
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2.log
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g4-pass2-final.log
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-tarball-v0.88.txt
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-circ-fix-v2.txt
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-circ-fix-verbose.txt
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-circ-fix.txt
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-debuglog.txt
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-fd.txt
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-readdir-fix.txt
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-util-extend.txt
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-zlib.txt
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88.txt
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/notes.md
+docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/plan.md
+scripts/check-demo-deps.sh
+scripts/test-list-more.txt
+scripts/triad-build.sh
+src/main.cpp
+src/node_compat/buffer.cpp
+src/node_compat/fs.cpp
+test/
+src/node_compat/globals.cpp
+src/node_compat/net.cpp
+src/node_compat/process.cpp
+src/node_compat/require.cpp
+src/node_compat/tls.cpp
+test/vendor/
+test/babel_logical_assignment_smoke.js
+test/circular_require_smoke.js
+test/constants_smoke.js
+test/fs_extras2_smoke.js
+test/fs_fd_smoke.js
+test/fs_readlink_smoke.js
+test/index_json_resolve_smoke.js
+test/module_node_paths_smoke.js
+test/module_resolve_filename_smoke.js
+test/process_extras_smoke.js
+test/process_smoke.js
+test/process_version_smoke.js
+test/repl_stub_smoke.js
+test/util_debuglog_smoke.js
+test/v8_stub_smoke.js
+test/vendor/index_json_pkg/
+test/vendor/index_json_pkg/index.json
+test/vendor/index_json_pkg/package.json
+test/vendor/logical_assignment_sample.js
+test/yargs_parser_smoke.js
+
+sent 1111412 bytes  received 8136 bytes  506330 bytes/sec
+total size is 94690172  speedup is 84.58
+=== [emac/g4/0.88] scp Makefile + process.cpp + globals.cpp + main.cpp + net.cpp + tls.cpp (gremlin workaround) ===
+=== [emac/g4/0.88] clean + build  (MOZJS=/opt/mozjs-45-ionpower-g4 CPU='-mcpu=7450 -mtune=7450') ===
+rm -f src/main.o src/node_compat/console.o src/node_compat/process.o src/node_compat/fs.o src/node_compat/path.o src/node_compat/buffer.o src/node_compat/require.o src/node_compat/timers.o src/node_compat/crypto.o src/node_compat/http.o src/node_compat/child_process.o src/node_compat/event_loop.o src/node_compat/net.o src/node_compat/tls.o src/node_compat/zlib.o src/node_compat/globals.o node
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1206)=k(0,46) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,814) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,814) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantImLm4EE5valueE:G(0,2064)=k(0,82) in src/node_compat/tls.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/timers.o
+ld: warning: js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >::trace(js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >*, JSTracer*) has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/http.o
+  [install_name_tool] @executable_path -> /opt/mozjs-45-ionpower-g4/lib
+=== [emac/g4/0.88] test-all ===

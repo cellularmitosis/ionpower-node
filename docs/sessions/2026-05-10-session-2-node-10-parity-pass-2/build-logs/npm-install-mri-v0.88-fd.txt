@@ -1,0 +1,72 @@
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+glob error {
+  "stack": "_fsAsync/<@<ionpower-node bootstrap>:99:19\ngo$readdir@/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/graceful-fs.js:206:1\nreaddir@/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/graceful-fs.js:211:1\nGlob.prototype._readdir@/Users/macuser/tmp/npm-6.14.18/node_modules/glob/glob.js:547:3\nGlob.prototype._processReaddir@/Users/macuser/tmp/npm-6.14.18/node_modules/glob/glob.js:370:3\nGlob.prototype._process@/Users/macuser/tmp/npm-6.14.18/node_modules/glob/glob.js:365:5\nGlob@/Users/macuser/tmp/npm-6.14.18/node_modules/glob/glob.js:167:5\nglob@/Users/macuser/tmp/npm-6.14.18/node_modules/glob/glob.js:72:10\nload/</<@/Users/macuser/tmp/npm-6.14.18/lib/npm.js:355:1\nload/cb</<@/Users/macuser/tmp/npm-6.14.18/lib/config/core.js:81:7\nload/cb<@/Users/macuser/tmp/npm-6.14.18/lib/config/core.js:80:5\nonce/f@/Users/macuser/tmp/npm-6.14.18/node_modules/once/once.js:25:22\nfinalize@/Users/macuser/tmp/npm-6.14.18/lib/config/core.js:191:5\nafterExtras@/Users/macuser/tmp/npm-6.14.18/lib/config/core.js:182:5\nmkdirP/</<@/Users/macuser/tmp/npm-6.14.18/node_modules/mkdirp/index.js:51:26\ncallback@/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:306:17\n_fsAsync/</<@<ionpower-node bootstrap>:100:44\nthis.__fire_due_timers__@<ionpower-node bootstrap>:4738:13\n"
+}
+--- raw uncaughtException ---
+name: TypeError
+message: npm.config is undefined
+stack: saveMetrics@/Users/macuser/tmp/npm-6.14.18/lib/utils/metrics.js:33:7
+Installer.prototype.run/cb@/Users/macuser/tmp/npm-6.14.18/lib/install.js:260:1
+Installer.prototype.run/</<@/Users/macuser/tmp/npm-6.14.18/lib/install.js:359:7
+LOOP@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:7:1
+LOOP/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:18:7
+Installer.prototype.printInstalled@/Users/macuser/tmp/npm-6.14.18/lib/install.js:779:1
+bindActor/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/bind-actor.js:15:5
+LOOP@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:15:5
+LOOP/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:18:7
+Installer.prototype.printWarnings@/Users/macuser/tmp/npm-6.14.18/lib/install.js:757:1
+bindActor/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/bind-actor.js:15:5
+LOOP@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:15:5
+LOOP/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:18:7
+Installer.prototype.saveToDependencies@/Users/macuser/tmp/npm-6.14.18/lib/install.js:651:1
+bindActor/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/bind-actor.js:15:5
+LOOP@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:15:5
+LOOP/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:18:7
+Installer.prototype.debugLogicalTree@/Users/macuser/tmp/npm-6.14.18/lib/install.js:1057:3
+bindActor/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/bind-actor.js:15:5
+LOOP@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:15:5
+LOOP/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:18:7
+Installer.prototype.pruneIdealTree@/Users/macuser/tmp/npm-6.14.18/lib/install.js:449:1
+bindActor/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/bind-actor.js:15:5
+LOOP@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:15:5
+LOOP/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:18:7
+Installer.prototype.run/<@/Users/macuser/tmp/npm-6.14.18/lib/install.js:336:61
+bindActor/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/bind-actor.js:15:5
+LOOP@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:15:5
+LOOP/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:18:7
+Installer.prototype.finishTracker@/Users/macuser/tmp/npm-6.14.18/lib/install.js:385:3
+bindActor/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/bind-actor.js:15:5
+LOOP@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:15:5
+LOOP/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:18:7
+Installer.prototype.runPostinstallTopLevelLifecycles@/Users/macuser/tmp/npm-6.14.18/lib/install.js:622:1
+bindActor/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/bind-actor.js:15:5
+LOOP@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:15:5
+LOOP/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:18:7
+asyncMap@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/async-map.js:27:1
+Installer.prototype.commit@/Users/macuser/tmp/npm-6.14.18/lib/install.js:593:1
+bindActor/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/bind-actor.js:15:5
+LOOP@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:15:5
+LOOP/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:18:7
+Installer.prototype.finishTracker@/Users/macuser/tmp/npm-6.14.18/lib/install.js:385:3
+bindActor/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/bind-actor.js:15:5
+LOOP@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:15:5
+LOOP/<@/Users/macuser/tmp/npm-6.14.18/node_modules/slide/lib/chain.js:18:7
+tryCatcher@/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:16:16
+successAdapter@/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/nodeify.js:23:11
+module.exports/Promise.prototype._settlePromise@/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/promise.js:601:13
+module.exports/Promise.prototype._settlePromise0@/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/promise.js:649:5
+module.exports/Promise.prototype._settlePromises@/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/promise.js:729:13
+_drainQueueStep@/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/async.js:93:9
+_drainQueue@/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/async.js:86:9
+Async.prototype._drainQueues@/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/async.js:102:5
+Async/this.drainQueues@/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/async.js:15:9
+this.__fire_due_timers__@<ionpower-node bootstrap>:4738:13
+
+==EXIT 99==
+==NODE_MODULES==
+ls: node_modules/: No such file or directory
+==MRI==
+ls: node_modules/mri/: No such file or directory
+cat: node_modules/mri/package.json: No such file or directory
