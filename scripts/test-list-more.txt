@@ -447,3 +447,6 @@ test/axios_smoke.js
 test/node_fetch_smoke.js
 test/dotenv_smoke.js
 test/sprintf_smoke.js
+test/repl_stub_smoke.js
+test/v8_stub_smoke.js
+test/babel_logical_assignment_smoke.js

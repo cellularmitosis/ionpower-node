@@ -5926,7 +5926,7 @@ static const char kBootstrapJS[] =
     "      var dir = slash >= 0 ? fn.slice(0, slash) : fn;\n"
     "      return __make_require__(dir);\n"
     "    },\n"
-    "    builtinModules: ['fs','path','events','util','child_process','os','crypto','buffer','string_decoder','assert','stream','timers','querystring','readable-stream','inherits','supports-color','has-ansi','module']\n"
+    "    builtinModules: ['fs','path','events','util','child_process','os','crypto','buffer','string_decoder','assert','stream','timers','querystring','readable-stream','inherits','supports-color','has-ansi','module','repl','v8']\n"
     "  };\n"
     // Node 18+ module.isBuiltin(name): checks builtinModules (stripping\n"
     // any 'node:' prefix).\n"
@@ -6000,6 +6000,24 @@ static const char kBootstrapJS[] =
     "    }\n"
     "  };\n"
     "  __require_cache__['vm']             = vmModule;\n"
+    // repl: stub. Lumo references require('repl') for its interactive
+    // REPL plumbing; the runtime has no readline-driven repl. Most
+    // consumers feature-detect, so we expose the shape and let `start`
+    // throw if anyone actually calls it.
+    "  __require_cache__['repl'] = {\n"
+    "    start: function () { throw new Error('repl not implemented'); },\n"
+    "    REPLServer: function () {},\n"
+    "    Recoverable: function () {}\n"
+    "  };\n"
+    // v8: stub. Lumo / others reach for serialize+deserialize as a
+    // fast analyzer-cache codec, and getHeapStatistics for diagnostics.
+    // JSON-roundtrip is lossy for non-JSON-serializable values, but
+    // covers JSON-friendly cache contents which is the realistic case.
+    "  __require_cache__['v8'] = {\n"
+    "    serialize:   function (o) { return Buffer.from(JSON.stringify(o)); },\n"
+    "    deserialize: function (b) { return JSON.parse(b.toString()); },\n"
+    "    getHeapStatistics: function () { return {}; }\n"
+    "  };\n"
     // timers/promises — promise-returning variants of setTimeout /
     // setImmediate. setInterval would need an async iterator, which we
     // can't really polyfill cleanly without async generators; we expose
@@ -9375,9 +9393,15 @@ static const char kBootstrapJS[] =
        to ES5-ish that SM45 can parse. Without it, Babel uses its
        default browserslist which lets async/await pass through
        untouched, defeating the whole point of the parse-failure
-       fallback. */
+       fallback.
+       We also pin `transform-logical-assignment-operators` explicitly
+       so `||=` / `&&=` / `??=` are guaranteed to be lowered — Closure
+       Library output sometimes contains a single one of these, and
+       relying on preset-env's compat-table to enable it has bitten us
+       (lumo-darwin8-ppc session 001). */
     "      code = babel.transform(srcForBabel, {\n"
-    "        presets: [['env', { targets: { ie: '11' }, loose: true }]]\n"
+    "        presets: [['env', { targets: { ie: '11' }, loose: true }]],\n"
+    "        plugins: ['transform-logical-assignment-operators']\n"
     "      }).code;\n"
     "    } catch (e) { return null; }\n"
     "    __babel_mem_cache__[absPath] = { mtime: mtime, code: code };\n"
