@@ -167,6 +167,13 @@ static bool TryModuleExtensions(const char* base, char* out, size_t outsz) {
         if (FileExists(candidate)) {
             strncpy(out, candidate, outsz); out[outsz - 1] = 0; return true;
         }
+        // base + "/index.json" — Node's resolver tries this after .js/.cjs.
+        // Some packages (spdx-license-ids, spdx-exceptions) ship only an
+        // index.json with no "main" in package.json and rely on it.
+        snprintf(candidate, sizeof candidate, "%s/index.json", base);
+        if (FileExists(candidate)) {
+            strncpy(out, candidate, outsz); out[outsz - 1] = 0; return true;
+        }
     }
     return false;
 }

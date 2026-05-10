@@ -2,6 +2,13 @@
 // options glue) meow. Strictly larger than our existing mri/arg/minimist
 // entries but with proper alias + type coercion support.
 
+// yargs-parser refuses to load on Node < 12 by throwing at module load.
+// We currently report Node 10.24.1 (ionpower-node v0.87 parity target).
+// The check honors YARGS_MIN_NODE_VERSION as an override; set it before
+// require() so the throw site sees a permissive bound. None of the
+// argv-parsing functionality we exercise here actually needs Node 12.
+process.env.YARGS_MIN_NODE_VERSION = "10";
+
 var yp = require("./vendor/yargs-parser.js");
 var parse = yp.default || yp;
 

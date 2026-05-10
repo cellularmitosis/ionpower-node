@@ -307,6 +307,13 @@ test/string_transforms_smoke.js
 test/is_json_smoke.js
 test/iso8601_duration_smoke.js
 test/process_smoke.js
+test/process_version_smoke.js
+test/process_extras_smoke.js
+test/constants_smoke.js
+test/index_json_resolve_smoke.js
+test/fs_readlink_smoke.js
+test/fs_extras2_smoke.js
+test/module_node_paths_smoke.js
 test/string_template_smoke.js
 test/url_template_smoke.js
 test/make_error_smoke.js

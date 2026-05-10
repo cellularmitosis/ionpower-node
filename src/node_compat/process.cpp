@@ -296,7 +296,51 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
     if (!DefineEnv(cx, process)) return false;
     if (!DefineStringProp(cx, process, "platform", "darwin"))     return false;
     if (!DefineStringProp(cx, process, "arch",     "ppc"))        return false;
-    if (!DefineStringProp(cx, process, "version",  "ionpower-node-0.86")) return false;
+    // process.version: as of pass-1 of Node 10 parity (see
+    // docs/plans/node-target-version.md), report a real Node version
+    // string so libraries that feed this into a semver parser don't
+    // throw. The runtime's own identity moves to
+    // process.versions['ionpower-node'] below.
+    if (!DefineStringProp(cx, process, "version",  "v10.24.1")) return false;
+
+    // process.versions: { node, 'ionpower-node' } seeded here; the JS
+    // bootstrap (globals.cpp kBootstrapJS) augments with spidermonkey,
+    // openssl, v8 once those subsystems are up.
+    {
+        JS::RootedObject versions(cx, JS_NewPlainObject(cx));
+        if (!versions) return false;
+        if (!DefineStringProp(cx, versions, "node",          "10.24.1")) return false;
+        // 'ionpower-node' uses bracket access on the JS side because of the dash.
+        if (!DefineStringProp(cx, versions, "ionpower-node", "0.87"))    return false;
+        if (!JS_DefineProperty(cx, process, "versions", versions, JSPROP_ENUMERATE))
+            return false;
+    }
+
+    // process.execPath: absolute path to the runtime binary. Mirrors
+    // process.argv[0]. Real Node has this; libraries like which / isexe
+    // use it for self-detection.
+    if (argc >= 1 && argv && argv[0]) {
+        if (!DefineStringProp(cx, process, "execPath", argv[0])) return false;
+    } else {
+        if (!DefineStringProp(cx, process, "execPath", "")) return false;
+    }
+
+    // process.binding(name): legacy private API that older libs
+    // (fs-minipass, npm internals) reach into for native C++ bindings.
+    // We deliberately do NOT expose internals — return an empty object
+    // so module load succeeds. If anything actually CALLS a binding
+    // method later it fails at use-time, which is the right behavior.
+    {
+        static const char kBindingSrc[] =
+            "(function () { return function (name) { return {}; }; })()";
+        JS::CompileOptions opts(cx);
+        opts.setFileAndLine("<process.binding stub>", 1);
+        JS::RootedValue bindingFn(cx);
+        if (!JS::Evaluate(cx, opts, kBindingSrc, sizeof(kBindingSrc) - 1, &bindingFn))
+            return false;
+        if (!JS_DefineProperty(cx, process, "binding", bindingFn, JSPROP_ENUMERATE))
+            return false;
+    }
 
     JS::RootedValue pidv(cx, JS::Int32Value((int32_t)getpid()));
     if (!JS_DefineProperty(cx, process, "pid", pidv, JSPROP_ENUMERATE))

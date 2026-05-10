@@ -31,7 +31,9 @@ console.log("ok: process.title =", JSON.stringify(process.title));
 // versions
 assert(typeof process.versions === "object", "versions is object");
 assert(typeof process.versions.node === "string", "versions.node is string");
-assert(typeof process.versions.ionpower === "string", "versions.ionpower is string");
+// 'ionpower-node' is dashed; bracket form because of the dash.
+assert(typeof process.versions["ionpower-node"] === "string",
+       "versions['ionpower-node'] is string");
 console.log("ok: process.versions =", JSON.stringify(process.versions));
 
 // release

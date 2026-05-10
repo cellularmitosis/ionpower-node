@@ -1,0 +1,5 @@
+{
+  "name": "index_json_pkg",
+  "version": "0.0.1",
+  "description": "Smoke fixture: package.json with no \"main\", index.json only. Mirrors spdx-license-ids' shape that broke on the v0.86 npm bring-up."
+}

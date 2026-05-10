@@ -15,7 +15,9 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <fcntl.h>
+#include <limits.h>
 
 #include "jsapi.h"
 #include "jsfriendapi.h"
@@ -38,6 +40,17 @@ static const char* ErrnoToNodeCode(int e) {
         case EIO:       return "EIO";
         case EMFILE:    return "EMFILE";
         case ENAMETOOLONG: return "ENAMETOOLONG";
+        case EINVAL:    return "EINVAL";
+        case EBADF:     return "EBADF";
+        case EAGAIN:    return "EAGAIN";
+        case EINTR:     return "EINTR";
+        case EBUSY:     return "EBUSY";
+        case ENOSPC:    return "ENOSPC";
+        case EROFS:     return "EROFS";
+        case ELOOP:     return "ELOOP";
+        case EXDEV:     return "EXDEV";
+        case EPIPE:     return "EPIPE";
+        case ENXIO:     return "ENXIO";
         default:        return "UNKNOWN";
     }
 }
@@ -529,6 +542,146 @@ static bool FsChmodSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     return true;
 }
 
+// readlink(2) — read the contents of a symbolic link. Returns the link
+// target as a string. Throws ENOENT / EINVAL via Node-shaped Error.
+static bool FsReadlinkSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 1) {
+        JS_ReportError(cx, "fs.readlinkSync: path required");
+        return false;
+    }
+    JS::RootedString pathS(cx, JS::ToString(cx, args[0]));
+    if (!pathS) return false;
+    JSAutoByteString path(cx, pathS);
+    if (!path) return false;
+
+    char buf[PATH_MAX];
+    ssize_t n = readlink(path.ptr(), buf, sizeof buf - 1);
+    if (n < 0) {
+        return ThrowFsError(cx, errno, "readlink", path.ptr());
+    }
+    buf[n] = 0;
+    JS::RootedString s(cx, JS_NewStringCopyZ(cx, buf));
+    if (!s) return false;
+    args.rval().setString(s);
+    return true;
+}
+
+// truncate(2) — set the file's length to `len` (default 0).
+static bool FsTruncateSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 1) {
+        JS_ReportError(cx, "fs.truncateSync: path required");
+        return false;
+    }
+    JS::RootedString pathS(cx, JS::ToString(cx, args[0]));
+    if (!pathS) return false;
+    JSAutoByteString path(cx, pathS);
+    if (!path) return false;
+    int64_t len = 0;
+    if (args.length() >= 2 && !args[1].isUndefined()) {
+        double d;
+        if (!JS::ToNumber(cx, args[1], &d)) return false;
+        len = (int64_t)d;
+    }
+    if (truncate(path.ptr(), (off_t)len) != 0) {
+        return ThrowFsError(cx, errno, "truncate", path.ptr());
+    }
+    args.rval().setUndefined();
+    return true;
+}
+
+// symlink(2) — create a symbolic link at `linkPath` pointing to `target`.
+// Node passes (target, linkPath, [type]); the `type` arg is win32-only and
+// ignored on POSIX.
+static bool FsSymlinkSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 2) {
+        JS_ReportError(cx, "fs.symlinkSync: target and path required");
+        return false;
+    }
+    JS::RootedString targetS(cx, JS::ToString(cx, args[0]));
+    JS::RootedString linkS(cx, JS::ToString(cx, args[1]));
+    if (!targetS || !linkS) return false;
+    JSAutoByteString target(cx, targetS), link(cx, linkS);
+    if (!target || !link) return false;
+    if (symlink(target.ptr(), link.ptr()) != 0) {
+        return ThrowFsError(cx, errno, "symlink", link.ptr());
+    }
+    args.rval().setUndefined();
+    return true;
+}
+
+// chown(2) — change file ownership.
+static bool FsChownSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 3) {
+        JS_ReportError(cx, "fs.chownSync: path, uid, gid required");
+        return false;
+    }
+    JS::RootedString pathS(cx, JS::ToString(cx, args[0]));
+    if (!pathS) return false;
+    JSAutoByteString path(cx, pathS);
+    if (!path) return false;
+    int32_t uid = 0, gid = 0;
+    if (!JS::ToInt32(cx, args[1], &uid)) return false;
+    if (!JS::ToInt32(cx, args[2], &gid)) return false;
+    if (chown(path.ptr(), (uid_t)uid, (gid_t)gid) != 0) {
+        return ThrowFsError(cx, errno, "chown", path.ptr());
+    }
+    args.rval().setUndefined();
+    return true;
+}
+
+// utimes(2) — set access + modification timestamps. Node accepts numbers
+// (seconds since epoch) or Date objects; we coerce to number.
+static bool FsUtimesSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 3) {
+        JS_ReportError(cx, "fs.utimesSync: path, atime, mtime required");
+        return false;
+    }
+    JS::RootedString pathS(cx, JS::ToString(cx, args[0]));
+    if (!pathS) return false;
+    JSAutoByteString path(cx, pathS);
+    if (!path) return false;
+    double atime = 0, mtime = 0;
+    if (!JS::ToNumber(cx, args[1], &atime)) return false;
+    if (!JS::ToNumber(cx, args[2], &mtime)) return false;
+    // Node passes seconds; struct timeval expects sec + usec.
+    struct timeval tv[2];
+    tv[0].tv_sec  = (long)atime;
+    tv[0].tv_usec = (long)((atime - (double)tv[0].tv_sec) * 1e6);
+    tv[1].tv_sec  = (long)mtime;
+    tv[1].tv_usec = (long)((mtime - (double)tv[1].tv_sec) * 1e6);
+    if (utimes(path.ptr(), tv) != 0) {
+        return ThrowFsError(cx, errno, "utimes", path.ptr());
+    }
+    args.rval().setUndefined();
+    return true;
+}
+
+// fchmod(2) — change permissions on an open file descriptor. Mirrors
+// chmodSync's argument shape but takes a numeric fd instead of a path.
+static bool FsFchmodSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 2) {
+        JS_ReportError(cx, "fs.fchmodSync: fd and mode required");
+        return false;
+    }
+    int32_t fd = 0;
+    if (!JS::ToInt32(cx, args[0], &fd)) return false;
+    uint32_t mode = 0;
+    if (!JS::ToUint32(cx, args[1], &mode)) return false;
+    if (fchmod(fd, (mode_t)(mode & 07777)) != 0) {
+        char buf[32];
+        snprintf(buf, sizeof buf, "fd %d", fd);
+        return ThrowFsError(cx, errno, "fchmod", buf);
+    }
+    args.rval().setUndefined();
+    return true;
+}
+
 static bool FsRenameSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
     if (args.length() < 2) {
@@ -562,6 +715,12 @@ static const JSFunctionSpec kFsFuncs[] = {
     JS_FN("appendFileSync", FsAppendFileSync, 2, 0),
     JS_FN("copyFileSync",   FsCopyFileSync,   2, 0),
     JS_FN("chmodSync",      FsChmodSync,      2, 0),
+    JS_FN("readlinkSync",   FsReadlinkSync,   1, 0),
+    JS_FN("truncateSync",   FsTruncateSync,   2, 0),
+    JS_FN("symlinkSync",    FsSymlinkSync,    3, 0),
+    JS_FN("chownSync",      FsChownSync,      3, 0),
+    JS_FN("utimesSync",     FsUtimesSync,     3, 0),
+    JS_FN("fchmodSync",     FsFchmodSync,     2, 0),
     JS_FS_END
 };
 
