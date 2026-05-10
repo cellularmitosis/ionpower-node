@@ -1,0 +1,122 @@
+=== [emac/g4/0.90] check-test-coverage ===
+ok: 487 files in test/ accounted for
+    483 wired via scripts/test-list-*.txt
+    4 in the intentional-skip allowlist
+=== [emac/g4/0.90] check-demo-deps ===
+ok: 51 test/vendor/ files transitively reached by demos, all in install rule (55 shipped at root)
+=== [emac/g4/0.90] rsync source ===
+Transfer starting: 5879 files
+./
+.claude/
+docs/sessions/
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/release-notes/
+docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/
+docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/
+docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/release-notes/
+scripts/
+src/
+src/node_compat/
+test/
+.claude/scheduled_tasks.lock
+Makefile
+README.md
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g4-pass3-final.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g5-pass3-final.log
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/notes.md
+docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/release-notes/v0.89.md
+docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/g3-pass4-chown-noop.log
+docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/g3-pass4-fchown.log
+docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/g3-pass4-pipe-reorder.log
+docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/g3-pass4-statuidgid.log
+docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/g4-pass4-final.log
+docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/g5-pass4-final.log
+docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/npm-install-mri-v0.90-SUCCESS.txt
+docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/npm-install-mri-v0.90-pipereorder.txt
+docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/notes.md
+docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/plan.md
+docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/release-notes/v0.90.md
+scripts/test-list-more.txt
+src/main.cpp
+src/node_compat/buffer.cpp
+src/node_compat/fs.cpp
+src/node_compat/globals.cpp
+src/node_compat/net.cpp
+src/node_compat/process.cpp
+src/node_compat/tls.cpp
+test/fs_fchown_smoke.js
+test/stream_resume_defer_smoke.js
+
+sent 647330 bytes  received 6930 bytes  1806848 bytes/sec
+total size is 103231608  speedup is 157.78
+=== [emac/g4/0.90] scp Makefile + process.cpp + globals.cpp + main.cpp + net.cpp + tls.cpp (gremlin workaround) ===
+=== [emac/g4/0.90] clean + build  (MOZJS=/opt/mozjs-45-ionpower-g4 CPU='-mcpu=7450 -mtune=7450') ===
+rm -f src/main.o src/node_compat/console.o src/node_compat/process.o src/node_compat/fs.o src/node_compat/path.o src/node_compat/buffer.o src/node_compat/require.o src/node_compat/timers.o src/node_compat/crypto.o src/node_compat/http.o src/node_compat/child_process.o src/node_compat/event_loop.o src/node_compat/net.o src/node_compat/tls.o src/node_compat/zlib.o src/node_compat/globals.o node
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,972) in src/node_compat/child_process.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1206)=k(0,46) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,814) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,814) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantImLm4EE5valueE:G(0,2064)=k(0,82) in src/node_compat/tls.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/timers.o
+ld: warning: js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >::trace(js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >*, JSTracer*) has different visibility (hidden) in /opt/mozjs-45-ionpower-g4/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/http.o
+  [install_name_tool] @executable_path -> /opt/mozjs-45-ionpower-g4/lib
+=== [emac/g4/0.90] test-all ===
+Testing test/ecdh_smoke.js PASS
+Testing test/top_level_await_smoke.js PASS
+Testing test/import_meta_smoke.js PASS
+Testing test/subtle_ecdsa_smoke.js PASS
+Testing test/raw_mode_smoke.js PASS
+Testing test/subtle_ec_jwk_smoke.js PASS
+Testing test/tls_smoke.js PASS
+Testing test/https_get_smoke.js PASS
+Testing test/https_server_smoke.js PASS
+Testing test/wss_smoke.js PASS
+Testing test/axios_smoke.js PASS
+Testing test/node_fetch_smoke.js PASS
+Testing test/dotenv_smoke.js PASS
+Testing test/sprintf_smoke.js PASS
+Testing test/repl_stub_smoke.js PASS
+Testing test/v8_stub_smoke.js PASS
+Testing test/babel_logical_assignment_smoke.js PASS
+
+469 passing tests
+0 failing tests
+=== [emac/g4/0.90] install ===
+cp -r test/vendor/elliptic   /opt/ionpower-node-0.90/share/ionpower-node/vendor/
+cp README.md LICENSE   /opt/ionpower-node-0.90/share/ionpower-node/ 2>/dev/null || true
+cp -r demos /opt/ionpower-node-0.90/share/ionpower-node/demos
+mkdir -p /opt/ionpower-node-0.90/share/ionpower-node/test/vendor/nm/node_modules
+
+installed ionpower-node 0.90 to /opt/ionpower-node-0.90
+  binary:   /opt/ionpower-node-0.90/bin/node (-> ionpower-node)
+  babel:    /opt/ionpower-node-0.90/share/ionpower-node/vendor/babel.js
+  demos:    /opt/ionpower-node-0.90/share/ionpower-node/demos/
+  mozjs:    expected at /opt/mozjs-45-ionpower-g4/
+
+Run:  /opt/ionpower-node-0.90/bin/node <script.js>
+=== [emac/g4/0.90] tarball ===
+-rw-r--r--   1 macuser  wheel  7841271 May 10 17:11 /tmp/ionpower-node-0.90-g4-ppc.tar.gz
+=== [emac/g4/0.90] DONE ===
