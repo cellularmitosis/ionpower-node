@@ -319,7 +319,18 @@ static bool FsStatSync(JSContext* cx, unsigned argc, JS::Value* vp) {
         return JS_DefineProperty(cx, out, k, vv, JSPROP_ENUMERATE);
     };
     if (!defineNum("size",  (double)st.st_size))  return false;
-    if (!defineNum("mtime", (double)st.st_mtime * 1000.0)) return false;
+    /* Node returns time fields as Date objects (with *Ms numeric variants).
+       We expose milliseconds here as raw numbers; the JS bootstrap wraps
+       statSync/lstatSync to box mtime/atime/ctime/birthtime into Dates and
+       set mtimeMs/atimeMs/ctimeMs/birthtimeMs alongside. lockfile + many
+       npm internals do `st.ctime.getTime()`, so the Date wrapping is
+       load-bearing. */
+    if (!defineNum("mtimeMs", (double)st.st_mtime * 1000.0)) return false;
+    if (!defineNum("atimeMs", (double)st.st_atime * 1000.0)) return false;
+    if (!defineNum("ctimeMs", (double)st.st_ctime * 1000.0)) return false;
+    /* No native birthtime on POSIX; approximate as ctime (Node does the
+       same on platforms that don't expose it). */
+    if (!defineNum("birthtimeMs", (double)st.st_ctime * 1000.0)) return false;
     if (!defineNum("mode",  (double)st.st_mode))  return false;
     // Also keep boolean shorthand (earlier consumers of our shim did
     // st.isFile as a bool). Node returns these as predicate functions,
@@ -663,6 +674,54 @@ static bool FsUtimesSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     return true;
 }
 
+// link(2) — create a hard link. npm's `lockfile` package uses it for
+// atomic lock creation: `link(srcPath, lockPath)` succeeds only if
+// lockPath doesn't already exist (POSIX guarantee).
+static bool FsLinkSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 2) {
+        JS_ReportError(cx, "fs.linkSync: existingPath, newPath required");
+        return false;
+    }
+    JS::RootedString srcS(cx, JS::ToString(cx, args[0]));
+    JS::RootedString dstS(cx, JS::ToString(cx, args[1]));
+    if (!srcS || !dstS) return false;
+    JSAutoByteString src(cx, srcS), dst(cx, dstS);
+    if (!src || !dst) return false;
+    if (link(src.ptr(), dst.ptr()) != 0) {
+        return ThrowFsError(cx, errno, "link", dst.ptr());
+    }
+    args.rval().setUndefined();
+    return true;
+}
+
+// futimes(2) — set access + modification timestamps via fd. tar's
+// unpack uses this to restore mtime on freshly extracted files.
+static bool FsFutimesSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 3) {
+        JS_ReportError(cx, "fs.futimesSync: fd, atime, mtime required");
+        return false;
+    }
+    int32_t fd = 0;
+    if (!JS::ToInt32(cx, args[0], &fd)) return false;
+    double atime = 0, mtime = 0;
+    if (!JS::ToNumber(cx, args[1], &atime)) return false;
+    if (!JS::ToNumber(cx, args[2], &mtime)) return false;
+    struct timeval tv[2];
+    tv[0].tv_sec  = (long)atime;
+    tv[0].tv_usec = (long)((atime - (double)tv[0].tv_sec) * 1e6);
+    tv[1].tv_sec  = (long)mtime;
+    tv[1].tv_usec = (long)((mtime - (double)tv[1].tv_sec) * 1e6);
+    if (futimes(fd, tv) != 0) {
+        char buf[32];
+        snprintf(buf, sizeof buf, "fd %d", fd);
+        return ThrowFsError(cx, errno, "futimes", buf);
+    }
+    args.rval().setUndefined();
+    return true;
+}
+
 // fchmod(2) — change permissions on an open file descriptor. Mirrors
 // chmodSync's argument shape but takes a numeric fd instead of a path.
 static bool FsFchmodSync(JSContext* cx, unsigned argc, JS::Value* vp) {
@@ -960,6 +1019,8 @@ static const JSFunctionSpec kFsFuncs[] = {
     JS_FN("symlinkSync",    FsSymlinkSync,    3, 0),
     JS_FN("chownSync",      FsChownSync,      3, 0),
     JS_FN("utimesSync",     FsUtimesSync,     3, 0),
+    JS_FN("futimesSync",    FsFutimesSync,    3, 0),
+    JS_FN("linkSync",       FsLinkSync,       2, 0),
     JS_FN("fchmodSync",     FsFchmodSync,     2, 0),
     JS_FN("openSync",       FsOpenSync,       3, 0),
     JS_FN("closeSync",      FsCloseSync,      1, 0),

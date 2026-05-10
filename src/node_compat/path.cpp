@@ -158,19 +158,62 @@ static bool PathResolve(JSContext* cx, unsigned argc, JS::Value* vp) {
             memcpy(out + l, p, pl + 1);
         }
     }
-    // Minimal normalization: collapse '//' and '/./'. ('..' left to higher
-    // layers — real Node does this too but chases symlinks; we just
-    // flatten dot segments.)
+    // Normalize: collapse '//', '/./', and '/foo/..' segments. Real Node's
+    // path.resolve does this — without '..' collapsing, recursive walkers
+    // (e.g. npm's findNearestDir, which iterates path.resolve(dir, '..'))
+    // grow the path forever until PATH_MAX overflow. (Real Node also chases
+    // symlinks via realpath; we don't, that's path.realpath() territory.)
     char norm[PATH_MAX]; size_t ni = 0;
+    // Pass 1: collapse '//' and '/./'.
+    char tmp[PATH_MAX]; size_t ti = 0;
     for (size_t i = 0; out[i]; ) {
         if (out[i] == '/' && out[i + 1] == '/') { ++i; continue; }
         if (out[i] == '/' && out[i + 1] == '.' && (out[i + 2] == '/' || out[i + 2] == 0)) {
             i += 2; continue;
         }
-        norm[ni++] = out[i++];
-        if (ni >= sizeof norm) { JS_ReportError(cx, "path.resolve: overflow"); return false; }
+        if (ti + 1 >= sizeof tmp) { JS_ReportError(cx, "path.resolve: overflow"); return false; }
+        tmp[ti++] = out[i++];
     }
-    norm[ni] = 0;
+    tmp[ti] = 0;
+    // Pass 2: collapse '/foo/..' segments. We always start with '/' (cwd or
+    // an absolute arg replaced cwd). Walk segment-by-segment; on '..', pop
+    // the last accepted segment (unless we're already at root, in which
+    // case drop the '..' — '/..' is just '/' on Unix).
+    if (ti == 0 || tmp[0] != '/') {
+        // Should not happen — out always starts with '/' (cwd or absolute arg).
+        // Fallback: copy as-is.
+        if (ti >= sizeof norm) { JS_ReportError(cx, "path.resolve: overflow"); return false; }
+        memcpy(norm, tmp, ti); ni = ti; norm[ni] = 0;
+    } else {
+        norm[ni++] = '/';  // root
+        size_t i = 1;
+        while (i < ti) {
+            // segment runs from i to next '/' or end
+            size_t j = i;
+            while (j < ti && tmp[j] != '/') ++j;
+            size_t seglen = j - i;
+            if (seglen == 2 && tmp[i] == '.' && tmp[i + 1] == '.') {
+                // pop last segment from norm (if any beyond root)
+                if (ni > 1) {
+                    // strip trailing '/' if present
+                    if (norm[ni - 1] == '/') --ni;
+                    while (ni > 1 && norm[ni - 1] != '/') --ni;
+                }
+                // ni now points at '/' after parent (or 1 if at root)
+            } else if (seglen > 0) {
+                if (ni > 1 && norm[ni - 1] != '/') {
+                    if (ni + 1 >= sizeof norm) { JS_ReportError(cx, "path.resolve: overflow"); return false; }
+                    norm[ni++] = '/';
+                }
+                if (ni + seglen >= sizeof norm) { JS_ReportError(cx, "path.resolve: overflow"); return false; }
+                memcpy(norm + ni, tmp + i, seglen); ni += seglen;
+            }
+            i = (j < ti) ? j + 1 : j;
+        }
+        // Strip trailing '/' (except for root '/').
+        if (ni > 1 && norm[ni - 1] == '/') --ni;
+        norm[ni] = 0;
+    }
     JS::RootedString r(cx, JS_NewStringCopyN(cx, norm, ni));
     if (!r) return false;
     args.rval().setString(r);

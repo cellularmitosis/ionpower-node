@@ -185,6 +185,7 @@ test/fast_sort_smoke.js
 test/jsonparse_smoke.js
 test/pretty_compact_smoke.js
 test/path_libs_smoke.js
+test/path_resolve_dotdot_smoke.js
 test/ansi_escapes_smoke.js
 test/yocto_queue_smoke.js
 test/cron_smoke.js
@@ -316,6 +317,7 @@ test/fs_extras2_smoke.js
 test/module_node_paths_smoke.js
 test/module_resolve_filename_smoke.js
 test/fs_fd_smoke.js
+test/fs_createstream_new_smoke.js
 test/circular_require_smoke.js
 test/util_debuglog_smoke.js
 test/string_template_smoke.js
@@ -416,6 +418,7 @@ test/promise_wrappers_smoke.js
 test/batch_wave_bb_smoke.js
 test/events_on_smoke.js
 test/event_target_smoke.js
+test/event_newlistener_smoke.js
 test/batch_wave_cc_smoke.js
 test/node_test_hooks_smoke.js
 test/broadcast_channel_smoke.js
@@ -435,6 +438,7 @@ test/rsa_smoke.js
 test/rsa_encrypt_smoke.js
 test/x509_smoke.js
 test/zlib_real_smoke.js
+test/zlib_handle_smoke.js
 test/jwt_rs256_smoke.js
 test/module_class_smoke.js
 test/subpath_modules_smoke.js

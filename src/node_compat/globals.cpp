@@ -103,6 +103,10 @@ static const char kBootstrapJS[] =
     // returns them as bools AND also exposes _isFile/_isDirectory/
     // _isSymbolicLink. Wrap to expose the method shape so libraries that
     // call st.isFile() don't TypeError.
+    /* Box mtime/atime/ctime/birthtime into Date objects (npm's lockfile,
+       graceful-fs, and others call st.ctime.getTime()). The C++ side
+       returns *Ms numeric milliseconds; we keep those alongside the
+       Date wrappers (matching Node's surface). */
     "  function _wrapStats(nativeFn) {\n"
     "    return function () {\n"
     "      var st = nativeFn.apply(this, arguments);\n"
@@ -111,6 +115,10 @@ static const char kBootstrapJS[] =
     "      st.isFile          = function () { return f; };\n"
     "      st.isDirectory     = function () { return d; };\n"
     "      st.isSymbolicLink  = function () { return l; };\n"
+    "      if (typeof st.mtimeMs === 'number') st.mtime = new Date(st.mtimeMs);\n"
+    "      if (typeof st.atimeMs === 'number') st.atime = new Date(st.atimeMs);\n"
+    "      if (typeof st.ctimeMs === 'number') st.ctime = new Date(st.ctimeMs);\n"
+    "      if (typeof st.birthtimeMs === 'number') st.birthtime = new Date(st.birthtimeMs);\n"
     "      return st;\n"
     "    };\n"
     "  }\n"
@@ -133,6 +141,8 @@ static const char kBootstrapJS[] =
     "    symlinkSync:    nativeFs.symlinkSync,\n"
     "    chownSync:      nativeFs.chownSync,\n"
     "    utimesSync:     nativeFs.utimesSync,\n"
+    "    futimesSync:    nativeFs.futimesSync,\n"
+    "    linkSync:       nativeFs.linkSync,\n"
     "    fchmodSync:     nativeFs.fchmodSync,\n"
     "    openSync:       nativeFs.openSync,\n"
     "    closeSync:      nativeFs.closeSync,\n"
@@ -179,6 +189,8 @@ static const char kBootstrapJS[] =
     "  fs.symlink      = _fsAsync(fs.symlinkSync);\n"
     "  fs.chown        = _fsAsync(fs.chownSync);\n"
     "  fs.utimes       = _fsAsync(fs.utimesSync);\n"
+    "  fs.futimes      = _fsAsync(fs.futimesSync);\n"
+    "  fs.link         = _fsAsync(fs.linkSync);\n"
     "  fs.fchmod       = _fsAsync(fs.fchmodSync);\n"
     "  fs.open         = _fsAsync(fs.openSync);\n"
     "  fs.close        = _fsAsync(fs.closeSync);\n"
@@ -337,6 +349,8 @@ static const char kBootstrapJS[] =
     "    chown:     _promisifyFs(fs.chown),\n"
     "    lchown:    _promisifyFs(fs.lchown),\n"
     "    utimes:    _promisifyFs(fs.utimes),\n"
+    "    futimes:   _promisifyFs(fs.futimes),\n"
+    "    link:      _promisifyFs(fs.link),\n"
     "    access:    _promisifyFs(fs.access),\n"
     "    realpath:  _promisifyFs(fs.realpath),\n"
     "    open:      _promisifyFs(fs.open),\n"
@@ -356,9 +370,26 @@ static const char kBootstrapJS[] =
     // any realistic file size (MB-scale). True streaming would need native
     // open/read/write fd primitives — deferred until a consumer actually hits
     // the memory ceiling.
+    /* graceful-fs's ReadStream wrapper does:
+         fs$ReadStream.apply(this, arguments), this
+       The comma operator throws away our return value and uses the empty
+       `this` (an Object.create(graceful_fs.ReadStream.prototype)) as the
+       result of `new ReadStream(...)`. So we MUST populate `this` here
+       when called with `new`, otherwise pump/cacache/anything that
+       graceful-fs hands a stream to gets a methodless empty object and
+       errors with "stream.on is not a function".
+
+       Detection: when called as `fs.createReadStream(...)`, `this === fs`
+       (which has methods); when called as `new ReadStream(...)` from
+       graceful-fs, `this` is a fresh object with no EventEmitter
+       surface. The `this.on` check distinguishes them. */
     "  fs.createReadStream = function (path, opts) {\n"
     "    opts = opts || {};\n"
-    "    var self = new events.EventEmitter();\n"
+    "    var self;\n"
+    "    if (this && this !== fs && typeof this.on !== 'function') {\n"
+    "      Object.setPrototypeOf(this, events.EventEmitter.prototype);\n"
+    "      events.EventEmitter.call(this); self = this;\n"
+    "    } else { self = new events.EventEmitter(); }\n"
     "    self.readable = true; self.path = path;\n"
     "    self._destroyed = false;\n"
     "    var hwm = opts.highWaterMark || 65536;\n"
@@ -402,9 +433,16 @@ static const char kBootstrapJS[] =
     "    });\n"
     "    return self;\n"
     "  };\n"
+    /* See createReadStream above for why we detect new-call and populate
+       `this` instead of returning a fresh object. graceful-fs's
+       WriteStream wrapper does the same comma-operator dance. */
     "  fs.createWriteStream = function (path, opts) {\n"
     "    opts = opts || {};\n"
-    "    var self = new events.EventEmitter();\n"
+    "    var self;\n"
+    "    if (this && this !== fs && typeof this.on !== 'function') {\n"
+    "      Object.setPrototypeOf(this, events.EventEmitter.prototype);\n"
+    "      events.EventEmitter.call(this); self = this;\n"
+    "    } else { self = new events.EventEmitter(); }\n"
     "    self.writable = true; self.path = path;\n"
     "    self.bytesWritten = 0;\n"
     "    self._destroyed = false;\n"
@@ -561,7 +599,17 @@ static const char kBootstrapJS[] =
     // (commander's Command is one example).
     "  function EventEmitter() { this._events = Object.create(null); this._maxListeners = 10; }\n"
     "  function _evs(self) { if (!self._events) self._events = Object.create(null); return self._events; }\n"
+    /* Real Node emits 'newListener' BEFORE adding (and 'removeListener'
+       after removing). pacote's with-tarball-stream relies on this for its
+       error-replay pattern: it caches an early stream error in a once()
+       handler, then any later .on('error', l) gets the cached error
+       replayed via a 'newListener' meta-event handler. Without 'newListener'
+       support, the replay never fires → tryExtract's promise never rejects
+       → npm install hangs forever with "cb() never called". */
     "  EventEmitter.prototype.on = EventEmitter.prototype.addListener = function (ev, fn) {\n"
+    "    if (ev !== 'newListener' && this._events && this._events.newListener && this._events.newListener.length) {\n"
+    "      this.emit('newListener', ev, fn);\n"
+    "    }\n"
     "    var m = _evs(this); (m[ev] || (m[ev] = [])).push(fn);\n"
     "    return this;\n"
     "  };\n"
@@ -573,7 +621,13 @@ static const char kBootstrapJS[] =
     "  };\n"
     "  EventEmitter.prototype.removeListener = function (ev, fn) {\n"
     "    var arr = _evs(this)[ev]; if (!arr) return this;\n"
-    "    for (var i = 0; i < arr.length; ++i) if (arr[i] === fn || arr[i]._orig === fn) { arr.splice(i, 1); break; }\n"
+    "    for (var i = 0; i < arr.length; ++i) if (arr[i] === fn || arr[i]._orig === fn) {\n"
+    "      arr.splice(i, 1);\n"
+    "      if (ev !== 'removeListener' && this._events.removeListener && this._events.removeListener.length) {\n"
+    "        this.emit('removeListener', ev, fn);\n"
+    "      }\n"
+    "      break;\n"
+    "    }\n"
     "    return this;\n"
     "  };\n"
     "  EventEmitter.prototype.removeAllListeners = function (ev) {\n"
@@ -5718,7 +5772,12 @@ static const char kBootstrapJS[] =
     "  };\n"
     "  _Writable.prototype.cork   = function () { this._writableState.corked++; };\n"
     "  _Writable.prototype.uncork = function () { if (this._writableState.corked > 0) this._writableState.corked--; };\n"
+    /* destroy must be idempotent — pump/end-of-stream call it after the
+       success path sometimes fires a second 'close' which trips
+       end-of-stream's "premature close" guard on a separate stream. */
     "  _Writable.prototype.destroy = function (err) {\n"
+    "    if (this._destroyed) return this;\n"
+    "    this._destroyed = true;\n"
     "    if (this._destroy) { try { this._destroy(err, function(){}); } catch(e){} }\n"
     "    if (err) this.emit('error', err);\n"
     "    this.emit('close');\n"
@@ -5824,6 +5883,8 @@ static const char kBootstrapJS[] =
     "  _Readable.prototype.isPaused = function () { return this._readableState.flowing === false; };\n"
     "  _Readable.prototype.pipe = _Stream.prototype.pipe;\n"
     "  _Readable.prototype.destroy = function (err) {\n"
+    "    if (this._destroyed) return this;\n"
+    "    this._destroyed = true;\n"
     "    if (this._destroy) { try { this._destroy(err, function(){}); } catch(e){} }\n"
     "    if (err) this.emit('error', err);\n"
     "    this.emit('close');\n"
@@ -5873,12 +5934,37 @@ static const char kBootstrapJS[] =
     "      });\n"
     "    } catch (e) { cb(e); }\n"
     "  };\n"
-    "  var _origEnd = _Transform.prototype.end;\n"
+    /* Transform.end inlines doFinish instead of delegating to
+       _Writable.prototype.end. Reason: push(null) here triggers the
+       readable-side 'end' emission, which (via downstream pipe) can
+       synchronously cascade through pump's destroyer success path and
+       call .destroy() on this very stream — emitting 'close' BEFORE we
+       reach the line that sets ws.ended = true. eos.onclose then sees
+       ws.ended === false and fires "premature close". Mark ws.ended
+       BEFORE push(null) to keep eos's view consistent during the cascade.
+       Also runs _final (if defined) — tar's unpacker uses _final to
+       flush remaining file handles before 'finish' fires. Skipping that
+       made tar.x's extract hang inside pacote's pipe pump. */
     "  _Transform.prototype.end = function (chunk, enc, cb) {\n"
     "    var self = this;\n"
+    "    var ws = self._writableState;\n"
+    "    function emitFinish() {\n"
+    "      if (ws) ws.finished = true;\n"
+    "      self.emit('finish');\n"
+    "      if (cb) cb();\n"
+    "    }\n"
     "    function doEnd() {\n"
+    "      if (ws && ws.finished) { if (cb) cb(); return; }\n"
+    "      if (ws) ws.ended = true;\n"
     "      self.push(null);\n"
-    "      return _origEnd.call(self, null, null, cb);\n"
+    "      if (typeof self._final === 'function') {\n"
+    "        try { self._final(function (err) {\n"
+    "          if (err) self.emit('error', err);\n"
+    "          emitFinish();\n"
+    "        }); } catch (e) { self.emit('error', e); emitFinish(); }\n"
+    "      } else {\n"
+    "        emitFinish();\n"
+    "      }\n"
     "    }\n"
     "    if (chunk !== undefined && chunk !== null) this.write(chunk, enc);\n"
     "    if (typeof this._flush === 'function') {\n"
@@ -7076,6 +7162,13 @@ static const char kBootstrapJS[] =
     "      catch (e) { setImmediate(function () { cb(e); }); }\n"
     "    };\n"
     "  }\n"
+    /* Capture Buffer.concat at bootstrap time. minizlib monkey-patches
+       `Buffer.concat = (args) => args` BEFORE calling _processChunk
+       (so that real Node's _processChunk returns the array of output
+       chunks instead of a single concatenated Buffer). For our impl,
+       _processChunk needs a real concat over the BUFFERED INPUT chunks,
+       so it must reach for the original — not the patched one. */
+    "  var _origBufferConcat = Buffer.concat;\n"
     // Streaming Gunzip / Inflate: collect all writes, decompress on end.
     // Not true-streaming (a real inflate stream would emit 'data' chunks as
     // they come) but covers 95% of http-client-with-gzip use.
@@ -7102,6 +7195,35 @@ static const char kBootstrapJS[] =
     "        return this;\n"
     "      };\n"
     /* pipe inherited from _Stream.prototype is already correct. */
+    /* minizlib's sync-decompression dance (used by npm's tarball pipeline):
+       it grabs `this[_handle]._handle`, no-ops both `_handle.close` and
+       `stream.close`, then calls `this[_handle]._processChunk(chunk, flushFlag)`
+       on the stream itself, restores the closes in `finally`, and calls
+       `removeAllListeners('error')`. So we need:
+         - `s._handle` (object) with reassignable `.close`
+         - `s.close` (reassignable function)
+         - `s._processChunk(chunk, flushFlag) → Buffer` ON THE STREAM
+       _processChunk buffers chunks until flushFlag is Z_FINISH (4), then
+       runs the bulk syncFn over the concatenated input. This covers the
+       "stream gets one big chunk then end()" pattern pacote uses for small
+       tarballs (file fetcher, MAX_BULK_SIZE path), and degrades to "no
+       output until Z_FINISH" for larger streamed inputs (acceptable — npm
+       still gets the full result on .end()). */
+    "      s._handle = { close: function () {} };\n"
+    "      s.close = function () {};\n"
+    "      s._procChunks = null;\n"
+    "      s._processChunk = function (chunk, flushFlag) {\n"
+    "        if (chunk && chunk.length) {\n"
+    "          if (!this._procChunks) this._procChunks = [];\n"
+    "          this._procChunks.push(chunk);\n"
+    "        }\n"
+    "        if (flushFlag === 4) {\n"           /* Z_FINISH */
+    "          var all = this._procChunks ? _origBufferConcat(this._procChunks) : Buffer.alloc(0);\n"
+    "          this._procChunks = null;\n"
+    "          return all.length ? syncFn(all) : Buffer.alloc(0);\n"
+    "        }\n"
+    "        return Buffer.alloc(0);\n"
+    "      };\n"
     "      return s;\n"
     "    };\n"
     "  }\n"
@@ -7130,6 +7252,22 @@ static const char kBootstrapJS[] =
     "        return this;\n"
     "      };\n"
     /* pipe inherited from _Stream.prototype */
+    /* See _mkInflateTransform for the minizlib contract. */
+    "      s._handle = { close: function () {} };\n"
+    "      s.close = function () {};\n"
+    "      s._procChunks = null;\n"
+    "      s._processChunk = function (chunk, flushFlag) {\n"
+    "        if (chunk && chunk.length) {\n"
+    "          if (!this._procChunks) this._procChunks = [];\n"
+    "          this._procChunks.push(chunk);\n"
+    "        }\n"
+    "        if (flushFlag === 4) {\n"
+    "          var all = this._procChunks ? _origBufferConcat(this._procChunks) : Buffer.alloc(0);\n"
+    "          this._procChunks = null;\n"
+    "          return all.length ? syncFn(all) : Buffer.alloc(0);\n"
+    "        }\n"
+    "        return Buffer.alloc(0);\n"
+    "      };\n"
     "      return s;\n"
     "    };\n"
     "  }\n"

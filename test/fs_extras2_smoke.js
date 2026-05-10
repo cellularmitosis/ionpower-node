@@ -60,8 +60,9 @@ try {
 var newTs = Math.floor(Date.now() / 1000) - 10000;  // 10000s ago
 fs.utimesSync(f, newTs, newTs);
 var st1 = fs.statSync(f);
-// stat.mtime is ms since epoch in our shim. Allow ±2s slack.
-var mtimeSec = Math.floor(st1.mtime / 1000);
+// stat.mtime is a Date (Node-compatible); use mtimeMs for the numeric
+// milliseconds form. Allow ±2s slack.
+var mtimeSec = Math.floor(st1.mtimeMs / 1000);
 assert(Math.abs(mtimeSec - newTs) <= 2,
        "utimes mtime mismatch; want " + newTs + " got " + mtimeSec);
 console.log("ok: fs.utimesSync (mtime ~", mtimeSec, ")");
