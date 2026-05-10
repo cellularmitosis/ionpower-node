@@ -144,6 +144,7 @@ static const char kBootstrapJS[] =
     "    futimesSync:    nativeFs.futimesSync,\n"
     "    linkSync:       nativeFs.linkSync,\n"
     "    fchmodSync:     nativeFs.fchmodSync,\n"
+    "    fchownSync:     nativeFs.fchownSync,\n"
     "    openSync:       nativeFs.openSync,\n"
     "    closeSync:      nativeFs.closeSync,\n"
     "    readSync:       nativeFs.readSync,\n"
@@ -192,6 +193,7 @@ static const char kBootstrapJS[] =
     "  fs.futimes      = _fsAsync(fs.futimesSync);\n"
     "  fs.link         = _fsAsync(fs.linkSync);\n"
     "  fs.fchmod       = _fsAsync(fs.fchmodSync);\n"
+    "  fs.fchown       = _fsAsync(fs.fchownSync);\n"
     "  fs.open         = _fsAsync(fs.openSync);\n"
     "  fs.close        = _fsAsync(fs.closeSync);\n"
     // fs.read / fs.write: Node's callback is cb(err, bytes, buffer-or-string).
@@ -350,6 +352,7 @@ static const char kBootstrapJS[] =
     "    lchown:    _promisifyFs(fs.lchown),\n"
     "    utimes:    _promisifyFs(fs.utimes),\n"
     "    futimes:   _promisifyFs(fs.futimes),\n"
+    "    fchown:    _promisifyFs(fs.fchown),\n"
     "    link:      _promisifyFs(fs.link),\n"
     "    access:    _promisifyFs(fs.access),\n"
     "    realpath:  _promisifyFs(fs.realpath),\n"
@@ -400,9 +403,14 @@ static const char kBootstrapJS[] =
     "    self.pause  = function () { this._paused = true; return this; };\n"
     "    self.resume = function () { this._paused = false; return this; };\n"
     "    self.setEncoding = function (e) { enc = e; return this; };\n"
+    /* Same end-before-data ordering as _Stream.prototype.pipe.
+       Matters less here because fs.createReadStream's emitChunk is
+       setImmediate-driven (chunks fire after pipe() returns), but
+       symmetry avoids surprises if a consumer of this pipe relies
+       on the ordering. */
     "    self.pipe = function (dest) {\n"
-    "      this.on('data', function (c) { dest.write(c); });\n"
     "      this.on('end',  function () { if (dest.end) dest.end(); });\n"
+    "      this.on('data', function (c) { dest.write(c); });\n"
     "      return dest;\n"
     "    };\n"
     "    setImmediate(function () {\n"
@@ -5692,11 +5700,20 @@ static const char kBootstrapJS[] =
     // modeled but collapses to "always drained" under our sync runtime.
     "  function _Stream() { events.EventEmitter.call(this); }\n"
     "  util.inherits(_Stream, events.EventEmitter);\n"
+    /* CRITICAL ORDERING: attach 'end' (and 'error') BEFORE 'data'.
+       Reason: src.on('data', ...) auto-resumes when src.flowing===null.
+       If src is already-buffered + ended (e.g. cacache hands a
+       PassThrough downstream AFTER the upstream pump has drained into
+       it), the synchronous auto-resume drains the buffer AND emits
+       'end' inline. Any 'end' listener attached AFTER on('data') is
+       too late — it never fires, and dest never gets .end() called,
+       and pacote's tar.x pipe hangs forever waiting for input
+       termination. Attaching 'end' first ensures the inline drain's
+       'end' emission has a listener to drive dest.end(). */
     "  _Stream.prototype.pipe = function (dest, opts) {\n"
     "    var src = this;\n"
     "    opts = opts || {};\n"
     "    var ended = false;\n"
-    "    src.on('data', function (chunk) { if (dest.write) dest.write(chunk); });\n"
     "    src.on('end',  function () {\n"
     "      if (ended) return; ended = true;\n"
     "      if (opts.end !== false && dest.end) dest.end();\n"
@@ -5704,6 +5721,7 @@ static const char kBootstrapJS[] =
     "    src.on('error', function (err) {\n"
     "      if (dest.emit) dest.emit('error', err);\n"
     "    });\n"
+    "    src.on('data', function (chunk) { if (dest.write) dest.write(chunk); });\n"
     "    if (src.resume) src.resume();\n"
     "    return dest;\n"
     "  };\n"

@@ -332,6 +332,22 @@ static bool FsStatSync(JSContext* cx, unsigned argc, JS::Value* vp) {
        same on platforms that don't expose it). */
     if (!defineNum("birthtimeMs", (double)st.st_ctime * 1000.0)) return false;
     if (!defineNum("mode",  (double)st.st_mode))  return false;
+    /* uid / gid / nlink / size are needed by various npm/tar paths.
+       Notable: tar's [DOCHOWN] / [UID] / [GID] flow reads st.uid +
+       st.gid; pacote's chown branch reads opts.uid set from
+       inferOwner's stat. Without these fields, our chown no-op
+       in FsFchownSync/FsChownSync also breaks because callers pass
+       undefined (which JS::ToInt32 coerces to 0) for the target
+       uid/gid, and then 0 != st.st_uid → no-op skipped → fchown
+       called → Tiger EPERM → install fail. */
+    if (!defineNum("uid",   (double)st.st_uid))   return false;
+    if (!defineNum("gid",   (double)st.st_gid))   return false;
+    if (!defineNum("nlink", (double)st.st_nlink)) return false;
+    if (!defineNum("ino",   (double)st.st_ino))   return false;
+    if (!defineNum("dev",   (double)st.st_dev))   return false;
+    if (!defineNum("rdev",  (double)st.st_rdev))  return false;
+    if (!defineNum("blksize", (double)st.st_blksize)) return false;
+    if (!defineNum("blocks",  (double)st.st_blocks))  return false;
     // Also keep boolean shorthand (earlier consumers of our shim did
     // st.isFile as a bool). Node returns these as predicate functions,
     // though, so we install the functions below in the JS bootstrap.
@@ -626,6 +642,9 @@ static bool FsSymlinkSync(JSContext* cx, unsigned argc, JS::Value* vp) {
 }
 
 // chown(2) — change file ownership.
+// Tiger no-op trick: when target uid/gid already match, skip the
+// syscall. See FsFchownSync for the rationale (Tiger denies non-
+// root chown even to same owner).
 static bool FsChownSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
     if (args.length() < 3) {
@@ -639,6 +658,13 @@ static bool FsChownSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     int32_t uid = 0, gid = 0;
     if (!JS::ToInt32(cx, args[1], &uid)) return false;
     if (!JS::ToInt32(cx, args[2], &gid)) return false;
+    struct stat st;
+    if (lstat(path.ptr(), &st) == 0 &&
+        (uid < 0 || (uid_t)uid == st.st_uid) &&
+        (gid < 0 || (gid_t)gid == st.st_gid)) {
+        args.rval().setUndefined();
+        return true;
+    }
     if (chown(path.ptr(), (uid_t)uid, (gid_t)gid) != 0) {
         return ThrowFsError(cx, errno, "chown", path.ptr());
     }
@@ -738,6 +764,46 @@ static bool FsFchmodSync(JSContext* cx, unsigned argc, JS::Value* vp) {
         char buf[32];
         snprintf(buf, sizeof buf, "fd %d", fd);
         return ThrowFsError(cx, errno, "fchmod", buf);
+    }
+    args.rval().setUndefined();
+    return true;
+}
+
+// fchown(2) — change owner/group on an open file descriptor. tar's
+// unpack uses this to restore ownership on freshly extracted files
+// after fchmod and futimes.
+//
+// Tiger restriction: Mac OS X 10.4 denies non-root fchown/chown EVEN
+// when the target uid/gid match the file's existing ownership. (The
+// Linux/BSD kernels allow same-owner-set as a no-op; Tiger doesn't.)
+// tar's fallback chain is `fchown(fd) || chown(path)` and propagates
+// the error if both fail — we can't change tar. So if the requested
+// uid/gid already match the file's current owner, just succeed
+// silently without invoking the syscall. This matches the intent
+// (no ownership change needed) without tripping Tiger's check.
+static bool FsFchownSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 3) {
+        JS_ReportError(cx, "fs.fchownSync: fd, uid, gid required");
+        return false;
+    }
+    int32_t fd = 0;
+    if (!JS::ToInt32(cx, args[0], &fd)) return false;
+    int32_t uid = -1, gid = -1;
+    if (!JS::ToInt32(cx, args[1], &uid)) return false;
+    if (!JS::ToInt32(cx, args[2], &gid)) return false;
+    // Fast no-op: if target ownership matches current.
+    struct stat st;
+    if (fstat(fd, &st) == 0 &&
+        (uid < 0 || (uid_t)uid == st.st_uid) &&
+        (gid < 0 || (gid_t)gid == st.st_gid)) {
+        args.rval().setUndefined();
+        return true;
+    }
+    if (fchown(fd, (uid_t)uid, (gid_t)gid) != 0) {
+        char buf[32];
+        snprintf(buf, sizeof buf, "fd %d", fd);
+        return ThrowFsError(cx, errno, "fchown", buf);
     }
     args.rval().setUndefined();
     return true;
@@ -1022,6 +1088,7 @@ static const JSFunctionSpec kFsFuncs[] = {
     JS_FN("futimesSync",    FsFutimesSync,    3, 0),
     JS_FN("linkSync",       FsLinkSync,       2, 0),
     JS_FN("fchmodSync",     FsFchmodSync,     2, 0),
+    JS_FN("fchownSync",     FsFchownSync,     3, 0),
     JS_FN("openSync",       FsOpenSync,       3, 0),
     JS_FN("closeSync",      FsCloseSync,      1, 0),
     JS_FN("readSync",       FsReadSync,       5, 0),

@@ -317,6 +317,7 @@ test/fs_extras2_smoke.js
 test/module_node_paths_smoke.js
 test/module_resolve_filename_smoke.js
 test/fs_fd_smoke.js
+test/fs_fchown_smoke.js
 test/fs_createstream_new_smoke.js
 test/circular_require_smoke.js
 test/util_debuglog_smoke.js
@@ -339,6 +340,7 @@ test/batch25_smoke.js
 test/case_suite_smoke.js
 test/format_file_size_smoke.js
 test/streams_smoke.js
+test/stream_resume_defer_smoke.js
 test/async_fs_smoke.js
 test/stream_libs_smoke.js
 test/crypto_expand_smoke.js
