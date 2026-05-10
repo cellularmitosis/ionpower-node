@@ -19,11 +19,13 @@ assert(process.versions.node === "10.24.1",
 console.log("ok: process.versions.node =", process.versions.node);
 
 // Bracket form: the property name has a dash so dotted access errors.
-assert(process.versions["ionpower-node"] === "0.87",
-       "process.versions['ionpower-node'] expected '0.87', got " +
-       JSON.stringify(process.versions["ionpower-node"]));
-console.log("ok: process.versions['ionpower-node'] =",
-            process.versions["ionpower-node"]);
+// Don't pin the exact value — every release bump would otherwise break
+// this smoke. Just check the shape (looks like 'M.m' or 'M.m.p').
+var ipnv = process.versions["ionpower-node"];
+assert(typeof ipnv === "string" && /^\d+\.\d+(\.\d+)?$/.test(ipnv),
+       "process.versions['ionpower-node'] must look like 'M.m[.p]', got " +
+       JSON.stringify(ipnv));
+console.log("ok: process.versions['ionpower-node'] =", ipnv);
 
 // Parsing-shape sanity: the string must look like a real Node version
 // (leading 'v', three dotted numeric components). This is what npm

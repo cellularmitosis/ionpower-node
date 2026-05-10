@@ -261,6 +261,16 @@ static void DirnameOf(const char* path, char* out, size_t outsz) {
 
 // Look up `path` in the global __require_cache__; return the cached module
 // exports object via rval if found. If not found, sets rval to undefined.
+//
+// Two storage shapes coexist:
+//   - File-path entries (path[0] == '/'): cache stores the MODULE object
+//     ({ exports: ..., id, filename, ... }). LookupCache reads .exports
+//     so circular requires see the user's reassigned module.exports
+//     LIVE — matching Node's contract that cyclic requires return
+//     whatever module.exports is at the moment they fire.
+//   - Short-name entries ('fs', 'path', 'constants', ...): pre-populated
+//     by the JS bootstrap as raw exports values. LookupCache returns them
+//     as-is.
 static bool LookupCache(JSContext* cx, JS::HandleObject global,
                         const char* path, JS::MutableHandleValue rval)
 {
@@ -270,12 +280,24 @@ static bool LookupCache(JSContext* cx, JS::HandleObject global,
     JS::RootedObject cache(cx, &cv.toObject());
     JS::RootedValue v(cx);
     if (!JS_GetProperty(cx, cache, path, &v)) return false;
+    if (v.isUndefined()) { rval.setUndefined(); return true; }
+    if (path[0] == '/' && v.isObject()) {
+        // Module-wrapper shape — return live .exports.
+        JS::RootedObject mod(cx, &v.toObject());
+        JS::RootedValue exportsV(cx);
+        if (!JS_GetProperty(cx, mod, "exports", &exportsV)) return false;
+        rval.set(exportsV);
+        return true;
+    }
     rval.set(v);
     return true;
 }
 
+// Store `entry` at `path` in the global __require_cache__. For file-path
+// entries the caller passes the MODULE object so that future LookupCache
+// calls can read its live .exports.
 static bool StoreCache(JSContext* cx, JS::HandleObject global,
-                       const char* path, JS::HandleObject exports)
+                       const char* path, JS::HandleObject entry)
 {
     JS::RootedValue cv(cx);
     JS::RootedObject cache(cx);
@@ -289,7 +311,7 @@ static bool StoreCache(JSContext* cx, JS::HandleObject global,
         if (!JS_DefineProperty(cx, global, "__require_cache__", newCv, 0))
             return false;
     }
-    JS::RootedValue ev(cx, JS::ObjectValue(*exports));
+    JS::RootedValue ev(cx, JS::ObjectValue(*entry));
     return JS_SetProperty(cx, cache, path, ev);
 }
 
@@ -329,10 +351,14 @@ static bool LoadModuleFile(JSContext* cx, JS::HandleObject global,
         bool ok = JS_ParseJSON(cx, u16, (uint32_t)u16len, &parsed);
         free(u16);
         if (!ok) return false;
-        if (parsed.isObject()) {
-            JS::RootedObject parsedObj(cx, &parsed.toObject());
-            if (!StoreCache(cx, global, abs_path, parsedObj)) return false;
-        }
+        // Wrap the parsed value in a synthetic module ({exports: parsed})
+        // so the cache always holds module-shape objects for file-path
+        // keys. Lets LookupCache consistently read .exports.
+        JS::RootedObject modStub(cx, JS_NewPlainObject(cx));
+        if (!modStub) return false;
+        if (!JS_DefineProperty(cx, modStub, "exports", parsed, JSPROP_ENUMERATE))
+            return false;
+        if (!StoreCache(cx, global, abs_path, modStub)) return false;
         rval.set(parsed);
         return true;
     }
@@ -467,9 +493,11 @@ static bool LoadModuleFile(JSContext* cx, JS::HandleObject global,
     if (!JS_DefineProperty(cx, module, "exports", expv, JSPROP_ENUMERATE))
         return false;
 
-    // Bind this module into the cache EARLY so circular requires get a
-    // partial exports object, matching Node semantics.
-    if (!StoreCache(cx, global, abs_path, exports)) return false;
+    // Bind this module into the cache EARLY so circular requires resolve.
+    // We store the MODULE wrapper (not the exports object) so the cache
+    // sees user-side `module.exports = X` reassignments through .exports
+    // — matching Node's contract.
+    if (!StoreCache(cx, global, abs_path, module)) return false;
 
     // Build a require() function bound to this module's directory.
     char dir[PATH_MAX];
@@ -506,15 +534,42 @@ static bool LoadModuleFile(JSContext* cx, JS::HandleObject global,
     if (!JS::Call(cx, wrapThisV, wrapped, callArgs, &discard))
         return false;
 
-    // Read module.exports back (user may have reassigned it).
+    // Read module.exports back (user may have reassigned it). The cache
+    // already holds the module wrapper, so .exports is naturally live
+    // for any subsequent require() — no extra StoreCache needed.
     JS::RootedValue finalExp(cx);
     if (!JS_GetProperty(cx, module, "exports", &finalExp)) return false;
-    // Update the cache with the final value in case user reassigned.
-    if (finalExp.isObject()) {
-        JS::RootedObject finalExpObj(cx, &finalExp.toObject());
-        if (!StoreCache(cx, global, abs_path, finalExpObj)) return false;
-    }
     rval.set(finalExp);
+    return true;
+}
+
+// JS-callable: __resolve_native__(absDir, specifier) -> absolute path string.
+// Same resolver as RequireNative, but skips the load step. Exposed so JS
+// can implement Module._resolveFilename without loading the file as a
+// side-effect. Throws "MODULE_NOT_FOUND" (a JS Error with .code) on miss
+// — JS-side wraps this in the proper Node error shape.
+static bool ResolveNative(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 2) {
+        JS_ReportError(cx, "resolve: internal arity");
+        return false;
+    }
+    JS::RootedString dirS(cx, JS::ToString(cx, args[0]));
+    JS::RootedString specS(cx, JS::ToString(cx, args[1]));
+    if (!dirS || !specS) return false;
+
+    JSAutoByteString dirB(cx, dirS), specB(cx, specS);
+    if (!dirB || !specB) return false;
+
+    char abs[PATH_MAX];
+    if (!ResolveModule(specB.ptr(), dirB.ptr(), abs, sizeof abs)) {
+        JS_ReportError(cx, "MODULE_NOT_FOUND: cannot find module '%s' from '%s'",
+                       specB.ptr(), dirB.ptr());
+        return false;
+    }
+    JS::RootedString outS(cx, JS_NewStringCopyZ(cx, abs));
+    if (!outS) return false;
+    args.rval().setString(outS);
     return true;
 }
 
@@ -556,6 +611,10 @@ static bool RequireNative(JSContext* cx, unsigned argc, JS::Value* vp) {
 bool InstallRequire(JSContext* cx, JS::HandleObject global) {
     if (!JS_DefineFunction(cx, global, "__require_native__",
                            RequireNative, 2,
+                           JSPROP_PERMANENT | JSPROP_READONLY))
+        return false;
+    if (!JS_DefineFunction(cx, global, "__resolve_native__",
+                           ResolveNative, 2,
                            JSPROP_PERMANENT | JSPROP_READONLY))
         return false;
 

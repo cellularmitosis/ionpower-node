@@ -133,7 +133,11 @@ static const char kBootstrapJS[] =
     "    symlinkSync:    nativeFs.symlinkSync,\n"
     "    chownSync:      nativeFs.chownSync,\n"
     "    utimesSync:     nativeFs.utimesSync,\n"
-    "    fchmodSync:     nativeFs.fchmodSync\n"
+    "    fchmodSync:     nativeFs.fchmodSync,\n"
+    "    openSync:       nativeFs.openSync,\n"
+    "    closeSync:      nativeFs.closeSync,\n"
+    "    readSync:       nativeFs.readSync,\n"
+    "    writeSync:      nativeFs.writeSync\n"
     "  };\n"
     // Async fs: wrap the sync versions and fire (err, val) callbacks
     // via the timer queue. Scripts that do fs.readFile('x', cb) get
@@ -176,6 +180,56 @@ static const char kBootstrapJS[] =
     "  fs.chown        = _fsAsync(fs.chownSync);\n"
     "  fs.utimes       = _fsAsync(fs.utimesSync);\n"
     "  fs.fchmod       = _fsAsync(fs.fchmodSync);\n"
+    "  fs.open         = _fsAsync(fs.openSync);\n"
+    "  fs.close        = _fsAsync(fs.closeSync);\n"
+    // fs.read / fs.write: Node's callback is cb(err, bytes, buffer-or-string).
+    // The generic _fsAsync only forwards (err, val), so promisify({multiArgs:
+    // true}) wouldn't see the buffer. Specialize here so bluebird's
+    // promisify-with-multiArgs (which bin-links uses) gets both values.
+    "  fs.read         = function (fd, buffer, offset, length, position, cb) {\n"
+    "    if (typeof position === 'function') { cb = position; position = null; }\n"
+    "    try {\n"
+    "      var n = fs.readSync(fd, buffer, offset, length, position);\n"
+    "      if (cb) setImmediate(function () { cb(null, n, buffer); });\n"
+    "    } catch (e) {\n"
+    "      if (cb) setImmediate(function () { cb(e); });\n"
+    "      else throw e;\n"
+    "    }\n"
+    "  };\n"
+    "  fs.write        = function (fd, data, a, b, c, cb) {\n"
+    // Two signatures:\n
+    //   fs.write(fd, buffer, offset, length, position, cb) -> cb(err, n, buffer)\n
+    //   fs.write(fd, string, [position], [encoding], cb)   -> cb(err, n, string)\n
+    "    var args, callback;\n"
+    "    if (typeof data === 'string') {\n"
+    "      var pos = (typeof a === 'number' || a === null) ? a : null;\n"
+    "      var enc = (typeof b === 'string') ? b : 'utf8';\n"
+    "      callback = (typeof a === 'function') ? a\n"
+    "               : (typeof b === 'function') ? b\n"
+    "               : (typeof c === 'function') ? c\n"
+    "               : (typeof cb === 'function') ? cb : null;\n"
+    "      try {\n"
+    "        var n = fs.writeSync(fd, data, pos, enc);\n"
+    "        if (callback) setImmediate(function () { callback(null, n, data); });\n"
+    "      } catch (e) {\n"
+    "        if (callback) setImmediate(function () { callback(e); });\n"
+    "        else throw e;\n"
+    "      }\n"
+    "    } else {\n"
+    "      var off = a, len = b, pos2 = c;\n"
+    "      callback = (typeof cb === 'function') ? cb\n"
+    "               : (typeof c === 'function') ? c\n"
+    "               : (typeof b === 'function') ? b\n"
+    "               : (typeof a === 'function') ? a : null;\n"
+    "      try {\n"
+    "        var n2 = fs.writeSync(fd, data, off, len, pos2);\n"
+    "        if (callback) setImmediate(function () { callback(null, n2, data); });\n"
+    "      } catch (e) {\n"
+    "        if (callback) setImmediate(function () { callback(e); });\n"
+    "        else throw e;\n"
+    "      }\n"
+    "    }\n"
+    "  };\n"
     // Aliases that ship with Node and are commonly probed:
     //   lchown is "chown but don't follow symlinks". We don't have
     //   lchown(2) wired separately; alias to chown for now (matches
@@ -284,7 +338,13 @@ static const char kBootstrapJS[] =
     "    lchown:    _promisifyFs(fs.lchown),\n"
     "    utimes:    _promisifyFs(fs.utimes),\n"
     "    access:    _promisifyFs(fs.access),\n"
-    "    realpath:  _promisifyFs(fs.realpath)\n"
+    "    realpath:  _promisifyFs(fs.realpath),\n"
+    "    open:      _promisifyFs(fs.open),\n"
+    "    close:     _promisifyFs(fs.close)\n"
+    // open/close only — fs.read/fs.write callbacks pass (err, n, buffer)\n
+    // and the promises form returns { bytesRead, buffer } / { bytesWritten,\n
+    // buffer } objects, not just the count. None of the npm-side callers\n
+    // we've hit use fs.promises.read/write — defer until something does.\n
     "  };\n"
     // fs.constants: Node exposes F_OK/R_OK/W_OK/X_OK for access().
     "  fs.constants = { F_OK: 0, R_OK: 4, W_OK: 2, X_OK: 1,\n"
@@ -894,6 +954,34 @@ static const char kBootstrapJS[] =
     "      if (!warned) { warned = true; console.warn('(DEP) ' + msg); }\n"
     "      return fn.apply(this, arguments);\n"
     "    };\n"
+    "  };\n"
+    // util.debuglog(section, [callback]): Node's gated debug-print
+    // factory. Returns a function; if NODE_DEBUG env includes the
+    // section name, calls log via console.error; otherwise no-op.
+    // Used widely by npm internals (lib/utils/error-handler.js
+    // calls it at module load — undefined would throw at npm exit).
+    "  util.debuglog = function (section) {\n"
+    "    var debugEnv = (process.env && process.env.NODE_DEBUG) || '';\n"
+    "    var enabled = debugEnv.split(/[,\\s]+/).some(function (s) {\n"
+    "      return s === section || s === '*';\n"
+    "    });\n"
+    "    if (!enabled) return function () {};\n"
+    "    return function () {\n"
+    "      var args = Array.prototype.slice.call(arguments);\n"
+    "      args.unshift(section.toUpperCase() + ' ' + process.pid + ':');\n"
+    "      console.error.apply(console, args);\n"
+    "    };\n"
+    "  };\n"
+    "  util.debug = util.debuglog;\n"
+    // util._extend(target, source): legacy shallow-copy. Deprecated
+    // in Node since 6 but npm internals still call it. Equivalent
+    // to Object.assign(target, source || {}) for the common case.
+    "  util._extend = function (target, source) {\n"
+    "    if (source && typeof source === 'object') {\n"
+    "      var keys = Object.keys(source);\n"
+    "      for (var i = 0; i < keys.length; i++) target[keys[i]] = source[keys[i]];\n"
+    "    }\n"
+    "    return target;\n"
     "  };\n"
     // util.types: Node's stricter type predicates. Most libraries
     // only use a handful; cover the common ones.
@@ -6091,6 +6179,30 @@ static const char kBootstrapJS[] =
     "    }\n"
     "    return paths;\n"
     "  };\n"
+    // Module._resolveFilename(spec, parent): canonical "resolve-only,
+    // don't load" entry. resolve-from (called from npm-lifecycle) uses
+    // this. Strips a leading 'node:' prefix (real Node does this), peels
+    // dirname off parent.filename if present, otherwise falls back to
+    // process.cwd(). Throws Error with .code = 'MODULE_NOT_FOUND' on miss
+    // — Node contract.
+    "  Module._resolveFilename = function (spec, parent) {\n"
+    "    var s = String(spec || '').replace(/^node:/, '');\n"
+    "    var dir;\n"
+    "    if (parent && parent.filename) {\n"
+    "      var slash = String(parent.filename).lastIndexOf('/');\n"
+    "      dir = slash > 0 ? parent.filename.slice(0, slash)\n"
+    "                      : (slash === 0 ? '/' : process.cwd());\n"
+    "    } else {\n"
+    "      dir = process.cwd();\n"
+    "    }\n"
+    "    try {\n"
+    "      return __resolve_native__(dir, s);\n"
+    "    } catch (e) {\n"
+    "      var err = new Error(\"Cannot find module '\" + s + \"' from '\" + dir + \"'\");\n"
+    "      err.code = 'MODULE_NOT_FOUND';\n"
+    "      throw err;\n"
+    "    }\n"
+    "  };\n"
     "  Module.builtinModules = module_core.builtinModules;\n"
     "  Module.isBuiltin      = module_core.isBuiltin;\n"
     "  Module.createRequire  = module_core.createRequire;\n"
@@ -6098,6 +6210,7 @@ static const char kBootstrapJS[] =
     // resolve-from / npm internals do `require('module')._nodeModulePaths(...)`
     // (i.e. against module_core, not Module). Mirror so both call sites work.
     "  module_core._nodeModulePaths   = Module._nodeModulePaths;\n"
+    "  module_core._resolveFilename   = Module._resolveFilename;\n"
     "  module_core._cache             = Module._cache;\n"
     "  module_core._extensions        = Module._extensions;\n"
     "  module_core.wrap               = Module.wrap;\n"
@@ -7052,6 +7165,21 @@ static const char kBootstrapJS[] =
     "    Z_DEFAULT_COMPRESSION: -1,\n"
     "    Z_DEFAULT_STRATEGY:    0\n"
     "  };\n"
+    // Class-form aliases: Node exposes Gzip/Gunzip/etc as constructors.
+    // npm's minizlib does `new realZlib[mode](opts)` for each mode;
+    // calling our factory functions with `new` returns the stream
+    // they construct (JS contract: `new fn()` returns the function's
+    // returned object when one is returned). Options are ignored,
+    // same as the create* factories.
+    "  zlib.Gzip        = zlib.createGzip;\n"
+    "  zlib.Gunzip      = zlib.createGunzip;\n"
+    "  zlib.Deflate     = zlib.createDeflate;\n"
+    "  zlib.Inflate     = zlib.createInflate;\n"
+    "  zlib.DeflateRaw  = zlib.createDeflateRaw;\n"
+    "  zlib.InflateRaw  = zlib.createInflateRaw;\n"
+    // Unzip = auto-detect gzip vs zlib header. Approximate as
+    // createGunzip; the gzip header is the npm-side expected case.
+    "  zlib.Unzip       = zlib.createGunzip;\n"
     "  __require_cache__['zlib']           = zlib;\n"
     "  __require_cache__['timers']         = {\n"
     "    setImmediate:   (typeof setImmediate === 'function') ? setImmediate : null,\n"
@@ -9338,7 +9466,19 @@ static const char kBootstrapJS[] =
     // wired to crypto.getRandomValues. The first call populates the
     // require cache; subsequent requires hit it cheaply.\n"
     "      if (spec === 'tweetnacl') return _naclLoad();\n"
-    "      if (__require_cache__.hasOwnProperty(spec)) return __require_cache__[spec];\n"
+    // Cache hit: short-circuit. The cache holds two shapes:
+    //   - Short-name entries ('fs', 'path', ...): raw exports objects.
+    //   - File-path entries (start with '/'): module wrappers
+    //     ({exports: ...}). For circular-require correctness we must
+    //     return the LIVE .exports, not the wrapper itself.
+    "      if (__require_cache__.hasOwnProperty(spec)) {\n"
+    "        var cached = __require_cache__[spec];\n"
+    "        if (typeof spec === 'string' && spec.charAt(0) === '/' &&\n"
+    "            cached && typeof cached === 'object' && 'exports' in cached) {\n"
+    "          return cached.exports;\n"
+    "        }\n"
+    "        return cached;\n"
+    "      }\n"
     "      try { return req(spec); }\n"
     "      catch (e) {\n"
     "        if (typeof spec !== 'string' || spec[0] === '.' || spec[0] === '/') throw e;\n"

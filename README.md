@@ -24,8 +24,8 @@ curl http://leopard.sh/binpkgs/gcc-libs-4.9.4.tiger.g3.tar.gz | gunzip | tar x
 ln -s gcc-libs-4.9.4 gcc-4.9.4
 curl http://leopard.sh/dist/ca-certificates-20230110.tar.gz | gunzip | tar x
 curl http://leopard.sh/misc/beta/mozjs-45-ionpower-g3.tar.gz | gunzip | tar x
-curl http://leopard.sh/misc/beta/ionpower-node-0.87-g3-ppc.tar.gz | gunzip | tar x
-cd /opt/ionpower-node-0.87/bin
+curl http://leopard.sh/misc/beta/ionpower-node-0.88-g3-ppc.tar.gz | gunzip | tar x
+cd /opt/ionpower-node-0.88/bin
 ./node ../share/ionpower-node/demos/express-chat/server.js
 ```
 
@@ -103,16 +103,16 @@ rarely changes), then unpack a fresh runtime tarball per release.
 │   ├── bin/, include/, lib/...
 ├── ca-certificates-20230110/    <- CA bundle (default trust store)
 │   └── share/cacert.pem
-└── ionpower-node-0.87/          <- Node-compat runtime (statically links OpenSSL 1.1.1t)
+└── ionpower-node-0.88/          <- Node-compat runtime (statically links OpenSSL 1.1.1t)
     └── bin/node                 <- expects sibling mozjs
 ```
 
 The fastest path: grab prebuilt tarballs. Both the runtime and the
-matching SpiderMonkey are attached to the [v0.87 release](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.87).
+matching SpiderMonkey are attached to the [v0.88 release](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.88).
 
 ```bash
 # One-time: SpiderMonkey + IonPower JIT (G3 example)
-curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/download/v0.87/mozjs-45-ionpower-g3.tar.gz
+curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/download/v0.88/mozjs-45-ionpower-g3.tar.gz
 sudo tar xzpf mozjs-45-ionpower-g3.tar.gz -C /opt/
 
 # One-time: CA bundle for tls / https. Either:
@@ -122,10 +122,10 @@ cd /opt && \
   curl http://leopard.sh/dist/ca-certificates-20230110.tar.gz | gunzip | tar x
 
 # Per release: the runtime
-curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-0.87-g3-ppc.tar.gz
-sudo tar xzpf ionpower-node-0.87-g3-ppc.tar.gz -C /opt/
+curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-0.88-g3-ppc.tar.gz
+sudo tar xzpf ionpower-node-0.88-g3-ppc.tar.gz -C /opt/
 
-/opt/ionpower-node-0.87/bin/node test/hello.js
+/opt/ionpower-node-0.88/bin/node test/hello.js
 ```
 
 For G4 use `mozjs-45-ionpower-g4` (`-mcpu=7450`); for G5,

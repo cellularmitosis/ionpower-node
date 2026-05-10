@@ -314,6 +314,10 @@ test/index_json_resolve_smoke.js
 test/fs_readlink_smoke.js
 test/fs_extras2_smoke.js
 test/module_node_paths_smoke.js
+test/module_resolve_filename_smoke.js
+test/fs_fd_smoke.js
+test/circular_require_smoke.js
+test/util_debuglog_smoke.js
 test/string_template_smoke.js
 test/url_template_smoke.js
 test/make_error_smoke.js

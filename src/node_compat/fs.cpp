@@ -269,8 +269,10 @@ static bool FsReaddirSync(JSContext* cx, unsigned argc, JS::Value* vp) {
 
     DIR* d = opendir(path.ptr());
     if (!d) {
-        JS_ReportError(cx, "fs.readdirSync: %s: %s", path.ptr(), strerror(errno));
-        return false;
+        // Use ThrowFsError so err.code is set — graceful-fs / glob /
+        // npm.load() branch on it. Plain JS_ReportError leaves .code
+        // undefined and an empty-dir ENOENT becomes a fatal "unknown".
+        return ThrowFsError(cx, errno, "scandir", path.ptr());
     }
     JS::RootedObject arr(cx, JS_NewArrayObject(cx, 0));
     if (!arr) { closedir(d); return false; }
@@ -702,6 +704,244 @@ static bool FsRenameSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     return true;
 }
 
+// fs.openSync(path, flags, [mode]) -> fd (number).
+// flags: numeric POSIX or Node-style string ('r', 'w', 'a', etc.).
+// Default mode 0666 (Node default; subject to umask).
+static int ParseOpenFlags(const char* s) {
+    if (!s) return -1;
+    // Common Node strings. POSIX-only — Node also supports 'rs' (sync read)
+    // which is identical for our purposes (no buffering distinction).
+    if (!strcmp(s, "r"))   return O_RDONLY;
+    if (!strcmp(s, "rs"))  return O_RDONLY;
+    if (!strcmp(s, "r+"))  return O_RDWR;
+    if (!strcmp(s, "rs+")) return O_RDWR;
+    if (!strcmp(s, "w"))   return O_WRONLY | O_CREAT | O_TRUNC;
+    if (!strcmp(s, "wx"))  return O_WRONLY | O_CREAT | O_TRUNC | O_EXCL;
+    if (!strcmp(s, "w+"))  return O_RDWR   | O_CREAT | O_TRUNC;
+    if (!strcmp(s, "wx+")) return O_RDWR   | O_CREAT | O_TRUNC | O_EXCL;
+    if (!strcmp(s, "a"))   return O_WRONLY | O_CREAT | O_APPEND;
+    if (!strcmp(s, "ax"))  return O_WRONLY | O_CREAT | O_APPEND | O_EXCL;
+    if (!strcmp(s, "a+"))  return O_RDWR   | O_CREAT | O_APPEND;
+    if (!strcmp(s, "ax+")) return O_RDWR   | O_CREAT | O_APPEND | O_EXCL;
+    return -1;
+}
+
+static bool FsOpenSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 1) {
+        JS_ReportError(cx, "fs.openSync: path required");
+        return false;
+    }
+    JS::RootedString pathS(cx, JS::ToString(cx, args[0]));
+    if (!pathS) return false;
+    JSAutoByteString path(cx, pathS);
+    if (!path) return false;
+
+    // Default flags: 'r' (read-only).
+    int flags = O_RDONLY;
+    if (args.length() >= 2 && !args[1].isUndefined()) {
+        if (args[1].isString()) {
+            JS::RootedString fS(cx, args[1].toString());
+            JSAutoByteString fB(cx, fS);
+            if (!fB) return false;
+            flags = ParseOpenFlags(fB.ptr());
+            if (flags < 0) {
+                JS_ReportError(cx, "fs.openSync: unknown flags '%s'", fB.ptr());
+                return false;
+            }
+        } else {
+            int32_t f = 0;
+            if (!JS::ToInt32(cx, args[1], &f)) return false;
+            flags = f;
+        }
+    }
+
+    uint32_t mode = 0666;
+    if (args.length() >= 3 && !args[2].isUndefined()) {
+        if (!JS::ToUint32(cx, args[2], &mode)) return false;
+    }
+
+    int fd = open(path.ptr(), flags, (mode_t)(mode & 07777));
+    if (fd < 0) {
+        return ThrowFsError(cx, errno, "open", path.ptr());
+    }
+    args.rval().setInt32(fd);
+    return true;
+}
+
+static bool FsCloseSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 1) {
+        JS_ReportError(cx, "fs.closeSync: fd required");
+        return false;
+    }
+    int32_t fd = 0;
+    if (!JS::ToInt32(cx, args[0], &fd)) return false;
+    if (close(fd) != 0) {
+        char buf[32];
+        snprintf(buf, sizeof buf, "fd %d", fd);
+        return ThrowFsError(cx, errno, "close", buf);
+    }
+    args.rval().setUndefined();
+    return true;
+}
+
+// fs.readSync(fd, buffer, offset, length, position) -> bytesRead
+// position null or undefined means "current file position" (no lseek).
+static bool FsReadSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 4) {
+        JS_ReportError(cx, "fs.readSync: fd, buffer, offset, length required");
+        return false;
+    }
+    int32_t fd = 0;
+    if (!JS::ToInt32(cx, args[0], &fd)) return false;
+    if (!args[1].isObject() || !JS_IsUint8Array(&args[1].toObject())) {
+        JS_ReportError(cx, "fs.readSync: buffer must be Uint8Array");
+        return false;
+    }
+    JS::RootedObject buf(cx, &args[1].toObject());
+    uint32_t offset = 0, length = 0;
+    if (!JS::ToUint32(cx, args[2], &offset)) return false;
+    if (!JS::ToUint32(cx, args[3], &length)) return false;
+
+    size_t bufLen = JS_GetTypedArrayByteLength(buf);
+    if ((size_t)offset + (size_t)length > bufLen) {
+        JS_ReportError(cx,
+            "fs.readSync: offset+length (%u+%u) exceeds buffer size (%zu)",
+            offset, length, bufLen);
+        return false;
+    }
+
+    bool hasPos = (args.length() >= 5 && !args[4].isNullOrUndefined());
+    int64_t pos = 0;
+    if (hasPos) {
+        double d;
+        if (!JS::ToNumber(cx, args[4], &d)) return false;
+        pos = (int64_t)d;
+    }
+
+    ssize_t n;
+    {
+        JS::AutoCheckCannotGC nogc;
+        bool sharedDummy;
+        uint8_t* data = JS_GetUint8ArrayData(buf, &sharedDummy, nogc);
+        if (!data) {
+            JS_ReportError(cx, "fs.readSync: cannot access buffer data");
+            return false;
+        }
+        if (hasPos) {
+            n = pread(fd, data + offset, length, (off_t)pos);
+        } else {
+            n = read(fd, data + offset, length);
+        }
+    }
+    if (n < 0) {
+        char buf2[32];
+        snprintf(buf2, sizeof buf2, "fd %d", fd);
+        return ThrowFsError(cx, errno, "read", buf2);
+    }
+    args.rval().setInt32((int32_t)n);
+    return true;
+}
+
+// fs.writeSync(fd, buffer, offset, length, position) -> bytesWritten
+// fs.writeSync(fd, string, position, encoding)       -> bytesWritten
+static bool FsWriteSync(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    if (args.length() < 2) {
+        JS_ReportError(cx, "fs.writeSync: fd and buffer/string required");
+        return false;
+    }
+    int32_t fd = 0;
+    if (!JS::ToInt32(cx, args[0], &fd)) return false;
+
+    bool isString = args[1].isString();
+    bool isU8     = args[1].isObject() && JS_IsUint8Array(&args[1].toObject());
+    if (!isString && !isU8) {
+        JS_ReportError(cx, "fs.writeSync: data must be Buffer or string");
+        return false;
+    }
+
+    // Position: arg[4] for buffer form, arg[2] for string form.
+    bool hasPos = false;
+    int64_t pos = 0;
+
+    const uint8_t* data = nullptr;
+    size_t writeLen = 0;
+    JSAutoByteString strBytes;
+
+    if (isU8) {
+        JS::RootedObject buf(cx, &args[1].toObject());
+        size_t bufLen = JS_GetTypedArrayByteLength(buf);
+        uint32_t offset = 0;
+        uint32_t length = (uint32_t)bufLen;
+        if (args.length() >= 3 && !args[2].isNullOrUndefined()) {
+            if (!JS::ToUint32(cx, args[2], &offset)) return false;
+        }
+        if (args.length() >= 4 && !args[3].isNullOrUndefined()) {
+            if (!JS::ToUint32(cx, args[3], &length)) return false;
+        }
+        if ((size_t)offset + (size_t)length > bufLen) {
+            JS_ReportError(cx,
+                "fs.writeSync: offset+length (%u+%u) exceeds buffer size (%zu)",
+                offset, length, bufLen);
+            return false;
+        }
+        if (args.length() >= 5 && !args[4].isNullOrUndefined()) {
+            hasPos = true;
+            double d;
+            if (!JS::ToNumber(cx, args[4], &d)) return false;
+            pos = (int64_t)d;
+        }
+        // GC-safe access scope held until pwrite/write returns.
+        ssize_t n;
+        {
+            JS::AutoCheckCannotGC nogc;
+            bool sharedDummy;
+            data = JS_GetUint8ArrayData(buf, &sharedDummy, nogc);
+            if (!data) {
+                JS_ReportError(cx, "fs.writeSync: cannot access buffer data");
+                return false;
+            }
+            if (hasPos) {
+                n = pwrite(fd, data + offset, length, (off_t)pos);
+            } else {
+                n = write(fd, data + offset, length);
+            }
+        }
+        if (n < 0) {
+            char buf2[32];
+            snprintf(buf2, sizeof buf2, "fd %d", fd);
+            return ThrowFsError(cx, errno, "write", buf2);
+        }
+        args.rval().setInt32((int32_t)n);
+        return true;
+    }
+
+    // String form.
+    JS::RootedString s(cx, args[1].toString());
+    if (!strBytes.encodeUtf8(cx, s)) return false;
+    data = (const uint8_t*)strBytes.ptr();
+    writeLen = strlen(strBytes.ptr());
+    if (args.length() >= 3 && !args[2].isNullOrUndefined()) {
+        hasPos = true;
+        double d;
+        if (!JS::ToNumber(cx, args[2], &d)) return false;
+        pos = (int64_t)d;
+    }
+    // arg[3] = encoding; we only support utf8 (encodeUtf8 above).
+    ssize_t n = hasPos ? pwrite(fd, data, writeLen, (off_t)pos)
+                       : write(fd, data, writeLen);
+    if (n < 0) {
+        char buf2[32];
+        snprintf(buf2, sizeof buf2, "fd %d", fd);
+        return ThrowFsError(cx, errno, "write", buf2);
+    }
+    args.rval().setInt32((int32_t)n);
+    return true;
+}
+
 static const JSFunctionSpec kFsFuncs[] = {
     JS_FN("readFileSync",  FsReadFileSync,  2, 0),
     JS_FN("writeFileSync", FsWriteFileSync, 3, 0),
@@ -721,6 +961,10 @@ static const JSFunctionSpec kFsFuncs[] = {
     JS_FN("chownSync",      FsChownSync,      3, 0),
     JS_FN("utimesSync",     FsUtimesSync,     3, 0),
     JS_FN("fchmodSync",     FsFchmodSync,     2, 0),
+    JS_FN("openSync",       FsOpenSync,       3, 0),
+    JS_FN("closeSync",      FsCloseSync,      1, 0),
+    JS_FN("readSync",       FsReadSync,       5, 0),
+    JS_FN("writeSync",      FsWriteSync,      5, 0),
     JS_FS_END
 };
 
