@@ -1,0 +1,57 @@
+## ionpower-node v0.87 — `npm install mri` experiment on ibookg37
+
+Run after the green G3 triad-build (458/458 PASS) + the bonus
+`Module._nodeModulePaths` addition.
+
+```
+ssh ibookg37 'cd /Users/macuser/tmp/npm-test && \
+  rm -rf node_modules package-lock.json && \
+  /opt/ionpower-node-0.87/bin/node \
+    /Users/macuser/tmp/npm-6.14.18/run-npm.js install mri'
+```
+
+### What npm did successfully
+
+- Loaded `npm-cli.js`, `lib/utils/unsupported.js` semver gate
+  passed (`process.version === 'v10.24.1'`).
+- All of npm's bootstrap loads, including:
+  `npmlog`, `lib/npm.js`, `lib/config/core.js`, `npmconf`,
+  `semver`, `node-fetch-npm`, `which`, `isexe`,
+  `graceful-fs` (the `O_SYMLINK` probe in
+  `polyfills.js` now finds the constant via real
+  `require('constants')`),
+  `mkdirp`, `glob`, `gauge`,
+  `read-package-tree`, `read-package-json`,
+  `normalize-package-data`, `validate-npm-package-license`,
+  `spdx-expression-parse`, `spdx-license-ids` (now resolves
+  natively via `<dir>/index.json`), `bluebird`, `tar`, `pacote`.
+- `lib/install.js` reached, past the prior v0.86 wall.
+- Got into `lib/utils/lifecycle.js → npm-lifecycle/index.js →
+  resolve-from`, which uses `require('module')` internals.
+
+### Where it stopped
+
+```
+nextTick: TypeError: Module._resolveFilename is not a function
+resolveFrom/resolveFileName@.../resolve-from/index.js:29:1
+```
+
+`resolve-from` calls
+`Module._resolveFilename(moduleId, fakeParent)` to get the
+absolute path of a module without loading it. Real Node's
+private API on the Module class. We don't have it; we have only
+the C++-side `ResolveModule` exposed via the load-and-run
+`__require_native__`, not as a resolve-only entry.
+
+A second cascade — "glob error" from
+`mkdirp/index.js:51 → graceful-fs/polyfills.js:306 → _fsAsync`
+— shows up later in the same run. Probably a side effect of the
+nextTick blowup above, but worth confirming once
+`_resolveFilename` is in place.
+
+### Bottom line
+
+`node_modules/mri/` was NOT created. v0.87 is materially more
+capable than v0.86 — npm reaches deep into `lib/install.js`
+where v0.86 died at module bootstrap — but `npm install` is not
+yet end-to-end. Pass 2 picks up here.
