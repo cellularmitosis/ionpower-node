@@ -1,0 +1,14 @@
+    1ms connecting to www.cloudflare.com
+  470ms secureConnect; cipher= {"name":"TLS_AES_256_GCM_SHA384"} protocol= TLSv1.3
+  484ms sent 91 byte request
+  853ms data chunk 1 len=1369 cum=1369 prefix="HTTP/1.1 200 OK\r\nDate: Mon, 11 May 2026 "
+  857ms data chunk 2 len=1369 cum=2738 prefix=" SameSite=Lax; Path=/; Secure\r\nset-cooki"
+  861ms data chunk 3 len=1369 cum=4107 prefix="\t\t\t}\n\t\t\t\tconst zarazConsentMap = {\n\t\t\t\t\t"
+  865ms data chunk 4 len=1369 cum=5476 prefix="   ];\n    const ignoreList = [\n      'ap"
+  871ms data chunk 10 len=1369 cum=13690 prefix="rentElement;\n        }\n      }\n\n      re"
+  878ms data chunk 20 len=1369 cum=27380 prefix="ed, set UTM cookies to be passed to Mark"
+  890ms data chunk 30 len=1369 cum=40575 prefix="t;],&quot;linkUrl&quot;:[0,&quot;/coffee"
+  897ms data chunk 40 len=1369 cum=54265 prefix="[0,{&quot;category&quot;:[0],&quot;actio"
+  907ms error: SSL_read: error:1408F119:SSL routines:ssl3_get_record:decryption failed or bad record mac
+  922ms close
+20315ms TIMEOUT; total chunks=42 bytes=59863

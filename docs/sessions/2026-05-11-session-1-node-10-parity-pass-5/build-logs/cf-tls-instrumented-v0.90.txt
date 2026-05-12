@@ -1,0 +1,20 @@
+    0ms connecting to www.cloudflare.com
+  263ms onRaw call#1 chunk.len=2823
+  332ms secureConnect; cipher= {"name":"TLS_AES_256_GCM_SHA384"} protocol= TLSv1.3
+  339ms sent request
+  341ms pumpRead wantRead on first iter (no plaintext yet)
+  789ms onRaw call#2 chunk.len=25707
+  795ms sslRead#2 iter=1 bytes=1369 cum=1369
+  797ms sslRead#3 iter=2 bytes=1369 cum=2738
+  802ms sslRead#10 iter=9 bytes=1369 cum=12321
+  810ms onRaw call#3 chunk.len=39828
+  811ms bioWrite partial asked=39828 wrote=32768
+  812ms bioWrite partial asked=7060 wrote=0
+  812ms bioWrite returned 0 (BIO full?)  breaking loop
+  818ms sslRead#30 iter=10 bytes=1369 cum=37839
+  823ms sslRead#40 iter=20 bytes=1369 cum=51529
+  827ms onRaw call#4 chunk.len=23168
+  830ms pumpRead SSL_read THREW after 44 sslReads, 55636 plain bytes total :: SSL_read: error:1408F119:SSL routines:ssl3_get_record:decryption failed or bad record mac
+  831ms TLS error event: SSL_read: error:1408F119:SSL routines:ssl3_get_record:decryption failed or bad record mac
+  846ms TLS close; stats= {"onrawCalls":4,"bioWrites":5,"bioWriteBytes":84466,"sslReads":44,"sslReadBytes":55636,"sslReadEmpty":3}
+15213ms TIMEOUT; stats= {"onrawCalls":4,"bioWrites":5,"bioWriteBytes":84466,"sslReads":44,"sslReadBytes":55636,"sslReadEmpty":3}

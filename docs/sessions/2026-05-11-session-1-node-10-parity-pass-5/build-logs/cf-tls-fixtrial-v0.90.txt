@@ -1,0 +1,5 @@
+    1ms connecting to www.cloudflare.com
+ 4331ms secureConnect; proto=TLSv1.3 cipher={"name":"TLS_AES_256_GCM_SHA384"}
+ 5365ms TLS end; stats= {"onrawCalls":45,"bioWrites":65,"bioWriteStalls":10,"sslReads":187,"sslReadBytes":981068}
+33957ms TIMEOUT; stats= {"onrawCalls":45,"bioWrites":65,"bioWriteStalls":10,"sslReads":187,"sslReadBytes":981068}
+33971ms TLS close; stats= {"onrawCalls":45,"bioWrites":65,"bioWriteStalls":10,"sslReads":187,"sslReadBytes":981068}

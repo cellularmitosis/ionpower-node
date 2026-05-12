@@ -1,0 +1,5 @@
+    0ms GET https://www.cloudflare.com/
+ 1520ms STATUS 200
+ 1521ms HEADERS server=cloudflare cl=undefined te=chunked
+ 4430ms BODY END; chunks=12 bytes=978564
+30710ms overall TIMEOUT
