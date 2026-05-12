@@ -457,6 +457,7 @@ test/subtle_ecdsa_smoke.js
 test/raw_mode_smoke.js
 test/subtle_ec_jwk_smoke.js
 test/tls_smoke.js
+test/tls_cloudflare_smoke.js
 test/https_get_smoke.js
 test/https_server_smoke.js
 test/wss_smoke.js

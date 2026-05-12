@@ -8488,21 +8488,35 @@ static const char kBootstrapJS[] =
     "      this._raw.write(Buffer.from(chunk));\n"
     "    }\n"
     "  };\n"
+    // netBio is a BIO pair with a fixed 32 KB ring buffer (tls.cpp:365 —
+    // BIO_new_bio_pair, not BIO_s_mem). When a single TCP read delivers
+    // more than that, bioWrite returns 0 partway through the loop. We MUST
+    // drain via SSL_read to free space, then retry the unwritten tail —
+    // otherwise the dropped bytes leave the encrypted stream misaligned
+    // and SSL_read errors with "decryption failed or bad record mac" on
+    // the next record (the symptom seen against www.cloudflare.com and
+    // any other large Cloudflare-fronted response).
     "  _TLSSocket.prototype._onRawData = function (chunk) {\n"
     "    if (this._destroyed || this._connId < 0) return;\n"
+    "    var self = this;\n"
     "    var off = 0;\n"
-    "    while (off < chunk.length && !this._destroyed && this._connId >= 0) {\n"
-    "      var n;\n"
+    "    var stalls = 0;\n"
+    "    while (off < chunk.length && !self._destroyed && self._connId >= 0) {\n"
     "      var slice = chunk.subarray ? chunk.subarray(off) : chunk.slice(off);\n"
-    "      try { n = _tlsNative.bioWrite(this._connId, slice); }\n"
-    "      catch (e) { this.emit('error', e); this.destroy(); return; }\n"
-    "      if (n <= 0) break;\n"
-    "      off += n;\n"
+    "      var n;\n"
+    "      try { n = _tlsNative.bioWrite(self._connId, slice); }\n"
+    "      catch (e) { self.emit('error', e); self.destroy(); return; }\n"
+    "      if (n > 0) { off += n; stalls = 0; continue; }\n"
+    "      if (++stalls > 64) { self.emit('error', new Error('TLS bioWrite: stalled')); self.destroy(); return; }\n"
+    "      if (!self._handshakeDone) self._driveHandshake();\n"
+    "      else self._pumpRead();\n"
+    "      if (self._destroyed) return;\n"
+    "      self._flushOutgoing();\n"
     "    }\n"
-    "    if (this._destroyed) return;\n"
-    "    if (!this._handshakeDone) { this._driveHandshake(); return; }\n"
-    "    this._pumpRead();\n"
-    "    if (!this._destroyed) this._flushOutgoing();\n"
+    "    if (self._destroyed) return;\n"
+    "    if (!self._handshakeDone) { self._driveHandshake(); return; }\n"
+    "    self._pumpRead();\n"
+    "    if (!self._destroyed) self._flushOutgoing();\n"
     "  };\n"
     "  _TLSSocket.prototype._pumpRead = function () {\n"
     "    var self = this;\n"
