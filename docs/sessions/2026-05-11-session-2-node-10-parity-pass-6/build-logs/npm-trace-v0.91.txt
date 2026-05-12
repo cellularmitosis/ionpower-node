@@ -1,0 +1,47 @@
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+
+--- process.exit code=1 ---
+process.exit@/tmp/run-npm-patched-trace.js:56:17
+@/Users/macuser/tmp/npm-6.14.18/lib/utils/error-handler.js:89:25
+this.__process_flush_exit__@<ionpower-node bootstrap>:4846:15
+
+--- npmlog (13) ---
+{"id":0,"level":"info","prefix":"it worked if it ends with","message":"ok","messageRaw":["ok"]}
+{"id":1,"level":"verbose","prefix":"cli","message":"[ '/opt/ionpower-node-0.91/bin/node', '/tmp/run-npm-patched-trace.js', 'install', 'left-pad', '--no-audit', '--loglevel=silly', '--registry=https://registry.npmjs.org/' ]","messageRaw":[["/opt/ionpower-node-0.91/bin/node","/tmp/run-npm-patched-trace.js","install","left-pad","--no-audit","--loglevel=silly","--registry=https://registry.npmjs.org/"]]}
+{"id":2,"level":"info","prefix":"using","message":"npm@6.14.18","messageRaw":["npm@%s","6.14.18"]}
+{"id":3,"level":"info","prefix":"using","message":"node@v10.24.1","messageRaw":["node@%s","v10.24.1"]}
+{"id":4,"level":"warn","prefix":"invalid config","message":"logstream={\"fd\":2,\"isTTY\":false}","messageRaw":["logstream={\"fd\":2,\"isTTY\":false}"]}
+{"id":5,"level":"warn","prefix":"invalid config","message":"Must be an instance of the Stream class","messageRaw":["Must be an instance of the Stream class"]}
+{"id":6,"level":"verbose","prefix":"npm-session","message":"b25fd9e9751e042d","messageRaw":["b25fd9e9751e042d"]}
+{"id":7,"level":"silly","prefix":"install","message":"loadCurrentTree","messageRaw":["loadCurrentTree"]}
+{"id":8,"level":"silly","prefix":"install","message":"readLocalPackageData","messageRaw":["readLocalPackageData"]}
+{"id":9,"level":"timing","prefix":"npm","message":"Completed in '4796ms'","messageRaw":["Completed in","4796ms"]}
+{"id":10,"level":"error","prefix":"","message":"cb() never called!","messageRaw":["cb() never called!"]}
+{"id":11,"level":"error","prefix":"","message":"This is an error with npm itself. Please report this error at:","messageRaw":["This is an error with npm itself. Please report this error at:"]}
+{"id":12,"level":"error","prefix":"","message":"    <https://npm.community>","messageRaw":["    <https://npm.community>"]}
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+
+--- process.exit called code=1 ---
+--- stack at exit ---
+process.exit@/tmp/run-npm-trace-all.js:27:21
+@/Users/macuser/tmp/npm-6.14.18/lib/utils/error-handler.js:89:25
+this.__process_flush_exit__@<ionpower-node bootstrap>:4846:15
+
+--- npmlog.record (all 13) ---
+{"id":0,"level":"info","prefix":"it worked if it ends with","message":"ok","messageRaw":["ok"]}
+{"id":1,"level":"verbose","prefix":"cli","message":"[ '/opt/ionpower-node-0.91/bin/node', '/tmp/run-npm-trace-all.js', 'install', 'left-pad', '--no-audit', '--loglevel=silly', '--registry=https://registry.npmjs.org/' ]","messageRaw":[["/opt/ionpower-node-0.91/bin/node","/tmp/run-npm-trace-all.js","install","left-pad","--no-audit","--loglevel=silly","--registry=https://registry.npmjs.org/"]]}
+{"id":2,"level":"info","prefix":"using","message":"npm@6.14.18","messageRaw":["npm@%s","6.14.18"]}
+{"id":3,"level":"info","prefix":"using","message":"node@v10.24.1","messageRaw":["node@%s","v10.24.1"]}
+{"id":4,"level":"warn","prefix":"invalid config","message":"logstream={\"fd\":2,\"isTTY\":false}","messageRaw":["logstream={\"fd\":2,\"isTTY\":false}"]}
+{"id":5,"level":"warn","prefix":"invalid config","message":"Must be an instance of the Stream class","messageRaw":["Must be an instance of the Stream class"]}
+{"id":6,"level":"verbose","prefix":"npm-session","message":"01ee250779a83bd9","messageRaw":["01ee250779a83bd9"]}
+{"id":7,"level":"silly","prefix":"install","message":"loadCurrentTree","messageRaw":["loadCurrentTree"]}
+{"id":8,"level":"silly","prefix":"install","message":"readLocalPackageData","messageRaw":["readLocalPackageData"]}
+{"id":9,"level":"timing","prefix":"npm","message":"Completed in '3910ms'","messageRaw":["Completed in","3910ms"]}
+{"id":10,"level":"error","prefix":"","message":"cb() never called!","messageRaw":["cb() never called!"]}
+{"id":11,"level":"error","prefix":"","message":"This is an error with npm itself. Please report this error at:","messageRaw":["This is an error with npm itself. Please report this error at:"]}
+{"id":12,"level":"error","prefix":"","message":"    <https://npm.community>","messageRaw":["    <https://npm.community>"]}

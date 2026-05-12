@@ -1,0 +1,78 @@
+Monkey-patch validation: IM buffering fix unlocks `npm install <name>`.
+
+Patch installed via /tmp/run-npm-patched.js (loaded before npm-cli.js
+require), prepending these overrides to http.IncomingMessage.prototype:
+
+  - emit('data', x): if !_imFlowing, push x onto _imBuf; else forward
+    to origEmit.
+  - emit('end'):     if !_imFlowing, set _imEndQueued; else forward.
+  - on(ev, fn):      if ev === 'data' && !_imFlowing, set _imFlowing
+                     and process.nextTick(drain).
+  - pause():         _imFlowing = false.
+  - resume():        if !_imFlowing, set _imFlowing and nextTick(drain).
+
+Where drain() pops _imBuf chunks through origEmit('data', c), then
+fires origEmit('end') if _imEndQueued.
+
+----------------------------------------------------------------------
+Step 1: clear /Users/macuser/.npm/_cacache + run patched npm install.
+
+  $ rm -rf /Users/macuser/.npm/_cacache
+  $ mkdir -p /Users/macuser/tmp/left-pad-test && cd $_
+  $ echo '{"name":"x","version":"0.0.0"}' > package.json
+  $ /opt/ionpower-node-0.91/bin/node /tmp/run-npm-patched.js \
+      install left-pad --no-audit \
+      --registry=https://registry.npmjs.org/
+
+  + left-pad@1.3.0
+  added 1 package from 1 contributor in 5.508s
+
+----------------------------------------------------------------------
+Step 2: verify the install landed correctly.
+
+  $ ls node_modules/left-pad/
+  COPYING  README.md  index.d.ts  index.js  package.json  perf  test.js
+
+  $ cat node_modules/left-pad/package.json | head
+  {
+    "_from": "left-pad",
+    "_id": "left-pad@1.3.0",
+    "_inBundle": false,
+    "_integrity": "sha512-XI5MPzVNApjAyhQzphX8BkmKsKUxD4LdyK24iZeQGinBN9yTQT3bFlCBy/aVx2HrNcqQGsdot8ghrjyrvMCoEA==",
+    "_location": "/left-pad",
+    "_phantomChildren": {},
+    "_requested": {
+      "type": "tag",
+
+----------------------------------------------------------------------
+Step 3: require + use.
+
+  $ cat > use.js << EOF
+  var leftPad = require("left-pad");
+  console.log("pad=[" + leftPad("hi", 6, "0") + "]");
+  EOF
+  $ /opt/ionpower-node-0.91/bin/node use.js
+  pad=[0000hi]
+
+----------------------------------------------------------------------
+Pacote's tag-manifest entry confirms the registry resolve happened
+end-to-end (not a stale-cache fallback):
+
+  /Users/macuser/.npm/_cacache/index-v5/fa/4a/76c986e51815e7f3f74e693279ab1df8a283ccf4806b0e8db9243746ff16
+  -> {"key":"pacote:tag-manifest:...left-pad-1.3.0.tgz:sha512-XI5MPz...",
+      "metadata":{"id":"left-pad@1.3.0",
+        "manifest":{"name":"left-pad","version":"1.3.0",...,
+          "_resolved":"https://registry.npmjs.org/left-pad/-/left-pad-1.3.0.tgz",
+          "_integrity":"sha512-XI5MPz..."},
+        "type":"finalized-manifest"}}
+
+----------------------------------------------------------------------
+Conclusion: with the IM-buffering fix in place, registry-based npm
+install on Tiger/PPC succeeds end-to-end against registry.npmjs.org
+(metadata fetch via gzip-encoded HTTPS, tarball fetch, extract,
+link). This is the missing piece for v0.91's "registry-based
+install" goal.
+
+The fix is the same shape as the pass-5 TLS fix: a JS-only edit
+inside the bundled bootstrap in src/node_compat/globals.cpp. Code
+is monkey-patch-prototype now; baking into source for v0.92.

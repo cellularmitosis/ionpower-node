@@ -1,0 +1,61 @@
+=== [ibookg37/g3/0.92] check-test-coverage ===
+ok: 489 files in test/ accounted for
+    485 wired via scripts/test-list-*.txt
+    4 in the intentional-skip allowlist
+=== [ibookg37/g3/0.92] check-demo-deps ===
+ok: 51 test/vendor/ files transitively reached by demos, all in install rule (55 shipped at root)
+=== [ibookg37/g3/0.92] rsync source ===
+Transfer starting: 5909 files
+deleting test/fib-report.txt
+./
+.claude/
+demos/
+demos/npm-install/
+demos/npm-install/fixtures/
+docs/convos/
+Makefile
+README.md
+demos/npm-install/README.md
+demos/npm-install/fixtures/mri-1.2.0.tgz
+demos/npm-install/run.js
+docs/sessions/
+docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/
+docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/build-logs/
+docs/convos/claude-conversation-2026-05-10-10426b7a.md
+docs/convos/claude-conversation-2026-05-10-f4108a7a.md
+docs/convos/claude-conversation-2026-05-11-90e81760.md
+docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/release-notes/
+docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/
+docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/
+scripts/
+src/
+src/node_compat/
+docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/build-logs/cf-https-fixtrial-v0.90.txt
+docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/build-logs/cf-tls-fixtrial-v0.90.txt
+docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/build-logs/g3-pass5-bio-retry.log
+docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/build-logs/g4-pass5-bio-retry.log
+docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/build-logs/g5-pass5-bio-retry.log
+docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/notes.md
+docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/release-notes/v0.91.md
+docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/g3-pass6-im-buffer.log
+docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/npm-trace-v0.91.txt
+docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/probe-monkey-patch-success.txt
+docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/probe-narrowing-v0.91.txt
+docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/notes.md
+docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/plan.md
+scripts/test-list-more.txt
+src/main.cpp
+test/
+src/node_compat/buffer.cpp
+src/node_compat/globals.cpp
+src/node_compat/net.cpp
+src/node_compat/process.cpp
+src/node_compat/tls.cpp
+test/http_paused_data_smoke.js
+test/tls_cloudflare_smoke.js
+
+sent 1071858 bytes  received 7630 bytes  450518 bytes/sec
+total size is 103819640  speedup is 96.17
+=== [ibookg37/g3/0.92] scp Makefile + process.cpp + globals.cpp + main.cpp + net.cpp + tls.cpp (gremlin workaround) ===
+=== [ibookg37/g3/0.92] clean + build  (MOZJS=/opt/mozjs-45-ionpower-g3 CPU='-mcpu=750 -mtune=750') ===
+rm -f src/main.o src/node_compat/console.o src/node_compat/process.o src/node_compat/fs.o src/node_compat/path.o src/node_compat/buffer.o src/node_compat/require.o src/node_compat/timers.o src/node_compat/crypto.o src/node_compat/http.o src/node_compat/child_process.o src/node_compat/event_loop.o src/node_compat/net.o src/node_compat/tls.o src/node_compat/zlib.o src/node_compat/globals.o node

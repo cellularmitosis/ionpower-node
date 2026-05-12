@@ -1,0 +1,105 @@
+Probe narrowing log — root-cause for "npm install <name> hangs at
+cb() never called" on v0.91.
+
+Setup: G3 (ibookg37), /opt/ionpower-node-0.91/bin/node,
+registry.npmjs.org/left-pad metadata fetch.
+
+----------------------------------------------------------------------
+1) baseline: https.get with sync data handlers — WORKS
+
+   probe-gzip.js (https.request + Accept-Encoding: gzip, attach
+   res.on('data') / res.on('end') synchronously inside response cb):
+
+     STATUS 200 +464ms
+     END enc-len=3168 +503ms
+     GUNZIP OK decoded-len=8488
+     JSON OK name=left-pad versions=15
+
+   Conclusion: TLS layer, HTTP parser, sync gzip decode all fine.
+
+----------------------------------------------------------------------
+2) baseline streaming gunzip via .pipe — WORKS
+
+   probe-stream-gunzip.js (res.pipe(zlib.createGunzip())):
+
+     STATUS 200 +451ms
+     res.data 3168 +488ms
+     res.end +492ms
+     gz.data 8488 total=8488 +546ms
+     gz.end total=8488 +547ms
+
+   Conclusion: stream piping + gunzip transform work end-to-end.
+
+----------------------------------------------------------------------
+3) FAIL: Promise.then(res => res.on('data', ...))
+
+   probe-prom-https.js: wrap https.get in new Promise(resolve =>
+   https.get(url, resolve)), then in .then attach data/end handlers:
+
+     START
+     response cb fired STATUS 200 +449ms
+     THEN fired +501ms
+     WD 25s
+     exit=7
+
+   The response callback fires synchronously inside the http parser.
+   The Promise's .then runs as a microtask after the parser's
+   sync feedBody(leftover) has already emit'd 'data' to no listeners.
+   Listeners attach a microtask too late; data is lost.
+
+----------------------------------------------------------------------
+4) FAIL repro 3x with explicit res.resume()
+
+   probe-prom-https2.js (same pattern + res.resume()):
+
+   try 1: STATUS 200 +637ms ; THEN fired +689ms ; called resume +690ms ; WD 15s
+   try 2: STATUS 200 +443ms ; THEN fired +496ms ; called resume +496ms ; WD 15s
+   try 3: STATUS 200 +456ms ; THEN fired +509ms ; called resume +509ms ; WD 15s
+
+   resume() is a no-op in our _IncomingMessage (globals.cpp:7614);
+   doesn't help.
+
+----------------------------------------------------------------------
+5) Side-by-side: sync vs microtask-delayed .on('data')
+
+   probe-stream-late.js (single script, both patterns back-to-back):
+
+     == sync attach ==
+     sync END len=3168 +522ms
+     == microtask-delayed attach ==
+     delayed TIMEOUT
+
+   Definitive: identical URL, identical request shape; the *only*
+   difference is whether res.on('data') is attached synchronously
+   inside the response cb or one Promise.resolve().then() later.
+
+----------------------------------------------------------------------
+6) VALIDATION: monkey-patch IM.prototype to buffer
+
+   probe-with-patch.js: same Promise + late-attach pattern, but
+   first patches http.IncomingMessage.prototype to buffer 'data'/
+   'end' until a 'data' listener attaches:
+
+     PATCH installed; START
+     THEN +513ms STATUS=200 enc=gzip
+     END len=3168 +518ms
+     exit=0
+
+   With patch loaded: the late-attached data listener sees the
+   buffered chunk; end fires; promise chain proceeds cleanly.
+
+----------------------------------------------------------------------
+Root cause: _IncomingMessage in src/node_compat/globals.cpp emits
+'data' eagerly via response.emit('data', d) without buffering;
+pause/resume are no-ops. When user code attaches the data listener
+even one microtask after the response callback (the universal
+Promise pattern in pacote / node-fetch / make-fetch-happen), the
+sync feedBody(leftover) has already emit'd the body to a listener-
+less stream and the bytes are dropped.
+
+Fix: implement the standard Readable paused/flowing semantics on
+_IncomingMessage — buffer in paused mode, drain on data-listener
+attach via newListener hook + process.nextTick.
+
+Same shape as the pass-5 TLS BIO retry-on-stall fix: a JS-only edit
+inside the bundled bootstrap in src/node_compat/globals.cpp.
