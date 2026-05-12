@@ -310,6 +310,7 @@ test/iso8601_duration_smoke.js
 test/process_smoke.js
 test/process_version_smoke.js
 test/process_extras_smoke.js
+test/process_getuid_smoke.js
 test/constants_smoke.js
 test/index_json_resolve_smoke.js
 test/fs_readlink_smoke.js
@@ -379,6 +380,7 @@ test/sha512_smoke.js
 test/fetch_smoke.js
 test/dns_smoke.js
 test/http_chunked_smoke.js
+test/http_paused_data_smoke.js
 test/batch_wave_l_smoke.js
 test/batch_wave_l2_smoke.js
 test/batch_wave_l3_smoke.js

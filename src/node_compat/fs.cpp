@@ -224,18 +224,16 @@ static bool FsWriteFileSync(JSContext* cx, unsigned argc, JS::Value* vp) {
 
     int fd = open(path.ptr(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (fd < 0) {
-        JS_ReportError(cx, "fs.writeFileSync: open %s: %s",
-                       path.ptr(), strerror(errno));
-        return false;
+        return ThrowFsError(cx, errno, "open", path.ptr());
     }
     size_t off = 0;
     while (off < len) {
         ssize_t w = write(fd, data + off, len - off);
         if (w < 0) {
             if (errno == EINTR) continue;
+            int e = errno;
             close(fd);
-            JS_ReportError(cx, "fs.writeFileSync: write: %s", strerror(errno));
-            return false;
+            return ThrowFsError(cx, e, "write", path.ptr());
         }
         off += (size_t)w;
     }
@@ -479,18 +477,16 @@ static bool FsAppendFileSync(JSContext* cx, unsigned argc, JS::Value* vp) {
 
     int fd = open(path.ptr(), O_WRONLY | O_CREAT | O_APPEND, 0644);
     if (fd < 0) {
-        JS_ReportError(cx, "fs.appendFileSync: open %s: %s",
-                       path.ptr(), strerror(errno));
-        return false;
+        return ThrowFsError(cx, errno, "open", path.ptr());
     }
     size_t off = 0;
     while (off < len) {
         ssize_t w = write(fd, data + off, len - off);
         if (w < 0) {
             if (errno == EINTR) continue;
+            int e = errno;
             close(fd);
-            JS_ReportError(cx, "fs.appendFileSync: write: %s", strerror(errno));
-            return false;
+            return ThrowFsError(cx, e, "write", path.ptr());
         }
         off += (size_t)w;
     }
@@ -513,16 +509,13 @@ static bool FsCopyFileSync(JSContext* cx, unsigned argc, JS::Value* vp) {
 
     int sfd = open(src.ptr(), O_RDONLY);
     if (sfd < 0) {
-        JS_ReportError(cx, "fs.copyFileSync: open %s: %s",
-                       src.ptr(), strerror(errno));
-        return false;
+        return ThrowFsError(cx, errno, "open", src.ptr());
     }
     int dfd = open(dst.ptr(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (dfd < 0) {
+        int e = errno;
         close(sfd);
-        JS_ReportError(cx, "fs.copyFileSync: open %s: %s",
-                       dst.ptr(), strerror(errno));
-        return false;
+        return ThrowFsError(cx, e, "open", dst.ptr());
     }
     char buf[64 * 1024];
     for (;;) {
@@ -530,18 +523,18 @@ static bool FsCopyFileSync(JSContext* cx, unsigned argc, JS::Value* vp) {
         if (r == 0) break;
         if (r < 0) {
             if (errno == EINTR) continue;
+            int e = errno;
             close(sfd); close(dfd);
-            JS_ReportError(cx, "fs.copyFileSync: read: %s", strerror(errno));
-            return false;
+            return ThrowFsError(cx, e, "read", src.ptr());
         }
         ssize_t off = 0;
         while (off < r) {
             ssize_t w = write(dfd, buf + off, (size_t)(r - off));
             if (w < 0) {
                 if (errno == EINTR) continue;
+                int e = errno;
                 close(sfd); close(dfd);
-                JS_ReportError(cx, "fs.copyFileSync: write: %s", strerror(errno));
-                return false;
+                return ThrowFsError(cx, e, "write", dst.ptr());
             }
             off += w;
         }
@@ -564,8 +557,7 @@ static bool FsChmodSync(JSContext* cx, unsigned argc, JS::Value* vp) {
     uint32_t mode = 0;
     if (!JS::ToUint32(cx, args[1], &mode)) return false;
     if (chmod(path.ptr(), (mode_t)(mode & 07777)) != 0) {
-        JS_ReportError(cx, "fs.chmodSync: %s: %s", path.ptr(), strerror(errno));
-        return false;
+        return ThrowFsError(cx, errno, "chmod", path.ptr());
     }
     args.rval().setUndefined();
     return true;

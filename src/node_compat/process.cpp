@@ -40,6 +40,33 @@ static bool ProcessCwd(JSContext* cx, unsigned argc, JS::Value* vp) {
     return true;
 }
 
+// POSIX uid/gid accessors. tar's preserveOwner gate, pacote's
+// selfOwner, npm-lifecycle install scripts all branch on whether
+// these are present and what they return — Node ships them only on
+// non-Windows builds, which is exactly our target. Thin wrappers
+// over getuid(2) etc.; on Tiger these never fail (return current
+// process credentials).
+static bool ProcessGetuid(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    args.rval().setInt32((int32_t)getuid());
+    return true;
+}
+static bool ProcessGetgid(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    args.rval().setInt32((int32_t)getgid());
+    return true;
+}
+static bool ProcessGeteuid(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    args.rval().setInt32((int32_t)geteuid());
+    return true;
+}
+static bool ProcessGetegid(JSContext* cx, unsigned argc, JS::Value* vp) {
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    args.rval().setInt32((int32_t)getegid());
+    return true;
+}
+
 static bool ProcessExit(JSContext* cx, unsigned argc, JS::Value* vp) {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
     int32_t code = 0;
@@ -234,6 +261,10 @@ static const JSFunctionSpec kProcessFuncs[] = {
     JS_FN("cwd",            ProcessCwd,           0, 0),
     JS_FN("exit",           ProcessExit,          1, 0),
     JS_FN("getenv",         ProcessGetenv,        1, 0),
+    JS_FN("getuid",         ProcessGetuid,        0, 0),
+    JS_FN("getgid",         ProcessGetgid,        0, 0),
+    JS_FN("geteuid",        ProcessGeteuid,       0, 0),
+    JS_FN("getegid",        ProcessGetegid,       0, 0),
     JS_FN("_setRawMode",    ProcessSetRawMode,    2, 0),
     JS_FN("_tty_size",      ProcessTtySize,       1, 0),
     JS_FN("cpuUsage",       ProcessCpuUsage,      1, 0),
@@ -311,7 +342,7 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
         if (!versions) return false;
         if (!DefineStringProp(cx, versions, "node",          "10.24.1")) return false;
         // 'ionpower-node' uses bracket access on the JS side because of the dash.
-        if (!DefineStringProp(cx, versions, "ionpower-node", "0.91"))    return false;
+        if (!DefineStringProp(cx, versions, "ionpower-node", "0.92"))    return false;
         if (!JS_DefineProperty(cx, process, "versions", versions, JSPROP_ENUMERATE))
             return false;
     }

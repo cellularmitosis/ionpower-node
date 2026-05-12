@@ -6009,6 +6009,43 @@ static const char kBootstrapJS[] =
     "  stream.Transform  = _Transform;\n"
     "  stream.Stream     = _Stream;\n"
     "  stream.PassThrough = _PassThrough;\n"
+    /* Wrap process.stdout / process.stderr so that `x instanceof Stream`
+       returns true. Several npm-era libraries (notably npm 6's config
+       validator at lib/config/core.js around the `logstream` key) check
+       `value instanceof Stream` before accepting a stream config; if the
+       check fails, npm falls back to `undefined` and then
+       `Gauge.setWriteTo(undefined)` throws TypeError when it dereferences
+       `undefined.isTTY`. That throw lands inside our timer callback's
+       catch, prints "timer: ..." to stderr, and npm.load's callback never
+       fires — which surfaces downstream as the silent "cb() never called!"
+       npm gives on `install`. C++ wraps stderr/stdout as plain Objects;
+       we wrap once at bootstrap with _Writable so the instanceof gate
+       passes. _write delegates to the original native write. */
+    "  function _wrapStdStream(raw) {\n"
+    "    if (!raw) return raw;\n"
+    "    var w = new _Writable();\n"
+    "    w._rawWrite = raw.write.bind(raw);\n"
+    "    w._write = function (chunk, enc, cb) {\n"
+    "      try { w._rawWrite(chunk, enc); } catch (e) { if (cb) cb(e); return; }\n"
+    "      if (cb) cb();\n"
+    "    };\n"
+    /* Mirror the Node API surface tooling expects. .write is overridden so
+       calls remain synchronous (no microtask hop between write and bytes
+       reaching the fd) — matches what console.log relies on. */
+    "    w.write = function (chunk, enc) {\n"
+    "      if (typeof enc === 'function') enc = undefined;\n"
+    "      try { w._rawWrite(chunk, enc); return true; } catch (e) { return false; }\n"
+    "    };\n"
+    "    w.fd     = raw.fd;\n"
+    "    w.isTTY  = raw.isTTY;\n"
+    "    if (raw.columns !== undefined) w.columns = raw.columns;\n"
+    "    if (raw.rows    !== undefined) w.rows    = raw.rows;\n"
+    "    return w;\n"
+    "  }\n"
+    "  if (typeof process !== 'undefined') {\n"
+    "    if (process.stdout) process.stdout = _wrapStdStream(process.stdout);\n"
+    "    if (process.stderr) process.stderr = _wrapStdStream(process.stderr);\n"
+    "  }\n"
     // Node 12+ Readable.from(iterable | array | string | Buffer) — wraps
     // the input into a Readable that emits each item as a 'data' chunk.
     "  stream.Readable.from = function (input) {\n"
@@ -7190,25 +7227,66 @@ static const char kBootstrapJS[] =
     // Streaming Gunzip / Inflate: collect all writes, decompress on end.
     // Not true-streaming (a real inflate stream would emit 'data' chunks as
     // they come) but covers 95% of http-client-with-gzip use.
+    //
+    // Pass-6 fix: like _IncomingMessage, this used to fire 'data' / 'end'
+    // via setImmediate inside .end(), assuming a synchronously-attached
+    // listener. node-fetch-npm / make-fetch-happen chain
+    // `res.pipe(PT).pipe(zlib.createGunzip())` and resolve a Promise with
+    // the gunzip stream — user code attaches the 'data' listener later
+    // (Response.text() / Response.json() reads body after one or more
+    // microtask hops). Without buffering, the setImmediate emit fires
+    // before the listener attaches and the decoded payload is dropped on
+    // the floor — same shape as the npm install regression that motivated
+    // the IM fix, just one layer downstream. The fix: stash the decoded
+    // output in `_bufferedOut` and `_endQueued` until a 'data' listener
+    // attaches, then flush on next tick (mirroring Node Readable
+    // semantics).
     "  function _mkInflateTransform(syncFn) {\n"
     "    return function () {\n"
     "      var s = new _Stream();\n"  /* extends EventEmitter; instanceof Stream === true */
     "      s.writable = s.readable = true;\n"
     "      var chunks = [];\n"
+    "      s._bufferedOut = null;\n"
+    "      s._endQueued = false;\n"
+    "      s._errored = null;\n"
+    "      s._flowing = false;\n"
     "      s.write = function (c, enc) {\n"
     "        if (typeof c === 'string') c = Buffer.from(c, enc || 'utf8');\n"
     "        chunks.push(c); return true;\n"
     "      };\n"
+    "      function flush(self) {\n"
+    "        if (self._errored) { events.EventEmitter.prototype.emit.call(self, 'error', self._errored); return; }\n"
+    "        if (self._bufferedOut !== null) {\n"
+    "          var out = self._bufferedOut; self._bufferedOut = null;\n"
+    "          events.EventEmitter.prototype.emit.call(self, 'data', out);\n"
+    "        }\n"
+    "        if (self._endQueued) {\n"
+    "          self._endQueued = false;\n"
+    "          events.EventEmitter.prototype.emit.call(self, 'end');\n"
+    "          events.EventEmitter.prototype.emit.call(self, 'close');\n"
+    "        }\n"
+    "      }\n"
+    "      var origEmit = events.EventEmitter.prototype.emit;\n"
+    "      var origOn   = events.EventEmitter.prototype.on;\n"
+    "      s.on = function (ev, fn) {\n"
+    "        var ret = origOn.call(this, ev, fn);\n"
+    "        if (ev === 'data' && !this._flowing) {\n"
+    "          this._flowing = true;\n"
+    "          var self = this;\n"
+    "          process.nextTick(function () { flush(self); });\n"
+    "        }\n"
+    "        return ret;\n"
+    "      };\n"
+    "      s.addListener = s.on;\n"
     "      s.end = function (c) {\n"
     "        if (c !== undefined) this.write(c);\n"
     "        var self = this;\n"
     "        setImmediate(function () {\n"
     "          try {\n"
-    "            var out = syncFn(Buffer.concat(chunks));\n"
-    "            self.emit('data', out);\n"
-    "            self.emit('end');\n"
-    "            self.emit('close');\n"
-    "          } catch (e) { self.emit('error', e); }\n"
+    "            self._bufferedOut = syncFn(Buffer.concat(chunks));\n"
+    "            self._endQueued = true;\n"
+    "          } catch (e) { self._errored = e; }\n"
+    "          if (self._flowing) flush(self);\n"
     "        });\n"
     "        return this;\n"
     "      };\n"
@@ -7246,26 +7324,53 @@ static const char kBootstrapJS[] =
     "    };\n"
     "  }\n"
     // Compress-side Transforms: buffer all writes, emit one output on .end().
-    // (Same shape as the inflate Transforms above.)
+    // (Same shape as the inflate Transforms above, including the pass-6
+    // buffer-until-listener-attaches fix.)
     "  function _mkDeflateTransform(syncFn) {\n"
     "    return function () {\n"
     "      var s = new _Stream();\n"  /* extends EventEmitter; instanceof Stream === true */
     "      s.writable = s.readable = true;\n"
     "      var chunks = [];\n"
+    "      s._bufferedOut = null;\n"
+    "      s._endQueued = false;\n"
+    "      s._errored = null;\n"
+    "      s._flowing = false;\n"
     "      s.write = function (c, enc) {\n"
     "        if (typeof c === 'string') c = Buffer.from(c, enc || 'utf8');\n"
     "        chunks.push(c); return true;\n"
     "      };\n"
+    "      function flush(self) {\n"
+    "        if (self._errored) { events.EventEmitter.prototype.emit.call(self, 'error', self._errored); return; }\n"
+    "        if (self._bufferedOut !== null) {\n"
+    "          var out = self._bufferedOut; self._bufferedOut = null;\n"
+    "          events.EventEmitter.prototype.emit.call(self, 'data', out);\n"
+    "        }\n"
+    "        if (self._endQueued) {\n"
+    "          self._endQueued = false;\n"
+    "          events.EventEmitter.prototype.emit.call(self, 'end');\n"
+    "          events.EventEmitter.prototype.emit.call(self, 'close');\n"
+    "        }\n"
+    "      }\n"
+    "      var origOn   = events.EventEmitter.prototype.on;\n"
+    "      s.on = function (ev, fn) {\n"
+    "        var ret = origOn.call(this, ev, fn);\n"
+    "        if (ev === 'data' && !this._flowing) {\n"
+    "          this._flowing = true;\n"
+    "          var self = this;\n"
+    "          process.nextTick(function () { flush(self); });\n"
+    "        }\n"
+    "        return ret;\n"
+    "      };\n"
+    "      s.addListener = s.on;\n"
     "      s.end = function (c) {\n"
     "        if (c !== undefined) this.write(c);\n"
     "        var self = this;\n"
     "        setImmediate(function () {\n"
     "          try {\n"
-    "            var out = syncFn(Buffer.concat(chunks));\n"
-    "            self.emit('data', out);\n"
-    "            self.emit('end');\n"
-    "            self.emit('close');\n"
-    "          } catch (e) { self.emit('error', e); }\n"
+    "            self._bufferedOut = syncFn(Buffer.concat(chunks));\n"
+    "            self._endQueued = true;\n"
+    "          } catch (e) { self._errored = e; }\n"
+    "          if (self._flowing) flush(self);\n"
     "        });\n"
     "        return this;\n"
     "      };\n"
@@ -7597,12 +7702,30 @@ static const char kBootstrapJS[] =
     "    }\n"
     "  }\n"
     // IncomingMessage (both client-response and server-request).
+    /* Paused/flowing semantics. Node's Readable contract says streams
+       start paused, and any 'data' chunks emitted before a listener
+       attaches (or before .resume() / .pipe()) must be buffered and
+       replayed once flow starts. Pacote / node-fetch-npm /
+       make-fetch-happen wrap http.request in a Promise and attach
+       data listeners one microtask later — without buffering, the
+       sync feedBody(leftover) inside _ClientRequest emits 'data'
+       to a listener-less stream and the bytes are dropped (pass-6
+       root-cause for "cb() never called" during `npm install <name>`).
+       Implementation: an emit() override that intercepts 'data'/'end'
+       and buffers in _imBuf / _imEndQueued; a newListener-style hook
+       in on() that auto-resumes on first 'data' listener; .resume()
+       transitions to flowing and schedules a drain. The drain uses
+       events.EventEmitter.prototype.emit directly so it doesn't
+       re-enter our buffering override. */
     "  function _IncomingMessage(sock) {\n"
     "    events.EventEmitter.call(this);\n"
     "    this.socket = sock; this.connection = sock;\n"
     "    this.headers = {}; this.rawHeaders = [];\n"
     "    this.httpVersion = '1.1';\n"
     "    this.readable = true;\n"
+    "    this._imBuf = [];\n"
+    "    this._imFlowing = false;\n"
+    "    this._imEndQueued = false;\n"
     "  }\n"
     /* Inherit from _Stream rather than plain EventEmitter so libraries
        like node-fetch that do `body instanceof Stream` see our incoming
@@ -7610,12 +7733,52 @@ static const char kBootstrapJS[] =
        so all the existing event-emitter behaviour is preserved. */
     "  util.inherits(_IncomingMessage, _Stream);\n"
     "  _IncomingMessage.prototype.setEncoding = function (enc) { this._encoding = enc; return this; };\n"
-    "  _IncomingMessage.prototype.pause  = function () { return this; };\n"
-    "  _IncomingMessage.prototype.resume = function () { return this; };\n"
+    "  _IncomingMessage.prototype.emit = function (event) {\n"
+    "    if (event === 'data' && !this._imFlowing) {\n"
+    "      this._imBuf.push(arguments[1]);\n"
+    "      return false;\n"
+    "    }\n"
+    "    if (event === 'end' && !this._imFlowing) {\n"
+    "      this._imEndQueued = true;\n"
+    "      return false;\n"
+    "    }\n"
+    "    return events.EventEmitter.prototype.emit.apply(this, arguments);\n"
+    "  };\n"
+    "  _IncomingMessage.prototype._imDrain = function () {\n"
+    "    while (this._imBuf.length > 0 && this._imFlowing) {\n"
+    "      events.EventEmitter.prototype.emit.call(this, 'data', this._imBuf.shift());\n"
+    "    }\n"
+    "    if (this._imEndQueued && this._imFlowing && this._imBuf.length === 0) {\n"
+    "      this._imEndQueued = false;\n"
+    "      this.readable = false;\n"
+    "      events.EventEmitter.prototype.emit.call(this, 'end');\n"
+    "    }\n"
+    "  };\n"
+    "  _IncomingMessage.prototype.on = function (event, fn) {\n"
+    "    var ret = events.EventEmitter.prototype.on.call(this, event, fn);\n"
+    "    if (event === 'data' && !this._imFlowing) {\n"
+    "      this._imFlowing = true;\n"
+    "      var self = this;\n"
+    "      process.nextTick(function () { self._imDrain(); });\n"
+    "    }\n"
+    "    return ret;\n"
+    "  };\n"
+    "  _IncomingMessage.prototype.addListener = _IncomingMessage.prototype.on;\n"
+    "  _IncomingMessage.prototype.pause  = function () { this._imFlowing = false; return this; };\n"
+    "  _IncomingMessage.prototype.resume = function () {\n"
+    "    if (!this._imFlowing) {\n"
+    "      this._imFlowing = true;\n"
+    "      var self = this;\n"
+    "      process.nextTick(function () { self._imDrain(); });\n"
+    "    }\n"
+    "    return this;\n"
+    "  };\n"
     "  _IncomingMessage.prototype.pipe   = function (dest) {\n"
-    "    var self = this;\n"
-    "    this.on('data', function (c) { dest.write(c); });\n"
+    /* Attach 'end' before 'data' so pipe's end-forwarder is in place
+       when the data listener triggers a sync inline drain that
+       cascades into 'end'. (Same ordering rationale as _Stream.pipe.) */
     "    this.on('end',  function () { if (dest.end) dest.end(); });\n"
+    "    this.on('data', function (c) { dest.write(c); });\n"
     "    return dest;\n"
     "  };\n"
     "  _IncomingMessage.prototype.destroy = function () { if (this.socket && this.socket.destroy) this.socket.destroy(); };\n"

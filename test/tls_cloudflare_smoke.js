@@ -3,8 +3,18 @@
 // TCP read delivers more bytes than the 32 KB BIO pair can hold,
 // causing the encrypted stream to go out of alignment and SSL_read
 // to fail with "decryption failed or bad record mac" on the next
-// record. The www.cloudflare.com HTML body is ~1 MB — guaranteed to
-// trigger the stall path.
+// record. We pull a known-large file (~87 KB jquery.min.js) from
+// cdn.jsdelivr.net — comfortably past the 32 KB BIO threshold, so
+// any regression of the retry-on-stall fix will reproduce.
+//
+// History on endpoint choice (pass-6): we used to target
+// www.cloudflare.com directly (which served ~1 MB of HTML). It's
+// the same shape of regression, but Cloudflare's www edge proved
+// flaky from the G3's source IP — multiple PASS-able fixes ended
+// up SKIP'ing because of edge-side timeouts unrelated to the fix.
+// jsdelivr also fronts via Cloudflare (cf-ray in headers) but hits
+// a different edge (IAH vs DFW from our IP) that's consistently
+// fast. Same regression coverage, far less flake.
 //
 // Two failure modes are distinct here:
 //
@@ -12,20 +22,30 @@
 //     "decryption failed" partway through the body. The fix
 //     broke. -> FAIL hard.
 //
-//   - Network flake: timeout with no bytes flowing. Cloudflare
-//     occasionally rate-limits or routes the G3's IP through a
-//     slow path. -> SKIP (exit 0 with a warning).
-//
-// We make 2 attempts with 60s per-attempt timeout. If a real-error
-// signature ever appears, fail immediately without retry — the
-// regression is already proven.
+//   - Network flake: timeout with no bytes flowing, or a 5xx.
+//     -> SKIP (exit 0 with a warning).
 
 var https = require('https');
 var assert = require('assert');
 
 var t0 = Date.now();
 var maxAttempts = 2;
-var attemptTimeoutMs = 60000;
+var attemptTimeoutMs = 30000;
+
+// jsdelivr serves jquery 3.7.1 from a pinned-version path that's
+// guaranteed immutable. ~87 KB minified — well past the 32 KB BIO
+// stall threshold, exercises the retry-on-stall path multiple times.
+var endpoint = {
+    host: 'cdn.jsdelivr.net',
+    path: '/npm/jquery@3.7.1/dist/jquery.min.js'
+};
+// Minimum body size to consider the fetch successful. The pinned
+// version's size is 87533 bytes (verified pass-6); we tolerate
+// modest variance in case jsdelivr ever revalidates with a slightly
+// different minifier. The key invariant: bytes >= ~50 KB means we
+// definitely got past the 32 KB BIO stall (which trips at ~50 KB
+// plaintext for the pre-fix runtime).
+var minExpectedBytes = 50 * 1024;
 
 function tryOnce(attempt, done) {
     var aStart = Date.now();
@@ -37,8 +57,8 @@ function tryOnce(attempt, done) {
         done(err, res);
     }
     var req = https.get({
-        host: 'www.cloudflare.com',
-        path: '/',
+        host: endpoint.host,
+        path: endpoint.path,
         headers: { 'User-Agent': 'ionpower-tls-smoke', 'Connection': 'close' }
     }, function (res) {
         if (res.statusCode !== 200) {
@@ -86,19 +106,16 @@ function attempt(n) {
                 return;
             }
             // Last attempt, only network flakes — emit a SKIP marker
-            // (exit 0) so the build doesn't block on Cloudflare being
-            // unreachable. The runner shows the SKIP line and downstream
-            // grep can pick it up if anyone wants to alert.
+            // (exit 0) so the build doesn't block on edge unreachability.
+            // The runner shows the SKIP line and downstream grep can pick
+            // it up if anyone wants to alert.
             console.log('SKIP tls_cloudflare_smoke: network unreachable after ' + maxAttempts
                         + ' attempts (' + (Date.now() - t0) + 'ms); fix-correctness untested this run');
             process.exit(0);
         }
         assert(res.chunks > 0, 'no body chunks received');
-        // Cloudflare resizes occasionally; require at least 200 KB so the
-        // smoke survives modest content shrinks but still proves we got
-        // past the 32 KB BIO stall (which trips around 50 KB plaintext).
-        assert(res.bytes >= 200 * 1024,
-               'body too small: ' + res.bytes + ' bytes; expected >= 200 KB');
+        assert(res.bytes >= minExpectedBytes,
+               'body too small: ' + res.bytes + ' bytes; expected >= ' + minExpectedBytes);
         console.log('ok: STATUS 200');
         console.log('ok: BODY END; chunks=' + res.chunks + ' bytes=' + res.bytes
                     + ' (~' + Math.round(res.bytes / 1024) + ' KB) in ' + res.elapsedMs + ' ms');
