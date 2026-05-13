@@ -304,3 +304,21 @@ types in the npm path. Compare to the curl-bytes-saved-to-disk run.
 - The bug is reproducible, narrow (specific to npm's pipe topology),
   and tractable for pass 10.
 
+## Release state
+
+- v0.95 published: <https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.95>
+- G4 + G5 tarballs uploaded.
+- **G3 tarball is pending.** ibookg37 (the iBook G3) crashed during
+  the tarball-pull phase after the build completed. After it came
+  back briefly, /tmp had been wiped (the tarball lived there), so
+  the rebuild was started. During that rebuild's test phase the
+  iBook crashed AGAIN — this time ping responds but sshd is hung
+  (banner exchange times out). The G3 binary HAS been built and
+  tested clean in this session (see
+  [`build-logs/ibookg37-g3-0.95.log`](build-logs/ibookg37-g3-0.95.log)).
+  When the host recovers, rebuild + upload:
+
+      scripts/triad-build.sh ibookg37 g3 0.95
+      scp ibookg37:/tmp/ionpower-node-0.95-g3-ppc.tar.gz /tmp/
+      gh release upload v0.95 /tmp/ionpower-node-0.95-g3-ppc.tar.gz
+
