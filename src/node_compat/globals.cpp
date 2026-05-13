@@ -5748,6 +5748,15 @@ static const char kBootstrapJS[] =
     "      if (opts.end !== false && dest.end) dest.end();\n"
     "      src.unpipe(dest);\n"
     "    }\n"
+    /* onclose: legacy Stream.prototype.pipe also forwards src.close →
+       dest.destroy. Required by test-stream-pipe-cleanup (which uses
+       plain stream.Stream instances and emits 'close' to verify the
+       teardown path).  */
+    "    function onclose() {\n"
+    "      if (ended) return; ended = true;\n"
+    "      if (dest.destroy) dest.destroy();\n"
+    "      src.unpipe(dest);\n"
+    "    }\n"
     /* onerror: Node's legacy Stream.prototype.pipe pattern — tear down
        this pipe's listeners on the first error, then propagate only if
        the source has no other 'error' listener. The fallback is to
@@ -5757,9 +5766,7 @@ static const char kBootstrapJS[] =
        e.g. test-stream-pipe-without-listenerCount) clobber the
        `listenerCount` method on stream instances. */
     "    function onerror(err) {\n"
-    "      src.removeListener('end',   onend);\n"
-    "      src.removeListener('error', onerror);\n"
-    "      src.removeListener('data',  ondata);\n"
+    "      cleanup();\n"
     "      if (src._pipes) {\n"
     "        for (var i = 0; i < src._pipes.length; ++i) {\n"
     "          if (src._pipes[i].onerror === onerror) { src._pipes.splice(i, 1); break; }\n"
@@ -5771,13 +5778,30 @@ static const char kBootstrapJS[] =
     "      }\n"
     "    }\n"
     "    function ondata(chunk) { if (dest.write) dest.write(chunk); }\n"
+    /* cleanup: legacy-pipe helper that detaches every listener this pipe
+       call installed. Registered on src.end/src.close/dest.close so any
+       terminal signal removes the pipe's listener footprint (test-stream-
+       pipe-cleanup asserts on these counts post-teardown). The function
+       is its own identity, so removeListener targets only THIS pipe's
+       listeners — sibling pipes from the same src are left alone. */
+    "    function cleanup() {\n"
+    "      src.removeListener('end',   onend);\n"
+    "      src.removeListener('close', onclose);\n"
+    "      src.removeListener('error', onerror);\n"
+    "      src.removeListener('data',  ondata);\n"
+    "      src.removeListener('end',   cleanup);\n"
+    "      src.removeListener('close', cleanup);\n"
+    "      if (dest.removeListener) {\n"
+    "        dest.removeListener('close', cleanup);\n"
+    "      }\n"
+    "    }\n"
     /* Register the pipe BEFORE wiring listeners. Attaching 'data' triggers
        our auto-resume (which can synchronously run _read → push(null) →
        emit('end') → onend → unpipe). If 'pipe' / _pipes weren't set up
        first, the 'pipe' event ordering and pipesCount accounting would
        be wrong (test-stream-unpipe-event subtest 1 caught it). */
     "    if (!src._pipes) src._pipes = [];\n"
-    "    src._pipes.push({ dest: dest, onend: onend, onerror: onerror, ondata: ondata });\n"
+    "    src._pipes.push({ dest: dest, onend: onend, onclose: onclose, onerror: onerror, ondata: ondata, cleanup: cleanup });\n"
     /* Mirror onto _readableState.pipes / pipesCount for Node-internal
        parity (test-stream-pipe-same-destination-twice + test-stream-
        unpipe-event read these). Node uses pipes=null/dest/[dest...] —
@@ -5791,8 +5815,14 @@ static const char kBootstrapJS[] =
     "    }\n"
     "    if (dest.emit) dest.emit('pipe', src);\n"
     "    src.on('end',   onend);\n"
+    "    src.on('close', onclose);\n"
     "    src.on('error', onerror);\n"
     "    src.on('data',  ondata);\n"
+    "    src.on('end',   cleanup);\n"
+    "    src.on('close', cleanup);\n"
+    "    if (dest.on) {\n"
+    "      dest.on('close', cleanup);\n"
+    "    }\n"
     "    if (src.resume) src.resume();\n"
     "    return dest;\n"
     "  };\n"
@@ -5808,6 +5838,14 @@ static const char kBootstrapJS[] =
     "      self.removeListener('end',   entry.onend);\n"
     "      self.removeListener('error', entry.onerror);\n"
     "      self.removeListener('data',  entry.ondata);\n"
+    "      if (entry.onclose) self.removeListener('close', entry.onclose);\n"
+    "      if (entry.cleanup) {\n"
+    "        self.removeListener('end',   entry.cleanup);\n"
+    "        self.removeListener('close', entry.cleanup);\n"
+    "      }\n"
+    "      if (entry.dest && entry.dest.removeListener) {\n"
+    "        if (entry.cleanup) entry.dest.removeListener('close', entry.cleanup);\n"
+    "      }\n"
     "      if (entry.dest && entry.dest.emit) entry.dest.emit('unpipe', self);\n"
     "    }\n"
     "    function syncState(removeAll, destRef) {\n"
@@ -5919,7 +5957,11 @@ static const char kBootstrapJS[] =
     "      objectMode: !!opts.objectMode,\n"
     "      highWaterMark: opts.highWaterMark || 16384,\n"
     "      reading: false, emittedReadable: false, resumeScheduled: false,\n"
-    "      encoding: opts.encoding || null\n"
+    "      encoding: opts.encoding || null,\n"
+    /* opts.encoding wires a StringDecoder. push() runs Buffer chunks
+       through it before buffering, producing strings — test-stream-
+       decoder-objectmode (utf16le) drove the gap that needed this. */
+    "      decoder: opts.encoding ? new StringDecoder(opts.encoding) : null\n"
     "    };\n"
     "    if (typeof opts.read === 'function') this._read = opts.read;\n"
     "    if (typeof opts.destroy === 'function') this._destroy = opts.destroy;\n"
@@ -5957,6 +5999,28 @@ static const char kBootstrapJS[] =
     "      s.reading = false;\n"
     "      if (!s.flowing) this._maybeReadMore();\n"
     "      return s.buffer.length < s.highWaterMark;\n"
+    "    }\n"
+    /* Encoding/decoding pass — mirrors Node v10's readableAddChunk:
+       - string in non-objectMode + no decoder → convert to Buffer
+         (push('foo') yields a Buffer chunk; test-stream-readable-
+         emittedReadable expects read() = Buffer.from('foobar') after
+         push('foo')+push('bar')).
+       - Buffer + decoder → decode to string (utf16le drives this via
+         test-stream-decoder-objectmode).
+       Object-mode chunks pass through unchanged. */
+    "    if (!s.objectMode) {\n"
+    "      if (typeof chunk === 'string' && !s.decoder) {\n"
+    "        chunk = Buffer.from(chunk, enc || 'utf8');\n"
+    "      } else if (s.decoder && chunk && typeof chunk !== 'string') {\n"
+    "        chunk = s.decoder.write(chunk);\n"
+    "        if (chunk === '') {\n"
+    "          s.reading = false;\n"
+    "          if (!s.flowing) this._maybeReadMore();\n"
+    "          return s.buffer.length < s.highWaterMark;\n"
+    "        }\n"
+    "      }\n"
+    "    } else if (s.decoder && chunk && typeof chunk !== 'string') {\n"
+    "      chunk = s.decoder.write(chunk);\n"
     "    }\n"
     "    s.buffer.push(chunk);\n"
     "    s.reading = false;\n"
@@ -6010,7 +6074,9 @@ static const char kBootstrapJS[] =
     "  };\n"
     /* Schedule a 'readable' emit for the next tick, but only if a
        'readable' listener is attached. Coalesces with any already-pending
-       schedule. */
+       schedule. Sets s.emittedReadable=true immediately before the emit
+       (Node's lib/_stream_readable.js does the same — test-stream-
+       readable-emittedReadable checks the flag from inside the listener). */
     "  _Readable.prototype._scheduleReadable = function () {\n"
     "    var s = this._readableState;\n"
     "    if (s._readableScheduled) return;\n"
@@ -6020,7 +6086,10 @@ static const char kBootstrapJS[] =
     "    process.nextTick(function () {\n"
     "      s._readableScheduled = false;\n"
     "      if (s.flowing) return;\n"
-    "      if (s.buffer.length > 0 || s.ended) self.emit('readable');\n"
+    "      if (s.buffer.length > 0 || s.ended) {\n"
+    "        s.emittedReadable = true;\n"
+    "        self.emit('readable');\n"
+    "      }\n"
     "    });\n"
     "  };\n"
     /* _emitFlow is the flowing-mode driver: drain one chunk → emit 'data',
@@ -6102,6 +6171,10 @@ static const char kBootstrapJS[] =
     "      s.reading = true;\n"
     "      try { this._read(s.highWaterMark); } catch (e) { this.emit('error', e); }\n"
     "    }\n"
+    /* read(0): Node's contract is "trigger a refill, return null, do not
+       consume buffer, do not flip emittedReadable". Critical to test-
+       stream-readable-emittedReadable's noRead case. */
+    "    if (n === 0) return null;\n"
     "    var ret;\n"
     "    if (s.buffer.length === 0) {\n"
     "      ret = null;\n"
@@ -6122,6 +6195,10 @@ static const char kBootstrapJS[] =
        check if the stream just drained to empty with ended=true and
        fire 'end' (either now if listener attached, or schedule lazy). */
     "    if (s.buffer.length === 0 && s.ended) this._fireEndIfPending();\n"
+    /* read(n) with n !== 0 consumes — that resets emittedReadable per
+       Node's lib/_stream_readable.js. read(0) is a refill-only call and
+       does not clear the flag (already returned above). */
+    "    s.emittedReadable = false;\n"
     "    return ret;\n"
     "  };\n"
     /* Helper: deliver 'end' if the readable is fully drained. Listener
@@ -6139,14 +6216,28 @@ static const char kBootstrapJS[] =
     "      s._endPending = true;\n"
     "    }\n"
     "  };\n"
+    /* resume(): sync flow body — _emitFlow drains the buffer right
+       now (streams_smoke expects this). resumeScheduled bookkeeping
+       wraps the sync work: false during _emitFlow (so 'data' listeners
+       observe the cleared flag, per test-stream-readable-resumeScheduled),
+       true after the sync body (so callers observe the post-resume()
+       scheduled state), and back to false on nextTick. emit('resume')
+       is deferred to nextTick so listeners attached AFTER r.resume()
+       still catch it (the test attaches 'resume' after r.resume() returns). */
     "  _Readable.prototype.resume = function () {\n"
     "    var s = this._readableState;\n"
     "    if (s.flowing) return this;\n"
     "    s.flowing = true;\n"
-    "    this.emit('resume');\n"
-    /* _emitFlow is the engine — it handles both _read (pull) and emit
-       ('data') (drain) in a single loop. No separate prime here. */
+    "    s.resumeScheduled = false;\n"
     "    this._emitFlow();\n"
+    "    if (!s.resumeScheduled) {\n"
+    "      s.resumeScheduled = true;\n"
+    "      var self = this;\n"
+    "      process.nextTick(function () {\n"
+    "        s.resumeScheduled = false;\n"
+    "        self.emit('resume');\n"
+    "      });\n"
+    "    }\n"
     "    return this;\n"
     "  };\n"
     "  _Readable.prototype.pause = function () {\n"
@@ -6184,6 +6275,14 @@ static const char kBootstrapJS[] =
     "    configurable: true, enumerable: false,\n"
     "    get: function () { return this._readableState ? this._readableState.buffer : []; }\n"
     "  });\n"
+    /* setEncoding(enc): installs a StringDecoder so subsequent push()
+       calls convert Buffer chunks → strings before buffering. Mirrors
+       Node's Readable.prototype.setEncoding. */
+    "  _Readable.prototype.setEncoding = function (enc) {\n"
+    "    this._readableState.encoding = enc;\n"
+    "    this._readableState.decoder = new StringDecoder(enc);\n"
+    "    return this;\n"
+    "  };\n"
     "  _Readable.prototype.pipe   = _Stream.prototype.pipe;\n"
     "  _Readable.prototype.unpipe = _Stream.prototype.unpipe;\n"
     "  _Readable.prototype.destroy = function (err) {\n"
@@ -6384,7 +6483,10 @@ static const char kBootstrapJS[] =
     "      for (var step2; !(step2 = it.next()).done; ) chunks.push(step2.value);\n"
     "    }\n"
     "    else { chunks = [input]; }\n"
-    "    var r = new _Readable();\n"
+    /* Readable.from defaults to objectMode in Node (preserves chunk
+       identity — strings stay strings, Buffers stay Buffers; without
+       this push() would convert strings to Buffers). */
+    "    var r = new _Readable({ objectMode: true });\n"
     "    var i = 0;\n"
     // Defer pushes via setImmediate on the FIRST _read call so the
     // caller has a tick to attach 'end' listeners (otherwise the\n"

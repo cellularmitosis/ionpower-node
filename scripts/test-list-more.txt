@@ -488,3 +488,8 @@ test/node10-streams/test-stream-objectmode-undefined.js
 test/node10-streams/test-stream-transform-flush-data.js
 test/node10-streams/test-stream-pipe-same-destination-twice.js
 test/node10-streams/test-stream-unpipe-event.js
+test/node10-streams/test-stream-readable-emittedReadable.js
+test/node10-streams/test-stream-decoder-objectmode.js
+test/node10-streams/test-stream-push-order.js
+test/node10-streams/test-stream-readable-resumeScheduled.js
+test/node10-streams/test-stream-pipe-cleanup.js
