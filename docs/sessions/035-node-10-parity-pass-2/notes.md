@@ -2,7 +2,7 @@
 
 Plan: [`plan.md`](plan.md). Drives off the v0.87 → npm 6.14.18
 plateau captured in
-[`../2026-05-10-session-1-node-10-parity-pass-1/notes.md`](../2026-05-10-session-1-node-10-parity-pass-1/notes.md).
+[`../034-node-10-parity-pass-1/notes.md`](../034-node-10-parity-pass-1/notes.md).
 
 Goal: add `Module._resolveFilename` so resolve-from (and via it
 `npm-lifecycle`) can advance, then re-run `npm install mri`

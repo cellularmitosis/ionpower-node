@@ -5,7 +5,7 @@ Captured for post-v0.86 sessions.
 ## 1. Real `vm.runInNewContext` compartment isolation (carried from v0.84)
 
 Original capture lives in
-[`../2026-04-30-session-3-proto-deopt/followups.md`](../2026-04-30-session-3-proto-deopt/followups.md).
+[`../031-proto-deopt/followups.md`](../031-proto-deopt/followups.md).
 
 **Why.** The current JS shim of `vm` parameterizes the sandbox keys
 as `Function()` args and invokes the resulting function. Good enough

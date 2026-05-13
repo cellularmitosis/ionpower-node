@@ -1,8 +1,8 @@
 # Session notes — 2026-05-12 session 1: Node 10 parity, pass 8
 
-Handoff: [`../2026-05-11-session-3-node-10-parity-pass-7/handoff-pass-8.md`](../2026-05-11-session-3-node-10-parity-pass-7/handoff-pass-8.md).
-Pass-7 notes: [`../2026-05-11-session-3-node-10-parity-pass-7/notes.md`](../2026-05-11-session-3-node-10-parity-pass-7/notes.md).
-Pass-7 release notes: [`../2026-05-11-session-3-node-10-parity-pass-7/release-notes/v0.93.md`](../2026-05-11-session-3-node-10-parity-pass-7/release-notes/v0.93.md).
+Handoff: [`../041-node-10-parity-pass-7/handoff-pass-8.md`](../041-node-10-parity-pass-7/handoff-pass-8.md).
+Pass-7 notes: [`../041-node-10-parity-pass-7/notes.md`](../041-node-10-parity-pass-7/notes.md).
+Pass-7 release notes: [`../041-node-10-parity-pass-7/release-notes/v0.93.md`](../041-node-10-parity-pass-7/release-notes/v0.93.md).
 
 Pass-7 closed the registry-based `npm install <name>` goal that had
 been driving passes 5–7. The handoff calls out that across pass-6

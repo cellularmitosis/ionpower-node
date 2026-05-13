@@ -125,7 +125,7 @@ falsy). Add to `scripts/test-list-more.txt`.
 ### Item 3 (deferred): real `vm.runInNewContext` compartment isolation
 
 Captured in
-[`docs/sessions/2026-04-30-session-3-proto-deopt/followups.md`](../../2026-04-30-session-3-proto-deopt/followups.md)
+[`docs/sessions/031-proto-deopt/followups.md`](../../031-proto-deopt/followups.md)
 as a v0.86+ TODO. Native work — `vm.createContext(sandbox)` returns
 a JS object with a sealed inner `[[GlobalObject]]`, plus a real
 `vm.runInContext(code, ctx, opts)` that calls `JS::Evaluate`

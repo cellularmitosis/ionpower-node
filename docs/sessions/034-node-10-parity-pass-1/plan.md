@@ -7,11 +7,11 @@ In order:
 1. [`../../plans/node-target-version.md`](../../plans/node-target-version.md)
    — the decision (made 2026-05-10) to target Node 10.24.1 and the
    roadmap framing this session is the first concrete pass at.
-2. [`../2026-05-09-session-2-npm-6-bootstrap/notes.md`](../2026-05-09-session-2-npm-6-bootstrap/notes.md)
+2. [`../033-npm-6-bootstrap/notes.md`](../033-npm-6-bootstrap/notes.md)
    — the npm 6.14.18 bring-up that surfaced the gap list this
    session is closing. Especially the iteration log and the
    "rough finish-line distance" estimate.
-3. [`../2026-05-09-session-2-npm-6-bootstrap/build-logs/run-npm.js`](../2026-05-09-session-2-npm-6-bootstrap/build-logs/run-npm.js)
+3. [`../033-npm-6-bootstrap/build-logs/run-npm.js`](../033-npm-6-bootstrap/build-logs/run-npm.js)
    — the 45-line wrapper script we used to monkey-patch the gaps in
    userland. Each patch in there points to a real runtime addition
    needed.
@@ -208,5 +208,5 @@ turns out to be tangled, collapse to one.
   syncFn defined C++-side, then `fs.foo = _fsAsync(fs.fooSync)`
   in `kBootstrapJS`.
 - The bring-up wrapper script:
-  [`../2026-05-09-session-2-npm-6-bootstrap/build-logs/run-npm.js`](../2026-05-09-session-2-npm-6-bootstrap/build-logs/run-npm.js)
+  [`../033-npm-6-bootstrap/build-logs/run-npm.js`](../033-npm-6-bootstrap/build-logs/run-npm.js)
   — every stub in there has an entry in the gap list above.

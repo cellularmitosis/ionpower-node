@@ -4,14 +4,14 @@
 
 In order:
 
-1. [`../2026-05-10-session-4-node-10-parity-pass-4/notes.md`](../2026-05-10-session-4-node-10-parity-pass-4/notes.md)
+1. [`../037-node-10-parity-pass-4/notes.md`](../037-node-10-parity-pass-4/notes.md)
    — what pass 4 closed (pipe-reorder for buffered+ended streams,
    fchown/chown no-op for Tiger EPERM, statSync uid/gid + nlink + ino + …),
    plus the npm install end-to-end success on PPC.
-2. [`../2026-05-10-session-4-node-10-parity-pass-4/release-notes/v0.90.md`](../2026-05-10-session-4-node-10-parity-pass-4/release-notes/v0.90.md)
+2. [`../037-node-10-parity-pass-4/release-notes/v0.90.md`](../037-node-10-parity-pass-4/release-notes/v0.90.md)
    — what shipped, what's still broken (TLS to Cloudflare LARGE
    responses), the contract for pass 5.
-3. [`../2026-05-10-session-4-node-10-parity-pass-4/build-logs/npm-install-mri-v0.90-SUCCESS.txt`](../2026-05-10-session-4-node-10-parity-pass-4/build-logs/npm-install-mri-v0.90-SUCCESS.txt)
+3. [`../037-node-10-parity-pass-4/build-logs/npm-install-mri-v0.90-SUCCESS.txt`](../037-node-10-parity-pass-4/build-logs/npm-install-mri-v0.90-SUCCESS.txt)
    — the trace showing `+ mri@1.2.0, added 1 package`.
 
 ## Context in one paragraph
@@ -154,11 +154,11 @@ Smoke included only if A landed.
 ## Quick references
 
 - pass-4 notes:
-  [`../2026-05-10-session-4-node-10-parity-pass-4/notes.md`](../2026-05-10-session-4-node-10-parity-pass-4/notes.md)
+  [`../037-node-10-parity-pass-4/notes.md`](../037-node-10-parity-pass-4/notes.md)
 - pass-4 release notes:
-  [`../2026-05-10-session-4-node-10-parity-pass-4/release-notes/v0.90.md`](../2026-05-10-session-4-node-10-parity-pass-4/release-notes/v0.90.md)
+  [`../037-node-10-parity-pass-4/release-notes/v0.90.md`](../037-node-10-parity-pass-4/release-notes/v0.90.md)
 - npm install success trace:
-  [`../2026-05-10-session-4-node-10-parity-pass-4/build-logs/npm-install-mri-v0.90-SUCCESS.txt`](../2026-05-10-session-4-node-10-parity-pass-4/build-logs/npm-install-mri-v0.90-SUCCESS.txt)
+  [`../037-node-10-parity-pass-4/build-logs/npm-install-mri-v0.90-SUCCESS.txt`](../037-node-10-parity-pass-4/build-logs/npm-install-mri-v0.90-SUCCESS.txt)
 - TLS source to instrument:
   [`../../../src/node_compat/tls.cpp`](../../../src/node_compat/tls.cpp)
 - TLS JS pump:

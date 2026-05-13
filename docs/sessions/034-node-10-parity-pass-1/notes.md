@@ -2,7 +2,7 @@
 
 Plan: [`plan.md`](plan.md). Drives off the v0.86 → npm 6.14.18
 bring-up captured in
-[`../2026-05-09-session-2-npm-6-bootstrap/notes.md`](../2026-05-09-session-2-npm-6-bootstrap/notes.md).
+[`../033-npm-6-bootstrap/notes.md`](../033-npm-6-bootstrap/notes.md).
 
 Goal: close the first wave of runtime gaps surfaced by the npm 6
 bootstrap experiment, then re-run `npm install mri` against the

@@ -4,13 +4,13 @@
 
 In order:
 
-1. [`../2026-05-10-session-3-node-10-parity-pass-3/notes.md`](../2026-05-10-session-3-node-10-parity-pass-3/notes.md)
+1. [`../036-node-10-parity-pass-3/notes.md`](../036-node-10-parity-pass-3/notes.md)
    — what pass 3 closed (9 waves of stream / fs / EventEmitter
    gaps), the npm install state at v0.89 (extract action starts
    then hangs in cacache pump), and the pass-4 list at the bottom.
-2. [`../2026-05-10-session-3-node-10-parity-pass-3/release-notes/v0.89.md`](../2026-05-10-session-3-node-10-parity-pass-3/release-notes/v0.89.md)
+2. [`../036-node-10-parity-pass-3/release-notes/v0.89.md`](../036-node-10-parity-pass-3/release-notes/v0.89.md)
    — what shipped, what's still broken, the contract for pass 4.
-3. [`../2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-transformfinal.txt`](../2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-transformfinal.txt)
+3. [`../036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-transformfinal.txt`](../036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-transformfinal.txt)
    — the trace that surfaces the cacache pump hang.
 
 ## Context in one paragraph
@@ -142,11 +142,11 @@ cloudflare smoke as the new regression hook.
 ## Quick references
 
 - pass-3 notes:
-  [`../2026-05-10-session-3-node-10-parity-pass-3/notes.md`](../2026-05-10-session-3-node-10-parity-pass-3/notes.md)
+  [`../036-node-10-parity-pass-3/notes.md`](../036-node-10-parity-pass-3/notes.md)
 - pass-3 release notes:
-  [`../2026-05-10-session-3-node-10-parity-pass-3/release-notes/v0.89.md`](../2026-05-10-session-3-node-10-parity-pass-3/release-notes/v0.89.md)
+  [`../036-node-10-parity-pass-3/release-notes/v0.89.md`](../036-node-10-parity-pass-3/release-notes/v0.89.md)
 - npm install hang shape:
-  [`../2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-transformfinal.txt`](../2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-transformfinal.txt)
+  [`../036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-transformfinal.txt`](../036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-transformfinal.txt)
 - TLS source to extend:
   [`../../../src/node_compat/tls.cpp`](../../../src/node_compat/tls.cpp)
 - Stream / EventEmitter source:

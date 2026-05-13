@@ -4,14 +4,14 @@
 
 In order:
 
-1. [`../2026-05-10-session-1-node-10-parity-pass-1/notes.md`](../2026-05-10-session-1-node-10-parity-pass-1/notes.md)
+1. [`../034-node-10-parity-pass-1/notes.md`](../034-node-10-parity-pass-1/notes.md)
    — what pass 1 closed (8 wave-1 gaps + bonus
    `Module._nodeModulePaths`), what triad-build verified
    (458/458 PASS on G3), and the pass-2 list seeded at the bottom.
-2. [`../2026-05-10-session-1-node-10-parity-pass-1/build-logs/npm-install-mri-v0.87.txt`](../2026-05-10-session-1-node-10-parity-pass-1/build-logs/npm-install-mri-v0.87.txt)
+2. [`../034-node-10-parity-pass-1/build-logs/npm-install-mri-v0.87.txt`](../034-node-10-parity-pass-1/build-logs/npm-install-mri-v0.87.txt)
    — the npm experiment output that surfaced the new plateau, and
    the trimmed wrapper at
-   [`../2026-05-10-session-1-node-10-parity-pass-1/build-logs/run-npm-v0.87.js`](../2026-05-10-session-1-node-10-parity-pass-1/build-logs/run-npm-v0.87.js).
+   [`../034-node-10-parity-pass-1/build-logs/run-npm-v0.87.js`](../034-node-10-parity-pass-1/build-logs/run-npm-v0.87.js).
 3. [`../../plans/node-target-version.md`](../../plans/node-target-version.md)
    — the Node 10.24.1 parity target the project is now measured
    against.
@@ -181,11 +181,11 @@ when we added `_nodeModulePaths`.
 ## Quick references
 
 - pass-1 notes:
-  [`../2026-05-10-session-1-node-10-parity-pass-1/notes.md`](../2026-05-10-session-1-node-10-parity-pass-1/notes.md)
+  [`../034-node-10-parity-pass-1/notes.md`](../034-node-10-parity-pass-1/notes.md)
 - pass-1 release notes (deferred):
-  [`../2026-05-10-session-1-node-10-parity-pass-1/release-notes/v0.87.md`](../2026-05-10-session-1-node-10-parity-pass-1/release-notes/v0.87.md)
+  [`../034-node-10-parity-pass-1/release-notes/v0.87.md`](../034-node-10-parity-pass-1/release-notes/v0.87.md)
 - npm experiment output:
-  [`../2026-05-10-session-1-node-10-parity-pass-1/build-logs/npm-install-mri-v0.87.txt`](../2026-05-10-session-1-node-10-parity-pass-1/build-logs/npm-install-mri-v0.87.txt)
+  [`../034-node-10-parity-pass-1/build-logs/npm-install-mri-v0.87.txt`](../034-node-10-parity-pass-1/build-logs/npm-install-mri-v0.87.txt)
 - C++ resolver to extend:
   [`../../../src/node_compat/require.cpp`](../../../src/node_compat/require.cpp)
   (`ResolveModule`, `RequireNative`).

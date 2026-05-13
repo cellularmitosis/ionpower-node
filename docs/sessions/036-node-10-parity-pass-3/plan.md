@@ -4,14 +4,14 @@
 
 In order:
 
-1. [`../2026-05-10-session-2-node-10-parity-pass-2/notes.md`](../2026-05-10-session-2-node-10-parity-pass-2/notes.md)
+1. [`../035-node-10-parity-pass-2/notes.md`](../035-node-10-parity-pass-2/notes.md)
    — what pass 2 closed (7 waves of install-pipeline gaps), the npm
    install state at v0.88 (runs through commit phase, plateaus at
    network and minizlib internal-handle), and the pass-3 list at
    the bottom.
-2. [`../2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-tarball-v0.88.txt`](../2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-tarball-v0.88.txt)
+2. [`../035-node-10-parity-pass-2/build-logs/npm-install-mri-tarball-v0.88.txt`](../035-node-10-parity-pass-2/build-logs/npm-install-mri-tarball-v0.88.txt)
    — the run that surfaced minizlib's `_handle._processChunk` call.
-3. [`../2026-05-10-session-2-node-10-parity-pass-2/release-notes/v0.88.md`](../2026-05-10-session-2-node-10-parity-pass-2/release-notes/v0.88.md)
+3. [`../035-node-10-parity-pass-2/release-notes/v0.88.md`](../035-node-10-parity-pass-2/release-notes/v0.88.md)
    — what shipped, what's still broken, the contract for pass 3.
 
 ## Context in one paragraph
@@ -201,11 +201,11 @@ which is minizlib-or-similar).
 ## Quick references
 
 - pass-2 notes:
-  [`../2026-05-10-session-2-node-10-parity-pass-2/notes.md`](../2026-05-10-session-2-node-10-parity-pass-2/notes.md)
+  [`../035-node-10-parity-pass-2/notes.md`](../035-node-10-parity-pass-2/notes.md)
 - pass-2 release notes:
-  [`../2026-05-10-session-2-node-10-parity-pass-2/release-notes/v0.88.md`](../2026-05-10-session-2-node-10-parity-pass-2/release-notes/v0.88.md)
+  [`../035-node-10-parity-pass-2/release-notes/v0.88.md`](../035-node-10-parity-pass-2/release-notes/v0.88.md)
 - npm install tarball-shape failure:
-  [`../2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-tarball-v0.88.txt`](../2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-tarball-v0.88.txt)
+  [`../035-node-10-parity-pass-2/build-logs/npm-install-mri-tarball-v0.88.txt`](../035-node-10-parity-pass-2/build-logs/npm-install-mri-tarball-v0.88.txt)
 - Local mri tarball already on ibookg37:
   `/Users/macuser/tmp/mri-1.2.0.tgz`
 - TLS source to extend:

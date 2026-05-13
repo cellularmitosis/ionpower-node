@@ -2,7 +2,7 @@
 
 ## Status: closed (2026-04-30)
 
-Investigated in `docs/sessions/2026-04-30-session-3-proto-deopt/notes.md`.
+Investigated in `docs/sessions/031-proto-deopt/notes.md`.
 TL;DR: full `make test-all` emits 33 `[[Prototype]]` warnings across
 30 unique source sites; **all 33 come from third-party vendored
 libraries**. We had exactly one offender in our own code

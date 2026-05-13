@@ -1,7 +1,7 @@
 # Session notes — 2026-05-11 session 1: Node 10 parity, pass 5
 
 Plan:
-[`../2026-05-10-session-5-node-10-parity-pass-5/plan.md`](../2026-05-10-session-5-node-10-parity-pass-5/plan.md).
+[`../038-node-10-parity-pass-5-plan/plan.md`](../038-node-10-parity-pass-5-plan/plan.md).
 
 Drives off pass-4's remaining gap: TLS to Cloudflare-fronted
 endpoints hangs on LARGE responses (handshake completes,

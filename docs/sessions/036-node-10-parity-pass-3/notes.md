@@ -2,7 +2,7 @@
 
 Plan: [`plan.md`](plan.md). Drives off the v0.88 → npm 6.14.18
 plateau captured in
-[`../2026-05-10-session-2-node-10-parity-pass-2/notes.md`](../2026-05-10-session-2-node-10-parity-pass-2/notes.md).
+[`../035-node-10-parity-pass-2/notes.md`](../035-node-10-parity-pass-2/notes.md).
 
 Goal: unblock `npm install` end-to-end against the v0.89 runtime.
 Two distinct walls remain at v0.88:
@@ -32,7 +32,7 @@ bump is purely metadata.
 ### B landed: zlib stream `_handle._processChunk` emulation
 
 The minizlib internal-handle dance from
-[`build-logs/npm-install-mri-tarball-v0.88.txt`](../2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-tarball-v0.88.txt):
+[`build-logs/npm-install-mri-tarball-v0.88.txt`](../035-node-10-parity-pass-2/build-logs/npm-install-mri-tarball-v0.88.txt):
 
 ```js
 // minizlib/index.js:128
@@ -759,5 +759,5 @@ hang and TLS-to-Cloudflare are pass-4.
 ## Next session
 
 Handoff plan for pass 4:
-[`/Users/cell/claude/ionpower-node/docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/plan.md`](../2026-05-10-session-4-node-10-parity-pass-4/plan.md)
+[`/Users/cell/claude/ionpower-node/docs/sessions/037-node-10-parity-pass-4/plan.md`](../037-node-10-parity-pass-4/plan.md)
 (create at start of next session).

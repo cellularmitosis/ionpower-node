@@ -174,4 +174,4 @@ No `src/node_compat/` changes were needed.
 - `demos/express-chat/client.js` (new)
 - `demos/express-chat/README.md` (new)
 - `test/vendor/express/` (new directory tree — Express + all deps)
-- `docs/sessions/2026-04-29-session-2-express-chat/notes.md` (this file)
+- `docs/sessions/027-express-chat/notes.md` (this file)

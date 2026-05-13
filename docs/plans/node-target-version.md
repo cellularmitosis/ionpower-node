@@ -39,7 +39,7 @@ fictional Node release we'd implicitly be claiming compatibility
 with.
 
 The cost showed up in the npm 6.14.18 bring-up
-([session 2 notes](../sessions/2026-05-09-session-2-npm-6-bootstrap/notes.md)):
+([session 2 notes](../sessions/033-npm-6-bootstrap/notes.md)):
 the very first thing npm did was reject `ionpower-node-0.86` as
 non-semver. The same string-parsing pattern shown above silently
 falls through `parseInt → NaN → "old Node" branch` in any library
@@ -233,7 +233,7 @@ commit, queued for the next session:
    `process.version === 'v10.24.1'`, semver-satisfies a few
    ranges, and `process.versions['ionpower-node']` is set.
 3. Pair with the small fs/process additions captured in
-   [`../sessions/2026-05-09-session-2-npm-6-bootstrap/notes.md`](../sessions/2026-05-09-session-2-npm-6-bootstrap/notes.md):
+   [`../sessions/033-npm-6-bootstrap/notes.md`](../sessions/033-npm-6-bootstrap/notes.md):
    `process.execPath`, `require('constants')` real seed,
    `index.json` resolver, `fs.readlink`, `process.binding` stub,
    `fs.{truncate,appendFile,chown,utimes,fchmod,symlink}`.

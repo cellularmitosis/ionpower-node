@@ -4,14 +4,14 @@
 
 In order:
 
-1. [`../2026-05-11-session-1-node-10-parity-pass-5/notes.md`](../2026-05-11-session-1-node-10-parity-pass-5/notes.md)
+1. [`../039-node-10-parity-pass-5/notes.md`](../039-node-10-parity-pass-5/notes.md)
    — what pass 5 closed (TLS BIO-pair stall fix unblocking
    www.cloudflare.com + registry.npmjs.org large responses;
    demos/npm-install/).
-2. [`../2026-05-11-session-1-node-10-parity-pass-5/release-notes/v0.91.md`](../2026-05-11-session-1-node-10-parity-pass-5/release-notes/v0.91.md)
+2. [`../039-node-10-parity-pass-5/release-notes/v0.91.md`](../039-node-10-parity-pass-5/release-notes/v0.91.md)
    — what shipped, the SKIP-on-flake smoke design, what's still
    pending.
-3. [`../2026-05-11-session-1-node-10-parity-pass-5/build-logs/cf-tls-instrumented-v0.90.txt`](../2026-05-11-session-1-node-10-parity-pass-5/build-logs/cf-tls-instrumented-v0.90.txt)
+3. [`../039-node-10-parity-pass-5/build-logs/cf-tls-instrumented-v0.90.txt`](../039-node-10-parity-pass-5/build-logs/cf-tls-instrumented-v0.90.txt)
    — the diagnostic trace showing the 32 KB BIO pair stall and
    subsequent bytes-loss.
 
@@ -156,9 +156,9 @@ manually on G3 + G4 + G5 before committing the swap.
 ## Quick references
 
 - pass-5 notes:
-  [`../2026-05-11-session-1-node-10-parity-pass-5/notes.md`](../2026-05-11-session-1-node-10-parity-pass-5/notes.md)
+  [`../039-node-10-parity-pass-5/notes.md`](../039-node-10-parity-pass-5/notes.md)
 - pass-5 release notes:
-  [`../2026-05-11-session-1-node-10-parity-pass-5/release-notes/v0.91.md`](../2026-05-11-session-1-node-10-parity-pass-5/release-notes/v0.91.md)
+  [`../039-node-10-parity-pass-5/release-notes/v0.91.md`](../039-node-10-parity-pass-5/release-notes/v0.91.md)
 - The TLS fix (for review):
   [`src/node_compat/globals.cpp`](../../../src/node_compat/globals.cpp)
   search `_TLSSocket.prototype._onRawData`.

@@ -27,10 +27,11 @@ live there get lost.
 
 Layout:
 
-- `docs/sessions/<date>-session-<id>/` — one dir per session.
-  - `notes.md` (or `summary.md` for legacy) — the narrative the user
-    will read when reviewing what happened. Include judgment calls,
-    failed approaches, and the reasoning behind picks.
+- `docs/sessions/NNN-<slug>/` — one dir per session.
+  - `notes.md` (or `summary.md` for legacy sessions ≤ 024) — the
+    narrative the user will read when reviewing what happened.
+    Include judgment calls, failed approaches, and the reasoning
+    behind picks.
   - `build-logs/` — per-host build + smoke output. Useful when a
     later session needs to figure out why a release looked the way
     it did.
@@ -39,13 +40,16 @@ Layout:
 - `scripts/` — orchestration scripts (e.g. `triad-build.sh`). Anything
   that's invoked more than once should live here, not in `/tmp`.
 
-Session identifier conventions:
+Session identifier convention:
 
-- Legacy sessions (≤ 2026-04-25 letter `x`) use a monotonic-letter
-  identifier within a date: `2026-04-22-session-a/`, `-b/`, `-c/`, …
-- Newer sessions use a within-date counter matching the convention
-  in sibling projects (`golang-darwin8-ppc`, `ghc-darwin8-ppc`):
-  `2026-04-25-session-1-<short-slug>/`, `-2-<slug>/`, …
+Sessions are numbered with a zero-padded three-digit counter and a
+short descriptive slug: `001-resume-and-pickup/`,
+`025-v0.66-v0.81-asymmetric-crypto-marathon/`,
+`042-node-10-parity-pass-8/`. The counter is monotonic across the
+whole project (no date prefix and no per-date reset), matching the
+convention used by sibling projects `chibicc-book` and
+`llvm-7-darwin-ppc`. When starting a new session, look at the
+highest-numbered existing dir and add one.
 
 When you start a substantively new session (e.g. after compaction or
 when the user opens a fresh thread), create the session dir up front

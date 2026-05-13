@@ -307,7 +307,7 @@ re-running this session — letting the Node sweep finish first.
 - `scripts/conformance/run-node-tests.js`
 - `docs/conformance/wpt-results/{summary.tsv,*.jsonl}` (sweep output)
 - `docs/conformance/node-results/{summary.tsv,*.jsonl}` (sweep output)
-- `docs/sessions/2026-04-29-session-1-wpt-and-node-conformance/notes.md`
+- `docs/sessions/026-wpt-and-node-conformance/notes.md`
 - `external/wpt/` (sparse, gitignored)
 - `external/node-tests/` (sparse, gitignored)
 

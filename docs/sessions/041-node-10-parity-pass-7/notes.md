@@ -1,8 +1,8 @@
 # Session notes — 2026-05-11 session 3: Node 10 parity, pass 7
 
-Handoff: [`handoff-pass-7.md`](../2026-05-11-session-2-node-10-parity-pass-6/handoff-pass-7.md)
+Handoff: [`handoff-pass-7.md`](../040-node-10-parity-pass-6/handoff-pass-7.md)
 (in pass-6's session dir).
-Pass-6 notes: [`../2026-05-11-session-2-node-10-parity-pass-6/notes.md`](../2026-05-11-session-2-node-10-parity-pass-6/notes.md).
+Pass-6 notes: [`../040-node-10-parity-pass-6/notes.md`](../040-node-10-parity-pass-6/notes.md).
 
 Pass-6 (v0.92) closed three stream-contract bugs: `_IncomingMessage`
 paused/flowing, `zlib.createGunzip()` buffer-until-listener, and
