@@ -1,0 +1,1332 @@
+=== [pmacg5/g5/0.95] check-test-coverage ===
+ok: 491 files in test/ accounted for
+    509 wired via scripts/test-list-*.txt
+    4 in the intentional-skip allowlist
+=== [pmacg5/g5/0.95] check-demo-deps ===
+ok: 51 test/vendor/ files transitively reached by demos, all in install rule (55 shipped at root)
+=== [pmacg5/g5/0.95] rsync source ===
+Transfer starting: 5971 files
+deleting .claude/scheduled_tasks.lock
+deleting docs/sessions/2026-05-12-session-1-node-10-parity-pass-8/release-notes/v0.94.md
+deleting docs/sessions/2026-05-12-session-1-node-10-parity-pass-8/release-notes/
+deleting docs/sessions/2026-05-12-session-1-node-10-parity-pass-8/notes.md
+deleting docs/sessions/2026-05-12-session-1-node-10-parity-pass-8/build-logs/pmacg5-g5-0.94.log
+deleting docs/sessions/2026-05-12-session-1-node-10-parity-pass-8/build-logs/emac-g4-0.94.log
+deleting docs/sessions/2026-05-12-session-1-node-10-parity-pass-8/build-logs/
+deleting docs/sessions/2026-05-12-session-1-node-10-parity-pass-8/
+deleting docs/sessions/2026-05-11-session-3-node-10-parity-pass-7/release-notes/v0.93.md
+deleting docs/sessions/2026-05-11-session-3-node-10-parity-pass-7/release-notes/
+deleting docs/sessions/2026-05-11-session-3-node-10-parity-pass-7/notes.md
+deleting docs/sessions/2026-05-11-session-3-node-10-parity-pass-7/handoff-pass-8.md
+deleting docs/sessions/2026-05-11-session-3-node-10-parity-pass-7/build-logs/g5-pass7.log
+deleting docs/sessions/2026-05-11-session-3-node-10-parity-pass-7/build-logs/g4-pass7.log
+deleting docs/sessions/2026-05-11-session-3-node-10-parity-pass-7/build-logs/g3-pass7.log
+deleting docs/sessions/2026-05-11-session-3-node-10-parity-pass-7/build-logs/
+deleting docs/sessions/2026-05-11-session-3-node-10-parity-pass-7/
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/release-notes/v0.92.md
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/release-notes/
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/plan.md
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/notes.md
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/handoff-pass-7.md
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/probe-narrowing-v0.91.txt
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/probe-monkey-patch-success.txt
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/npm-trace-v0.91.txt
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/g5-pass6.log
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/g5-pass6-rev2.log
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/g4-pass6.log
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/g4-pass6-rev2.log
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/g3-pass6.log
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/g3-pass6-rev2.log
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/g3-pass6-im-buffer.log
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/build-logs/
+deleting docs/sessions/2026-05-11-session-2-node-10-parity-pass-6/
+deleting docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/release-notes/v0.91.md
+deleting docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/release-notes/
+deleting docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/notes.md
+deleting docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/build-logs/g5-pass5-bio-retry.log
+deleting docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/build-logs/g4-pass5-bio-retry.log
+deleting docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/build-logs/g3-pass5-bio-retry.log
+deleting docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/build-logs/cf-tls-raw-v0.90.txt
+deleting docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/build-logs/cf-tls-instrumented-v0.90.txt
+deleting docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/build-logs/cf-tls-fixtrial-v0.90.txt
+deleting docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/build-logs/cf-https-fixtrial-v0.90.txt
+deleting docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/build-logs/
+deleting docs/sessions/2026-05-11-session-1-node-10-parity-pass-5/
+deleting docs/sessions/2026-05-10-session-5-node-10-parity-pass-5/plan.md
+deleting docs/sessions/2026-05-10-session-5-node-10-parity-pass-5/
+deleting docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/release-notes/v0.90.md
+deleting docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/release-notes/
+deleting docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/plan.md
+deleting docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/notes.md
+deleting docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/npm-install-mri-v0.90-pipereorder.txt
+deleting docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/npm-install-mri-v0.90-SUCCESS.txt
+deleting docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/g5-pass4-final.log
+deleting docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/g4-pass4-final.log
+deleting docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/g3-pass4-statuidgid.log
+deleting docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/g3-pass4-pipe-reorder.log
+deleting docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/g3-pass4-fchown.log
+deleting docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/g3-pass4-chown-noop.log
+deleting docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/build-logs/
+deleting docs/sessions/2026-05-10-session-4-node-10-parity-pass-4/
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/release-notes/v0.89.md
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/release-notes/
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/plan.md
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/notes.md
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89.txt
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-v3.txt
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-v2.txt
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-transformfinal.txt
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-transformend.txt
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-trace.txt
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-streamnewcall.txt
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-statdates.txt
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-pathresolve.txt
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-noaudit.txt
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-newlistener.txt
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-futimes.txt
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-fslink.txt
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g5-pass3-final.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g4-pass3-final.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-zlib-handle.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-zlib-handle-v3.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-zlib-handle-v2.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-transform-final.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-transform-end.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-tls.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-stream-newcall.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-stream-newcall-v2.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-stat-dates.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-pathresolve.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-newlistener.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-futimes.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-fs-link.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/g3-pass3-final.log
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/build-logs/
+deleting docs/sessions/2026-05-10-session-3-node-10-parity-pass-3/
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/release-notes/v0.88.md
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/release-notes/
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/plan.md
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/notes.md
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88.txt
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-zlib.txt
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-util-extend.txt
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-readdir-fix.txt
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-fd.txt
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-debuglog.txt
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-circ-fix.txt
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-circ-fix-verbose.txt
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-circ-fix-v2.txt
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/npm-install-mri-tarball-v0.88.txt
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g5-pass2-final.log
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g4-pass2-final.log
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2.log
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-zlib-classes.log
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-util-extend.log
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-rerun.log
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-readdir-fix.log
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-fd.log
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-debuglog.log
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-circ-fix.log
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/g3-pass2-circ-fix-v2.log
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/circular-repro-pre-fix.txt
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/build-logs/
+deleting docs/sessions/2026-05-10-session-2-node-10-parity-pass-2/
+deleting docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/release-notes/v0.87.md
+deleting docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/release-notes/
+deleting docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/plan.md
+deleting docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/notes.md
+deleting docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/build-logs/run-npm-v0.87.js
+deleting docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/build-logs/run-npm-v0.87-deployed.js
+deleting docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/build-logs/npm-install-mri-v0.87.txt
+deleting docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/build-logs/g3-pass1.log
+deleting docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/build-logs/g3-pass1-rerun.log
+deleting docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/build-logs/
+deleting docs/sessions/2026-05-10-session-1-node-10-parity-pass-1/
+deleting docs/sessions/2026-05-09-session-2-npm-6-bootstrap/plan.md
+deleting docs/sessions/2026-05-09-session-2-npm-6-bootstrap/notes.md
+deleting docs/sessions/2026-05-09-session-2-npm-6-bootstrap/build-logs/run-npm.js
+deleting docs/sessions/2026-05-09-session-2-npm-6-bootstrap/build-logs/
+deleting docs/sessions/2026-05-09-session-2-npm-6-bootstrap/
+deleting docs/sessions/2026-05-09-session-1-handoff-from-lumo/release-notes/v0.86.md
+deleting docs/sessions/2026-05-09-session-1-handoff-from-lumo/release-notes/
+deleting docs/sessions/2026-05-09-session-1-handoff-from-lumo/plan.md
+deleting docs/sessions/2026-05-09-session-1-handoff-from-lumo/notes.md
+deleting docs/sessions/2026-05-09-session-1-handoff-from-lumo/handoff-from-lumo.md
+deleting docs/sessions/2026-05-09-session-1-handoff-from-lumo/followups.md
+deleting docs/sessions/2026-05-09-session-1-handoff-from-lumo/build-logs/ibookg37-triad.log
+deleting docs/sessions/2026-05-09-session-1-handoff-from-lumo/build-logs/
+deleting docs/sessions/2026-05-09-session-1-handoff-from-lumo/
+deleting docs/sessions/2026-04-30-session-3-proto-deopt/release-notes/v0.85.md
+deleting docs/sessions/2026-04-30-session-3-proto-deopt/release-notes/
+deleting docs/sessions/2026-04-30-session-3-proto-deopt/notes.md
+deleting docs/sessions/2026-04-30-session-3-proto-deopt/followups.md
+deleting docs/sessions/2026-04-30-session-3-proto-deopt/build-logs/triad-g5.log
+deleting docs/sessions/2026-04-30-session-3-proto-deopt/build-logs/triad-g4.log
+deleting docs/sessions/2026-04-30-session-3-proto-deopt/build-logs/triad-g3.log
+deleting docs/sessions/2026-04-30-session-3-proto-deopt/build-logs/
+deleting docs/sessions/2026-04-30-session-3-proto-deopt/
+deleting docs/sessions/2026-04-30-session-2-v0.84/release-notes/
+deleting docs/sessions/2026-04-30-session-2-v0.84/notes.md
+deleting docs/sessions/2026-04-30-session-2-v0.84/build-logs/triad-g5.log
+deleting docs/sessions/2026-04-30-session-2-v0.84/build-logs/triad-g4.log
+deleting docs/sessions/2026-04-30-session-2-v0.84/build-logs/triad-g3.log
+deleting docs/sessions/2026-04-30-session-2-v0.84/build-logs/
+deleting docs/sessions/2026-04-30-session-2-v0.84/
+deleting docs/sessions/2026-04-30-session-1-https/release-notes/v0.83.md
+deleting docs/sessions/2026-04-30-session-1-https/release-notes/
+deleting docs/sessions/2026-04-30-session-1-https/notes.md
+deleting docs/sessions/2026-04-30-session-1-https/build-logs/triad-g5.log
+deleting docs/sessions/2026-04-30-session-1-https/build-logs/triad-g4.log
+deleting docs/sessions/2026-04-30-session-1-https/build-logs/triad-g3.log
+deleting docs/sessions/2026-04-30-session-1-https/build-logs/g3-test-all-pre-https-smoke.log
+deleting docs/sessions/2026-04-30-session-1-https/build-logs/
+deleting docs/sessions/2026-04-30-session-1-https/
+deleting docs/sessions/2026-04-29-session-3-v0.82-release/release-notes.md
+deleting docs/sessions/2026-04-29-session-3-v0.82-release/build-logs/v0.82-g5.log
+deleting docs/sessions/2026-04-29-session-3-v0.82-release/build-logs/v0.82-g4.log
+deleting docs/sessions/2026-04-29-session-3-v0.82-release/build-logs/v0.82-g3.log
+deleting docs/sessions/2026-04-29-session-3-v0.82-release/build-logs/
+deleting docs/sessions/2026-04-29-session-3-v0.82-release/
+deleting docs/sessions/2026-04-29-session-2-express-chat/notes.md
+deleting docs/sessions/2026-04-29-session-2-express-chat/
+deleting docs/sessions/2026-04-29-session-1-wpt-and-node-conformance/test-results/
+deleting docs/sessions/2026-04-29-session-1-wpt-and-node-conformance/notes.md
+deleting docs/sessions/2026-04-29-session-1-wpt-and-node-conformance/notes/
+deleting docs/sessions/2026-04-29-session-1-wpt-and-node-conformance/
+deleting docs/sessions/2026-04-25-session-x/summary.md
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.65-notes.md
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.65-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.64-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.63-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.62-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.61-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.60-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.59-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.58-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.57-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.56-notes.md
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.56-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.55-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.54-notes.md
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.54-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.53-notes.md
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.53-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.52-notes.md
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.52-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.51-notes.md
+deleting docs/sessions/2026-04-25-session-x/release-notes/v0.51-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-x/release-notes/
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.65-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.65-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.65-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.64-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.64-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.64-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.63-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.63-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.63-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.62-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.62-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.62-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.61-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.61-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.61-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.60-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.60-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.60-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.59-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.59-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.59-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.58-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.58-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.58-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.57-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.57-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.57-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.56-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.56-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.56-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.55-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.55-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.55-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.54-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.54-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.54-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.53-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.53-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.53-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.52-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.52-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.52-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.51-g5.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.51-g4.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/v0.51-g3.log
+deleting docs/sessions/2026-04-25-session-x/build-logs/
+deleting docs/sessions/2026-04-25-session-x/
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/scripts/migrate-triad-build-logs.sh
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/scripts/migrate-legacy-tmp-artifacts.sh
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/scripts/
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/workflow-commit-msg.txt
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.81.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.81-msg.txt
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.80.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.80-msg.txt
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.79.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.79-msg.txt
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.78.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.78-msg.txt
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.77.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.77-msg.txt
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.76.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.76-msg.txt
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.75.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.75-msg.txt
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.74.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.74-msg.txt
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.73.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.73-msg.txt
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.72.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.72-msg.txt
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.71.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.71-msg.txt
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.70.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.70-msg.txt
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.69.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.68.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.67.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.66.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/notes.md
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.81-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.81-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.81-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.80-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.80-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.80-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.79-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.79-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.79-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.78-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.78-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.78-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.77-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.77-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.77-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.76-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.76-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.76-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.75-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.75-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.75-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.74-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.74-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.74-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.73-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.73-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.73-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.72-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.72-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.72-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.71-ibookg37-validate.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.71-ibookg37-tests.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.71-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.71-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.71-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.70-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.70-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.70-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.69-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.69-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.69-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.68-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.68-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.68-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.67-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.67-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.67-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.66-g5.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.66-g4.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.66-g3.log
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/
+deleting docs/sessions/2026-04-25-session-1-v0.66-v0.81-asymmetric-crypto-marathon/
+deleting docs/sessions/2026-04-24-session-w/summary.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.50-notes.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.50-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.49-notes.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.49-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.48-notes.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.48-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.47-notes.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.47-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.46-notes.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.46-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.45-notes.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.45-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.44-notes.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.44-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.43-notes.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.43-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.42-notes.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.42-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.41-notes.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.41-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.40-notes.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.40-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.39-notes.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.39-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.38-notes.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.38-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.37-notes.md
+deleting docs/sessions/2026-04-24-session-w/release-notes/v0.37-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-w/release-notes/
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.50-g5.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.50-g4.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.50-g3.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.49-g5.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.49-g4.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.49-g3.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.48-g5.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.48-g4.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.48-g3.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.47-g5.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.47-g4.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.47-g3.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.46-g5.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.46-g4.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.46-g3.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.45-g5.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.45-g4.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.45-g3.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.44-g5.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.44-g4.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.44-g3.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.43-g5.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.43-g4.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.43-g3.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.42-g5.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.42-g4.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.42-g3.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.41-g5.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.41-g4.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.41-g3.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.40-g5.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.40-g4.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.40-g3.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.39-g5.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.39-g4.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.39-g3.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.38-g5.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.38-g4.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.38-g3.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.37-g5.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.37-g4.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/v0.37-g3.log
+deleting docs/sessions/2026-04-24-session-w/build-logs/
+deleting docs/sessions/2026-04-24-session-w/
+deleting docs/sessions/2026-04-24-session-v/summary.md
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.36-notes.md
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.36-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.35-notes.md
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.35-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.34-notes.md
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.34-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.33-notes.md
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.33-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.32-notes.md
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.32-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.31-notes.md
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.31-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.30-notes.md
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.30-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.29-notes.md
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.29-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.28-notes.md
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.28-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.27-notes.md
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.27-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.26-notes.md
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.26-commit-msg.txt
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.25-notes.md
+deleting docs/sessions/2026-04-24-session-v/release-notes/v0.24-notes.md
+deleting docs/sessions/2026-04-24-session-v/release-notes/
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.36-g5.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.36-g4.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.36-g3.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.35-g5.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.35-g4.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.35-g3.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.34-g5.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.34-g4.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.34-g3.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.33-g5.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.33-g4.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.33-g3.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.32-g5.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.32-g4.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.32-g3.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.31-g5.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.31-g4.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.31-g3.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.30-g5.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.30-g4.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.30-g3.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.29-g5.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.29-g4.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.29-g3.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.28-g5.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.28-g4.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.28-g3.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.27-g5.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.27-g4.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.27-g3.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.26-g5.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.26-g4.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.26-g3.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.25-g5.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.25-g4.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.25-g3.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.24-g5.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.24-g4.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/v0.24-g3.log
+deleting docs/sessions/2026-04-24-session-v/build-logs/
+deleting docs/sessions/2026-04-24-session-v/
+deleting docs/sessions/2026-04-24-session-u/summary.md
+deleting docs/sessions/2026-04-24-session-u/scripts/triad-v0.23.sh
+deleting docs/sessions/2026-04-24-session-u/scripts/triad-v0.23-g4.sh
+deleting docs/sessions/2026-04-24-session-u/scripts/
+deleting docs/sessions/2026-04-24-session-u/release-notes/v0.23-notes.md
+deleting docs/sessions/2026-04-24-session-u/release-notes/v0.22-tag.txt
+deleting docs/sessions/2026-04-24-session-u/release-notes/v0.22-release-notes.md
+deleting docs/sessions/2026-04-24-session-u/release-notes/v0.22-commit.txt
+deleting docs/sessions/2026-04-24-session-u/release-notes/
+deleting docs/sessions/2026-04-24-session-u/build-logs/v0.23-g5.log
+deleting docs/sessions/2026-04-24-session-u/build-logs/v0.23-g4.log
+deleting docs/sessions/2026-04-24-session-u/build-logs/v0.23-g3.log
+deleting docs/sessions/2026-04-24-session-u/build-logs/
+deleting docs/sessions/2026-04-24-session-u/
+deleting docs/sessions/2026-04-24-session-t/summary.md
+deleting docs/sessions/2026-04-24-session-t/
+deleting docs/sessions/2026-04-24-session-s/summary.md
+deleting docs/sessions/2026-04-24-session-s/release-notes/v0.21-tag.txt
+deleting docs/sessions/2026-04-24-session-s/release-notes/v0.21-release-notes.md
+deleting docs/sessions/2026-04-24-session-s/release-notes/v0.21-commit.txt
+deleting docs/sessions/2026-04-24-session-s/release-notes/v0.20-tag.txt
+deleting docs/sessions/2026-04-24-session-s/release-notes/v0.20-release-notes.md
+deleting docs/sessions/2026-04-24-session-s/release-notes/v0.20-commit.txt
+deleting docs/sessions/2026-04-24-session-s/release-notes/
+deleting docs/sessions/2026-04-24-session-s/
+deleting docs/sessions/2026-04-24-session-r/summary.md
+deleting docs/sessions/2026-04-24-session-r/release-notes/v0.19-tag.txt
+deleting docs/sessions/2026-04-24-session-r/release-notes/v0.19-release-notes.md
+deleting docs/sessions/2026-04-24-session-r/release-notes/v0.19-commit.txt
+deleting docs/sessions/2026-04-24-session-r/release-notes/
+deleting docs/sessions/2026-04-24-session-r/
+deleting docs/sessions/2026-04-24-session-q/summary.md
+deleting docs/sessions/2026-04-24-session-q/release-notes/v0.18-tag.txt
+deleting docs/sessions/2026-04-24-session-q/release-notes/v0.18-release-notes.md
+deleting docs/sessions/2026-04-24-session-q/release-notes/v0.18-commit.txt
+deleting docs/sessions/2026-04-24-session-q/release-notes/v0.17-tag.txt
+deleting docs/sessions/2026-04-24-session-q/release-notes/v0.17-release-notes.md
+deleting docs/sessions/2026-04-24-session-q/release-notes/v0.17-commit.txt
+deleting docs/sessions/2026-04-24-session-q/release-notes/
+deleting docs/sessions/2026-04-24-session-q/
+deleting docs/sessions/2026-04-24-session-p/summary.md
+deleting docs/sessions/2026-04-24-session-p/release-notes/v0.16-tag.txt
+deleting docs/sessions/2026-04-24-session-p/release-notes/v0.16-release-notes.md
+deleting docs/sessions/2026-04-24-session-p/release-notes/v0.16-commit.txt
+deleting docs/sessions/2026-04-24-session-p/release-notes/v0.15-tag.txt
+deleting docs/sessions/2026-04-24-session-p/release-notes/v0.15-release-notes.md
+deleting docs/sessions/2026-04-24-session-p/release-notes/v0.15-commit.txt
+deleting docs/sessions/2026-04-24-session-p/release-notes/
+deleting docs/sessions/2026-04-24-session-p/
+deleting docs/sessions/2026-04-24-session-n/summary.md
+deleting docs/sessions/2026-04-24-session-n/release-notes/v0.14-tag.txt
+deleting docs/sessions/2026-04-24-session-n/release-notes/v0.14-release-notes.md
+deleting docs/sessions/2026-04-24-session-n/release-notes/v0.14-commit.txt
+deleting docs/sessions/2026-04-24-session-n/release-notes/
+deleting docs/sessions/2026-04-24-session-n/
+deleting docs/sessions/2026-04-24-session-m/summary.md
+deleting docs/sessions/2026-04-24-session-m/release-notes/v0.13-tag.txt
+deleting docs/sessions/2026-04-24-session-m/release-notes/v0.13-release-notes.md
+deleting docs/sessions/2026-04-24-session-m/release-notes/v0.13-commit.txt
+deleting docs/sessions/2026-04-24-session-m/release-notes/
+deleting docs/sessions/2026-04-24-session-m/
+deleting docs/sessions/2026-04-24-session-l/summary.md
+deleting docs/sessions/2026-04-24-session-l/
+deleting docs/sessions/2026-04-24-session-k/summary.md
+deleting docs/sessions/2026-04-24-session-k/release-notes/v0.12-tag.txt
+deleting docs/sessions/2026-04-24-session-k/release-notes/v0.12-release-notes.md
+deleting docs/sessions/2026-04-24-session-k/release-notes/v0.12-commit.txt
+deleting docs/sessions/2026-04-24-session-k/release-notes/
+deleting docs/sessions/2026-04-24-session-k/
+deleting docs/sessions/2026-04-24-session-j/summary.md
+deleting docs/sessions/2026-04-24-session-j/scripts/install-mozjs-45-ionpower-pmacg5.sh
+deleting docs/sessions/2026-04-24-session-j/scripts/
+deleting docs/sessions/2026-04-24-session-j/release-notes/v0.11-tag.txt
+deleting docs/sessions/2026-04-24-session-j/release-notes/v0.11-release-notes.md
+deleting docs/sessions/2026-04-24-session-j/release-notes/v0.11-commit.txt
+deleting docs/sessions/2026-04-24-session-j/release-notes/v0.10-release-notes.md
+deleting docs/sessions/2026-04-24-session-j/release-notes/v0.10-commit.txt
+deleting docs/sessions/2026-04-24-session-j/release-notes/
+deleting docs/sessions/2026-04-24-session-j/
+deleting docs/sessions/2026-04-23-session-i/summary.md
+deleting docs/sessions/2026-04-23-session-i/release-notes/v0.9-release-notes.md
+deleting docs/sessions/2026-04-23-session-i/release-notes/v0.9-commit-msg.txt
+deleting docs/sessions/2026-04-23-session-i/release-notes/
+deleting docs/sessions/2026-04-23-session-i/
+deleting docs/sessions/2026-04-23-session-h/summary.md
+deleting docs/sessions/2026-04-23-session-h/release-notes/v0.8-release-notes.md
+deleting docs/sessions/2026-04-23-session-h/release-notes/v0.8-commit-msg.txt
+deleting docs/sessions/2026-04-23-session-h/release-notes/v0.7-release-notes.md
+deleting docs/sessions/2026-04-23-session-h/release-notes/
+deleting docs/sessions/2026-04-23-session-h/
+deleting docs/sessions/2026-04-23-session-g/summary.md
+deleting docs/sessions/2026-04-23-session-g/release-notes/v0.6-release-notes.md
+deleting docs/sessions/2026-04-23-session-g/release-notes/
+deleting docs/sessions/2026-04-23-session-g/
+deleting docs/sessions/2026-04-23-session-f/summary.md
+deleting docs/sessions/2026-04-23-session-f/release-notes/v0.5-release-notes.md
+deleting docs/sessions/2026-04-23-session-f/release-notes/
+deleting docs/sessions/2026-04-23-session-f/
+deleting docs/sessions/2026-04-23-session-e/summary.md
+deleting docs/sessions/2026-04-23-session-e/release-notes/v0.4-release-notes.md
+deleting docs/sessions/2026-04-23-session-e/release-notes/v0.3-release-notes.md
+deleting docs/sessions/2026-04-23-session-e/release-notes/
+deleting docs/sessions/2026-04-23-session-e/
+deleting docs/sessions/2026-04-23-session-d/summary.md
+deleting docs/sessions/2026-04-23-session-d/release-notes/v0.2-release-notes.md
+deleting docs/sessions/2026-04-23-session-d/release-notes/v0.1-notes.md
+deleting docs/sessions/2026-04-23-session-d/release-notes/v0.1-initial-commit-msg.txt
+deleting docs/sessions/2026-04-23-session-d/release-notes/
+deleting docs/sessions/2026-04-23-session-d/
+deleting docs/sessions/2026-04-22-session-c/summary.md
+deleting docs/sessions/2026-04-22-session-c/
+deleting docs/sessions/2026-04-22-session-b/summary.md
+deleting docs/sessions/2026-04-22-session-b/
+deleting docs/sessions/2026-04-22-session-a/summary.md
+deleting docs/sessions/2026-04-22-session-a/
+deleting docs/sessions/2026-04-21-session-resume/summary.md
+deleting docs/sessions/2026-04-21-session-resume/release-notes/ts-commit-msg.txt
+deleting docs/sessions/2026-04-21-session-resume/release-notes/marked-commit-msg.txt
+deleting docs/sessions/2026-04-21-session-resume/release-notes/lodash-commit-msg.txt
+deleting docs/sessions/2026-04-21-session-resume/release-notes/hb-commit-msg.txt
+deleting docs/sessions/2026-04-21-session-resume/release-notes/acorn-commit-msg.txt
+deleting docs/sessions/2026-04-21-session-resume/release-notes/
+deleting docs/sessions/2026-04-21-session-resume/build-logs/sync-to-g5.log
+deleting docs/sessions/2026-04-21-session-resume/build-logs/
+deleting docs/sessions/2026-04-21-session-resume/
+deleting test/fib-report.txt
+./
+.claude/
+docs/convos/
+docs/plans/
+CLAUDE.md
+Makefile
+README.md
+docs/convos/claude-conversation-2026-05-12-8005d6aa.md
+docs/convos/claude-conversation-2026-05-13-6f9a09cc.md
+docs/convos/claude-conversation-2026-05-13-dd4c5771.md
+docs/sessions/
+docs/sessions/001-resume-and-pickup/
+docs/sessions/001-resume-and-pickup/build-logs/
+docs/sessions/001-resume-and-pickup/release-notes/
+docs/sessions/002-library-hunt-wave-1/
+docs/sessions/003-library-hunt-wave-2/
+docs/sessions/004-library-hunt-wave-3-http-client/
+docs/sessions/005-v0.1-v0.2-triad-green/
+docs/sessions/005-v0.1-v0.2-triad-green/release-notes/
+docs/plans/node-target-version.md
+docs/plans/proto-mutation-warnings.md
+docs/sessions/001-resume-and-pickup/build-logs/sync-to-g5.log
+docs/sessions/006-v0.3-v0.4-library-push/
+docs/sessions/006-v0.3-v0.4-library-push/release-notes/
+docs/sessions/007-v0.5/
+docs/sessions/007-v0.5/release-notes/
+docs/sessions/008-v0.6/
+docs/sessions/008-v0.6/release-notes/
+docs/sessions/009-v0.7-v0.8-cross-500-libs/
+docs/sessions/009-v0.7-v0.8-cross-500-libs/release-notes/
+docs/sessions/010-v0.9-node-interface-rounding/
+docs/sessions/010-v0.9-node-interface-rounding/release-notes/
+docs/sessions/011-v0.10-v0.11-event-loop-and-microtasks/
+docs/sessions/011-v0.10-v0.11-event-loop-and-microtasks/release-notes/
+docs/sessions/011-v0.10-v0.11-event-loop-and-microtasks/scripts/
+docs/sessions/012-v0.12-batch-five-features/
+docs/sessions/012-v0.12-batch-five-features/release-notes/
+docs/sessions/013-v0.12-followup/
+docs/sessions/014-v0.13-library-hunt/
+docs/sessions/014-v0.13-library-hunt/release-notes/
+docs/sessions/015-v0.14-zlib-compression/
+docs/sessions/001-resume-and-pickup/release-notes/acorn-commit-msg.txt
+docs/sessions/001-resume-and-pickup/release-notes/hb-commit-msg.txt
+docs/sessions/001-resume-and-pickup/release-notes/lodash-commit-msg.txt
+docs/sessions/001-resume-and-pickup/release-notes/marked-commit-msg.txt
+docs/sessions/001-resume-and-pickup/release-notes/ts-commit-msg.txt
+docs/sessions/001-resume-and-pickup/summary.md
+docs/sessions/002-library-hunt-wave-1/summary.md
+docs/sessions/003-library-hunt-wave-2/summary.md
+docs/sessions/004-library-hunt-wave-3-http-client/summary.md
+docs/sessions/005-v0.1-v0.2-triad-green/release-notes/v0.1-initial-commit-msg.txt
+docs/sessions/005-v0.1-v0.2-triad-green/release-notes/v0.1-notes.md
+docs/sessions/005-v0.1-v0.2-triad-green/release-notes/v0.2-release-notes.md
+docs/sessions/005-v0.1-v0.2-triad-green/summary.md
+docs/sessions/006-v0.3-v0.4-library-push/release-notes/v0.3-release-notes.md
+docs/sessions/006-v0.3-v0.4-library-push/release-notes/v0.4-release-notes.md
+docs/sessions/006-v0.3-v0.4-library-push/summary.md
+docs/sessions/007-v0.5/release-notes/v0.5-release-notes.md
+docs/sessions/007-v0.5/summary.md
+docs/sessions/008-v0.6/release-notes/v0.6-release-notes.md
+docs/sessions/008-v0.6/summary.md
+docs/sessions/009-v0.7-v0.8-cross-500-libs/release-notes/v0.7-release-notes.md
+docs/sessions/009-v0.7-v0.8-cross-500-libs/release-notes/v0.8-commit-msg.txt
+docs/sessions/009-v0.7-v0.8-cross-500-libs/release-notes/v0.8-release-notes.md
+docs/sessions/009-v0.7-v0.8-cross-500-libs/summary.md
+docs/sessions/010-v0.9-node-interface-rounding/release-notes/v0.9-commit-msg.txt
+docs/sessions/010-v0.9-node-interface-rounding/release-notes/v0.9-release-notes.md
+docs/sessions/010-v0.9-node-interface-rounding/summary.md
+docs/sessions/011-v0.10-v0.11-event-loop-and-microtasks/release-notes/v0.10-commit.txt
+docs/sessions/011-v0.10-v0.11-event-loop-and-microtasks/release-notes/v0.10-release-notes.md
+docs/sessions/011-v0.10-v0.11-event-loop-and-microtasks/release-notes/v0.11-commit.txt
+docs/sessions/011-v0.10-v0.11-event-loop-and-microtasks/release-notes/v0.11-release-notes.md
+docs/sessions/011-v0.10-v0.11-event-loop-and-microtasks/release-notes/v0.11-tag.txt
+docs/sessions/011-v0.10-v0.11-event-loop-and-microtasks/scripts/install-mozjs-45-ionpower-pmacg5.sh
+docs/sessions/011-v0.10-v0.11-event-loop-and-microtasks/summary.md
+docs/sessions/012-v0.12-batch-five-features/release-notes/v0.12-commit.txt
+docs/sessions/012-v0.12-batch-five-features/release-notes/v0.12-release-notes.md
+docs/sessions/012-v0.12-batch-five-features/release-notes/v0.12-tag.txt
+docs/sessions/012-v0.12-batch-five-features/summary.md
+docs/sessions/013-v0.12-followup/summary.md
+docs/sessions/014-v0.13-library-hunt/release-notes/v0.13-commit.txt
+docs/sessions/014-v0.13-library-hunt/release-notes/v0.13-release-notes.md
+docs/sessions/014-v0.13-library-hunt/release-notes/v0.13-tag.txt
+docs/sessions/014-v0.13-library-hunt/summary.md
+docs/sessions/015-v0.14-zlib-compression/release-notes/
+docs/sessions/016-v0.15-v0.16-scrypt/
+docs/sessions/016-v0.15-v0.16-scrypt/release-notes/
+docs/sessions/017-v0.17-v0.18-aes-cbc/
+docs/sessions/017-v0.17-v0.18-aes-cbc/release-notes/
+docs/sessions/018-v0.19-aes-ctr-hkdf/
+docs/sessions/018-v0.19-aes-ctr-hkdf/release-notes/
+docs/sessions/019-v0.20-v0.21-aes-gcm/
+docs/sessions/019-v0.20-v0.21-aes-gcm/release-notes/
+docs/sessions/020-crypto-subtle-webcrypto/
+docs/sessions/021-v0.22-v0.23-jwk-aes-kw/
+docs/sessions/021-v0.22-v0.23-jwk-aes-kw/build-logs/
+docs/sessions/021-v0.22-v0.23-jwk-aes-kw/release-notes/
+docs/sessions/021-v0.22-v0.23-jwk-aes-kw/scripts/
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/
+docs/sessions/015-v0.14-zlib-compression/release-notes/v0.14-commit.txt
+docs/sessions/015-v0.14-zlib-compression/release-notes/v0.14-release-notes.md
+docs/sessions/015-v0.14-zlib-compression/release-notes/v0.14-tag.txt
+docs/sessions/015-v0.14-zlib-compression/summary.md
+docs/sessions/016-v0.15-v0.16-scrypt/release-notes/v0.15-commit.txt
+docs/sessions/016-v0.15-v0.16-scrypt/release-notes/v0.15-release-notes.md
+docs/sessions/016-v0.15-v0.16-scrypt/release-notes/v0.15-tag.txt
+docs/sessions/016-v0.15-v0.16-scrypt/release-notes/v0.16-commit.txt
+docs/sessions/016-v0.15-v0.16-scrypt/release-notes/v0.16-release-notes.md
+docs/sessions/016-v0.15-v0.16-scrypt/release-notes/v0.16-tag.txt
+docs/sessions/016-v0.15-v0.16-scrypt/summary.md
+docs/sessions/017-v0.17-v0.18-aes-cbc/release-notes/v0.17-commit.txt
+docs/sessions/017-v0.17-v0.18-aes-cbc/release-notes/v0.17-release-notes.md
+docs/sessions/017-v0.17-v0.18-aes-cbc/release-notes/v0.17-tag.txt
+docs/sessions/017-v0.17-v0.18-aes-cbc/release-notes/v0.18-commit.txt
+docs/sessions/017-v0.17-v0.18-aes-cbc/release-notes/v0.18-release-notes.md
+docs/sessions/017-v0.17-v0.18-aes-cbc/release-notes/v0.18-tag.txt
+docs/sessions/017-v0.17-v0.18-aes-cbc/summary.md
+docs/sessions/018-v0.19-aes-ctr-hkdf/release-notes/v0.19-commit.txt
+docs/sessions/018-v0.19-aes-ctr-hkdf/release-notes/v0.19-release-notes.md
+docs/sessions/018-v0.19-aes-ctr-hkdf/release-notes/v0.19-tag.txt
+docs/sessions/018-v0.19-aes-ctr-hkdf/summary.md
+docs/sessions/019-v0.20-v0.21-aes-gcm/release-notes/v0.20-commit.txt
+docs/sessions/019-v0.20-v0.21-aes-gcm/release-notes/v0.20-release-notes.md
+docs/sessions/019-v0.20-v0.21-aes-gcm/release-notes/v0.20-tag.txt
+docs/sessions/019-v0.20-v0.21-aes-gcm/release-notes/v0.21-commit.txt
+docs/sessions/019-v0.20-v0.21-aes-gcm/release-notes/v0.21-release-notes.md
+docs/sessions/019-v0.20-v0.21-aes-gcm/release-notes/v0.21-tag.txt
+docs/sessions/019-v0.20-v0.21-aes-gcm/summary.md
+docs/sessions/020-crypto-subtle-webcrypto/summary.md
+docs/sessions/021-v0.22-v0.23-jwk-aes-kw/build-logs/v0.23-g3.log
+docs/sessions/021-v0.22-v0.23-jwk-aes-kw/build-logs/v0.23-g4.log
+docs/sessions/021-v0.22-v0.23-jwk-aes-kw/build-logs/v0.23-g5.log
+docs/sessions/021-v0.22-v0.23-jwk-aes-kw/release-notes/v0.22-commit.txt
+docs/sessions/021-v0.22-v0.23-jwk-aes-kw/release-notes/v0.22-release-notes.md
+docs/sessions/021-v0.22-v0.23-jwk-aes-kw/release-notes/v0.22-tag.txt
+docs/sessions/021-v0.22-v0.23-jwk-aes-kw/release-notes/v0.23-notes.md
+docs/sessions/021-v0.22-v0.23-jwk-aes-kw/scripts/triad-v0.23-g4.sh
+docs/sessions/021-v0.22-v0.23-jwk-aes-kw/scripts/triad-v0.23.sh
+docs/sessions/021-v0.22-v0.23-jwk-aes-kw/summary.md
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.24-g3.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.24-g4.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.24-g5.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.25-g3.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.25-g4.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.25-g5.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.26-g3.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.26-g4.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.26-g5.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.27-g3.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.27-g4.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.27-g5.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.28-g3.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.28-g4.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.28-g5.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.29-g3.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.29-g4.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.29-g5.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.30-g3.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.30-g4.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.30-g5.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.31-g3.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.31-g4.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.31-g5.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.32-g3.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.32-g4.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.32-g5.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.33-g3.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.33-g4.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.33-g5.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.34-g3.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.34-g4.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.34-g5.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.35-g3.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.35-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/scripts/
+docs/sessions/026-wpt-and-node-conformance/
+docs/sessions/026-wpt-and-node-conformance/notes/
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.35-g5.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.36-g3.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.36-g4.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/build-logs/v0.36-g5.log
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.24-notes.md
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.25-notes.md
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.26-commit-msg.txt
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.26-notes.md
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.27-commit-msg.txt
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.27-notes.md
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.28-commit-msg.txt
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.28-notes.md
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.29-commit-msg.txt
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.29-notes.md
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.30-commit-msg.txt
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.30-notes.md
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.31-commit-msg.txt
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.31-notes.md
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.32-commit-msg.txt
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.32-notes.md
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.33-commit-msg.txt
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.33-notes.md
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.34-commit-msg.txt
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.34-notes.md
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.35-commit-msg.txt
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.35-notes.md
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.36-commit-msg.txt
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/release-notes/v0.36-notes.md
+docs/sessions/022-v0.24-v0.36-asymmetric-crypto-first/summary.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.37-g3.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.37-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.37-g5.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.38-g3.log
+docs/sessions/026-wpt-and-node-conformance/test-results/
+docs/sessions/027-express-chat/
+docs/sessions/028-v0.82-release/
+docs/sessions/028-v0.82-release/build-logs/
+docs/sessions/029-https/
+docs/sessions/029-https/build-logs/
+docs/sessions/029-https/release-notes/
+docs/sessions/030-v0.84/
+docs/sessions/030-v0.84/build-logs/
+docs/sessions/030-v0.84/release-notes/
+docs/sessions/031-proto-deopt/
+docs/sessions/031-proto-deopt/build-logs/
+docs/sessions/031-proto-deopt/release-notes/
+docs/sessions/032-handoff-from-lumo/
+docs/sessions/032-handoff-from-lumo/build-logs/
+docs/sessions/032-handoff-from-lumo/release-notes/
+docs/sessions/033-npm-6-bootstrap/
+docs/sessions/033-npm-6-bootstrap/build-logs/
+docs/sessions/034-node-10-parity-pass-1/
+docs/sessions/034-node-10-parity-pass-1/build-logs/
+docs/sessions/034-node-10-parity-pass-1/release-notes/
+docs/sessions/035-node-10-parity-pass-2/
+docs/sessions/035-node-10-parity-pass-2/build-logs/
+docs/sessions/035-node-10-parity-pass-2/release-notes/
+docs/sessions/036-node-10-parity-pass-3/
+docs/sessions/036-node-10-parity-pass-3/build-logs/
+docs/sessions/036-node-10-parity-pass-3/release-notes/
+docs/sessions/037-node-10-parity-pass-4/
+docs/sessions/037-node-10-parity-pass-4/build-logs/
+docs/sessions/037-node-10-parity-pass-4/release-notes/
+docs/sessions/038-node-10-parity-pass-5-plan/
+docs/sessions/039-node-10-parity-pass-5/
+docs/sessions/039-node-10-parity-pass-5/build-logs/
+docs/sessions/039-node-10-parity-pass-5/release-notes/
+docs/sessions/040-node-10-parity-pass-6/
+docs/sessions/040-node-10-parity-pass-6/build-logs/
+docs/sessions/040-node-10-parity-pass-6/release-notes/
+docs/sessions/041-node-10-parity-pass-7/
+docs/sessions/041-node-10-parity-pass-7/build-logs/
+docs/sessions/041-node-10-parity-pass-7/release-notes/
+docs/sessions/042-node-10-parity-pass-8/
+docs/sessions/042-node-10-parity-pass-8/build-logs/
+docs/sessions/042-node-10-parity-pass-8/release-notes/
+docs/sessions/043-node-10-parity-pass-9-and-express-discovery/
+docs/sessions/043-node-10-parity-pass-9-and-express-discovery/build-logs/
+docs/sessions/043-node-10-parity-pass-9-and-express-discovery/release-notes/
+scripts/
+src/
+src/node_compat/
+test/
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.38-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.38-g5.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.39-g3.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.39-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.39-g5.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.40-g3.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.40-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.40-g5.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.41-g3.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.41-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.41-g5.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.42-g3.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.42-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.42-g5.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.43-g3.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.43-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.43-g5.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.44-g3.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.44-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.44-g5.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.45-g3.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.45-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.45-g5.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.46-g3.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.46-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.46-g5.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.47-g3.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.47-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.47-g5.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.48-g3.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.48-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.48-g5.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.49-g3.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.49-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.49-g5.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.50-g3.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.50-g4.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/build-logs/v0.50-g5.log
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.37-commit-msg.txt
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.37-notes.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.38-commit-msg.txt
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.38-notes.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.39-commit-msg.txt
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.39-notes.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.40-commit-msg.txt
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.40-notes.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.41-commit-msg.txt
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.41-notes.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.42-commit-msg.txt
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.42-notes.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.43-commit-msg.txt
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.43-notes.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.44-commit-msg.txt
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.44-notes.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.45-commit-msg.txt
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.45-notes.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.46-commit-msg.txt
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.46-notes.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.47-commit-msg.txt
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.47-notes.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.48-commit-msg.txt
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.48-notes.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.49-commit-msg.txt
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.49-notes.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.50-commit-msg.txt
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/release-notes/v0.50-notes.md
+docs/sessions/023-v0.37-v0.50-halfway-to-1.0/summary.md
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.51-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.51-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.51-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.52-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.52-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.52-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.53-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.53-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.53-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.54-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.54-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.54-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.55-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.55-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.55-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.56-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.56-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.56-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.57-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.57-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.57-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.58-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.58-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.58-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.59-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.59-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.59-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.60-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.60-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.60-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.61-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.61-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.61-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.62-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.62-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.62-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.63-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.63-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.63-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.64-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.64-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.64-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.65-g3.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.65-g4.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/build-logs/v0.65-g5.log
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.51-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.51-notes.md
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.52-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.52-notes.md
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.53-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.53-notes.md
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.54-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.54-notes.md
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.55-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.56-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.56-notes.md
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.57-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.58-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.59-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.60-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.61-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.62-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.63-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.64-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.65-commit-msg.txt
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/release-notes/v0.65-notes.md
+docs/sessions/024-v0.51-v0.65-big-ticket-gaps/summary.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.66-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.66-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.66-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.67-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.67-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.67-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.68-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.68-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.68-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.69-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.69-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.69-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.70-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.70-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.70-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.71-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.71-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.71-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.71-ibookg37-tests.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.71-ibookg37-validate.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.72-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.72-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.72-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.73-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.73-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.73-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.74-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.74-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.74-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.75-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.75-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.75-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.76-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.76-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.76-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.77-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.77-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.77-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.78-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.78-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.78-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.79-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.79-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.79-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.80-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.80-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.80-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.81-g3.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.81-g4.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/build-logs/v0.81-g5.log
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/notes.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.66.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.67.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.68.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.69.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.70-msg.txt
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.70.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.71-msg.txt
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.71.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.72-msg.txt
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.72.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.73-msg.txt
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.73.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.74-msg.txt
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.74.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.75-msg.txt
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.75.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.76-msg.txt
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.76.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.77-msg.txt
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.77.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.78-msg.txt
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.78.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.79-msg.txt
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.79.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.80-msg.txt
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.80.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.81-msg.txt
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/v0.81.md
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/release-notes/workflow-commit-msg.txt
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/scripts/migrate-legacy-tmp-artifacts.sh
+docs/sessions/025-v0.66-v0.81-asymmetric-crypto-marathon/scripts/migrate-triad-build-logs.sh
+docs/sessions/026-wpt-and-node-conformance/notes.md
+docs/sessions/027-express-chat/notes.md
+docs/sessions/028-v0.82-release/build-logs/v0.82-g3.log
+docs/sessions/028-v0.82-release/build-logs/v0.82-g4.log
+docs/sessions/028-v0.82-release/build-logs/v0.82-g5.log
+docs/sessions/028-v0.82-release/release-notes.md
+docs/sessions/029-https/build-logs/g3-test-all-pre-https-smoke.log
+docs/sessions/029-https/build-logs/triad-g3.log
+docs/sessions/029-https/build-logs/triad-g4.log
+docs/sessions/029-https/build-logs/triad-g5.log
+docs/sessions/029-https/notes.md
+docs/sessions/029-https/release-notes/v0.83.md
+docs/sessions/030-v0.84/build-logs/triad-g3.log
+docs/sessions/030-v0.84/build-logs/triad-g4.log
+docs/sessions/030-v0.84/build-logs/triad-g5.log
+docs/sessions/030-v0.84/notes.md
+docs/sessions/031-proto-deopt/build-logs/triad-g3.log
+docs/sessions/031-proto-deopt/build-logs/triad-g4.log
+docs/sessions/031-proto-deopt/build-logs/triad-g5.log
+docs/sessions/031-proto-deopt/followups.md
+docs/sessions/031-proto-deopt/notes.md
+docs/sessions/031-proto-deopt/release-notes/v0.85.md
+docs/sessions/032-handoff-from-lumo/build-logs/ibookg37-triad.log
+docs/sessions/032-handoff-from-lumo/followups.md
+docs/sessions/032-handoff-from-lumo/handoff-from-lumo.md
+docs/sessions/032-handoff-from-lumo/notes.md
+docs/sessions/032-handoff-from-lumo/plan.md
+docs/sessions/032-handoff-from-lumo/release-notes/v0.86.md
+docs/sessions/033-npm-6-bootstrap/build-logs/run-npm.js
+docs/sessions/033-npm-6-bootstrap/notes.md
+docs/sessions/033-npm-6-bootstrap/plan.md
+docs/sessions/034-node-10-parity-pass-1/build-logs/g3-pass1-rerun.log
+docs/sessions/034-node-10-parity-pass-1/build-logs/g3-pass1.log
+docs/sessions/034-node-10-parity-pass-1/build-logs/npm-install-mri-v0.87.txt
+docs/sessions/034-node-10-parity-pass-1/build-logs/run-npm-v0.87-deployed.js
+docs/sessions/034-node-10-parity-pass-1/build-logs/run-npm-v0.87.js
+docs/sessions/034-node-10-parity-pass-1/notes.md
+docs/sessions/034-node-10-parity-pass-1/plan.md
+docs/sessions/034-node-10-parity-pass-1/release-notes/v0.87.md
+docs/sessions/035-node-10-parity-pass-2/build-logs/circular-repro-pre-fix.txt
+docs/sessions/035-node-10-parity-pass-2/build-logs/g3-pass2-circ-fix-v2.log
+docs/sessions/035-node-10-parity-pass-2/build-logs/g3-pass2-circ-fix.log
+docs/sessions/035-node-10-parity-pass-2/build-logs/g3-pass2-debuglog.log
+docs/sessions/035-node-10-parity-pass-2/build-logs/g3-pass2-fd.log
+docs/sessions/035-node-10-parity-pass-2/build-logs/g3-pass2-readdir-fix.log
+docs/sessions/035-node-10-parity-pass-2/build-logs/g3-pass2-rerun.log
+docs/sessions/035-node-10-parity-pass-2/build-logs/g3-pass2-util-extend.log
+docs/sessions/035-node-10-parity-pass-2/build-logs/g3-pass2-zlib-classes.log
+docs/sessions/035-node-10-parity-pass-2/build-logs/g3-pass2.log
+docs/sessions/035-node-10-parity-pass-2/build-logs/g4-pass2-final.log
+docs/sessions/035-node-10-parity-pass-2/build-logs/g5-pass2-final.log
+docs/sessions/035-node-10-parity-pass-2/build-logs/npm-install-mri-tarball-v0.88.txt
+docs/sessions/035-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-circ-fix-v2.txt
+docs/sessions/035-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-circ-fix-verbose.txt
+docs/sessions/035-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-circ-fix.txt
+docs/sessions/035-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-debuglog.txt
+docs/sessions/035-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-fd.txt
+docs/sessions/035-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-readdir-fix.txt
+docs/sessions/035-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-util-extend.txt
+docs/sessions/035-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88-zlib.txt
+docs/sessions/035-node-10-parity-pass-2/build-logs/npm-install-mri-v0.88.txt
+docs/sessions/035-node-10-parity-pass-2/notes.md
+docs/sessions/035-node-10-parity-pass-2/plan.md
+docs/sessions/035-node-10-parity-pass-2/release-notes/v0.88.md
+docs/sessions/036-node-10-parity-pass-3/build-logs/g3-pass3-final.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g3-pass3-fs-link.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g3-pass3-futimes.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g3-pass3-newlistener.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g3-pass3-pathresolve.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g3-pass3-stat-dates.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g3-pass3-stream-newcall-v2.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g3-pass3-stream-newcall.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g3-pass3-tls.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g3-pass3-transform-end.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g3-pass3-transform-final.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g3-pass3-zlib-handle-v2.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g3-pass3-zlib-handle-v3.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g3-pass3-zlib-handle.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g4-pass3-final.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/g5-pass3-final.log
+docs/sessions/036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-fslink.txt
+docs/sessions/036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-futimes.txt
+docs/sessions/036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-newlistener.txt
+docs/sessions/036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-noaudit.txt
+docs/sessions/036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-pathresolve.txt
+docs/sessions/036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-statdates.txt
+docs/sessions/036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-streamnewcall.txt
+docs/sessions/036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-trace.txt
+docs/sessions/036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-transformend.txt
+docs/sessions/036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-transformfinal.txt
+docs/sessions/036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-v2.txt
+docs/sessions/036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89-v3.txt
+docs/sessions/036-node-10-parity-pass-3/build-logs/npm-install-mri-tarball-v0.89.txt
+docs/sessions/036-node-10-parity-pass-3/notes.md
+docs/sessions/036-node-10-parity-pass-3/plan.md
+docs/sessions/036-node-10-parity-pass-3/release-notes/v0.89.md
+docs/sessions/037-node-10-parity-pass-4/build-logs/g3-pass4-chown-noop.log
+docs/sessions/037-node-10-parity-pass-4/build-logs/g3-pass4-fchown.log
+docs/sessions/037-node-10-parity-pass-4/build-logs/g3-pass4-pipe-reorder.log
+docs/sessions/037-node-10-parity-pass-4/build-logs/g3-pass4-statuidgid.log
+docs/sessions/037-node-10-parity-pass-4/build-logs/g4-pass4-final.log
+docs/sessions/037-node-10-parity-pass-4/build-logs/g5-pass4-final.log
+docs/sessions/037-node-10-parity-pass-4/build-logs/npm-install-mri-v0.90-SUCCESS.txt
+docs/sessions/037-node-10-parity-pass-4/build-logs/npm-install-mri-v0.90-pipereorder.txt
+docs/sessions/037-node-10-parity-pass-4/notes.md
+docs/sessions/037-node-10-parity-pass-4/plan.md
+docs/sessions/037-node-10-parity-pass-4/release-notes/v0.90.md
+docs/sessions/038-node-10-parity-pass-5-plan/plan.md
+docs/sessions/039-node-10-parity-pass-5/build-logs/cf-https-fixtrial-v0.90.txt
+docs/sessions/039-node-10-parity-pass-5/build-logs/cf-tls-fixtrial-v0.90.txt
+docs/sessions/039-node-10-parity-pass-5/build-logs/cf-tls-instrumented-v0.90.txt
+docs/sessions/039-node-10-parity-pass-5/build-logs/cf-tls-raw-v0.90.txt
+docs/sessions/039-node-10-parity-pass-5/build-logs/g3-pass5-bio-retry.log
+docs/sessions/039-node-10-parity-pass-5/build-logs/g4-pass5-bio-retry.log
+docs/sessions/039-node-10-parity-pass-5/build-logs/g5-pass5-bio-retry.log
+docs/sessions/039-node-10-parity-pass-5/notes.md
+docs/sessions/039-node-10-parity-pass-5/release-notes/v0.91.md
+docs/sessions/040-node-10-parity-pass-6/build-logs/g3-pass6-im-buffer.log
+docs/sessions/040-node-10-parity-pass-6/build-logs/g3-pass6-rev2.log
+docs/sessions/040-node-10-parity-pass-6/build-logs/g3-pass6.log
+docs/sessions/040-node-10-parity-pass-6/build-logs/g4-pass6-rev2.log
+docs/sessions/040-node-10-parity-pass-6/build-logs/g4-pass6.log
+docs/sessions/040-node-10-parity-pass-6/build-logs/g5-pass6-rev2.log
+docs/sessions/040-node-10-parity-pass-6/build-logs/g5-pass6.log
+docs/sessions/040-node-10-parity-pass-6/build-logs/npm-trace-v0.91.txt
+docs/sessions/040-node-10-parity-pass-6/build-logs/probe-monkey-patch-success.txt
+docs/sessions/040-node-10-parity-pass-6/build-logs/probe-narrowing-v0.91.txt
+docs/sessions/040-node-10-parity-pass-6/handoff-pass-7.md
+docs/sessions/040-node-10-parity-pass-6/notes.md
+docs/sessions/040-node-10-parity-pass-6/plan.md
+docs/sessions/040-node-10-parity-pass-6/release-notes/v0.92.md
+docs/sessions/041-node-10-parity-pass-7/build-logs/g3-pass7.log
+docs/sessions/041-node-10-parity-pass-7/build-logs/g4-pass7.log
+docs/sessions/041-node-10-parity-pass-7/build-logs/g5-pass7.log
+docs/sessions/041-node-10-parity-pass-7/handoff-pass-8.md
+docs/sessions/041-node-10-parity-pass-7/notes.md
+docs/sessions/041-node-10-parity-pass-7/release-notes/v0.93.md
+docs/sessions/042-node-10-parity-pass-8/build-logs/emac-g4-0.94.log
+docs/sessions/042-node-10-parity-pass-8/build-logs/ibookg37-g3-0.94.log
+docs/sessions/042-node-10-parity-pass-8/build-logs/pmacg5-g5-0.94.log
+docs/sessions/042-node-10-parity-pass-8/handoff-pass-9.md
+docs/sessions/042-node-10-parity-pass-8/notes.md
+docs/sessions/042-node-10-parity-pass-8/release-notes/v0.94.md
+docs/sessions/043-node-10-parity-pass-9-and-express-discovery/notes.md
+docs/sessions/043-node-10-parity-pass-9-and-express-discovery/run-express-discovery.sh
+docs/sessions/README.md
+scripts/test-list-more.txt
+src/main.cpp
+src/node_compat/buffer.cpp
+src/node_compat/globals.cpp
+src/node_compat/net.cpp
+src/node_compat/process.cpp
+src/node_compat/tls.cpp
+
+sent 5716120 bytes  received 16692 bytes  2915829 bytes/sec
+total size is 104954735  speedup is 18.31
+=== [pmacg5/g5/0.95] scp Makefile + process.cpp + globals.cpp + main.cpp + net.cpp + tls.cpp (gremlin workaround) ===
+=== [pmacg5/g5/0.95] clean + build  (MOZJS=/opt/mozjs-45-ionpower-g5 CPU='-mcpu=G5 -D_PPC970_') ===
+rm -f src/main.o src/node_compat/console.o src/node_compat/process.o src/node_compat/fs.o src/node_compat/path.o src/node_compat/buffer.o src/node_compat/require.o src/node_compat/timers.o src/node_compat/crypto.o src/node_compat/http.o src/node_compat/child_process.o src/node_compat/event_loop.o src/node_compat/net.o src/node_compat/tls.o src/node_compat/zlib.o src/node_compat/globals.o node
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1206)=k(0,46) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,814) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,814) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantImLm4EE5valueE:G(0,2064)=k(0,82) in src/node_compat/tls.o
+ld: warning: duplicate dylib /opt/gcc-4.9.4/lib/libstdc++.6.dylib
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src32.o) and (default) in src/node_compat/timers.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/process.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/process.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/timers.o
+ld: warning: js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >::trace(js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >*, JSTracer*) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/http.o
+  [install_name_tool] @executable_path -> /opt/mozjs-45-ionpower-g5/lib
+=== [pmacg5/g5/0.95] test-all ===
+Testing test/node10-streams/test-stream-pipe-cleanup-pause.js PASS
+Testing test/node10-streams/test-stream-pipe-multiple-pipes.js PASS
+Testing test/node10-streams/test-stream-end-paused.js PASS
+Testing test/node10-streams/test-stream-events-prepend.js PASS
+Testing test/node10-streams/test-stream-readable-event.js PASS
+Testing test/node10-streams/test-stream-pipe-flow.js PASS
+Testing test/node10-streams/test-stream-pipe-manual-resume.js PASS
+Testing test/node10-streams/test-stream-pipe-without-listenerCount.js PASS
+Testing test/node10-streams/test-stream-objectmode-undefined.js PASS
+Testing test/node10-streams/test-stream-transform-flush-data.js PASS
+Testing test/node10-streams/test-stream-pipe-same-destination-twice.js PASS
+Testing test/node10-streams/test-stream-unpipe-event.js PASS
+Testing test/node10-streams/test-stream-readable-emittedReadable.js PASS
+Testing test/node10-streams/test-stream-decoder-objectmode.js PASS
+Testing test/node10-streams/test-stream-push-order.js PASS
+Testing test/node10-streams/test-stream-readable-resumeScheduled.js PASS
+Testing test/node10-streams/test-stream-pipe-cleanup.js PASS
+
+495 passing tests
+0 failing tests
+=== [pmacg5/g5/0.95] install ===
+cp -r test/vendor/elliptic   /opt/ionpower-node-0.95/share/ionpower-node/vendor/
+cp README.md LICENSE   /opt/ionpower-node-0.95/share/ionpower-node/ 2>/dev/null || true
+cp -r demos /opt/ionpower-node-0.95/share/ionpower-node/demos
+mkdir -p /opt/ionpower-node-0.95/share/ionpower-node/test/vendor/nm/node_modules
+
+installed ionpower-node 0.95 to /opt/ionpower-node-0.95
+  binary:   /opt/ionpower-node-0.95/bin/node (-> ionpower-node)
+  babel:    /opt/ionpower-node-0.95/share/ionpower-node/vendor/babel.js
+  demos:    /opt/ionpower-node-0.95/share/ionpower-node/demos/
+  mozjs:    expected at /opt/mozjs-45-ionpower-g5/
+
+Run:  /opt/ionpower-node-0.95/bin/node <script.js>
+=== [pmacg5/g5/0.95] tarball ===
+-rw-r--r--   1 macuser  wheel  7742267 May 13 02:59 /tmp/ionpower-node-0.95-g5-ppc.tar.gz
+=== [pmacg5/g5/0.95] DONE ===
+g5 exit=0
