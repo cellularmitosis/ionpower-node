@@ -112,11 +112,13 @@ Once `npm install express handlebars ws` works clean:
 ## Working order
 
 1. Read `notes.md` + `release-notes/v0.95.md` + the discovery log.
-2. **First check ibookg37**: if it's still down, power-cycle it. The
-   G3 tarball for v0.95 still needs to be uploaded once G3 is back —
-   rebuild + `gh release upload v0.95 ionpower-node-0.95-g3-ppc.tar.gz`
-   (see [`notes.md`](notes.md) "Release state" section for the
-   exact commands).
+2. **ibookg37 note**: the iBook G3 host is HDD-failing (see the
+   `project_ibookg37_hdd_failing` memory). For this project, prefer
+   `/Users/macuser/tmp/` over `/tmp/` for builds and artifacts since
+   `/tmp/` is wiped on any spontaneous reboot. The default in
+   [`scripts/triad-build.sh`](../../../scripts/triad-build.sh) still
+   uses `/tmp/`; safer to inline the steps for G3 OR add a
+   `--persistent-tmp` mode to the script.
 3. Work through the gap punch list (A) — usually each is small (5-30
    line addition to `globals.cpp` or `fs.cpp`). Start with hypothesis
    (1): temporarily revert the string→Buffer conversion in push() and

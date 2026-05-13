@@ -306,19 +306,25 @@ types in the npm path. Compare to the curl-bytes-saved-to-disk run.
 
 ## Release state
 
-- v0.95 published: <https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.95>
-- G4 + G5 tarballs uploaded.
-- **G3 tarball is pending.** ibookg37 (the iBook G3) crashed during
-  the tarball-pull phase after the build completed. After it came
-  back briefly, /tmp had been wiped (the tarball lived there), so
-  the rebuild was started. During that rebuild's test phase the
-  iBook crashed AGAIN — this time ping responds but sshd is hung
-  (banner exchange times out). The G3 binary HAS been built and
-  tested clean in this session (see
-  [`build-logs/ibookg37-g3-0.95.log`](build-logs/ibookg37-g3-0.95.log)).
-  When the host recovers, rebuild + upload:
+- v0.95 published with all three architectures:
+  <https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.95>
 
-      scripts/triad-build.sh ibookg37 g3 0.95
-      scp ibookg37:/tmp/ionpower-node-0.95-g3-ppc.tar.gz /tmp/
-      gh release upload v0.95 /tmp/ionpower-node-0.95-g3-ppc.tar.gz
+ibookg37 (the iBook G3 host) crashed twice during this session — once
+during the post-build tarball pull, then again partway through the
+rebuild's test phase — so the initial v0.95 publish went out with
+just G4 + G5 tarballs. The host came back several hours later
+(once Jason confirmed it was up), at which point we redid the G3
+build and uploaded the tarball to the existing release. Two notes
+from that recovery:
+
+- **`/tmp` is unsafe on ibookg37** (host is HDD-failing — reboots
+  are spontaneous and `/tmp` is wiped each time). The recovery build
+  used `/Users/macuser/tmp/` for the tarball + test log, then `scp`'d
+  immediately. Worth applying to future ibookg37 build flows; the
+  default in [`scripts/triad-build.sh`](../../../scripts/triad-build.sh)
+  is `/tmp/` for both the test log and the tarball.
+- Recovery G3 build log:
+  [`build-logs/ibookg37-g3-0.95-rebuild.log`](build-logs/ibookg37-g3-0.95-rebuild.log)
+  (build only — the install + tarball + scp ran inline). Test count
+  matched the original: 495 / 0.
 
