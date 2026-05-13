@@ -631,6 +631,10 @@ static const char kBootstrapJS[] =
     "    var arr = _evs(this)[ev]; if (!arr) return this;\n"
     "    for (var i = 0; i < arr.length; ++i) if (arr[i] === fn || arr[i]._orig === fn) {\n"
     "      arr.splice(i, 1);\n"
+    /* Node deletes the key when the listener array becomes empty so that
+       `emitter._events.foo === undefined` semantics hold (some libs +
+       tests check on this — test-stream-pipe-same-destination-twice). */
+    "      if (arr.length === 0) delete this._events[ev];\n"
     "      if (ev !== 'removeListener' && this._events.removeListener && this._events.removeListener.length) {\n"
     "        this.emit('removeListener', ev, fn);\n"
     "      }\n"
@@ -645,8 +649,24 @@ static const char kBootstrapJS[] =
     "  };\n"
     "  EventEmitter.prototype.listeners = function (ev) { return (_evs(this)[ev] || []).slice(); };\n"
     "  EventEmitter.prototype.listenerCount = function (ev) { return (_evs(this)[ev] || []).length; };\n"
+    /* emit(ev, ...args): standard Node behavior, including the special
+       case for 'error' — if no listener is registered, throw the error
+       (or wrap a non-Error in a generic Error). pass-7 and earlier used
+       to silently swallow unhandled 'error' events, but real Node
+       streams rely on the throw semantics (test-stream-pipe-error-handling
+       block 2 and block 3 in Node 10.24.1 both depend on it). */
     "  EventEmitter.prototype.emit = function (ev) {\n"
-    "    var arr = _evs(this)[ev]; if (!arr) return false;\n"
+    "    var arr = _evs(this)[ev];\n"
+    "    if (!arr || arr.length === 0) {\n"
+    "      if (ev === 'error') {\n"
+    "        var er = arguments[1];\n"
+    "        if (er instanceof Error) throw er;\n"
+    "        var e = new Error('Unhandled \"error\" event. (' + er + ')');\n"
+    "        e.context = er;\n"
+    "        throw e;\n"
+    "      }\n"
+    "      return false;\n"
+    "    }\n"
     "    var args = Array.prototype.slice.call(arguments, 1);\n"
     "    var copy = arr.slice();\n"
     "    for (var i = 0; i < copy.length; ++i) copy[i].apply(this, args);\n"
@@ -5710,24 +5730,111 @@ static const char kBootstrapJS[] =
        and pacote's tar.x pipe hangs forever waiting for input
        termination. Attaching 'end' first ensures the inline drain's
        'end' emission has a listener to drive dest.end(). */
+    /* pipe(dest) wires src 'end'/'error'/'data' into dest. We track each
+       pipe so unpipe() can locate and tear down a specific (src, dest)
+       pair without removing other listeners. Pass-8: also emit 'pipe' on
+       dest at hookup time and 'unpipe' on teardown — Node-spec, and a
+       handful of consumers (npm's progress bar, the test-stream tests)
+       depend on it. */
     "  _Stream.prototype.pipe = function (dest, opts) {\n"
     "    var src = this;\n"
     "    opts = opts || {};\n"
     "    var ended = false;\n"
-    "    src.on('end',  function () {\n"
+    /* onend: when src signals end-of-stream, drive dest.end() (unless
+       opts.end === false), then tear down this pipe — Node auto-unpipes
+       and emits 'unpipe' on dest (test-stream-unpipe-event covers this). */
+    "    function onend() {\n"
     "      if (ended) return; ended = true;\n"
     "      if (opts.end !== false && dest.end) dest.end();\n"
-    "    });\n"
-    "    src.on('error', function (err) {\n"
-    "      if (dest.emit) dest.emit('error', err);\n"
-    "    });\n"
-    "    src.on('data', function (chunk) { if (dest.write) dest.write(chunk); });\n"
+    "      src.unpipe(dest);\n"
+    "    }\n"
+    /* onerror: Node's legacy Stream.prototype.pipe pattern — tear down
+       this pipe's listeners on the first error, then propagate only if
+       the source has no other 'error' listener. The fallback is to
+       re-emit on dest, which (with the new EE 'error' throw semantics)
+       triggers an unhandled-error throw if dest also has none. Uses
+       _events directly because some libs (and the Node test suite,
+       e.g. test-stream-pipe-without-listenerCount) clobber the
+       `listenerCount` method on stream instances. */
+    "    function onerror(err) {\n"
+    "      src.removeListener('end',   onend);\n"
+    "      src.removeListener('error', onerror);\n"
+    "      src.removeListener('data',  ondata);\n"
+    "      if (src._pipes) {\n"
+    "        for (var i = 0; i < src._pipes.length; ++i) {\n"
+    "          if (src._pipes[i].onerror === onerror) { src._pipes.splice(i, 1); break; }\n"
+    "        }\n"
+    "      }\n"
+    "      var sevs = src._events && src._events.error;\n"
+    "      if (!sevs || sevs.length === 0) {\n"
+    "        if (dest.emit) dest.emit('error', err);\n"
+    "      }\n"
+    "    }\n"
+    "    function ondata(chunk) { if (dest.write) dest.write(chunk); }\n"
+    /* Register the pipe BEFORE wiring listeners. Attaching 'data' triggers
+       our auto-resume (which can synchronously run _read → push(null) →
+       emit('end') → onend → unpipe). If 'pipe' / _pipes weren't set up
+       first, the 'pipe' event ordering and pipesCount accounting would
+       be wrong (test-stream-unpipe-event subtest 1 caught it). */
+    "    if (!src._pipes) src._pipes = [];\n"
+    "    src._pipes.push({ dest: dest, onend: onend, onerror: onerror, ondata: ondata });\n"
+    /* Mirror onto _readableState.pipes / pipesCount for Node-internal
+       parity (test-stream-pipe-same-destination-twice + test-stream-
+       unpipe-event read these). Node uses pipes=null/dest/[dest...] —
+       null for 0 pipes, the dest itself for 1, an array for >1. */
+    "    if (src._readableState) {\n"
+    "      var rs = src._readableState;\n"
+    "      rs.pipesCount = (rs.pipesCount || 0) + 1;\n"
+    "      if (rs.pipesCount === 1) rs.pipes = dest;\n"
+    "      else if (rs.pipesCount === 2) rs.pipes = [rs.pipes, dest];\n"
+    "      else rs.pipes.push(dest);\n"
+    "    }\n"
+    "    if (dest.emit) dest.emit('pipe', src);\n"
+    "    src.on('end',   onend);\n"
+    "    src.on('error', onerror);\n"
+    "    src.on('data',  ondata);\n"
     "    if (src.resume) src.resume();\n"
     "    return dest;\n"
+    "  };\n"
+    /* unpipe(dest): remove the 'end'/'error'/'data' listeners that pipe()
+       installed for this specific (src, dest) pair, and emit 'unpipe' on
+       dest. unpipe() with no arg detaches all pipes. Returns this for
+       chaining (Node semantics). */
+    "  _Stream.prototype.unpipe = function (dest) {\n"
+    "    var pipes = this._pipes;\n"
+    "    if (!pipes || pipes.length === 0) return this;\n"
+    "    var self = this;\n"
+    "    function detach(entry) {\n"
+    "      self.removeListener('end',   entry.onend);\n"
+    "      self.removeListener('error', entry.onerror);\n"
+    "      self.removeListener('data',  entry.ondata);\n"
+    "      if (entry.dest && entry.dest.emit) entry.dest.emit('unpipe', self);\n"
+    "    }\n"
+    "    function syncState(removeAll, destRef) {\n"
+    "      if (!self._readableState) return;\n"
+    "      var rs = self._readableState;\n"
+    "      rs.pipesCount = pipes.length;\n"
+    "      if (rs.pipesCount === 0) rs.pipes = null;\n"
+    "      else if (rs.pipesCount === 1) rs.pipes = pipes[0].dest;\n"
+    "      else { rs.pipes = []; for (var i = 0; i < pipes.length; ++i) rs.pipes.push(pipes[i].dest); }\n"
+    "    }\n"
+    "    if (dest === undefined) {\n"
+    "      for (var i = 0; i < pipes.length; ++i) detach(pipes[i]);\n"
+    "      this._pipes = [];\n"
+    "      pipes = this._pipes;\n"
+    "      syncState();\n"
+    "      return this;\n"
+    "    }\n"
+    "    for (var j = 0; j < pipes.length; ++j) {\n"
+    "      if (pipes[j].dest === dest) { detach(pipes[j]); pipes.splice(j, 1); break; }\n"
+    "    }\n"
+    "    syncState();\n"
+    "    return this;\n"
     "  };\n"
 
     // Writable.
     "  function _Writable(opts) {\n"
+    "    if (!(this instanceof _Stream)) return new _Writable(opts);\n"
     "    _Stream.call(this);\n"
     "    opts = opts || {};\n"
     "    this._writableState = {\n"
@@ -5804,13 +5911,15 @@ static const char kBootstrapJS[] =
 
     // Readable.
     "  function _Readable(opts) {\n"
+    "    if (!(this instanceof _Stream)) return new _Readable(opts);\n"
     "    _Stream.call(this);\n"
     "    opts = opts || {};\n"
     "    this._readableState = {\n"
     "      buffer: [], ended: false, endEmitted: false, flowing: null,\n"
     "      objectMode: !!opts.objectMode,\n"
     "      highWaterMark: opts.highWaterMark || 16384,\n"
-    "      reading: false\n"
+    "      reading: false, emittedReadable: false, resumeScheduled: false,\n"
+    "      encoding: opts.encoding || null\n"
     "    };\n"
     "    if (typeof opts.read === 'function') this._read = opts.read;\n"
     "    if (typeof opts.destroy === 'function') this._destroy = opts.destroy;\n"
@@ -5821,75 +5930,222 @@ static const char kBootstrapJS[] =
        branching. */
     "  util.inherits(_Readable, _Stream);\n"
     "  _Readable.prototype._read = function (_n) {};\n"
+    /* push(null) marks end-of-stream. push(chunk) buffers and either
+       drains immediately (flowing) or notifies via 'readable' (paused).
+       'readable' is debounced via nextTick so multiple synchronous pushes
+       coalesce into one notification — without this, push() inside a
+       'readable' listener re-enters the listener and busy-loops.
+       push() also flips `reading` off (it acknowledges that a prior _read
+       call has delivered data) and schedules _maybeReadMore so the stream
+       eagerly refills below HWM, matching Node's behavior tested by
+       test-stream-readable-event subtest 2 (`reading=true` should be
+       observable after a push of less than HWM bytes). */
     "  _Readable.prototype.push = function (chunk, enc) {\n"
     "    var s = this._readableState;\n"
     "    if (chunk === null) {\n"
     "      s.ended = true;\n"
+    "      s.reading = false;\n"
     "      if (s.flowing) this._emitFlow();\n"
+    "      else this._scheduleReadable();\n"
     "      return false;\n"
     "    }\n"
+    /* push('') / push(Buffer.alloc(0)) in non-objectMode: per Node v10
+       (test-stream-readable-event subtest 4), an empty chunk doesn't add
+       to the buffer but does signal that _read returned, and triggers
+       another _maybeReadMore so the stream keeps pulling. */
+    "    if (!s.objectMode && chunk !== undefined && chunk !== null && typeof chunk.length === 'number' && chunk.length === 0) {\n"
+    "      s.reading = false;\n"
+    "      if (!s.flowing) this._maybeReadMore();\n"
+    "      return s.buffer.length < s.highWaterMark;\n"
+    "    }\n"
     "    s.buffer.push(chunk);\n"
+    "    s.reading = false;\n"
     "    if (s.flowing) this._emitFlow();\n"
-    "    else this.emit('readable');\n"
+    "    else this._scheduleReadable();\n"
+    /* Always schedule _maybeReadMore (flowing OR paused): in flowing
+       mode the cycle is push → emit('data') → _maybeReadMore → next _read;
+       in paused mode push → state.reading bumps via _maybeReadMore so
+       Node test-stream-readable-event subtest 2 sees reading=true. */
+    "    this._maybeReadMore();\n"
     "    return s.buffer.length < s.highWaterMark;\n"
     "  };\n"
+    /* _bufferedBytes: byte (or chunk, in objectMode) count of the buffer.
+       HWM comparisons are against bytes for non-objectMode streams — using
+       buffer.length (chunk count) under-counts and lets _maybeReadMore
+       call _read past the HWM, which test-stream-readable-event subtest 1
+       (`push(Buffer.from('blerg'))` over a HWM-3 stream) catches. */
+    "  _Readable.prototype._bufferedBytes = function () {\n"
+    "    var s = this._readableState;\n"
+    "    if (s.objectMode) return s.buffer.length;\n"
+    "    var total = 0;\n"
+    "    for (var i = 0; i < s.buffer.length; ++i) {\n"
+    "      var c = s.buffer[i];\n"
+    "      total += (typeof c === 'string') ? c.length : (c && c.length ? c.length : 0);\n"
+    "    }\n"
+    "    return total;\n"
+    "  };\n"
+    /* _maybeReadMore: on nextTick after a push, eagerly call _read while
+       buffered bytes are below HWM and we're not flowing/ended/reading.
+       Mirrors Node v10's lib/_stream_readable.js. Sets `reading=true`
+       around each _read call; if _read pushes synchronously, push() flips
+       reading=false and the loop continues. */
+    "  _Readable.prototype._maybeReadMore = function () {\n"
+    "    var s = this._readableState;\n"
+    "    if (s._readingMore) return;\n"
+    "    s._readingMore = true;\n"
+    "    var self = this;\n"
+    "    process.nextTick(function () {\n"
+    "      s._readingMore = false;\n"
+    /* Fires in BOTH paused and flowing mode. In flowing mode, each push
+       cycle needs the next _read to be issued so the stream doesn't
+       stall after the prime — there's no read() loop in flowing mode. */
+    "      while (!s.reading && !s.ended && self._bufferedBytes() < s.highWaterMark) {\n"
+    "        var before = s.buffer.length;\n"
+    "        s.reading = true;\n"
+    "        try { self._read(s.highWaterMark); } catch (e) { self.emit('error', e); }\n"
+    "        if (s.buffer.length === before) break;\n"
+    "      }\n"
+    "      if (s.flowing) self._emitFlow();\n"
+    "    });\n"
+    "  };\n"
+    /* Schedule a 'readable' emit for the next tick, but only if a
+       'readable' listener is attached. Coalesces with any already-pending
+       schedule. */
+    "  _Readable.prototype._scheduleReadable = function () {\n"
+    "    var s = this._readableState;\n"
+    "    if (s._readableScheduled) return;\n"
+    "    if (!this.listenerCount || this.listenerCount('readable') === 0) return;\n"
+    "    s._readableScheduled = true;\n"
+    "    var self = this;\n"
+    "    process.nextTick(function () {\n"
+    "      s._readableScheduled = false;\n"
+    "      if (s.flowing) return;\n"
+    "      if (s.buffer.length > 0 || s.ended) self.emit('readable');\n"
+    "    });\n"
+    "  };\n"
+    /* _emitFlow is the flowing-mode driver: drain one chunk → emit 'data',
+       repeat. When the buffer empties and the stream isn't ended/reading,
+       call _read ONCE to pull more. The key Node-compat property: emit
+       ('data') happens INSIDE this loop, not inside push(). That lets a
+       _read that pushes both `chunk` AND `null` (e.g. test-stream-
+       objectmode-undefined) emit 'data' exactly once — the outer loop
+       exits on the next iteration when ended=true.
+       For sync sources (streams_smoke pushes one chunk per _read), the
+       loop iterates: _read → push → drain → _read → push → drain → ...
+       until push(null) ends it.
+       For async sources (pipe-flow's nextTick(push)), _read returns
+       without push, state.reading stays true, the loop exits with empty
+       buffer. The nextTick'd push() later re-enters _emitFlow via the
+       guarded re-entry. */
     "  _Readable.prototype._emitFlow = function () {\n"
     "    var s = this._readableState;\n"
-    // Guard against recursion: _read may push synchronously, which
-    // re-enters _emitFlow. The `reading` flag serializes the outer
-    // drain loop with inner push-driven drains.
     "    if (s._flowing_now) return;\n"
     "    s._flowing_now = true;\n"
     "    while (s.flowing) {\n"
-    "      while (s.buffer.length > 0) {\n"
-    "        var c = s.buffer.shift();\n"
-    "        this.emit('data', c);\n"
+    "      if (s.buffer.length === 0) {\n"
+    "        if (s.ended) break;\n"
+    "        if (s.reading) break;\n"
+    "        s.reading = true;\n"
+    "        try { this._read(s.highWaterMark); } catch (e) { this.emit('error', e); break; }\n"
+    /* If _read pushed sync, push() set reading=false and added to buffer.
+       If _read scheduled async (nextTick/setTimeout), reading stays true
+       and buffer is still empty → exit. */
+    "        if (s.buffer.length === 0) break;\n"
     "      }\n"
-    "      if (s.ended) break;\n"
-    // Buffer drained, not ended — ask source for more.
-    "      if (s.reading) break;\n"
-    "      s.reading = true;\n"
-    "      var before = s.buffer.length;\n"
-    "      try { this._read(s.highWaterMark); } catch (e) { this.emit('error', e); break; }\n"
-    "      s.reading = false;\n"
-    "      if (s.buffer.length === before && !s.ended) break;\n"
+    "      var c = s.buffer.shift();\n"
+    "      this.emit('data', c);\n"
     "    }\n"
     "    s._flowing_now = false;\n"
-    /* End-emission heuristic:
+    /* End-emission:
        If a listener is already attached when we'd emit 'end', emit
-       synchronously — matches our (and many older code's) expectation
-       that the typical `r.on('end', x); r.on('data', y);` pattern sees
-       'end' fire right after the last 'data'.
-       If no listener yet (e.g. node-fetch's pattern of attaching
-       'data' first, which triggers a sync drain that would emit 'end'
-       before its 'end' listener is attached), defer to setImmediate
-       so the listener has a chance to attach. */
+       synchronously — matches the typical `r.on('end',x); r.on('data',y)`
+       pattern where 'end' fires right after the last 'data'.
+       If no 'end' listener yet (e.g. node-fetch attaches 'data' first,
+       which auto-resumes and inline-drains, OR a paused stream that gets
+       a `push(null)` before any listener attaches), mark _endPending and
+       wait for an 'end' listener to attach — the on('end') hook below
+       picks it up. Setting endEmitted ONLY when we've actually delivered
+       'end' to a listener prevents the pass-7 bug where a deferred
+       setImmediate(emit('end')) fired into the void during a paused
+       window, marking endEmitted=true and orphaning a later listener. */
     "    if (s.ended && s.buffer.length === 0 && !s.endEmitted) {\n"
-    "      s.endEmitted = true;\n"
     "      if (this.listenerCount && this.listenerCount('end') > 0) {\n"
+    "        s.endEmitted = true;\n"
     "        this.emit('end');\n"
     "      } else {\n"
-    "        var self = this;\n"
-    "        setImmediate(function () { self.emit('end'); });\n"
+    "        s._endPending = true;\n"
     "      }\n"
     "    }\n"
     "  };\n"
+    /* read(n) — paused-mode reader. Refills via _read if below HWM and
+       not ended. With no n (or n covering the buffer), returns the buffer
+       contents in one chunk: for objectMode, the first item; for non-
+       objectMode buffers, Buffer.concat; for strings, String concat.
+       Tests like test-stream-push-strings depend on the "concat what's
+       buffered" semantics: a synchronous _read inside read() pushes
+       more data and the caller sees all of it concatenated. */
     "  _Readable.prototype.read = function (n) {\n"
     "    var s = this._readableState;\n"
-    "    if (s.buffer.length === 0) {\n"
-    "      if (!s.ended) { try { this._read(n); } catch (e) { this.emit('error', e); } }\n"
-    "      if (s.buffer.length === 0) return null;\n"
+    /* read(n) where n exceeds HWM: bump HWM up to the next power of 2
+       so the next _read pulls enough to satisfy n. Matches Node v10. */
+    "    if (typeof n === 'number' && n > s.highWaterMark) {\n"
+    "      var p = 1; while (p < n) p *= 2;\n"
+    "      s.highWaterMark = p;\n"
     "    }\n"
-    "    if (!n || n >= s.buffer.length) return s.buffer.shift();\n"
-    "    return s.buffer.shift();\n"
+    /* Refill via _read. Do NOT reset s.reading=false here — push() resets
+       it when the source actually delivers a chunk. If _read scheduled
+       async (e.g. nextTick / setTimeout), s.reading stays true until the
+       deferred push fires, which prevents this same read() loop AND
+       _maybeReadMore from over-firing _read in the meantime (Node's
+       state.reading gate). */
+    "    if (!s.ended && !s.reading && this._bufferedBytes() < s.highWaterMark) {\n"
+    "      s.reading = true;\n"
+    "      try { this._read(s.highWaterMark); } catch (e) { this.emit('error', e); }\n"
+    "    }\n"
+    "    var ret;\n"
+    "    if (s.buffer.length === 0) {\n"
+    "      ret = null;\n"
+    "    } else if (s.objectMode) {\n"
+    "      ret = s.buffer.shift();\n"
+    "    } else if (n === undefined || n === null || n >= s.buffer.length) {\n"
+    "      if (s.buffer.length === 1) { ret = s.buffer[0]; s.buffer = []; }\n"
+    "      else {\n"
+    "        var first = s.buffer[0];\n"
+    "        if (typeof first === 'string') { ret = s.buffer.join(''); s.buffer = []; }\n"
+    "        else if (Buffer.isBuffer(first)) { ret = Buffer.concat(s.buffer); s.buffer = []; }\n"
+    "        else { ret = s.buffer.shift(); }\n"
+    "      }\n"
+    "    } else {\n"
+    "      ret = s.buffer.shift();\n"
+    "    }\n"
+    /* After delivering a chunk (or hitting an empty + ended state),
+       check if the stream just drained to empty with ended=true and
+       fire 'end' (either now if listener attached, or schedule lazy). */
+    "    if (s.buffer.length === 0 && s.ended) this._fireEndIfPending();\n"
+    "    return ret;\n"
+    "  };\n"
+    /* Helper: deliver 'end' if the readable is fully drained. Listener
+       attached → schedule on nextTick (Node's `endReadableNT` semantics
+       — gives the current sync work a chance to finish before 'end' fires).
+       No listener → mark _endPending; on('end') below will pick it up. */
+    "  _Readable.prototype._fireEndIfPending = function () {\n"
+    "    var s = this._readableState;\n"
+    "    if (!s.ended || s.buffer.length > 0 || s.endEmitted) return;\n"
+    "    if (this.listenerCount && this.listenerCount('end') > 0) {\n"
+    "      s.endEmitted = true;\n"
+    "      var self = this;\n"
+    "      process.nextTick(function () { self.emit('end'); });\n"
+    "    } else {\n"
+    "      s._endPending = true;\n"
+    "    }\n"
     "  };\n"
     "  _Readable.prototype.resume = function () {\n"
     "    var s = this._readableState;\n"
     "    if (s.flowing) return this;\n"
     "    s.flowing = true;\n"
     "    this.emit('resume');\n"
-    // Trigger a read to prime the buffer.
-    "    try { this._read(s.highWaterMark); } catch (e) { this.emit('error', e); }\n"
+    /* _emitFlow is the engine — it handles both _read (pull) and emit
+       ('data') (drain) in a single loop. No separate prime here. */
     "    this._emitFlow();\n"
     "    return this;\n"
     "  };\n"
@@ -5899,7 +6155,37 @@ static const char kBootstrapJS[] =
     "    return this;\n"
     "  };\n"
     "  _Readable.prototype.isPaused = function () { return this._readableState.flowing === false; };\n"
-    "  _Readable.prototype.pipe = _Stream.prototype.pipe;\n"
+    /* readableHighWaterMark / readableLength — Node accessors that mirror
+       _readableState. Exposed as getters on the prototype so they show
+       up on every instance even when the user replaces _readableState. */
+    "  Object.defineProperty(_Readable.prototype, 'readableHighWaterMark', {\n"
+    "    configurable: true, enumerable: false,\n"
+    "    get: function () { return this._readableState ? this._readableState.highWaterMark : 0; }\n"
+    "  });\n"
+    "  Object.defineProperty(_Readable.prototype, 'readableLength', {\n"
+    "    configurable: true, enumerable: false,\n"
+    "    get: function () {\n"
+    "      var s = this._readableState; if (!s) return 0;\n"
+    "      if (s.objectMode) return s.buffer.length;\n"
+    "      var total = 0;\n"
+    "      for (var i = 0; i < s.buffer.length; ++i) {\n"
+    "        var c = s.buffer[i];\n"
+    "        total += (typeof c === 'string') ? c.length : (c && c.length ? c.length : 0);\n"
+    "      }\n"
+    "      return total;\n"
+    "    }\n"
+    "  });\n"
+    /* readableBuffer / writableBuffer aliases: Node 10 surfaces these
+       on the Readable / Writable prototypes pointing at the underlying
+       state buffer (newer Node versions use BufferList; we just expose
+       our simple Array). test-stream-push-order asserts on
+       s.readableBuffer.length. */
+    "  Object.defineProperty(_Readable.prototype, 'readableBuffer', {\n"
+    "    configurable: true, enumerable: false,\n"
+    "    get: function () { return this._readableState ? this._readableState.buffer : []; }\n"
+    "  });\n"
+    "  _Readable.prototype.pipe   = _Stream.prototype.pipe;\n"
+    "  _Readable.prototype.unpipe = _Stream.prototype.unpipe;\n"
     "  _Readable.prototype.destroy = function (err) {\n"
     "    if (this._destroyed) return this;\n"
     "    this._destroyed = true;\n"
@@ -5908,13 +6194,42 @@ static const char kBootstrapJS[] =
     "    this.emit('close');\n"
     "    return this;\n"
     "  };\n"
-    // Adding a 'data' listener auto-resumes the stream (Node semantics).
+    /* Adding a 'data' listener auto-resumes the stream (Node semantics).
+       Adding a late 'end' listener picks up a previously-pending end
+       (push(null) reached the end-of-buffer state before the listener
+       was attached — common when 'data' is attached before 'end' and
+       auto-resume drains everything inline). */
     "  var _origRdOn = _Readable.prototype.on;\n"
     "  if (!_origRdOn) _origRdOn = events.EventEmitter.prototype.on;\n"
     "  _Readable.prototype.on = function (ev, fn) {\n"
     "    var r = events.EventEmitter.prototype.on.call(this, ev, fn);\n"
-    "    if (ev === 'data' && this._readableState && this._readableState.flowing === null) {\n"
+    "    var s = this._readableState;\n"
+    "    if (ev === 'data' && s && s.flowing === null) {\n"
     "      this.resume();\n"
+    "    }\n"
+    /* Attaching 'readable' kicks off a _read if the buffer is empty and
+       the stream isn't ended. If data is already buffered, schedule an
+       initial 'readable' emit so the listener sees it. Both async via
+       nextTick so the listener attach completes before the emission. */
+    "    if (ev === 'readable' && s && !s.endEmitted) {\n"
+    "      var self2 = this;\n"
+    "      if (s.buffer.length > 0 || s.ended) {\n"
+    "        this._scheduleReadable();\n"
+    "      } else if (!s.reading && !s.ended) {\n"
+    "        process.nextTick(function () {\n"
+    "          if (s.reading || s.ended || s.buffer.length > 0) return;\n"
+    "          s.reading = true;\n"
+    "          try { self2._read(s.highWaterMark); } catch (e) { self2.emit('error', e); }\n"
+    /* Don't reset reading=false here — push() does it on actual data
+       arrival. Keeps state.reading honest across async _read sources. */
+    "        });\n"
+    "      }\n"
+    "    }\n"
+    "    if (ev === 'end' && s && s._endPending && !s.endEmitted) {\n"
+    "      s._endPending = false;\n"
+    "      s.endEmitted = true;\n"
+    "      var self3 = this;\n"
+    "      setImmediate(function () { self3.emit('end'); });\n"
     "    }\n"
     "    return r;\n"
     "  };\n"
@@ -5922,6 +6237,7 @@ static const char kBootstrapJS[] =
 
     // Duplex = Readable + Writable. Writable methods mixed in by copy.
     "  function _Duplex(opts) {\n"
+    "    if (!(this instanceof _Stream)) return new _Duplex(opts);\n"
     "    _Readable.call(this, opts);\n"
     "    _Writable.call(this, opts);\n"
     "  }\n"
@@ -5934,6 +6250,7 @@ static const char kBootstrapJS[] =
 
     // Transform: duplex with _transform(chunk, enc, cb(err, transformed)).
     "  function _Transform(opts) {\n"
+    "    if (!(this instanceof _Stream)) return new _Transform(opts);\n"
     "    _Duplex.call(this, opts);\n"
     "    if (typeof opts === 'object' && opts !== null) {\n"
     "      if (typeof opts.transform === 'function') this._transform = opts.transform;\n"
