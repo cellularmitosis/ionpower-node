@@ -381,6 +381,7 @@ test/fetch_smoke.js
 test/dns_smoke.js
 test/http_chunked_smoke.js
 test/http_paused_data_smoke.js
+test/http_no_socket_end_smoke.js
 test/batch_wave_l_smoke.js
 test/batch_wave_l2_smoke.js
 test/batch_wave_l3_smoke.js

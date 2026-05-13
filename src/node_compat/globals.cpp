@@ -7738,7 +7738,18 @@ static const char kBootstrapJS[] =
     "      this._imBuf.push(arguments[1]);\n"
     "      return false;\n"
     "    }\n"
+    /* 'end' on a paused stream: queue ONLY if there's buffered data
+       to drain first (so the listener sees data before end). If the
+       buffer is empty, fire immediately — otherwise a server handler
+       that listens for 'end' only (no 'data' listener — common for
+       GET endpoints that don't expect a body) never wakes, since
+       'data'-listener attach is what auto-resumes the stream. The
+       pass-7 server-side eof-mode immediate-end fix lands every GET
+       request in this shape. */
     "    if (event === 'end' && !this._imFlowing) {\n"
+    "      if (this._imBuf.length === 0) {\n"
+    "        return events.EventEmitter.prototype.emit.apply(this, arguments);\n"
+    "      }\n"
     "      this._imEndQueued = true;\n"
     "      return false;\n"
     "    }\n"
@@ -7854,9 +7865,19 @@ static const char kBootstrapJS[] =
     "    }\n"
     "    this.socket.write(lines.join('\\r\\n') + '\\r\\n\\r\\n');\n"
     "  };\n"
+    /* req.end() used to half-close the socket after writing the request
+       (socket.end() → TLS close_notify + SHUT_WR). On a TLS connection
+       to Cloudflare, sending close_notify right after the request makes
+       the edge sometimes silently drop the connection without sending
+       a response — manifesting as a ~5/10 flake on `npm install <name>`
+       against registry.npmjs.org. The HTTP framing on the request side
+       (Content-Length, chunked, or empty body for GET) tells the server
+       when our request is complete; we don't need a socket-level half-
+       close. The response side cleans up via feedBody → sock.destroy()
+       once Content-Length / chunked terminator is reached, or via the
+       server's FIN for eof-mode responses. */
     "  _ClientRequest.prototype._flushBody = function () {\n"
     "    for (var i = 0; i < this._bodyChunks.length; ++i) this.socket.write(this._bodyChunks[i]);\n"
-    "    if (this._ending) this.socket.end();\n"
     "  };\n"
     "  _ClientRequest.prototype.write = function (chunk, enc) {\n"
     /* axios calls req.write(null) on GETs — skip null/empty so the
@@ -7873,7 +7894,6 @@ static const char kBootstrapJS[] =
     "  _ClientRequest.prototype.end = function (chunk, enc) {\n"
     "    if (chunk != null) this.write(chunk, enc);\n"
     "    this._ending = true;\n"
-    "    if (this._sentHeaders) this.socket.end();\n"
     "    return this;\n"
     "  };\n"
     "  _ClientRequest.prototype.setHeader    = function (k, v) { this._headers[k] = v; return this; };\n"
@@ -8044,7 +8064,15 @@ static const char kBootstrapJS[] =
     "        /* Slide past the request line + headers */\n"
     "        state.buf = state.buf.slice(reqState.bodyStart);\n"
     "        srv.emit('request', request, response);\n"
-    "        if (state.reader.mode === 'length' && state.reader.remain === 0) {\n"
+    /* RFC 7230 §3.3.3 rule 6: a REQUEST with no Content-Length and no
+       Transfer-Encoding has body length zero. _http_bodyReader returns
+       mode='eof' in that case (correct for client-side responses where
+       Connection: close signals the end), but on the server side eof
+       must collapse to "no body, emit 'end' immediately" — otherwise
+       a GET handler that does `req.on('end', ...)` never fires until
+       the client half-closes, which pass-7's _ClientRequest fix no
+       longer does. */
+    "        if (state.reader.mode === 'eof' || (state.reader.mode === 'length' && state.reader.remain === 0)) {\n"
     "          request.emit('end'); request.readable = false;\n"
     "        } else if (state.buf.length > 0) {\n"
     "          /* feed already-buffered body bytes */\n"
@@ -8899,7 +8927,11 @@ static const char kBootstrapJS[] =
     "        state.request  = request;\n"
     "        state.buf = state.buf.slice(reqState.bodyStart);\n"
     "        srv.emit('request', request, response);\n"
-    "        if (state.reader.mode === 'length' && state.reader.remain === 0) {\n"
+    /* See http server: eof-mode body on a REQUEST means "no body"
+       per RFC 7230 §3.3.3 rule 6 — emit 'end' immediately so handlers
+       waiting on req.on('end') aren't blocked on a client FIN that
+       won't arrive. */
+    "        if (state.reader.mode === 'eof' || (state.reader.mode === 'length' && state.reader.remain === 0)) {\n"
     "          request.emit('end'); request.readable = false;\n"
     "        } else if (state.buf.length > 0) {\n"
     "          var fed = state.buf; state.buf = Buffer.alloc(0); feedBody(fed);\n"
