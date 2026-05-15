@@ -1,0 +1,4 @@
+/Users/macuser/tmp/express-discovery/node_modules/express/lib/router/index.js:51: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+listening on 3789
+status: 200 body: {"ok":true,"host":"ibookg37"}
+server closed
