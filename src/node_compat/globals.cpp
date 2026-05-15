@@ -10611,8 +10611,16 @@ static const char kBootstrapJS[] =
        Library output sometimes contains a single one of these, and
        relying on preset-env's compat-table to enable it has bitten us
        (lumo-darwin8-ppc session 001). */
+    // Note: loose mode used to be ['env', { ..., loose: true }] for
+    // speed/code size, but `loose` makes the spread transform emit
+    // `[].concat(x)` instead of an iterator-protocol-aware helper. For
+    // Array `x` that's fine; for `new Set(arr)` or any non-Array
+    // iterable, `[].concat(Set)` produces `[Set]` (a one-element array
+    // containing the Set), which silently breaks any user code that
+    // spreads a Set (`[...new Set(arr)]`). Drop loose mode to get the
+    // correct (slightly larger) output.
     "      code = babel.transform(srcForBabel, {\n"
-    "        presets: [['env', { targets: { ie: '11' }, loose: true }]],\n"
+    "        presets: [['env', { targets: { ie: '11' } }]],\n"
     "        plugins: ['transform-logical-assignment-operators']\n"
     "      }).code;\n"
     "    } catch (e) { return null; }\n"
