@@ -1,0 +1,29 @@
+=== express@5 end-to-end smoke on G3 (ionpower-node v0.99) ===
+
+Setup:
+  cd /Users/macuser/tmp/express5-attempt
+  ./node /Users/macuser/tmp/npm-6.14.18/run-npm.js install express@5
+  -> express@5.2.1 added 66 packages from 41 contributors in 293.356s
+
+Server (_server5.js):
+  var express = require('express');
+  var app = express();
+  app.get('/', function (req, res) { res.send('hello-from-express5'); });
+  app.get('/json', function (req, res) { res.json({ ok: true, v: 5 }); });
+  app.listen(8095, function () { console.log('SERVER_UP port=8095'); });
+
+Server output (./node _server5.js):
+  /Users/macuser/tmp/express5-attempt/node_modules/path-to-regexp/dist/index.js:12: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+  SERVER_UP port=8095
+
+Cold-cache require('express') @ 5.2.1: ~2 minutes (Babel transform over the closure)
+Warm-cache require: <1s (disk cache lookup only)
+
+Client hits (./node /tmp/hit_e5.js):
+  GET / status=200 body=hello-from-express5
+  GET /json status=200 body={"ok":true,"v":5}
+
+Headline: express@5 boots a real HTTP server on G3 and serves
+HTML + JSON responses with 200 status. No code changes to express
+itself; the path through ionpower-node v0.99 is purely
+parse-fail -> Babel-lower -> re-eval, transparent to user code.

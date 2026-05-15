@@ -1,0 +1,34 @@
+=== survey-one.sh PKG=node-fetch REQUIRE=node-fetch ===
+Fri May 15 02:51:34 CDT 2026
+
+--- npm install node-fetch ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm WARN deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
+npm WARN notsup Unsupported engine for node-fetch@3.3.2: wanted: {"node":"^12.20.0 || ^14.13.1 || >=16.0.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: node-fetch@3.3.2
+npm WARN notsup Unsupported engine for fetch-blob@3.2.0: wanted: {"node":"^12.20 || >= 14.13"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: fetch-blob@3.2.0
+npm WARN notsup Unsupported engine for formdata-polyfill@4.0.10: wanted: {"node":">=12.20.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: formdata-polyfill@4.0.10
+npm WARN notsup Unsupported engine for data-uri-to-buffer@4.0.1: wanted: {"node":">= 12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: data-uri-to-buffer@4.0.1
+
++ node-fetch@3.3.2
+added 6 packages from 6 contributors in 151.04s
+
+3 packages are looking for funding
+  run `npm fund` for details
+
+
+
+--- install exit=0 dt=156s ---
+
+--- require('node-fetch') ---
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+REQUIRE_FAIL out of memory
+--- require exit=2 dt=86s ---

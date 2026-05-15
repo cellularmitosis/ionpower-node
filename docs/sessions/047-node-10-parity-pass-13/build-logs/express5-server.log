@@ -1,0 +1,2 @@
+/Users/macuser/tmp/express5-attempt/node_modules/path-to-regexp/dist/index.js:12: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+SERVER_UP port=8095

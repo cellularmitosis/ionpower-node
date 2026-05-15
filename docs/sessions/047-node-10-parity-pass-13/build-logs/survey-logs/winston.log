@@ -1,0 +1,41 @@
+=== survey-one.sh PKG=winston REQUIRE=winston ===
+Fri May 15 03:01:47 CDT 2026
+
+--- npm install winston ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
+npm WARN notsup Unsupported engine for winston@3.19.0: wanted: {"node":">= 12.0.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: winston@3.19.0
+npm WARN notsup Unsupported engine for logform@2.7.0: wanted: {"node":">= 12.0.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: logform@2.7.0
+npm WARN notsup Unsupported engine for triple-beam@1.4.1: wanted: {"node":">= 14.0.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: triple-beam@1.4.1
+npm WARN notsup Unsupported engine for winston-transport@4.9.0: wanted: {"node":">= 12.0.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: winston-transport@4.9.0
+npm WARN notsup Unsupported engine for color@5.0.3: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: color@5.0.3
+npm WARN notsup Unsupported engine for color-string@2.1.4: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: color-string@2.1.4
+npm WARN notsup Unsupported engine for color-convert@3.1.3: wanted: {"node":">=14.6"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: color-convert@3.1.3
+npm WARN notsup Unsupported engine for color-name@2.1.0: wanted: {"node":">=12.20"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: color-name@2.1.0
+
++ winston@3.19.0
+added 28 packages from 22 contributors in 97.927s
+
+2 packages are looking for funding
+  run `npm fund` for details
+
+
+
+--- install exit=0 dt=104s ---
+
+--- require('winston') ---
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+REQUIRE_OK typeof=object first_keys=["version","transports","config","addColors","format","createLogger","Logger","ExceptionHandler"]
+--- require exit=0 dt=56s ---

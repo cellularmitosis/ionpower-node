@@ -43,3 +43,4 @@ counter format matches sibling projects `chibicc-book` and
 | 044 | Node 10 parity pass 10 — tinflate Z_SYNC_FLUSH off-by-one fix; `npm install express` works end-to-end |
 | 045 | Node 10 parity pass 11 — V8 CallSite + `Error.prepareStackTrace` shim; `require('express')` works end-to-end; `demos/express-chat-npm/` lands |
 | 046 | Node 10 parity pass 12 — `package.json` top-level main resolver, `fs.promises.read/write` shape, `process.binding('uv').errname`; full express-chat-npm runs end-to-end on G3 |
+| 047 | Node 10 parity pass 13 — survey of 10 top npm packages (8/10 work clean); fixes whole-file `package.json` read, dev-tree Babel discovery, TLA CJS guard, drops `preset-env` `loose: true`; `npm install express@5 && node server.js` works end-to-end on G3 |
