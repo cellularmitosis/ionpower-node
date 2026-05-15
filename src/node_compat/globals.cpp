@@ -7702,7 +7702,12 @@ static const char kBootstrapJS[] =
     "        var self = this;\n"
     "        setImmediate(function () {\n"
     "          try {\n"
-    "            self._bufferedOut = syncFn(Buffer.concat(chunks));\n"
+    /* _origBufferConcat: minizlib monkey-patches Buffer.concat to
+       (args) => args around its sync-decompress dance. The patch is
+       restored synchronously inside minizlib, so cross-call leakage
+       shouldn't happen in practice — but using the captured reference
+       is free defense and matches what _processChunk already does. */
+    "            self._bufferedOut = syncFn(_origBufferConcat(chunks));\n"
     "            self._endQueued = true;\n"
     "          } catch (e) { self._errored = e; }\n"
     "          if (self._flowing) flush(self);\n"
@@ -7786,7 +7791,7 @@ static const char kBootstrapJS[] =
     "        var self = this;\n"
     "        setImmediate(function () {\n"
     "          try {\n"
-    "            self._bufferedOut = syncFn(Buffer.concat(chunks));\n"
+    "            self._bufferedOut = syncFn(_origBufferConcat(chunks));\n"
     "            self._endQueued = true;\n"
     "          } catch (e) { self._errored = e; }\n"
     "          if (self._flowing) flush(self);\n"

@@ -207,7 +207,16 @@ function tinf_inflate_block_data(d, lt, dt) {
 function tinf_inflate_uncompressed_block(d) {
   var length, invlength;
   var i;
-  while (d.bitcount > 8) {
+  /* Byte-align before reading LEN/NLEN. The original tiny-inflate uses
+     `> 8` here, which is off-by-one when the unread bit count is an
+     exact multiple of 8: with bc=24 the loop stops at bc=8 (instead of
+     bc=0), leaving sourceIndex one byte past where the LEN low byte
+     actually lives. The Z_SYNC_FLUSH marker (00 00 ff ff) emitted by
+     servers that flush gzip mid-stream — including npm's registry —
+     hits this case as soon as the bit alignment of the previous block
+     happens to leave bc=24. Use `>= 8` so the loop keeps rewinding
+     until we're at a true byte boundary. */
+  while (d.bitcount >= 8) {
     d.sourceIndex--;
     d.bitcount -= 8;
   }

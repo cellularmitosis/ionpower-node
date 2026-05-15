@@ -342,7 +342,7 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
         if (!versions) return false;
         if (!DefineStringProp(cx, versions, "node",          "10.24.1")) return false;
         // 'ionpower-node' uses bracket access on the JS side because of the dash.
-        if (!DefineStringProp(cx, versions, "ionpower-node", "0.95"))    return false;
+        if (!DefineStringProp(cx, versions, "ionpower-node", "0.96"))    return false;
         if (!JS_DefineProperty(cx, process, "versions", versions, JSPROP_ENUMERATE))
             return false;
     }
