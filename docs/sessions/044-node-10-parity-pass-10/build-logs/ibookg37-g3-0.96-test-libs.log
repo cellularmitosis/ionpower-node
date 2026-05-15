@@ -1,0 +1,34 @@
+
+real	12m39.121s
+user	8m49.508s
+sys	2m9.226s
+Testing test/dotenv_smoke.js PASS
+Testing test/sprintf_smoke.js PASS
+Testing test/repl_stub_smoke.js PASS
+Testing test/v8_stub_smoke.js PASS
+Testing test/babel_logical_assignment_smoke.js PASS
+Testing test/node10-streams/test-stream-ispaused.js PASS
+Testing test/node10-streams/test-stream-pipe-event.js PASS
+Testing test/node10-streams/test-stream-readable-flow-recursion.js PASS
+Testing test/node10-streams/test-stream-push-strings.js PASS
+Testing test/node10-streams/test-stream-pipe-error-handling.js PASS
+Testing test/node10-streams/test-stream-pipe-cleanup-pause.js PASS
+Testing test/node10-streams/test-stream-pipe-multiple-pipes.js PASS
+Testing test/node10-streams/test-stream-end-paused.js PASS
+Testing test/node10-streams/test-stream-events-prepend.js PASS
+Testing test/node10-streams/test-stream-readable-event.js PASS
+Testing test/node10-streams/test-stream-pipe-flow.js PASS
+Testing test/node10-streams/test-stream-pipe-manual-resume.js PASS
+Testing test/node10-streams/test-stream-pipe-without-listenerCount.js PASS
+Testing test/node10-streams/test-stream-objectmode-undefined.js PASS
+Testing test/node10-streams/test-stream-transform-flush-data.js PASS
+Testing test/node10-streams/test-stream-pipe-same-destination-twice.js PASS
+Testing test/node10-streams/test-stream-unpipe-event.js PASS
+Testing test/node10-streams/test-stream-readable-emittedReadable.js PASS
+Testing test/node10-streams/test-stream-decoder-objectmode.js PASS
+Testing test/node10-streams/test-stream-push-order.js PASS
+Testing test/node10-streams/test-stream-readable-resumeScheduled.js PASS
+Testing test/node10-streams/test-stream-pipe-cleanup.js PASS
+
+495 passing tests
+0 failing tests

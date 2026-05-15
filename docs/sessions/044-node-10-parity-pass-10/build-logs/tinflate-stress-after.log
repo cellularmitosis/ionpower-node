@@ -1,0 +1,8 @@
+OK   raw-body.gz  in=24274 out=117822  193ms
+OK   express-full.gz  in=101578 out=804926  208ms
+OK   lodash.gz  in=47579 out=247652  55ms
+OK   test-rand-1024.bin.gz  in=1066 out=1024  2ms
+OK   test-rand-65536.bin.gz  in=65594 out=65536  22ms
+OK   test-rand-1048576.bin.gz  in=1048936 out=1048576  104ms
+OK   test-json-100000.txt.gz  in=13271 out=67151  7ms
+OK   test-json-1000000.txt.gz  in=130128 out=681498  105ms
