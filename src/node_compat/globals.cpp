@@ -4954,31 +4954,138 @@ static const char kBootstrapJS[] =
     "    if (typeof globalThis !== 'undefined') globalThis.global = globalThis;\n"
     "    else this.global = this;\n"
     "  }\n"
-    // Error.captureStackTrace: V8-specific static. Node-land libraries
-    // (error-ex, json-parse-even-better-errors, ono, most custom-Error
-    // machinery) call it inside their constructor. SpiderMonkey fills
-    // Error.prototype.stack automatically on construction, so the
-    // shim is a no-op that just avoids the TypeError. Takes (err, ctor)
-    // in V8; we ignore the ctor arg.
-    "  if (typeof Error.captureStackTrace !== 'function') {\n"
-    "    Error.captureStackTrace = function (err, _ctor) {\n"
-    // Node/V8 semantics: attach `err.stack` as an own property (not
-    // on Error.prototype). error-ex calls Object.getOwnPropertyDescriptor
-    // and throws if `stack` lives on the prototype only. Force the
-    // stack string into an own data property.
-    "      if (!err) return;\n"
-    "      var s = '';\n"
-    "      try { s = new Error().stack || ''; } catch (e) {}\n"
-    "      try {\n"
-    "        Object.defineProperty(err, 'stack', {\n"
-    "          value: s,\n"
-    "          writable: true,\n"
-    "          enumerable: false,\n"
-    "          configurable: true\n"
-    "        });\n"
-    "      } catch (e) { try { err.stack = s; } catch (_) {} }\n"
+    // Error.captureStackTrace + Error.prepareStackTrace + CallSite shim
+    // (V8). Node-land libraries (depd, error-ex, mocha, sinon, ...) use
+    // the V8 idiom:
+    //
+    //   var obj = {};
+    //   var prep = Error.prepareStackTrace;
+    //   Error.prepareStackTrace = function (err, frames) { return frames; };
+    //   Error.captureStackTrace(obj);
+    //   var stack = obj.stack;                  // <-- array of CallSite
+    //   Error.prepareStackTrace = prep;
+    //
+    // V8 makes `obj.stack` a lazy accessor: on first read, if
+    // Error.prepareStackTrace is set, it's called as
+    // prepareStackTrace(err, callsites) and the return value becomes
+    // the cached `.stack` value. Each CallSite has getFileName(),
+    // getLineNumber(), getColumnNumber(), getFunctionName(), etc.
+    //
+    // SpiderMonkey 45 emits stack strings of the form
+    //   funcName@file:line:col\nfuncName2@file:line:col\n...
+    // (top-level frames have empty funcName and start with '@').
+    // Eval frames look like '@/path/file.js line N > eval:1:22'.
+    //
+    // We parse the SM stack string once at capture time and build
+    // V8-shape CallSite objects. The getter consults
+    // Error.prepareStackTrace at read time (so users can swap it
+    // between capture and read, the way depd does).
+    "  function __ion_parseSMStack__(stackStr) {\n"
+    "    var out = [];\n"
+    "    if (!stackStr) return out;\n"
+    "    var lines = String(stackStr).split('\\n');\n"
+    "    for (var i = 0; i < lines.length; i++) {\n"
+    "      var ln = lines[i];\n"
+    "      if (!ln) continue;\n"
+    "      var at = ln.lastIndexOf('@');\n"
+    "      if (at < 0) continue;\n"
+    "      var funcPart = ln.slice(0, at);\n"
+    "      var locPart = ln.slice(at + 1);\n"
+    "      var m = /^(.*):(\\d+):(\\d+)$/.exec(locPart);\n"
+    "      if (!m) m = /^(.*):(\\d+)$/.exec(locPart);\n"
+    "      if (!m) continue;\n"
+    "      var file = m[1] || null;\n"
+    "      var lineNum = parseInt(m[2], 10);\n"
+    "      var colNum = m[3] ? parseInt(m[3], 10) : 0;\n"
+    // Detect eval frames: SM embeds " line N > eval" in the filename.
+    "      var isEval = false;\n"
+    "      var evalOrigin = null;\n"
+    "      var em = file && / line (\\d+) > (eval|anonymous|Function)/.exec(file);\n"
+    "      if (em) {\n"
+    "        isEval = true;\n"
+    "        evalOrigin = file;\n"
+    "        file = file.slice(0, em.index);\n"
+    "      }\n"
+    "      out.push(__ion_makeCallSite__(funcPart || null, file, lineNum, colNum, isEval, evalOrigin));\n"
+    "    }\n"
+    "    return out;\n"
+    "  }\n"
+    "  function __ion_makeCallSite__(funcName, file, line, col, isEval, evalOrigin) {\n"
+    "    return {\n"
+    "      getThis:           function () { return undefined; },\n"
+    "      getTypeName:       function () { return null; },\n"
+    "      getFunction:       function () { return undefined; },\n"
+    "      getFunctionName:   function () { return funcName; },\n"
+    "      getMethodName:     function () { return null; },\n"
+    "      getFileName:       function () { return file; },\n"
+    "      getLineNumber:     function () { return line; },\n"
+    "      getColumnNumber:   function () { return col; },\n"
+    "      getEvalOrigin:     function () { return evalOrigin; },\n"
+    "      isToplevel:        function () { return !funcName; },\n"
+    "      isEval:            function () { return !!isEval; },\n"
+    "      isNative:          function () { return false; },\n"
+    "      isConstructor:     function () { return false; },\n"
+    "      isAsync:           function () { return false; },\n"
+    "      isPromiseAll:      function () { return false; },\n"
+    "      getPromiseIndex:   function () { return null; },\n"
+    "      getScriptNameOrSourceURL: function () { return file; },\n"
+    "      toString: function () {\n"
+    "        var loc = (file || '<anonymous>') + ':' + line + ':' + col;\n"
+    "        return funcName ? (funcName + ' (' + loc + ')') : loc;\n"
+    "      }\n"
     "    };\n"
     "  }\n"
+    "  function __ion_formatStackDefault__(err, frames) {\n"
+    "    var name = (err && err.name) ? err.name : 'Error';\n"
+    "    var msg  = (err && err.message != null) ? err.message : '';\n"
+    "    var out = name + (msg ? (': ' + msg) : '');\n"
+    "    for (var i = 0; i < frames.length; i++) {\n"
+    "      out += '\\n    at ' + frames[i].toString();\n"
+    "    }\n"
+    "    return out;\n"
+    "  }\n"
+    "  Error.captureStackTrace = function (target, constructorOpt) {\n"
+    "    if (!target) return;\n"
+    "    var raw = '';\n"
+    "    try { raw = new Error().stack || ''; } catch (e) {}\n"
+    // Drop the top frame: it's this captureStackTrace function itself.
+    "    var nl = raw.indexOf('\\n');\n"
+    "    if (nl >= 0) raw = raw.slice(nl + 1);\n"
+    "    var frames = __ion_parseSMStack__(raw);\n"
+    // V8 behavior: if constructorOpt is a function, drop frames at and
+    // above the first occurrence of that function name.
+    "    if (constructorOpt && typeof constructorOpt === 'function' && constructorOpt.name) {\n"
+    "      var cname = constructorOpt.name;\n"
+    "      for (var i = 0; i < frames.length; i++) {\n"
+    "        if (frames[i].getFunctionName() === cname) {\n"
+    "          frames = frames.slice(i + 1);\n"
+    "          break;\n"
+    "        }\n"
+    "      }\n"
+    "    }\n"
+    "    var resolved = false;\n"
+    "    var cached = undefined;\n"
+    "    function resolve() {\n"
+    "      if (resolved) return cached;\n"
+    "      resolved = true;\n"
+    "      if (typeof Error.prepareStackTrace === 'function') {\n"
+    "        try { cached = Error.prepareStackTrace(target, frames); return cached; }\n"
+    "        catch (e) { /* fall through */ }\n"
+    "      }\n"
+    "      cached = __ion_formatStackDefault__(target, frames);\n"
+    "      return cached;\n"
+    "    }\n"
+    "    try {\n"
+    "      Object.defineProperty(target, 'stack', {\n"
+    "        configurable: true,\n"
+    "        enumerable: false,\n"
+    "        get: function () { return resolve(); },\n"
+    "        set: function (v) { resolved = true; cached = v; }\n"
+    "      });\n"
+    "    } catch (e) {\n"
+    "      try { target.stack = resolve(); } catch (_) {}\n"
+    "    }\n"
+    "  };\n"
 
     // Promise: SpiderMonkey 45 as built here (--without-intl-api
     // --disable-shared-js) doesn't expose `Promise` globally. Install a

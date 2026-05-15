@@ -12,3 +12,4 @@ test/cores_smoke.js
 test/integration.js
 test/fibonacci.js
 test/jit_smoke.js
+test/callsite_smoke.js

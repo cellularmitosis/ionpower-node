@@ -1,0 +1,168 @@
+/*
+ * express-chat dark theme — single source for modern + Tiger Safari 4.
+ *
+ * Tiger constraints (same as demos/chat/):
+ *   - No CSS variables  (Safari 9.1+).
+ *   - No `display: flex` / `gap` / Grid (Safari 6+ / 10.1+).
+ *   - `border-radius` works but wants `-webkit-border-radius` too.
+ *
+ * Layout uses absolute positioning (CSS 2.1) for the header/scroll/form
+ * stack instead of flex. The post boxes are normal block boxes.
+ */
+
+* { -webkit-box-sizing: border-box; box-sizing: border-box; }
+html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
+body {
+    background: #0e1116;
+    color:      #c9d1d9;
+    font: 14px/1.5 Menlo, Monaco, "Courier New", monospace;
+}
+
+/* ============ Top bar ============ */
+header {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40px;
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    padding: 8px 14px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+header h1 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    color: #c9d1d9;
+    display: inline;
+    margin-right: 12px;
+}
+header .banner {
+    font-size: 12px;
+    color: #6e7681;
+    display: inline;
+}
+header .banner b { color: #58a6ff; }
+header .status {
+    font-size: 12px;
+    padding: 2px 8px;
+    border: 1px solid #30363d;
+    -webkit-border-radius: 999px;
+    border-radius: 999px;
+    float: right;
+    margin-top: 2px;
+}
+header .status.connected    { color: #7ee787; border-color: #7ee787; }
+header .status.disconnected { color: #f85149; border-color: #f85149; }
+
+/* ============ Scrollable feed ============ */
+main {
+    position: absolute;
+    top: 40px;
+    bottom: 175px;
+    left: 0; right: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 14px;
+}
+
+/* ============ Bottom form ============
+ *
+ * Three labelled rows: name + trip side-by-side (50/50), then a
+ * message textarea + Post button row.
+ */
+form {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 175px;
+    background: #161b22;
+    border-top: 1px solid #30363d;
+    padding: 8px 14px;
+}
+.form-row { margin-bottom: 4px; overflow: hidden; }
+.form-row label {
+    display: block;
+    font-size: 11px;
+    color: #6e7681;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.form-row-half {
+    float: left;
+    width: 49%;
+}
+.form-row-half:first-child { margin-right: 1%; }
+.form-row-half input[type=text] { width: 100%; }
+.form-row-message { clear: both; }
+.form-row-message-inner { overflow: hidden; }
+
+input[type=text], textarea {
+    background: #0e1116;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font: inherit;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.form-row-message-inner textarea {
+    width: 79%;
+    height: 48px;
+    margin-right: 1%;
+    resize: none;
+    vertical-align: top;
+}
+input[type=text]:focus, textarea:focus {
+    outline: none;
+    border-color: #58a6ff;
+}
+.form-row-message-inner button {
+    background: #58a6ff;
+    color: #0e1116;
+    border: none;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    width: 19%;
+    height: 48px;
+    vertical-align: top;
+}
+
+/* ============ Post boxes ============ */
+.post {
+    border: 1px solid #30363d;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    background: #161b22;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+}
+.post-header {
+    margin-bottom: 4px;
+    font-size: 12px;
+    overflow: hidden;
+}
+.post-no   { color: #58a6ff; font-weight: 600; margin-right: 8px; }
+.post-name { color: #7ee787; font-weight: 600; margin-right: 8px; }
+.post-trip { color: #d2a8ff; font-size: 11px; margin-right: 8px; }
+.post-ts   { color: #6e7681; font-size: 11px; float: right; }
+.post-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+}
+.post-text a { color: #58a6ff; }
+
+.sys-msg {
+    color: #d29922;
+    font-style: italic;
+    font-size: 12px;
+    margin-bottom: 6px;
+    padding: 0 4px;
+}
