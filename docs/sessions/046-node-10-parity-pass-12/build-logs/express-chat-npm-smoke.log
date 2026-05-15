@@ -1,0 +1,31 @@
+
+=== POST /api/post ===
+status:        200
+new post:      {"no":4,"name":"Anonymous","text":"hello board","ts":1778828417921}
+ok  POST /api/post  shape
+
+=== GET /api/posts ===
+[{"no":2,"name":"alice","text":"hi","ts":1778828404574,"trip":"K7gNU3sdo+"},{"no":3,"name":"alice","text":"echo","ts":1778828406799,"trip":"K7gNU3sdo+"},{"no":4,"name":"Anonymous","text":"hello board","ts":1778828417921}]
+ok  GET /api/posts  post appears in feed
+
+=== POST with tripcode "secret" ===
+new post:      {"no":5,"name":"alice","text":"hi","ts":1778828420135,"trip":"K7gNU3sdo+"}
+ok  POST with tripcode  trip field present
+
+=== POST same tripcode -> same trip-hash ===
+{"no":6,"name":"alice","text":"echo","ts":1778828422290,"trip":"K7gNU3sdo+"}
+ok  POST same tripcode -> same trip-hash (K7gNU3sdo+)
+
+=== POST too fast (rate limit) ===
+HTTP 429: Too Many Requests
+ok  Rate limit -> HTTP 429
+
+=== GET /api/posts?since=5 ===
+[{"no":6,"name":"alice","text":"echo","ts":1778828422290,"trip":"K7gNU3sdo+"}]
+ok  GET ?since=5  filtered correctly (1 posts)
+
+=== POST empty text ===
+HTTP 400: empty text
+ok  POST empty text -> HTTP 400
+
+express-chat smoke: ok (7 checks passed)

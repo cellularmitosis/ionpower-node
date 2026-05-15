@@ -42,3 +42,4 @@ counter format matches sibling projects `chibicc-book` and
 | 043 | Node 10 parity pass 9 — close last 5 parked stream tests; first `npm install express` discovery |
 | 044 | Node 10 parity pass 10 — tinflate Z_SYNC_FLUSH off-by-one fix; `npm install express` works end-to-end |
 | 045 | Node 10 parity pass 11 — V8 CallSite + `Error.prepareStackTrace` shim; `require('express')` works end-to-end; `demos/express-chat-npm/` lands |
+| 046 | Node 10 parity pass 12 — `package.json` top-level main resolver, `fs.promises.read/write` shape, `process.binding('uv').errname`; full express-chat-npm runs end-to-end on G3 |
