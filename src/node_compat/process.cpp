@@ -342,7 +342,7 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
         if (!versions) return false;
         if (!DefineStringProp(cx, versions, "node",          "10.24.1")) return false;
         // 'ionpower-node' uses bracket access on the JS side because of the dash.
-        if (!DefineStringProp(cx, versions, "ionpower-node", "0.97"))    return false;
+        if (!DefineStringProp(cx, versions, "ionpower-node", "0.98"))    return false;
         if (!JS_DefineProperty(cx, process, "versions", versions, JSPROP_ENUMERATE))
             return false;
     }
@@ -357,13 +357,54 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
     }
 
     // process.binding(name): legacy private API that older libs
-    // (fs-minipass, npm internals) reach into for native C++ bindings.
-    // We deliberately do NOT expose internals — return an empty object
-    // so module load succeeds. If anything actually CALLS a binding
-    // method later it fails at use-time, which is the right behavior.
+    // (fs-minipass, npm internals, execa) reach into for native C++
+    // bindings. We deliberately do NOT expose internals — most names
+    // get an empty {}. The 'uv' name gets an `errname` shim so that
+    // execa/lib/errname (and friends) stops printing the
+    //   "unable to establish process.binding('uv')" warning at the
+    // end of every npm install. Real libuv codes are the negated
+    // POSIX errno space; we cover the common ones and fall back to
+    // 'UV_UNKNOWN' for anything we don't recognise.
     {
         static const char kBindingSrc[] =
-            "(function () { return function (name) { return {}; }; })()";
+            "(function () {\n"
+            "  var UV_ERRNO_TABLE = {\n"
+            "    '-1':  'EPERM',   '-2':  'ENOENT', '-3':  'ESRCH',\n"
+            "    '-4':  'EINTR',   '-5':  'EIO',    '-6':  'ENXIO',\n"
+            "    '-7':  'E2BIG',   '-9':  'EBADF',  '-11': 'EAGAIN',\n"
+            "    '-12': 'ENOMEM',  '-13': 'EACCES', '-14': 'EFAULT',\n"
+            "    '-16': 'EBUSY',   '-17': 'EEXIST', '-18': 'EXDEV',\n"
+            "    '-19': 'ENODEV',  '-20': 'ENOTDIR','-21': 'EISDIR',\n"
+            "    '-22': 'EINVAL',  '-23': 'ENFILE', '-24': 'EMFILE',\n"
+            "    '-26': 'ETXTBSY', '-27': 'EFBIG',  '-28': 'ENOSPC',\n"
+            "    '-29': 'ESPIPE',  '-30': 'EROFS',  '-31': 'EMLINK',\n"
+            "    '-32': 'EPIPE',   '-34': 'ERANGE', '-35': 'EAGAIN',\n"
+            "    '-36': 'EINPROGRESS',  '-37': 'EALREADY',\n"
+            "    '-39': 'EDESTADDRREQ', '-40': 'EMSGSIZE',\n"
+            "    '-42': 'ENOPROTOOPT',  '-43': 'EPROTONOSUPPORT',\n"
+            "    '-44': 'ESOCKTNOSUPPORT','-45':'EOPNOTSUPP',\n"
+            "    '-47': 'EAFNOSUPPORT', '-48': 'EADDRINUSE',\n"
+            "    '-49': 'EADDRNOTAVAIL','-50': 'ENETDOWN',\n"
+            "    '-51': 'ENETUNREACH',  '-53': 'ECONNABORTED',\n"
+            "    '-54': 'ECONNRESET',   '-55': 'ENOBUFS',\n"
+            "    '-56': 'EISCONN',      '-57': 'ENOTCONN',\n"
+            "    '-60': 'ETIMEDOUT',    '-61': 'ECONNREFUSED',\n"
+            "    '-62': 'ELOOP',        '-64': 'EHOSTDOWN',\n"
+            "    '-65': 'EHOSTUNREACH', '-66': 'ENOTEMPTY',\n"
+            "    '-89': 'ECANCELED'\n"
+            "  };\n"
+            "  function uvErrname(code) {\n"
+            "    var n = Number(code);\n"
+            "    if (n > 0) n = -n;\n"  // libuv uses negative; tolerate positive
+            "    var name = UV_ERRNO_TABLE[String(n)];\n"
+            "    return name || ('UV_UNKNOWN(' + code + ')');\n"
+            "  }\n"
+            "  var UV_BINDING = { errname: uvErrname };\n"
+            "  return function (name) {\n"
+            "    if (name === 'uv') return UV_BINDING;\n"
+            "    return {};\n"
+            "  };\n"
+            "})()";
         JS::CompileOptions opts(cx);
         opts.setFileAndLine("<process.binding stub>", 1);
         JS::RootedValue bindingFn(cx);

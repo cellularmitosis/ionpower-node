@@ -332,6 +332,27 @@ static const char kBootstrapJS[] =
     "      });\n"
     "    };\n"
     "  }\n"
+    // fs.read/fs.write's callbacks are (err, n, buffer). The promises
+    // form on Node returns { bytesRead, buffer } / { bytesWritten,
+    // buffer } objects, NOT just the count. Specialise the wrapper so
+    // user code like `var { bytesRead, buffer } = await fh.read(...)`
+    // gets the expected shape.
+    "  function _promisifyFsRwShape(fn, countKey) {\n"
+    "    return function () {\n"
+    "      var args = Array.prototype.slice.call(arguments);\n"
+    "      return new Promise(function (resolve, reject) {\n"
+    "        args.push(function (err, n, buf) {\n"
+    "          if (err) reject(err);\n"
+    "          else {\n"
+    "            var out = { buffer: buf };\n"
+    "            out[countKey] = n;\n"
+    "            resolve(out);\n"
+    "          }\n"
+    "        });\n"
+    "        try { fn.apply(null, args); } catch (e) { reject(e); }\n"
+    "      });\n"
+    "    };\n"
+    "  }\n"
     "  fs.promises = {\n"
     "    readFile:  _promisifyFs(fs.readFile),\n"
     "    writeFile: _promisifyFs(fs.writeFile),\n"
@@ -357,11 +378,9 @@ static const char kBootstrapJS[] =
     "    access:    _promisifyFs(fs.access),\n"
     "    realpath:  _promisifyFs(fs.realpath),\n"
     "    open:      _promisifyFs(fs.open),\n"
-    "    close:     _promisifyFs(fs.close)\n"
-    // open/close only — fs.read/fs.write callbacks pass (err, n, buffer)\n
-    // and the promises form returns { bytesRead, buffer } / { bytesWritten,\n
-    // buffer } objects, not just the count. None of the npm-side callers\n
-    // we've hit use fs.promises.read/write — defer until something does.\n
+    "    close:     _promisifyFs(fs.close),\n"
+    "    read:      _promisifyFsRwShape(fs.read,  'bytesRead'),\n"
+    "    write:     _promisifyFsRwShape(fs.write, 'bytesWritten')\n"
     "  };\n"
     // fs.constants: Node exposes F_OK/R_OK/W_OK/X_OK for access().
     "  fs.constants = { F_OK: 0, R_OK: 4, W_OK: 2, X_OK: 1,\n"

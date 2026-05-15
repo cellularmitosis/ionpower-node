@@ -13,3 +13,6 @@ test/integration.js
 test/fibonacci.js
 test/jit_smoke.js
 test/callsite_smoke.js
+test/package_main_smoke.js
+test/fs_promises_rw_smoke.js
+test/process_binding_uv_smoke.js

@@ -99,6 +99,44 @@ static bool DirExists(const char* path) {
     return stat(path, &st) == 0 && S_ISDIR(st.st_mode);
 }
 
+// Find the position of the *top-level* "main" key in a package.json
+// buffer. Tracks brace depth and skips over string literals so nested
+// blocks like "jspm": { "main": "handlebars" } don't shadow the real
+// top-level main (handlebars@4.7.8 hits this; without it, require()
+// looks up node_modules/handlebars/handlebars and fails). Returns a
+// pointer to the opening quote of the matching key, or nullptr.
+static const char* FindTopLevelMainKey(const char* buf, size_t len) {
+    int depth = 0;
+    size_t i = 0;
+    while (i < len) {
+        char c = buf[i];
+        if (c == '{') { ++depth; ++i; continue; }
+        if (c == '}') { --depth; ++i; continue; }
+        if (c == '[') { ++depth; ++i; continue; }
+        if (c == ']') { --depth; ++i; continue; }
+        if (c == '"') {
+            size_t start = i + 1;
+            size_t j = start;
+            while (j < len && buf[j] != '"') {
+                if (buf[j] == '\\' && j + 1 < len) j += 2;
+                else ++j;
+            }
+            if (depth == 1 && j - start == 4 &&
+                memcmp(buf + start, "main", 4) == 0) {
+                // Confirm this is a key: ':' follows (modulo whitespace).
+                size_t k = j + 1;
+                while (k < len && (buf[k] == ' ' || buf[k] == '\t' ||
+                                   buf[k] == '\n' || buf[k] == '\r')) ++k;
+                if (k < len && buf[k] == ':') return buf + i;
+            }
+            i = (j < len) ? j + 1 : len;
+            continue;
+        }
+        ++i;
+    }
+    return nullptr;
+}
+
 // Try "base" as a module path: "base", "base.js", "base/index.js", or
 // "base/<pkg.main>" if base/package.json exists with a "main" field.
 // Returns true and fills `out` on success.
@@ -130,7 +168,7 @@ static bool TryModuleExtensions(const char* base, char* out, size_t outsz) {
                 size_t r = fread(buf, 1, sizeof(buf) - 1, f);
                 fclose(f);
                 buf[r] = 0;
-                const char* p = strstr(buf, "\"main\"");
+                const char* p = FindTopLevelMainKey(buf, r);
                 if (p) {
                     p = strchr(p, ':');
                     if (p) {
