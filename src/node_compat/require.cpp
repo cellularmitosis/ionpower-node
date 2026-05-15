@@ -162,39 +162,59 @@ static bool TryModuleExtensions(const char* base, char* out, size_t outsz) {
         if (FileExists(pkg)) {
             // Very forgiving "main" reader: look for "main":"<path>" or
             // "main": "<path>". Avoid pulling in a full JSON parser here.
+            // Size the buffer to the whole file (capped) — axios@1.x's
+            // package.json is >4 KB and has "main" past byte 4095, so
+            // a fixed 4 KB stack buffer would miss it.
             FILE* f = fopen(pkg, "rb");
             if (f) {
-                char buf[4096];
-                size_t r = fread(buf, 1, sizeof(buf) - 1, f);
-                fclose(f);
-                buf[r] = 0;
-                const char* p = FindTopLevelMainKey(buf, r);
-                if (p) {
-                    p = strchr(p, ':');
+                struct stat pst;
+                size_t cap = 0;
+                if (fstat(fileno(f), &pst) == 0 && pst.st_size > 0) {
+                    cap = (size_t)pst.st_size;
+                    if (cap > 1024 * 1024) cap = 1024 * 1024; // sanity cap
+                }
+                if (cap == 0) cap = 4096; // fallback if stat failed
+                char* buf = (char*)malloc(cap + 1);
+                if (buf) {
+                    size_t r = fread(buf, 1, cap, f);
+                    fclose(f);
+                    buf[r] = 0;
+                    const char* p = FindTopLevelMainKey(buf, r);
                     if (p) {
-                        ++p;
-                        while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') ++p;
-                        if (*p == '"') {
-                            const char* start = p + 1;
-                            const char* end = strchr(start, '"');
-                            if (end) {
-                                char main_path[PATH_MAX];
-                                size_t n = (size_t)(end - start);
-                                if (n >= sizeof main_path) n = sizeof main_path - 1;
-                                memcpy(main_path, start, n);
-                                main_path[n] = 0;
-                                char full[PATH_MAX];
-                                snprintf(full, sizeof full, "%s/%s", base, main_path);
-                                // Recurse via TryModuleExtensions to handle
-                                // "./lib" / "./lib.js" / "./lib/index.js".
-                                if (TryModuleExtensions(full, out, outsz))
-                                    return true;
+                        p = strchr(p, ':');
+                        if (p) {
+                            ++p;
+                            while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') ++p;
+                            if (*p == '"') {
+                                const char* start = p + 1;
+                                const char* end = strchr(start, '"');
+                                if (end) {
+                                    char main_path[PATH_MAX];
+                                    size_t n = (size_t)(end - start);
+                                    if (n >= sizeof main_path) n = sizeof main_path - 1;
+                                    memcpy(main_path, start, n);
+                                    main_path[n] = 0;
+                                    char full[PATH_MAX];
+                                    snprintf(full, sizeof full, "%s/%s", base, main_path);
+                                    free(buf);
+                                    // Recurse via TryModuleExtensions to handle
+                                    // "./lib" / "./lib.js" / "./lib/index.js".
+                                    if (TryModuleExtensions(full, out, outsz))
+                                        return true;
+                                    // main pointed somewhere that didn't resolve;
+                                    // fall through to index.js / index.cjs probes.
+                                    goto try_index_files;
+                                }
                             }
                         }
                     }
+                    free(buf);
+                } else {
+                    fclose(f);
                 }
             }
         }
+    try_index_files:
         // base + "/index.js"
         snprintf(candidate, sizeof candidate, "%s/index.js", base);
         if (FileExists(candidate)) {

@@ -10486,6 +10486,15 @@ static const char kBootstrapJS[] =
     // is harmless.
     "  function _looksLikeTopLevelAwait(src) {\n"
     "    if (!/\\bawait\\b/.test(src)) return false;\n"
+    // CJS guard: Node forbids top-level await in CJS modules. If the
+    // source uses `module.exports` or `exports.foo = `, treat it as
+    // CJS and skip TLA detection. Any await inside is necessarily
+    // inside an async function. The brace-counting heuristic below
+    // false-positives on files with template literals containing
+    // `${}` substitutions (the `{`/`}` from substitutions confuse
+    // the counter), so this guard is the cheap way to dodge that
+    // for the common case.
+    "    if (/\\bmodule\\.exports\\b|\\bexports\\.\\w+\\s*=/.test(src)) return false;\n"
     "    // Strip line + block comments + string literals to reduce noise.\n"
     "    var s = String(src)\n"
     "      .replace(/\\/\\*[\\s\\S]*?\\*\\//g, '')\n"
@@ -10532,6 +10541,9 @@ static const char kBootstrapJS[] =
     "    candidates.push(cwd + '/vendor/babel.js');\n"
     "    candidates.push(cwd + '/node_modules/@babel/standalone/babel.js');\n"
     // Installed path: <exeDir>/../share/ionpower-node/vendor/babel.js.
+    // Also <exeDir>/test/vendor/babel.js for dev-tree layouts where the
+    // binary sits in the repo root next to test/vendor/ (e.g. running
+    // ionpower-node out of its source checkout while cwd is elsewhere).
     // argv[0] in Node-compat is the interpreter; walk its directory up.
     "    try {\n"
     "      var exe = process.argv[0];\n"
@@ -10539,6 +10551,8 @@ static const char kBootstrapJS[] =
     "        var slash = exe.lastIndexOf('/');\n"
     "        var exeDir = slash >= 0 ? exe.slice(0, slash) : '.';\n"
     "        candidates.push(exeDir + '/../share/ionpower-node/vendor/babel.js');\n"
+    "        candidates.push(exeDir + '/test/vendor/babel.js');\n"
+    "        candidates.push(exeDir + '/vendor/babel.js');\n"
     "      }\n"
     "    } catch (e) { /* ignore */ }\n"
     "    for (var i = 0; i < candidates.length; ++i) {\n"
