@@ -19,3 +19,8 @@ test/babel_tla_cjs_guard_smoke.js
 test/babel_spread_iterable_smoke.js
 test/fs_promises_rw_smoke.js
 test/process_binding_uv_smoke.js
+test/proto_warning_filter_smoke.js
+test/require_subpath_json_smoke.js
+test/babel_lazy_parse_fallback_smoke.js
+test/http2_stub_smoke.js
+test/require_cache_smoke.js

@@ -31,28 +31,36 @@ static const JSClass kGlobalClass = {
 
 static void ReportError(JSContext* cx, const char* message, JSErrorReport* report)
 {
+    // SM45's "mutating the [[Prototype]] of an object will cause your code
+    // to run very slowly" warning is cosmetic for end users and triggers
+    // in common npm modules (path-to-regexp, graceful-fs, etc.) at module
+    // load. Silence it by default to keep startup output clean.
+    // IONPOWER_TRACE_PROTO_WARN=1 prints it (plus a JS stack trace).
+    bool isProtoWarn =
+        (message && strstr(message, "[[Prototype]]") != nullptr
+                 && JSREPORT_IS_WARNING(report->flags));
+    const char* trace = getenv("IONPOWER_TRACE_PROTO_WARN");
+    bool wantTrace = (trace && *trace && *trace != '0');
+    if (isProtoWarn && !wantTrace) {
+        return;
+    }
+
     fprintf(stderr, "%s:%u: %s\n",
             report->filename ? report->filename : "<no filename>",
             (unsigned)report->lineno,
             message);
 
-    // Optional: dump a JS stack trace when this looks like a perf
-    // warning we're hunting for ([[Prototype]] mutation deopts).
-    // Set IONPOWER_TRACE_PROTO_WARN=1 to enable.
-    if (message && strstr(message, "[[Prototype]]") != nullptr) {
-        const char* trace = getenv("IONPOWER_TRACE_PROTO_WARN");
-        if (trace && *trace && *trace != '0') {
-            JS::RootedObject stack(cx);
-            if (JS::CaptureCurrentStack(cx, &stack)) {
-                JS::RootedString stackStr(cx);
-                if (JS::BuildStackString(cx, stack, &stackStr) && stackStr) {
-                    JSAutoByteString bs;
-                    if (bs.encodeUtf8(cx, stackStr)) {
-                        fprintf(stderr, "  -- JS stack at warning site --\n%s",
-                                bs.ptr());
-                        if (bs.ptr()[strlen(bs.ptr()) - 1] != '\n') fputc('\n', stderr);
-                        fprintf(stderr, "  -- end stack --\n");
-                    }
+    if (isProtoWarn && wantTrace) {
+        JS::RootedObject stack(cx);
+        if (JS::CaptureCurrentStack(cx, &stack)) {
+            JS::RootedString stackStr(cx);
+            if (JS::BuildStackString(cx, stack, &stackStr) && stackStr) {
+                JSAutoByteString bs;
+                if (bs.encodeUtf8(cx, stackStr)) {
+                    fprintf(stderr, "  -- JS stack at warning site --\n%s",
+                            bs.ptr());
+                    if (bs.ptr()[strlen(bs.ptr()) - 1] != '\n') fputc('\n', stderr);
+                    fprintf(stderr, "  -- end stack --\n");
                 }
             }
         }
@@ -63,6 +71,17 @@ static int RunMain(JSContext* cx, int argc, char** argv)
 {
     CompartmentOptions options;
     options.setVersion(JSVERSION_LATEST);
+    // Eager-parse all function bodies. SM45's lazy parsing accepts the
+    // outer wrapper of `(function (exports, ...) { <body> })` at compile
+    // time and only parses <body> when the function is called. That's
+    // too late for our parse-failure Babel fallback in require.cpp,
+    // which only checks the JS::Evaluate return value at compile time.
+    // Luxon's `const { a, ...rest } = opts` (object-rest destructuring,
+    // ES2018) is the canonical trigger: SM45 doesn't support it but
+    // accepts the wrapper, then chokes mid-call past the fallback.
+    // Disabling lazy parsing trades a small startup cost for "Babel
+    // sees every parse error and lowers it."
+    options.setDisableLazyParsing(true);
     RootedObject global(cx, JS_NewGlobalObject(cx, &kGlobalClass, nullptr,
                                                JS::DontFireOnNewGlobalHook, options));
     if (!global) {

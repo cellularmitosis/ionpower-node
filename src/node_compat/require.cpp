@@ -155,6 +155,14 @@ static bool TryModuleExtensions(const char* base, char* out, size_t outsz) {
     if (FileExists(candidate)) {
         strncpy(out, candidate, outsz); out[outsz - 1] = 0; return true;
     }
+    // base + ".json" — Node's LOAD_AS_FILE tries .js, then .json. Some
+    // packages ship subpath JSON like spdx-license-ids/deprecated.json
+    // and import it as require('spdx-license-ids/deprecated') with no
+    // extension.
+    snprintf(candidate, sizeof candidate, "%s.json", base);
+    if (FileExists(candidate)) {
+        strncpy(out, candidate, outsz); out[outsz - 1] = 0; return true;
+    }
     // base + "/package.json" -> "main"
     if (DirExists(base)) {
         char pkg[PATH_MAX];
@@ -688,6 +696,7 @@ bool InstallRequire(JSContext* cx, JS::HandleObject global) {
         "function __make_require__(dir) {\n"
         "  var f = function (spec) { return __require_native__(dir, spec); };\n"
         "  f.resolve = function (spec) { return dir + '/' + spec; };\n"
+        "  f.cache = __require_cache__;\n"
         "  return f;\n"
         "}\n";
     JS::CompileOptions opts(cx);

@@ -6812,7 +6812,7 @@ static const char kBootstrapJS[] =
     "      var dir = slash >= 0 ? fn.slice(0, slash) : fn;\n"
     "      return __make_require__(dir);\n"
     "    },\n"
-    "    builtinModules: ['fs','path','events','util','child_process','os','crypto','buffer','string_decoder','assert','stream','timers','querystring','readable-stream','inherits','supports-color','has-ansi','module','repl','v8','constants']\n"
+    "    builtinModules: ['fs','path','events','util','child_process','os','crypto','buffer','string_decoder','assert','stream','timers','querystring','readable-stream','inherits','supports-color','has-ansi','module','repl','v8','constants','http','https','http2','net','tls','dgram','url','zlib']\n"
     "  };\n"
     // Node 18+ module.isBuiltin(name): checks builtinModules (stripping\n"
     // any 'node:' prefix).\n"
@@ -9524,6 +9524,47 @@ static const char kBootstrapJS[] =
     "    postSync:       _nativeHttp.postSync\n"
     "  };\n"
     "  __require_cache__['https'] = httpsModule;\n"
+    // --- http2 (throwing stub) ---------------------------------------
+    // No HTTP/2 implementation here — that would mean ALPN + multiplexed
+    // framing on top of the curl/TLS surface. Several modern packages
+    // (axios@1.x, got@11) unconditionally do
+    //     var http2 = require('http2');
+    // at module load and only call into it when an HTTP/2 request is
+    // actually issued. A stub object lets those packages load and serve
+    // HTTP/1.1 traffic through their existing http/https adapters;
+    // HTTP/2 entry points throw with a clear pointer at the workaround.
+    "  var _http2_unsupported = function (name) {\n"
+    "    return function () {\n"
+    "      throw new Error('http2.' + name + ' is not implemented in "
+                          "ionpower-node; pin axios@^0.27 (or use http/https) "
+                          "for HTTP/1.1-only environments');\n"
+    "    };\n"
+    "  };\n"
+    "  var http2Module = {\n"
+    "    connect:             _http2_unsupported('connect'),\n"
+    "    createServer:        _http2_unsupported('createServer'),\n"
+    "    createSecureServer:  _http2_unsupported('createSecureServer'),\n"
+    "    getDefaultSettings:  function () { return {}; },\n"
+    "    getPackedSettings:   _http2_unsupported('getPackedSettings'),\n"
+    "    getUnpackedSettings: _http2_unsupported('getUnpackedSettings'),\n"
+    "    Http2Session:        function () { _http2_unsupported('Http2Session')(); },\n"
+    "    Http2Stream:         function () { _http2_unsupported('Http2Stream')(); },\n"
+    "    ServerHttp2Session:  function () { _http2_unsupported('ServerHttp2Session')(); },\n"
+    "    ServerHttp2Stream:   function () { _http2_unsupported('ServerHttp2Stream')(); },\n"
+    "    sensitiveHeaders:    Symbol('http2.sensitiveHeaders'),\n"
+    "    constants: {\n"
+    "      NGHTTP2_NO_ERROR: 0,\n"
+    "      NGHTTP2_PROTOCOL_ERROR: 1,\n"
+    "      HTTP_STATUS_OK: 200,\n"
+    "      HTTP_STATUS_NOT_FOUND: 404,\n"
+    "      HTTP2_HEADER_PATH: ':path',\n"
+    "      HTTP2_HEADER_METHOD: ':method',\n"
+    "      HTTP2_HEADER_STATUS: ':status',\n"
+    "      HTTP2_HEADER_AUTHORITY: ':authority',\n"
+    "      HTTP2_HEADER_SCHEME: ':scheme'\n"
+    "    }\n"
+    "  };\n"
+    "  __require_cache__['http2'] = http2Module;\n"
     // --- dgram (UDP) ---
     // Real UDP sockets on top of __net_native__.sendto / recvfrom +
     // ioWatch(fd, READABLE). Events: 'listening', 'message', 'error',
@@ -10427,6 +10468,7 @@ static const char kBootstrapJS[] =
     "      }\n"
     "    };\n"
     "    wrapped.resolve = req.resolve;\n"
+    "    wrapped.cache = req.cache;\n"
     "    return wrapped;\n"
     "  };\n"
 
