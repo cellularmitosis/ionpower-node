@@ -550,6 +550,57 @@ bool InstallBuffer(JSContext* cx, JS::HandleObject global) {
         "  this[off+3] =  v         & 0xFF;\n"
         "  return off + 4;\n"
         "};\n"
+        // Signed-integer writes. Two's complement on the wire is identical
+        // to the unsigned form for the same byte width; the JS bitwise ops
+        // already mask via int32 coercion. pg-protocol calls
+        // writeInt32BE(length, off) to emit the message-body length header.
+        "Uint8Array.prototype.writeInt8 = function(v, off) {\n"
+        "  off = off|0; this[off] = v & 0xFF; return off + 1;\n"
+        "};\n"
+        "Uint8Array.prototype.writeInt16LE = function(v, off) {\n"
+        "  off = off|0; this[off] = v & 0xFF; this[off+1] = (v >> 8) & 0xFF; return off + 2;\n"
+        "};\n"
+        "Uint8Array.prototype.writeInt16BE = function(v, off) {\n"
+        "  off = off|0; this[off] = (v >> 8) & 0xFF; this[off+1] = v & 0xFF; return off + 2;\n"
+        "};\n"
+        "Uint8Array.prototype.writeInt32LE = function(v, off) {\n"
+        "  off = off|0;\n"
+        "  this[off]   =  v        & 0xFF;\n"
+        "  this[off+1] = (v >>  8) & 0xFF;\n"
+        "  this[off+2] = (v >> 16) & 0xFF;\n"
+        "  this[off+3] = (v >> 24) & 0xFF;\n"
+        "  return off + 4;\n"
+        "};\n"
+        "Uint8Array.prototype.writeInt32BE = function(v, off) {\n"
+        "  off = off|0;\n"
+        "  this[off]   = (v >> 24) & 0xFF;\n"
+        "  this[off+1] = (v >> 16) & 0xFF;\n"
+        "  this[off+2] = (v >>  8) & 0xFF;\n"
+        "  this[off+3] =  v        & 0xFF;\n"
+        "  return off + 4;\n"
+        "};\n"
+        // write(string[, offset[, length]][, encoding]) — Node signature.
+        // Returns the number of bytes written. Argument shuffling matches
+        // Node: a string in the offset slot is the encoding (`buf.write(s,
+        // 'utf8')`); a string in the length slot is also the encoding
+        // (`buf.write(s, off, 'utf8')`).
+        "Uint8Array.prototype.write = function(string, offset, length, encoding) {\n"
+        "  if (typeof string !== 'string') string = String(string);\n"
+        "  if (typeof offset === 'string') { encoding = offset; offset = 0; length = undefined; }\n"
+        "  else if (typeof length === 'string') { encoding = length; length = undefined; }\n"
+        "  offset = offset|0;\n"
+        "  encoding = encoding || 'utf8';\n"
+        "  var maxLen = this.length - offset;\n"
+        "  if (maxLen < 0) maxLen = 0;\n"
+        "  if (length === undefined || length === null) length = maxLen;\n"
+        "  length = length|0;\n"
+        "  if (length > maxLen) length = maxLen;\n"
+        "  if (length < 0) length = 0;\n"
+        "  var bytes = Buffer.from(string, encoding);\n"
+        "  var n = bytes.length < length ? bytes.length : length;\n"
+        "  for (var i = 0; i < n; ++i) this[offset + i] = bytes[i];\n"
+        "  return n;\n"
+        "};\n"
         // copy(target, targetStart, sourceStart, sourceEnd) -> bytes copied.
         "Uint8Array.prototype.copy = function(target, tStart, sStart, sEnd) {\n"
         "  tStart = tStart|0; sStart = sStart|0;\n"

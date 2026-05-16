@@ -29,3 +29,6 @@ test/require_extensions_smoke.js
 test/require_resolve_paths_smoke.js
 test/require_module_not_found_smoke.js
 test/lumo_asks_smoke.js
+test/buffer_write_smoke.js
+test/require_dot_smoke.js
+test/for_loop_block_scope_smoke.js

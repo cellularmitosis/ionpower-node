@@ -309,7 +309,15 @@ static bool ResolveModule(const char* spec, const char* from_dir,
         }
         return false;
     }
-    if (spec[0] == '.' && (spec[1] == '/' ||
+    // Relative specifiers: './...', '../...', plus bare '.' and bare '..'
+    // (real Node treats them as "this directory" / "parent directory" and
+    // runs them through LOAD_AS_DIRECTORY — i.e. package.json main /
+    // index.js / index.json). redis@4's cluster/multi-command.js does
+    // `require('.')`; without bare-dot support that hits the bare-specifier
+    // node_modules walk and misses.
+    if (spec[0] == '.' && (spec[1] == 0 ||                          // '.'
+                           (spec[1] == '.' && spec[2] == 0) ||      // '..'
+                           spec[1] == '/' ||
                            (spec[1] == '.' && spec[2] == '/'))) {
         snprintf(base, sizeof base, "%s/%s", from_dir, spec);
         if (TryModuleExtensions(base, out, outsz)) {
@@ -520,8 +528,79 @@ static bool LoadModuleFile(JSContext* cx, JS::HandleObject global,
         return ev;
     };
 
+    // Pre-emptive babel for files containing `for (let ...)` or
+    // `for (const ...)`. SM45 does not per-iteration-bind let/const in
+    // for-in / for-of / for(;;) — closures inside such loops capture the
+    // post-loop value (verified in pass-18). Babel's preset-env at
+    // targets:{ie:'11'} lowers the binding to var + IIFE per-iteration,
+    // producing correct closure capture. The disk cache at
+    // ~/.ionpower-cache/babel-v1/ amortizes the cost.
+    //
+    // This is a heuristic substring scan — we may over-trigger for files
+    // whose only block-scoped loops never close over the iteration
+    // variable. Over-trigger is strictly more correct (and slower only on
+    // cold cache); under-trigger is silently wrong (figlet bug).
+    auto containsBlockScopedLoop = [&]() -> bool {
+        // Cheap fixed-substring sweep. Patterns: "for (let ", "for (const ",
+        // "for(let ", "for(const ". `src` is NUL-terminated by ReadFile so
+        // strstr is fine; an embedded NUL would short the scan but is
+        // implausible in JS source.
+        static const char* needles[] = {
+            "for (let ", "for (const ", "for(let ", "for(const "
+        };
+        for (size_t i = 0; i < sizeof(needles) / sizeof(needles[0]); ++i) {
+            if (strstr(src, needles[i]) != nullptr) return true;
+        }
+        return false;
+    };
+
+    bool didPreempt = false;
     JS::RootedValue wrapped(cx);
-    bool ok = wrapAndEval(src, srcLen, &wrapped);
+    bool ok = false;
+    if (getenv("IONPOWER_NO_BABEL") == nullptr && containsBlockScopedLoop()) {
+        JS::RootedValue hookV(cx);
+        if (JS_GetProperty(cx, global, "__try_babel_transpile__", &hookV)
+            && hookV.isObject() && JS_ObjectIsFunction(cx, &hookV.toObject())) {
+            struct stat st;
+            double mtimeMs = 0.0;
+            if (stat(abs_path, &st) == 0)
+                mtimeMs = (double)st.st_mtime * 1000.0;
+            JS::RootedString pathS(cx, JS_NewStringCopyZ(cx, abs_path));
+            size_t rawU16len = 0;
+            JS::UTF8Chars rawU8((const char*)src, srcLen);
+            char16_t* rawU16 =
+                JS::UTF8CharsToNewTwoByteCharsZ(cx, rawU8, &rawU16len).get();
+            JS::RootedString srcS(cx,
+                rawU16 ? JS_NewUCString(cx, rawU16, rawU16len) : nullptr);
+            if (pathS && srcS) {
+                JS::AutoValueArray<3> tArgs(cx);
+                tArgs[0].setString(pathS);
+                tArgs[1].setString(srcS);
+                tArgs[2].setNumber(mtimeMs);
+                JS::RootedValue tOut(cx);
+                bool called = JS::Call(cx, JS::UndefinedHandleValue, hookV,
+                                       tArgs, &tOut);
+                if (called && tOut.isString()) {
+                    JS::RootedString outS(cx, tOut.toString());
+                    JSAutoByteString outBytes;
+                    if (outBytes.encodeUtf8(cx, outS)) {
+                        ok = wrapAndEval(outBytes.ptr(),
+                                         strlen(outBytes.ptr()), &wrapped);
+                        didPreempt = ok;
+                    }
+                } else if (!called) {
+                    // Hook itself threw; ignore and fall through to non-babel
+                    // path. The original parse-error fallback (if any) still
+                    // runs.
+                    JS_ClearPendingException(cx);
+                }
+            }
+        }
+    }
+
+    if (!didPreempt) {
+        ok = wrapAndEval(src, srcLen, &wrapped);
+    }
 
     // Parse-failure fallback: if the wrapped source didn't parse (pending
     // SyntaxError), ask JS-side __try_babel_transpile__ for a lowered ES5

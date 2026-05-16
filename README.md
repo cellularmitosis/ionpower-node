@@ -24,8 +24,8 @@ curl http://leopard.sh/binpkgs/gcc-libs-4.9.4.tiger.g3.tar.gz | gunzip | tar x
 ln -s gcc-libs-4.9.4 gcc-4.9.4
 curl http://leopard.sh/dist/ca-certificates-20230110.tar.gz | gunzip | tar x
 curl http://leopard.sh/misc/beta/mozjs-45-ionpower-g3.tar.gz | gunzip | tar x
-curl http://leopard.sh/misc/beta/ionpower-node-1.1-g3-ppc.tar.gz | gunzip | tar x
-cd /opt/ionpower-node-1.1/bin
+curl http://leopard.sh/misc/beta/ionpower-node-1.2-g3-ppc.tar.gz | gunzip | tar x
+cd /opt/ionpower-node-1.2/bin
 ./node ../share/ionpower-node/demos/express-chat/server.js
 ```
 
@@ -103,12 +103,12 @@ rarely changes), then unpack a fresh runtime tarball per release.
 │   ├── bin/, include/, lib/...
 ├── ca-certificates-20230110/    <- CA bundle (default trust store)
 │   └── share/cacert.pem
-└── ionpower-node-1.1/          <- Node-compat runtime (statically links OpenSSL 1.1.1t)
+└── ionpower-node-1.2/          <- Node-compat runtime (statically links OpenSSL 1.1.1t)
     └── bin/node                 <- expects sibling mozjs
 ```
 
 The fastest path: grab prebuilt tarballs. The runtime is attached to
-the [v1.1 release](https://github.com/cellularmitosis/ionpower-node/releases/tag/v1.1);
+the [v1.2 release](https://github.com/cellularmitosis/ionpower-node/releases/tag/v1.2);
 the matching SpiderMonkey hasn't changed since
 [v0.87](https://github.com/cellularmitosis/ionpower-node/releases/tag/v0.87)
 and is reused.
@@ -125,10 +125,10 @@ cd /opt && \
   curl http://leopard.sh/dist/ca-certificates-20230110.tar.gz | gunzip | tar x
 
 # Per release: the runtime
-curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-1.1-g3-ppc.tar.gz
-sudo tar xzpf ionpower-node-1.1-g3-ppc.tar.gz -C /opt/
+curl -L -O https://github.com/cellularmitosis/ionpower-node/releases/latest/download/ionpower-node-1.2-g3-ppc.tar.gz
+sudo tar xzpf ionpower-node-1.2-g3-ppc.tar.gz -C /opt/
 
-/opt/ionpower-node-1.1/bin/node test/hello.js
+/opt/ionpower-node-1.2/bin/node test/hello.js
 ```
 
 For G4 use `mozjs-45-ionpower-g4` (`-mcpu=7450`); for G5,

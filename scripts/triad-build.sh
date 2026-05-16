@@ -78,6 +78,7 @@ scp /Users/cell/claude/ionpower-node/src/node_compat/globals.cpp  "$HOST:$REMOTE
 scp /Users/cell/claude/ionpower-node/src/node_compat/net.cpp      "$HOST:$REMOTE/src/node_compat/net.cpp"
 scp /Users/cell/claude/ionpower-node/src/node_compat/tls.cpp      "$HOST:$REMOTE/src/node_compat/tls.cpp"
 scp /Users/cell/claude/ionpower-node/src/node_compat/buffer.cpp   "$HOST:$REMOTE/src/node_compat/buffer.cpp"
+scp /Users/cell/claude/ionpower-node/src/node_compat/require.cpp  "$HOST:$REMOTE/src/node_compat/require.cpp"
 
 echo "=== [$HOST/$ARCH/$VERSION] clean + build  (MOZJS=$MOZJS CPU='$CPU') ==="
 ssh "$HOST" "cd $REMOTE && $MAKE $MAKE_ARGS clean && $MAKE $MAKE_ARGS 2>&1 | tail -30"
