@@ -1,0 +1,17 @@
+=== survey-one.sh PKG=csv-stringify REQUIRE=csv-stringify ===
+Fri May 15 23:15:46 CDT 2026
+
+--- npm install csv-stringify ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
++ csv-stringify@6.7.0
+added 1 package from 1 contributor in 57.894s
+
+
+--- install exit=0 dt=68s ---
+
+--- require('csv-stringify') ---
+REQUIRE_OK typeof=object first_keys=["CsvError","Stringifier","stringify"]
+--- require exit=0 dt=68s ---

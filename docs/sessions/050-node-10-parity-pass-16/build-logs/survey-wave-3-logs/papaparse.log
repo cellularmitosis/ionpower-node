@@ -1,0 +1,17 @@
+=== survey-one.sh PKG=papaparse REQUIRE=papaparse ===
+Fri May 15 23:25:02 CDT 2026
+
+--- npm install papaparse ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
++ papaparse@5.5.3
+added 1 package from 1 contributor in 20.37s
+
+
+--- install exit=0 dt=25s ---
+
+--- require('papaparse') ---
+REQUIRE_OK typeof=object first_keys=["parse","unparse","RECORD_SEP","UNIT_SEP","BYTE_ORDER_MARK","BAD_DELIMITERS","WORKERS_SUPPORTED","NODE_STREAM_INPUT"]
+--- require exit=0 dt=0s ---

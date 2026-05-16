@@ -1,0 +1,24 @@
+=== survey-one.sh PKG=ioredis REQUIRE=ioredis ===
+Fri May 15 23:08:30 CDT 2026
+
+--- npm install ioredis ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
+npm WARN notsup Unsupported engine for ioredis@5.10.1: wanted: {"node":">=12.22.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: ioredis@5.10.1
+
++ ioredis@5.10.1
+added 11 packages from 13 contributors in 63.713s
+
+1 package is looking for funding
+  run `npm fund` for details
+
+
+
+--- install exit=0 dt=70s ---
+
+--- require('ioredis') ---
+REQUIRE_OK typeof=function fnName=Redis
+--- require exit=0 dt=187s ---

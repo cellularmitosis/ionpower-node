@@ -1,0 +1,17 @@
+=== survey-one.sh PKG=enquirer REQUIRE=enquirer ===
+Fri May 15 22:42:14 CDT 2026
+
+--- npm install enquirer ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
++ enquirer@2.4.1
+added 4 packages from 5 contributors in 47.868s
+
+
+--- install exit=0 dt=53s ---
+
+--- require('enquirer') ---
+REQUIRE_OK typeof=function fnName=Enquirer
+--- require exit=0 dt=76s ---

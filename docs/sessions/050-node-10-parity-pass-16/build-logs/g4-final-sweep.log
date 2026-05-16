@@ -1,0 +1,14 @@
+Testing test/require_main_smoke.js PASS
+Testing test/require_extensions_smoke.js PASS
+Testing test/require_resolve_paths_smoke.js PASS
+Testing test/require_module_not_found_smoke.js PASS
+Testing test/lumo_asks_smoke.js PASS
+
+31 passing tests
+0 failing tests
+---libs---
+Testing test/node10-streams/test-stream-readable-resumeScheduled.js PASS
+Testing test/node10-streams/test-stream-pipe-cleanup.js PASS
+
+495 passing tests
+0 failing tests

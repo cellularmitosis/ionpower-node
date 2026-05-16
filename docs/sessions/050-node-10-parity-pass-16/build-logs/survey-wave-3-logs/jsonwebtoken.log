@@ -1,0 +1,24 @@
+=== survey-one.sh PKG=jsonwebtoken REQUIRE=jsonwebtoken ===
+Fri May 15 23:30:56 CDT 2026
+
+--- npm install jsonwebtoken ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
+npm WARN notsup Unsupported engine for jsonwebtoken@9.0.3: wanted: {"npm":">=6","node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: jsonwebtoken@9.0.3
+
++ jsonwebtoken@9.0.3
+added 15 packages from 11 contributors in 53.842s
+
+1 package is looking for funding
+  run `npm fund` for details
+
+
+
+--- install exit=0 dt=59s ---
+
+--- require('jsonwebtoken') ---
+REQUIRE_OK typeof=object first_keys=["decode","verify","sign","JsonWebTokenError","NotBeforeError","TokenExpiredError"]
+--- require exit=0 dt=1s ---

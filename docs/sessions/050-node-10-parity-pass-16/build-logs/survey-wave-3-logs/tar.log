@@ -1,0 +1,34 @@
+=== survey-one.sh PKG=tar REQUIRE=tar ===
+Fri May 15 23:37:00 CDT 2026
+
+--- npm install tar ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
+npm WARN notsup Unsupported engine for tar@7.5.15: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: tar@7.5.15
+npm WARN notsup Unsupported engine for minizlib@3.1.0: wanted: {"node":">= 18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: minizlib@3.1.0
+npm WARN notsup Unsupported engine for minipass@7.1.3: wanted: {"node":">=16 || 14 >=14.17"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: minipass@7.1.3
+npm WARN notsup Unsupported engine for yallist@5.0.0: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: yallist@5.0.0
+npm WARN notsup Unsupported engine for @isaacs/fs-minipass@4.0.1: wanted: {"node":">=18.0.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: @isaacs/fs-minipass@4.0.1
+npm WARN notsup Unsupported engine for chownr@3.0.0: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: chownr@3.0.0
+
++ tar@7.5.15
+added 6 packages from 2 contributors in 86.252s
+
+
+--- install exit=0 dt=92s ---
+
+--- require('tar') ---
+REQUIRE_FAIL missing : after property id
+__make_require__/f@<ionpower-node internal>:2:36
+__make_require__/wrapped@<ionpower-node bootstrap>:9129:20
+@/Users/macuser/tmp/survey-050/pkgs/tar/_require_test.js:2:13
+
+--- require exit=2 dt=30s ---

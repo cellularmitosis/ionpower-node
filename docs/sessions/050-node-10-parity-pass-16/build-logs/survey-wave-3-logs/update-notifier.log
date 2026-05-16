@@ -1,0 +1,93 @@
+=== survey-one.sh PKG=update-notifier REQUIRE=update-notifier ===
+Fri May 15 22:25:34 CDT 2026
+
+--- npm install update-notifier ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
+npm WARN notsup Unsupported engine for update-notifier@7.3.1: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: update-notifier@7.3.1
+npm WARN notsup Unsupported engine for chalk@5.6.2: wanted: {"node":"^12.17.0 || ^14.13 || >=16.0.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: chalk@5.6.2
+npm WARN notsup Unsupported engine for pupa@3.3.0: wanted: {"node":">=12.20"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: pupa@3.3.0
+npm WARN notsup Unsupported engine for boxen@8.0.1: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: boxen@8.0.1
+npm WARN notsup Unsupported engine for is-npm@6.1.0: wanted: {"node":"^12.20.0 || ^14.13.1 || >=16.0.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: is-npm@6.1.0
+npm WARN notsup Unsupported engine for is-in-ci@1.0.0: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: is-in-ci@1.0.0
+npm WARN notsup Unsupported engine for configstore@7.1.0: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: configstore@7.1.0
+npm WARN notsup Unsupported engine for xdg-basedir@5.1.0: wanted: {"node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: xdg-basedir@5.1.0
+npm WARN notsup Unsupported engine for latest-version@9.0.0: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: latest-version@9.0.0
+npm WARN notsup Unsupported engine for is-installed-globally@1.0.0: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: is-installed-globally@1.0.0
+npm WARN notsup Unsupported engine for string-width@7.2.0: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: string-width@7.2.0
+npm WARN notsup Unsupported engine for type-fest@4.41.0: wanted: {"node":">=16"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: type-fest@4.41.0
+npm WARN notsup Unsupported engine for camelcase@8.0.0: wanted: {"node":">=16"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: camelcase@8.0.0
+npm WARN notsup Unsupported engine for wrap-ansi@9.0.2: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: wrap-ansi@9.0.2
+npm WARN notsup Unsupported engine for widest-line@5.0.0: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: widest-line@5.0.0
+npm WARN notsup Unsupported engine for strip-ansi@7.2.0: wanted: {"node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: strip-ansi@7.2.0
+npm WARN notsup Unsupported engine for get-east-asian-width@1.6.0: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: get-east-asian-width@1.6.0
+npm WARN notsup Unsupported engine for ansi-regex@6.2.2: wanted: {"node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: ansi-regex@6.2.2
+npm WARN notsup Unsupported engine for strip-ansi@7.2.0: wanted: {"node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: strip-ansi@7.2.0
+npm WARN notsup Unsupported engine for ansi-styles@6.2.3: wanted: {"node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: ansi-styles@6.2.3
+npm WARN notsup Unsupported engine for ansi-regex@6.2.2: wanted: {"node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: ansi-regex@6.2.2
+npm WARN notsup Unsupported engine for dot-prop@9.0.0: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: dot-prop@9.0.0
+npm WARN notsup Unsupported engine for global-directory@4.0.1: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: global-directory@4.0.1
+npm WARN notsup Unsupported engine for is-path-inside@4.0.0: wanted: {"node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: is-path-inside@4.0.0
+npm WARN notsup Unsupported engine for ini@4.1.1: wanted: {"node":"^14.17.0 || ^16.13.0 || >=18.0.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: ini@4.1.1
+npm WARN notsup Unsupported engine for package-json@10.0.1: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: package-json@10.0.1
+npm WARN notsup Unsupported engine for registry-auth-token@5.1.1: wanted: {"node":">=14"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: registry-auth-token@5.1.1
+npm WARN notsup Unsupported engine for ky@1.14.3: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: ky@1.14.3
+npm WARN notsup Unsupported engine for registry-url@6.0.1: wanted: {"node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: registry-url@6.0.1
+npm WARN notsup Unsupported engine for @pnpm/npm-conf@3.0.2: wanted: {"node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: @pnpm/npm-conf@3.0.2
+npm WARN notsup Unsupported engine for @pnpm/network.ca-file@1.0.2: wanted: {"node":">=12.22.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: @pnpm/network.ca-file@1.0.2
+npm WARN notsup Unsupported engine for @pnpm/config.env-replace@1.1.0: wanted: {"node":">=12.22.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: @pnpm/config.env-replace@1.1.0
+npm WARN notsup Unsupported engine for escape-goat@4.0.0: wanted: {"node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: escape-goat@4.0.0
+
++ update-notifier@7.3.1
+added 56 packages from 13 contributors in 185.169s
+
+28 packages are looking for funding
+  run `npm fund` for details
+
+
+
+--- install exit=0 dt=192s ---
+
+--- require('update-notifier') ---
+REQUIRE_FAIL util.promisify: fn must be a function
+util.promisify@<ionpower-node bootstrap>:851:1
+@/Users/macuser/tmp/survey-050/pkgs/update-notifier/node_modules/stubborn-fs/dist/index.js:21:49
+__make_require__/f@<ionpower-node internal>:2:36
+__make_require__/wrapped@<ionpower-node bootstrap>:9129:20
+@/Users/macuser/tmp/survey-050/pkgs/update-notifier/node_modules/atomically/dist/index.js:15:42
+--- require exit=2 dt=76s ---

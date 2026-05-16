@@ -1,0 +1,117 @@
+=== run-wave3.sh starting Fri May 15 22:20:30 CDT 2026 ===
+PID=9795
+
+=== [1] commander@10 (require=commander) at Fri May 15 22:20:30 CDT 2026 ===
+    exit=0 dt=107s (log: logs/commander.log)
+
+=== [2] cosmiconfig (require=cosmiconfig) at Fri May 15 22:22:17 CDT 2026 ===
+    exit=0 dt=197s (log: logs/cosmiconfig.log)
+
+=== [3] update-notifier (require=update-notifier) at Fri May 15 22:25:34 CDT 2026 ===
+    exit=0 dt=268s (log: logs/update-notifier.log)
+
+=== [4] boxen (require=boxen) at Fri May 15 22:30:02 CDT 2026 ===
+    exit=0 dt=104s (log: logs/boxen.log)
+
+=== [5] chalk@5 (require=chalk) at Fri May 15 22:31:46 CDT 2026 ===
+    exit=0 dt=67s (log: logs/chalk.log)
+
+=== [6] figlet (require=figlet) at Fri May 15 22:32:53 CDT 2026 ===
+    exit=0 dt=524s (log: logs/figlet.log)
+
+=== [7] cli-table3 (require=cli-table3) at Fri May 15 22:41:37 CDT 2026 ===
+    exit=0 dt=37s (log: logs/cli-table3.log)
+
+=== [8] enquirer (require=enquirer) at Fri May 15 22:42:14 CDT 2026 ===
+    exit=0 dt=130s (log: logs/enquirer.log)
+
+=== [9] knex (require=knex) at Fri May 15 22:44:24 CDT 2026 ===
+    exit=0 dt=137s (log: logs/knex.log)
+
+=== [10] mysql2 (require=mysql2) at Fri May 15 22:46:41 CDT 2026 ===
+    exit=0 dt=304s (log: logs/mysql2.log)
+
+=== [11] pg (require=pg) at Fri May 15 22:51:45 CDT 2026 ===
+    exit=0 dt=265s (log: logs/pg.log)
+
+=== [12] redis@4 (require=redis) at Fri May 15 22:56:10 CDT 2026 ===
+    exit=0 dt=740s (log: logs/redis.log)
+
+=== [13] ioredis (require=ioredis) at Fri May 15 23:08:30 CDT 2026 ===
+    exit=0 dt=257s (log: logs/ioredis.log)
+
+=== [14] csv-parse (require=csv-parse) at Fri May 15 23:12:47 CDT 2026 ===
+    exit=0 dt=179s (log: logs/csv-parse.log)
+
+=== [15] csv-stringify (require=csv-stringify) at Fri May 15 23:15:46 CDT 2026 ===
+    exit=0 dt=136s (log: logs/csv-stringify.log)
+
+=== [16] xml2js (require=xml2js) at Fri May 15 23:18:02 CDT 2026 ===
+    exit=0 dt=172s (log: logs/xml2js.log)
+
+=== [17] fast-xml-parser (require=fast-xml-parser) at Fri May 15 23:20:54 CDT 2026 ===
+    exit=0 dt=248s (log: logs/fast-xml-parser.log)
+
+=== [18] papaparse (require=papaparse) at Fri May 15 23:25:02 CDT 2026 ===
+    exit=0 dt=26s (log: logs/papaparse.log)
+
+=== [19] cheerio (require=cheerio) at Fri May 15 23:25:28 CDT 2026 ===
+    exit=0 dt=79s (log: logs/cheerio.log)
+
+=== [20] bcrypt (require=bcrypt) at Fri May 15 23:26:47 CDT 2026 ===
+    exit=0 dt=59s (log: logs/bcrypt.log)
+
+=== [21] bcryptjs (require=bcryptjs) at Fri May 15 23:27:46 CDT 2026 ===
+    exit=0 dt=46s (log: logs/bcryptjs.log)
+
+=== [22] jose (require=jose) at Fri May 15 23:28:32 CDT 2026 ===
+    exit=0 dt=144s (log: logs/jose.log)
+
+=== [23] jsonwebtoken (require=jsonwebtoken) at Fri May 15 23:30:56 CDT 2026 ===
+    exit=0 dt=60s (log: logs/jsonwebtoken.log)
+
+=== [24] archiver (require=archiver) at Fri May 15 23:31:56 CDT 2026 ===
+    exit=0 dt=304s (log: logs/archiver.log)
+
+=== [25] tar (require=tar) at Fri May 15 23:37:00 CDT 2026 ===
+    exit=0 dt=122s (log: logs/tar.log)
+
+=== [26] extract-zip (require=extract-zip) at Fri May 15 23:39:02 CDT 2026 ===
+    exit=0 dt=178s (log: logs/extract-zip.log)
+
+=== [27] unzipper (require=unzipper) at Fri May 15 23:42:00 CDT 2026 ===
+    exit=0 dt=476s (log: logs/unzipper.log)
+
+=== [28] tar-stream (require=tar-stream) at Fri May 15 23:49:56 CDT 2026 ===
+    exit=0 dt=155s (log: logs/tar-stream.log)
+
+=== run-wave3.sh done Fri May 15 23:52:31 CDT 2026 ===
+Summary:
+commander	OK	install_ok	require_ok
+cosmiconfig	OK	install_ok	require_ok
+update-notifier	REQUIRE_FAIL	install_ok	exit2
+boxen	REQUIRE_FAIL	install_ok	exit2
+chalk	REQUIRE_FAIL	install_ok	exit2
+figlet	REQUIRE_FAIL	install_ok	exit2
+cli-table3	OK	install_ok	require_ok
+enquirer	OK	install_ok	require_ok
+knex	INSTALL_FAIL	exit1	-
+mysql2	OK	install_ok	require_ok
+pg	REQUIRE_FAIL	install_ok	exit2
+redis	REQUIRE_FAIL	install_ok	exit2
+ioredis	OK	install_ok	require_ok
+csv-parse	OK	install_ok	require_ok
+csv-stringify	OK	install_ok	require_ok
+xml2js	OK	install_ok	require_ok
+fast-xml-parser	OK	install_ok	require_ok
+papaparse	OK	install_ok	require_ok
+cheerio	INSTALL_FAIL	exit1	-
+bcrypt	INSTALL_FAIL	exit99	-
+bcryptjs	OK	install_ok	require_ok
+jose	REQUIRE_FAIL	install_ok	exit2
+jsonwebtoken	OK	install_ok	require_ok
+archiver	REQUIRE_FAIL	install_ok	exit2
+tar	REQUIRE_FAIL	install_ok	exit2
+extract-zip	OK	install_ok	require_ok
+unzipper	OK	install_ok	require_ok
+tar-stream	OK	install_ok	require_ok

@@ -1,0 +1,27 @@
+=== survey-one.sh PKG=figlet REQUIRE=figlet ===
+Fri May 15 22:32:53 CDT 2026
+
+--- npm install figlet ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
+npm WARN notsup Unsupported engine for figlet@1.11.0: wanted: {"node":">= 17.0.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: figlet@1.11.0
+npm WARN notsup Unsupported engine for commander@14.0.3: wanted: {"node":">=20"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: commander@14.0.3
+
++ figlet@1.11.0
+added 2 packages from 2 contributors in 416.928s
+
+
+--- install exit=0 dt=428s ---
+
+--- require('figlet') ---
+REQUIRE_FAIL path__namespace.dirname is not a function
+@/Users/macuser/tmp/survey-050/pkgs/figlet/node_modules/figlet/dist/node-figlet.cjs:26:21
+__make_require__/f@<ionpower-node internal>:2:36
+__make_require__/wrapped@<ionpower-node bootstrap>:9129:20
+@/Users/macuser/tmp/survey-050/pkgs/figlet/_require_test.js:2:13
+
+--- require exit=2 dt=96s ---

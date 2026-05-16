@@ -1,0 +1,16 @@
+Testing test/require_subpath_json_smoke.js PASS
+Testing test/babel_lazy_parse_fallback_smoke.js PASS
+Testing test/http2_stub_smoke.js PASS
+Testing test/require_cache_smoke.js PASS
+Testing test/require_main_smoke.js PASS
+Testing test/require_extensions_smoke.js PASS
+Testing test/require_resolve_paths_smoke.js PASS
+
+29 passing tests
+0 failing tests
+---libs---
+Testing test/node10-streams/test-stream-readable-resumeScheduled.js PASS
+Testing test/node10-streams/test-stream-pipe-cleanup.js PASS
+
+495 passing tests
+0 failing tests

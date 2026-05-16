@@ -1,0 +1,20 @@
+=== survey-one.sh PKG=xml2js REQUIRE=xml2js ===
+Fri May 15 23:18:02 CDT 2026
+
+--- npm install xml2js ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
+npm WARN notsup Unsupported engine for sax@1.6.0: wanted: {"node":">=11.0.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: sax@1.6.0
+
++ xml2js@0.6.2
+added 3 packages from 49 contributors in 164.28s
+
+
+--- install exit=0 dt=171s ---
+
+--- require('xml2js') ---
+REQUIRE_OK typeof=object first_keys=["defaults","processors","ValidationError","Builder","Parser","parseString","parseStringPromise"]
+--- require exit=0 dt=1s ---

@@ -1,0 +1,42 @@
+# wave-3 candidate list. Format: SPEC [require-name]
+# - SPEC: npm install string (e.g. "commander@10")
+# - require-name: optional override when require() name != npm name
+# Lines starting with # are comments.
+
+# CLI / TUI
+commander@10 commander
+cosmiconfig
+update-notifier
+boxen
+chalk@5 chalk
+figlet
+cli-table3
+enquirer
+
+# Database / ORM (read-side; require-load only, no live connections)
+knex
+mysql2
+pg
+redis@4 redis
+ioredis
+
+# Streams / parsing
+csv-parse
+csv-stringify
+xml2js
+fast-xml-parser
+papaparse
+cheerio
+
+# Crypto / hash
+bcrypt
+bcryptjs
+jose
+jsonwebtoken
+
+# File / archive
+archiver
+tar
+extract-zip
+unzipper
+tar-stream

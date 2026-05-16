@@ -1,0 +1,47 @@
+=== survey-one.sh PKG=archiver REQUIRE=archiver ===
+Fri May 15 23:31:56 CDT 2026
+
+--- npm install archiver ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
+npm WARN notsup Unsupported engine for archiver@8.0.0: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: archiver@8.0.0
+npm WARN notsup Unsupported engine for readable-stream@4.7.0: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: readable-stream@4.7.0
+npm WARN notsup Unsupported engine for is-stream@4.0.1: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: is-stream@4.0.1
+npm WARN notsup Unsupported engine for readdir-glob@3.0.0: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: readdir-glob@3.0.0
+npm WARN notsup Unsupported engine for zip-stream@7.0.5: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: zip-stream@7.0.5
+npm WARN notsup Unsupported engine for minimatch@10.2.5: wanted: {"node":"18 || 20 || >=22"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: minimatch@10.2.5
+npm WARN notsup Unsupported engine for brace-expansion@5.0.6: wanted: {"node":"18 || 20 || >=22"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: brace-expansion@5.0.6
+npm WARN notsup Unsupported engine for balanced-match@4.0.4: wanted: {"node":"18 || 20 || >=22"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: balanced-match@4.0.4
+npm WARN notsup Unsupported engine for compress-commons@7.0.1: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: compress-commons@7.0.1
+npm WARN notsup Unsupported engine for crc32-stream@7.0.1: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: crc32-stream@7.0.1
+
++ archiver@8.0.0
+added 45 packages from 25 contributors in 243.892s
+
+7 packages are looking for funding
+  run `npm fund` for details
+
+
+
+--- install exit=0 dt=251s ---
+
+--- require('archiver') ---
+REQUIRE_FAIL async functions are not enabled in the parser
+__make_require__/f@<ionpower-node internal>:2:36
+__make_require__/wrapped@<ionpower-node bootstrap>:9129:20
+@/Users/macuser/tmp/survey-050/pkgs/archiver/node_modules/archiver/lib/core.js:9:43
+__make_require__/f@<ionpower-node internal>:2:36
+__make_require__/wrapped@<ionpower-node bootstrap>:9129:20
+--- require exit=2 dt=53s ---
