@@ -1,0 +1,28 @@
+=== survey-one.sh PKG=glob@8 REQUIRE=glob ===
+Fri May 15 11:27:52 CDT 2026
+
+--- npm install glob@8 ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm WARN deprecated glob@8.1.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm WARN deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
+npm WARN notsup Unsupported engine for glob@8.1.0: wanted: {"node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: glob@8.1.0
+
++ glob@8.1.0
+added 9 packages from 2 contributors in 42.472s
+
+1 package is looking for funding
+  run `npm fund` for details
+
+
+
+--- install exit=0 dt=47s ---
+
+--- require('glob') ---
+REQUIRE_OK typeof=function fnName=glob
+--- require exit=0 dt=1s ---

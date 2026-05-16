@@ -1,0 +1,86 @@
+Draft: http2 throwing-stub for src/node_compat/globals.cpp.
+
+Slot in immediately after the https registration at line 9526:
+    "  __require_cache__['https'] = httpsModule;\n"
+
+Insert (each line is a separate C++ string literal):
+
+    // --- http2 (stub) -------------------------------------------------
+    // ionpower-node does not implement HTTP/2 (would require ALPN +
+    // multiplexed framing on top of the curl/TLS surface). Some
+    // packages (axios@1.x, got@11) unconditionally do
+    //     var http2 = require('http2');
+    // at module load and only call into it when an HTTP/2 request is
+    // actually issued. Providing a stub object lets those packages
+    // load and serve HTTP/1.1 traffic; HTTP/2-specific entry points
+    // throw with a clear pointer at the workaround.
+    "  var _http2_unsupported = function (name) {\n"
+    "    return function () {\n"
+    "      throw new Error('http2.' + name + ' is not implemented in ionpower-node; "
+                          "pin axios@^0.27 for HTTP/1.1-only environments');\n"
+    "    };\n"
+    "  };\n"
+    "  var http2Module = {\n"
+    "    connect:             _http2_unsupported('connect'),\n"
+    "    createServer:        _http2_unsupported('createServer'),\n"
+    "    createSecureServer:  _http2_unsupported('createSecureServer'),\n"
+    "    getDefaultSettings:  function () { return {}; },\n"
+    "    getPackedSettings:   _http2_unsupported('getPackedSettings'),\n"
+    "    getUnpackedSettings: _http2_unsupported('getUnpackedSettings'),\n"
+    "    Http2Session:        function () { _http2_unsupported('Http2Session')(); },\n"
+    "    Http2Stream:         function () { _http2_unsupported('Http2Stream')(); },\n"
+    "    ServerHttp2Session:  function () { _http2_unsupported('ServerHttp2Session')(); },\n"
+    "    ServerHttp2Stream:   function () { _http2_unsupported('ServerHttp2Stream')(); },\n"
+    "    sensitiveHeaders:    Symbol('http2.sensitiveHeaders'),\n"
+    "    constants: {\n"
+    "      NGHTTP2_NO_ERROR: 0,\n"
+    "      NGHTTP2_PROTOCOL_ERROR: 1,\n"
+    "      HTTP_STATUS_OK: 200,\n"
+    "      HTTP_STATUS_NOT_FOUND: 404,\n"
+    "      HTTP2_HEADER_PATH: ':path',\n"
+    "      HTTP2_HEADER_METHOD: ':method',\n"
+    "      HTTP2_HEADER_STATUS: ':status',\n"
+    "      HTTP2_HEADER_AUTHORITY: ':authority',\n"
+    "      HTTP2_HEADER_SCHEME: ':scheme'\n"
+    "    }\n"
+    "  };\n"
+    "  __require_cache__['http2'] = http2Module;\n"
+
+Also update the builtinModules list at line ~6815 to include 'http2':
+    "    builtinModules: [..., 'http2', ...]\n"
+
+Smoke (new file test/http2_stub_smoke.js):
+
+    // http2 is a throwing-on-use stub. Test that:
+    //   - require('http2') succeeds and returns an object
+    //   - http2.connect() throws a clear error
+    //   - http2.constants exposes a few HTTP/2 constants axios uses
+    var http2 = require('http2');
+    if (!http2 || typeof http2 !== 'object') {
+        console.error('FAIL: require(http2) returned', typeof http2);
+        process.exit(1);
+    }
+    if (typeof http2.connect !== 'function') {
+        console.error('FAIL: http2.connect is not a function');
+        process.exit(1);
+    }
+    var threw = false;
+    try { http2.connect('https://example.com'); }
+    catch (e) {
+        threw = true;
+        if (String(e.message).indexOf('not implemented') < 0) {
+            console.error('FAIL: http2.connect threw wrong message:', e.message);
+            process.exit(1);
+        }
+    }
+    if (!threw) {
+        console.error('FAIL: http2.connect did not throw');
+        process.exit(1);
+    }
+    if (typeof http2.constants !== 'object'
+        || http2.constants.HTTP_STATUS_OK !== 200) {
+        console.error('FAIL: http2.constants is missing or incomplete');
+        process.exit(1);
+    }
+    console.log('ok: http2 stub loads, throws on connect, exposes constants');
+    console.log('\nhttp2_stub_smoke: passed');

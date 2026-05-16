@@ -1,0 +1,20 @@
+=== survey-one.sh PKG=pino@6 REQUIRE=pino ===
+Fri May 15 11:36:03 CDT 2026
+
+--- npm install pino@6 ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
++ pino@6.14.0
+added 9 packages from 15 contributors in 65.448s
+
+
+--- install exit=0 dt=70s ---
+
+--- require('pino') ---
+/Users/macuser/tmp/survey-048/pkgs/pino/node_modules/pino/lib/proto.js:74: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+REQUIRE_OK typeof=function fnName=pino
+--- require exit=0 dt=1s ---

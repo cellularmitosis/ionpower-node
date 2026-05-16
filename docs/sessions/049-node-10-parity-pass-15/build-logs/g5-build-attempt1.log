@@ -1,0 +1,190 @@
+=== [pmacg5/g5/1.0] check-test-coverage ===
+ok: 502 files in test/ accounted for
+    520 wired via scripts/test-list-*.txt
+    4 in the intentional-skip allowlist
+=== [pmacg5/g5/1.0] check-demo-deps ===
+ok: 51 test/vendor/ files transitively reached by demos, all in install rule (55 shipped at root)
+=== [pmacg5/g5/1.0] rsync source ===
+Transfer starting: 6125 files
+deleting test/fib-report.txt
+./
+.claude/
+docs/sessions/
+.claude/scheduled_tasks.lock
+Makefile
+README.md
+docs/sessions/047-node-10-parity-pass-13/
+docs/sessions/047-node-10-parity-pass-13/build-logs/
+docs/sessions/047-node-10-parity-pass-13/release-notes/
+docs/sessions/047-node-10-parity-pass-13/build-logs/emac-g4-0.99-triad.log
+docs/sessions/047-node-10-parity-pass-13/build-logs/ibookg37-g3-0.99-triad.log
+docs/sessions/047-node-10-parity-pass-13/build-logs/pmacg5-g5-0.99-triad.log
+docs/sessions/047-node-10-parity-pass-13/handoff-pass-14.md
+docs/sessions/047-node-10-parity-pass-13/notes.md
+docs/sessions/048-node-10-parity-pass-14/
+docs/sessions/047-node-10-parity-pass-13/release-notes/v0.99.md
+docs/sessions/048-node-10-parity-pass-14/build-logs/
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/
+docs/sessions/048-node-10-parity-pass-14/release-notes/
+docs/sessions/049-node-10-parity-pass-15/
+docs/sessions/049-node-10-parity-pass-15/build-logs/
+docs/sessions/049-node-10-parity-pass-15/release-notes/
+docs/sessions/048-node-10-parity-pass-14/build-logs/g3-build.log
+scripts/
+docs/sessions/048-node-10-parity-pass-14/build-logs/progress.tsv
+docs/sessions/048-node-10-parity-pass-14/build-logs/run-wave2.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/summary.tsv
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/JSONStream.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/ajv.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/async.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/chokidar.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/cli-progress.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/date-fns.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/dayjs.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/ejs.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/fs-extra.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/glob.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/got.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/inquirer.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/luxon.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/make-fetch-happen.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/meow.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/minimatch.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/multistream.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/nanoid.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/ora.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/p-limit.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/p-queue.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/p-retry.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/phin.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/pino.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/pug.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/pumpify.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/request-promise-native.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/superagent.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/through2.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/uuid.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/validator.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/yargs.log
+docs/sessions/048-node-10-parity-pass-14/build-logs/survey-wave-2-logs/yup.log
+docs/sessions/048-node-10-parity-pass-14/handoff-pass-15.md
+docs/sessions/048-node-10-parity-pass-14/http2-stub.draft.txt
+docs/sessions/048-node-10-parity-pass-14/notes.md
+docs/sessions/048-node-10-parity-pass-14/release-notes/v1.0.md
+docs/sessions/048-node-10-parity-pass-14/run-wave2.sh
+docs/sessions/048-node-10-parity-pass-14/wave2-list.txt
+docs/sessions/049-node-10-parity-pass-15/build-logs/g3-build.log
+docs/sessions/049-node-10-parity-pass-15/build-logs/g3-tests.log
+docs/sessions/049-node-10-parity-pass-15/build-logs/g4-build.log
+docs/sessions/049-node-10-parity-pass-15/build-logs/g5-build.log
+docs/sessions/049-node-10-parity-pass-15/notes.md
+docs/sessions/README.md
+src/
+scripts/test-list-core.txt
+src/node_compat/
+src/main.cpp
+src/node_compat/buffer.cpp
+test/
+src/node_compat/globals.cpp
+src/node_compat/net.cpp
+src/node_compat/process.cpp
+src/node_compat/require.cpp
+src/node_compat/tls.cpp
+test/babel_lazy_parse_fallback_smoke.js
+test/http2_stub_smoke.js
+test/proto_warning_filter_smoke.js
+test/require_subpath_json_smoke.js
+
+sent 746851 bytes  received 7650 bytes  1527020 bytes/sec
+total size is 105745463  speedup is 140.15
+=== [pmacg5/g5/1.0] scp Makefile + process.cpp + globals.cpp + main.cpp + net.cpp + tls.cpp (gremlin workaround) ===
+=== [pmacg5/g5/1.0] clean + build  (MOZJS=/opt/mozjs-45-ionpower-g5 CPU='-mcpu=G5 -D_PPC970_') ===
+rm -f src/main.o src/node_compat/console.o src/node_compat/process.o src/node_compat/fs.o src/node_compat/path.o src/node_compat/buffer.o src/node_compat/require.o src/node_compat/timers.o src/node_compat/crypto.o src/node_compat/http.o src/node_compat/child_process.o src/node_compat/event_loop.o src/node_compat/net.o src/node_compat/tls.o src/node_compat/zlib.o src/node_compat/globals.o node
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,417) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,190) in src/node_compat/event_loop.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1206)=k(0,46) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1206) in src/node_compat/net.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb0EE5valueE:G(0,814) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantIbLb1EE5valueE:G(0,814) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIfE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIdE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZN9__gnu_cxx25__numeric_traits_floatingIeE16__max_exponent10E:G(0,1144) in src/node_compat/tls.o
+ld: warning: can't find atom for N_GSYM stabs _ZNSt17integral_constantImLm4EE5valueE:G(0,2064)=k(0,82) in src/node_compat/tls.o
+ld: warning: duplicate dylib /opt/gcc-4.9.4/lib/libstdc++.6.dylib
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: JS::CompileOptions::elementAttributeName() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/process.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src19.o) and (default) in src/node_compat/timers.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src32.o) and (default) in src/node_compat/timers.o
+ld: warning: JS::CompileOptions::element() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/process.o
+ld: warning: JS::CompileOptions::introductionScript() const has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/process.o
+ld: warning: mozilla::Vector<JS::Value, 8ul, js::TempAllocPolicy>::growStorageBy(unsigned long) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src25.o) and (default) in src/node_compat/timers.o
+ld: warning: js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >::trace(js::TraceableVector<jsid, 0ul, js::TempAllocPolicy, js::DefaultGCPolicy<jsid> >*, JSTracer*) has different visibility (hidden) in /opt/mozjs-45-ionpower-g5/lib/libjs_static.a(Unified_cpp_js_src3.o) and (default) in src/node_compat/http.o
+  [install_name_tool] @executable_path -> /opt/mozjs-45-ionpower-g5/lib
+=== [pmacg5/g5/1.0] test-all ===
+Testing test/integration.js PASS
+Testing test/fibonacci.js PASS
+Testing test/jit_smoke.js PASS
+Testing test/callsite_smoke.js PASS
+Testing test/package_main_smoke.js PASS
+Testing test/package_main_large_smoke.js PASS
+Testing test/babel_tla_cjs_guard_smoke.js PASS
+Testing test/babel_spread_iterable_smoke.js PASS
+Testing test/fs_promises_rw_smoke.js PASS
+Testing test/process_binding_uv_smoke.js PASS
+Testing test/proto_warning_filter_smoke.js FAIL
+Testing test/require_subpath_json_smoke.js PASS
+Testing test/babel_lazy_parse_fallback_smoke.js PASS
+Testing test/http2_stub_smoke.js PASS
+
+24 passing tests
+1 failing tests
+Failures may be investigated in /tmp/nodesmoke-1778892042
+Hint: cd /tmp/nodesmoke-1778892042 ; find . | grep '/FAIL$'
+make: *** [Makefile:192: test] Error 1
+=== [pmacg5/g5/1.0] TEST-ALL FAILED, attempting one retry (flake?) ===
+Testing test/node10-streams/test-stream-pipe-cleanup-pause.js PASS
+Testing test/node10-streams/test-stream-pipe-multiple-pipes.js PASS
+Testing test/node10-streams/test-stream-end-paused.js PASS
+Testing test/node10-streams/test-stream-events-prepend.js PASS
+Testing test/node10-streams/test-stream-readable-event.js PASS
+Testing test/node10-streams/test-stream-pipe-flow.js PASS
+Testing test/node10-streams/test-stream-pipe-manual-resume.js PASS
+Testing test/node10-streams/test-stream-pipe-without-listenerCount.js PASS
+Testing test/node10-streams/test-stream-objectmode-undefined.js PASS
+Testing test/node10-streams/test-stream-transform-flush-data.js PASS
+Testing test/node10-streams/test-stream-pipe-same-destination-twice.js PASS
+Testing test/node10-streams/test-stream-unpipe-event.js PASS
+Testing test/node10-streams/test-stream-readable-emittedReadable.js PASS
+Testing test/node10-streams/test-stream-decoder-objectmode.js PASS
+Testing test/node10-streams/test-stream-push-order.js PASS
+Testing test/node10-streams/test-stream-readable-resumeScheduled.js PASS
+Testing test/node10-streams/test-stream-pipe-cleanup.js PASS
+
+495 passing tests
+0 failing tests
+=== [pmacg5/g5/1.0] install ===
+cp -r test/vendor/elliptic   /opt/ionpower-node-1.0/share/ionpower-node/vendor/
+cp README.md LICENSE   /opt/ionpower-node-1.0/share/ionpower-node/ 2>/dev/null || true
+cp -r demos /opt/ionpower-node-1.0/share/ionpower-node/demos
+mkdir -p /opt/ionpower-node-1.0/share/ionpower-node/test/vendor/nm/node_modules
+
+installed ionpower-node 1.0 to /opt/ionpower-node-1.0
+  binary:   /opt/ionpower-node-1.0/bin/node (-> ionpower-node)
+  babel:    /opt/ionpower-node-1.0/share/ionpower-node/vendor/babel.js
+  demos:    /opt/ionpower-node-1.0/share/ionpower-node/demos/
+  mozjs:    expected at /opt/mozjs-45-ionpower-g5/
+
+Run:  /opt/ionpower-node-1.0/bin/node <script.js>
+=== [pmacg5/g5/1.0] tarball ===
+-rw-r--r--   1 macuser  wheel  7756691 May 15 19:45 /tmp/ionpower-node-1.0-g5-ppc.tar.gz
+=== [pmacg5/g5/1.0] DONE ===

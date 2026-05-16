@@ -1,0 +1,32 @@
+=== survey-one.sh PKG=request-promise-native REQUIRE=request-promise-native ===
+Fri May 15 10:59:55 CDT 2026
+
+--- npm install request-promise-native ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm WARN deprecated request-promise-native@1.0.9: request-promise-native has been deprecated because it extends the now deprecated request package, see https://github.com/request/request/issues/3142
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
+npm WARN request-promise-native@1.0.9 requires a peer of request@^2.34 but none is installed. You must install peer dependencies yourself.
+npm WARN request-promise-core@1.1.4 requires a peer of request@^2.34 but none is installed. You must install peer dependencies yourself.
+
++ request-promise-native@1.0.9
+added 7 packages from 12 contributors in 126.974s
+
+1 package is looking for funding
+  run `npm fund` for details
+
+
+
+--- install exit=0 dt=138s ---
+
+--- require('request-promise-native') ---
+REQUIRE_FAIL require: cannot find module 'request' from '/Users/macuser/tmp/survey-048/pkgs/request-promise-native/node_modules/request-promise-native/lib'
+__make_require__/f@<ionpower-node internal>:2:36
+__make_require__/wrapped@<ionpower-node bootstrap>:9099:20
+request<@/Users/macuser/tmp/survey-048/pkgs/request-promise-native/node_modules/request-promise-native/lib/rp.js:8:12
+module.exports@/Users/macuser/tmp/survey-048/pkgs/request-promise-native/node_modules/stealthy-require/lib/index.js:62:23
+@/Users/macuser/tmp/survey-048/pkgs/request-promise-native/node_modules/request-promise-native/lib/rp.js:7:15
+--- require exit=2 dt=1s ---

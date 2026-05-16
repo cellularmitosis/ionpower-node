@@ -1,0 +1,20 @@
+=== survey-one.sh PKG=uuid@8 REQUIRE=uuid ===
+Fri May 15 11:35:35 CDT 2026
+
+--- npm install uuid@8 ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm WARN deprecated uuid@8.3.2: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
++ uuid@8.3.2
+added 1 package in 22.766s
+
+
+--- install exit=0 dt=27s ---
+
+--- require('uuid') ---
+REQUIRE_OK typeof=object first_keys=["v1","v3","v4","v5","NIL","version","validate","stringify"]
+--- require exit=0 dt=0s ---

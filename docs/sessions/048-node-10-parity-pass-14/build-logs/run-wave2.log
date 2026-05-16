@@ -1,0 +1,138 @@
+=== run-wave2.sh starting Fri May 15 10:53:35 CDT 2026 ===
+PID=18617
+
+=== [1] got@11 (require=got) at Fri May 15 10:53:35 CDT 2026 ===
+    exit=0 dt=129s (log: logs/got.log)
+
+=== [2] superagent (require=superagent) at Fri May 15 10:55:44 CDT 2026 ===
+    exit=0 dt=251s (log: logs/superagent.log)
+
+=== [3] request-promise-native (require=request-promise-native) at Fri May 15 10:59:55 CDT 2026 ===
+    exit=0 dt=139s (log: logs/request-promise-native.log)
+
+=== [4] phin (require=phin) at Fri May 15 11:02:14 CDT 2026 ===
+    exit=0 dt=67s (log: logs/phin.log)
+
+=== [5] make-fetch-happen (require=make-fetch-happen) at Fri May 15 11:03:21 CDT 2026 ===
+    exit=0 dt=1249s (log: logs/make-fetch-happen.log)
+
+=== [6] fs-extra (require=fs-extra) at Fri May 15 11:24:10 CDT 2026 ===
+    exit=0 dt=222s (log: logs/fs-extra.log)
+
+=== [7] glob@8 (require=glob) at Fri May 15 11:27:52 CDT 2026 ===
+    exit=0 dt=48s (log: logs/glob.log)
+
+=== [8] chokidar@3 (require=chokidar) at Fri May 15 11:28:40 CDT 2026 ===
+    exit=0 dt=277s (log: logs/chokidar.log)
+
+=== [9] minimatch (require=minimatch) at Fri May 15 11:33:17 CDT 2026 ===
+    exit=0 dt=114s (log: logs/minimatch.log)
+
+=== [10] nanoid (require=nanoid) at Fri May 15 11:35:11 CDT 2026 ===
+    exit=0 dt=24s (log: logs/nanoid.log)
+
+=== [11] uuid@8 (require=uuid) at Fri May 15 11:35:35 CDT 2026 ===
+    exit=0 dt=27s (log: logs/uuid.log)
+
+=== [12] pino@6 (require=pino) at Fri May 15 11:36:03 CDT 2026 ===
+    exit=0 dt=71s (log: logs/pino.log)
+
+=== [13] p-queue@6 (require=p-queue) at Fri May 15 11:37:14 CDT 2026 ===
+    exit=0 dt=68s (log: logs/p-queue.log)
+
+=== [14] p-retry@4 (require=p-retry) at Fri May 15 11:38:22 CDT 2026 ===
+    exit=0 dt=57s (log: logs/p-retry.log)
+
+=== [15] p-limit@3 (require=p-limit) at Fri May 15 11:39:19 CDT 2026 ===
+    exit=0 dt=48s (log: logs/p-limit.log)
+
+=== [16] async (require=async) at Fri May 15 11:40:07 CDT 2026 ===
+    exit=0 dt=37s (log: logs/async.log)
+
+=== [17] meow@9 (require=meow) at Fri May 15 11:40:44 CDT 2026 ===
+    exit=0 dt=299s (log: logs/meow.log)
+
+=== [18] yargs@17 (require=yargs) at Fri May 15 11:45:43 CDT 2026 ===
+    exit=0 dt=199s (log: logs/yargs.log)
+
+=== [19] inquirer@8 (require=inquirer) at Fri May 15 11:49:02 CDT 2026 ===
+    exit=0 dt=134s (log: logs/inquirer.log)
+
+=== [20] ora@5 (require=ora) at Fri May 15 11:51:16 CDT 2026 ===
+    exit=0 dt=139s (log: logs/ora.log)
+
+=== [21] cli-progress (require=cli-progress) at Fri May 15 11:53:35 CDT 2026 ===
+    exit=0 dt=51s (log: logs/cli-progress.log)
+
+=== [22] ajv@8 (require=ajv) at Fri May 15 11:54:26 CDT 2026 ===
+    exit=0 dt=215s (log: logs/ajv.log)
+
+=== [23] yup (require=yup) at Fri May 15 11:58:01 CDT 2026 ===
+    exit=0 dt=111s (log: logs/yup.log)
+
+=== [24] validator (require=validator) at Fri May 15 11:59:52 CDT 2026 ===
+    exit=0 dt=52s (log: logs/validator.log)
+
+=== [25] pug (require=pug) at Fri May 15 12:00:45 CDT 2026 ===
+    exit=0 dt=251s (log: logs/pug.log)
+
+=== [26] ejs (require=ejs) at Fri May 15 12:04:56 CDT 2026 ===
+    exit=0 dt=28s (log: logs/ejs.log)
+
+=== [27] date-fns (require=date-fns) at Fri May 15 12:05:24 CDT 2026 ===
+    exit=0 dt=930s (log: logs/date-fns.log)
+
+=== [28] dayjs (require=dayjs) at Fri May 15 12:20:54 CDT 2026 ===
+    exit=0 dt=69s (log: logs/dayjs.log)
+
+=== [29] luxon (require=luxon) at Fri May 15 12:22:03 CDT 2026 ===
+    exit=0 dt=142s (log: logs/luxon.log)
+
+=== [30] through2 (require=through2) at Fri May 15 12:24:25 CDT 2026 ===
+    exit=0 dt=99s (log: logs/through2.log)
+
+=== [31] pumpify (require=pumpify) at Fri May 15 12:26:04 CDT 2026 ===
+    exit=0 dt=48s (log: logs/pumpify.log)
+
+=== [32] multistream (require=multistream) at Fri May 15 12:26:52 CDT 2026 ===
+    exit=0 dt=57s (log: logs/multistream.log)
+
+=== [33] JSONStream (require=JSONStream) at Fri May 15 12:27:49 CDT 2026 ===
+    exit=0 dt=39s (log: logs/JSONStream.log)
+
+=== run-wave2.sh done Fri May 15 12:28:28 CDT 2026 ===
+Summary:
+nanoid	OK	install_ok	require_ok
+got	INSTALL_FAIL	exit1	-
+superagent	REQUIRE_FAIL	install_ok	exit2
+request-promise-native	REQUIRE_FAIL	install_ok	exit2
+phin	OK	install_ok	require_ok
+make-fetch-happen	REQUIRE_FAIL	install_ok	exit2
+fs-extra	OK	install_ok	require_ok
+glob	OK	install_ok	require_ok
+chokidar	OK	install_ok	require_ok
+minimatch	OK	install_ok	require_ok
+nanoid	OK	install_ok	require_ok
+uuid	OK	install_ok	require_ok
+pino	OK	install_ok	require_ok
+p-queue	OK	install_ok	require_ok
+p-retry	OK	install_ok	require_ok
+p-limit	OK	install_ok	require_ok
+async	OK	install_ok	require_ok
+meow	REQUIRE_FAIL	install_ok	exit2
+yargs	REQUIRE_FAIL	install_ok	exit2
+inquirer	INSTALL_FAIL	exit1	-
+ora	OK	install_ok	require_ok
+cli-progress	OK	install_ok	require_ok
+ajv	OK	install_ok	require_ok
+yup	REQUIRE_FAIL	install_ok	exit2
+validator	OK	install_ok	require_ok
+pug	OK	install_ok	require_ok
+ejs	OK	install_ok	require_ok
+date-fns	OK	install_ok	require_ok
+dayjs	OK	install_ok	require_ok
+luxon	REQUIRE_FAIL	install_ok	exit2
+through2	OK	install_ok	require_ok
+pumpify	OK	install_ok	require_ok
+multistream	OK	install_ok	require_ok
+JSONStream	OK	install_ok	require_ok

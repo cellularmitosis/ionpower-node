@@ -1,0 +1,24 @@
+=== survey-one.sh PKG=p-queue@6 REQUIRE=p-queue ===
+Fri May 15 11:37:14 CDT 2026
+
+--- npm install p-queue@6 ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
++ p-queue@6.6.2
+added 4 packages from 2 contributors in 27.84s
+
+1 package is looking for funding
+  run `npm fund` for details
+
+
+
+--- install exit=0 dt=32s ---
+
+--- require('p-queue') ---
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+REQUIRE_OK typeof=object first_keys=["default"]
+--- require exit=0 dt=36s ---

@@ -1,0 +1,14 @@
+=== survey-one.sh PKG=got@11 REQUIRE=got ===
+Fri May 15 10:53:35 CDT 2026
+
+--- npm install got@11 ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm ERR! cb() never called!
+
+npm ERR! This is an error with npm itself. Please report this error at:
+npm ERR!     <https://npm.community>
+--- install exit=1 dt=129s ---
+
+INSTALL_FAIL — aborting

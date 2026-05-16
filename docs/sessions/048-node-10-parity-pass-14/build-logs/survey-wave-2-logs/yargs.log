@@ -1,0 +1,36 @@
+=== survey-one.sh PKG=yargs@17 REQUIRE=yargs ===
+Fri May 15 11:45:43 CDT 2026
+
+--- npm install yargs@17 ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
+npm WARN notsup Unsupported engine for yargs@17.7.2: wanted: {"node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: yargs@17.7.2
+npm WARN notsup Unsupported engine for yargs-parser@21.1.1: wanted: {"node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: yargs-parser@21.1.1
+npm WARN notsup Unsupported engine for cliui@8.0.1: wanted: {"node":">=12"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: cliui@8.0.1
+
++ yargs@17.7.2
+added 16 packages from 10 contributors in 75.105s
+
+2 packages are looking for funding
+  run `npm fund` for details
+
+
+
+--- install exit=0 dt=82s ---
+
+--- require('yargs') ---
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+REQUIRE_FAIL yargs parser supports a minimum Node.js version of 12. Read our version support policy: https://github.com/yargs/yargs-parser#supported-nodejs-versions
+@/Users/macuser/tmp/survey-048/pkgs/yargs/node_modules/yargs-parser/build/index.cjs:1015:1
+__make_require__/f@<ionpower-node internal>:2:36
+__make_require__/wrapped@<ionpower-node bootstrap>:9099:20
+@/Users/macuser/tmp/survey-048/pkgs/yargs/node_modules/yargs/build/index.cjs:2563:8
+__make_require__/f@<ionpower-node internal>:2:36
+--- require exit=2 dt=117s ---

@@ -1,0 +1,27 @@
+=== survey-one.sh PKG=through2 REQUIRE=through2 ===
+Fri May 15 12:24:25 CDT 2026
+
+--- npm install through2 ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm notice This endpoint is being retired. Use the bulk advisory endpoint instead. See the following docs for more info: https://api-docs.npmjs.com/#tag/Audit
+npm WARN saveError fs.fsync is not a function
+npm WARN saveError fs.fsync is not a function
+npm WARN notsup Unsupported engine for readable-stream@4.7.0: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: readable-stream@4.7.0
+
++ through2@5.0.1
+added 11 packages from 9 contributors in 59.003s
+
+4 packages are looking for funding
+  run `npm fund` for details
+
+
+
+--- install exit=0 dt=64s ---
+
+--- require('through2') ---
+/Users/macuser/tmp/ionpower-node/test/vendor/babel.js:1: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+REQUIRE_OK typeof=object first_keys=["default","objectTransform","transform","transformer"]
+--- require exit=0 dt=35s ---

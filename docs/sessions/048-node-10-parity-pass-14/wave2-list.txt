@@ -1,0 +1,53 @@
+# wave-2 candidate list. Format: SPEC [require-name]
+# - SPEC: npm install string (e.g. "got@11")
+# - require-name: optional override when require() name != npm name
+# Lines starting with # are comments.
+
+# HTTP clients
+got@11
+superagent
+request-promise-native
+phin
+make-fetch-happen
+
+# Util
+fs-extra
+glob@8
+chokidar@3
+minimatch
+nanoid
+uuid@8 uuid
+pino@6 pino
+
+# Async
+p-queue@6 p-queue
+p-retry@4 p-retry
+p-limit@3 p-limit
+async
+
+# Build/CLI
+meow@9 meow
+yargs@17 yargs
+inquirer@8 inquirer
+ora@5 ora
+cli-progress
+
+# Data
+ajv@8 ajv
+yup
+validator
+
+# Templating
+pug
+ejs
+
+# Datestamp
+date-fns
+dayjs
+luxon
+
+# Streams
+through2
+pumpify
+multistream
+JSONStream

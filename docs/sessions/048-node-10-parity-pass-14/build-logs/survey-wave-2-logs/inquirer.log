@@ -1,0 +1,16 @@
+=== survey-one.sh PKG=inquirer@8 REQUIRE=inquirer ===
+Fri May 15 11:49:02 CDT 2026
+
+--- npm install inquirer@8 ---
+/Users/macuser/tmp/npm-6.14.18/node_modules/graceful-fs/polyfills.js:145: mutating the [[Prototype]] of an object will cause your code to run very slowly; instead create the object with the correct initial [[Prototype]] value using Object.create
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+/Users/macuser/tmp/npm-6.14.18/node_modules/bluebird/js/release/util.js:205: unreachable code after return statement
+npm WARN notsup Unsupported engine for inquirer@8.2.7: wanted: {"node":">=12.0.0"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: inquirer@8.2.7
+npm WARN notsup Unsupported engine for @inquirer/external-editor@1.0.3: wanted: {"node":">=18"} (current: {"node":"10.24.1","npm":"6.14.18"})
+npm WARN notsup Not compatible with your version of node/npm: @inquirer/external-editor@1.0.3
+
+npm ERR! request to https://registry.npmjs.org/mute-stream/-/mute-stream-0.0.8.tgz failed, reason: read errno 54
+--- install exit=1 dt=134s ---
+
+INSTALL_FAIL — aborting
