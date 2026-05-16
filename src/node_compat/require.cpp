@@ -31,6 +31,50 @@
 
 namespace ionpower {
 
+// Throw a Node-shaped MODULE_NOT_FOUND error. Mirrors ThrowFsError in
+// fs.cpp: construct a real Error object so the JS-side .code property
+// is readable by user code. Pre-pass-16 used JS_ReportError, which
+// produced an error whose `.code` was undefined — many Node libraries
+// branch on `e.code === 'MODULE_NOT_FOUND'` to distinguish a missing
+// optional dep from a real load-time error, and the missing code
+// silently broke that branch (caught for lumo session 007).
+static bool ThrowModuleNotFound(JSContext* cx, const char* spec, const char* dir) {
+    char msg[1024];
+    snprintf(msg, sizeof(msg), "Cannot find module '%s' from '%s'",
+             spec ? spec : "", dir ? dir : "");
+
+    JS::RootedObject global(cx, JS::CurrentGlobalOrNull(cx));
+    if (!global) { JS_ReportError(cx, "%s", msg); return false; }
+    JS::RootedValue ctorVal(cx);
+    if (!JS_GetProperty(cx, global, "Error", &ctorVal) || !ctorVal.isObject()) {
+        JS_ReportError(cx, "%s", msg); return false;
+    }
+    JS::RootedObject ctor(cx, &ctorVal.toObject());
+    JS::RootedString msgStr(cx, JS_NewStringCopyZ(cx, msg));
+    if (!msgStr) { JS_ReportError(cx, "%s", msg); return false; }
+    JS::AutoValueArray<1> ctorArgs(cx);
+    ctorArgs[0].setString(msgStr);
+    JS::RootedObject errObj(cx, JS_New(cx, ctor, ctorArgs));
+    if (!errObj) { JS_ReportError(cx, "%s", msg); return false; }
+
+    JS::RootedString codeStr(cx, JS_NewStringCopyZ(cx, "MODULE_NOT_FOUND"));
+    if (codeStr) {
+        JS::RootedValue v(cx, JS::StringValue(codeStr));
+        JS_DefineProperty(cx, errObj, "code", v, JSPROP_ENUMERATE);
+    }
+    // requireStack: [] — matches Node 10+ shape. Empty because we don't
+    // track the require chain; libraries reading it only check truthiness.
+    JS::RootedObject stack(cx, JS_NewArrayObject(cx, 0));
+    if (stack) {
+        JS::RootedValue v(cx, JS::ObjectValue(*stack));
+        JS_DefineProperty(cx, errObj, "requireStack", v, JSPROP_ENUMERATE);
+    }
+
+    JS::RootedValue errVal(cx, JS::ObjectValue(*errObj));
+    JS_SetPendingException(cx, errVal);
+    return false;
+}
+
 static bool FileExists(const char* path) {
     struct stat st;
     return stat(path, &st) == 0 && S_ISREG(st.st_mode);
@@ -559,6 +603,30 @@ static bool LoadModuleFile(JSContext* cx, JS::HandleObject global,
     if (!JS_DefineProperty(cx, module, "exports", expv, JSPROP_ENUMERATE))
         return false;
 
+    // Decorate the module with id + filename so `module.filename` and
+    // `module.id` (read by some packages) resolve to the absolute path.
+    JS::RootedString filenameS(cx, JS_NewStringCopyZ(cx, abs_path));
+    if (!filenameS) return false;
+    JS::RootedValue filenameV(cx, JS::StringValue(filenameS));
+    if (!JS_DefineProperty(cx, module, "id", filenameV, JSPROP_ENUMERATE))
+        return false;
+    if (!JS_DefineProperty(cx, module, "filename", filenameV, JSPROP_ENUMERATE))
+        return false;
+
+    // Stash the very first module loaded as __require_main_module__ so
+    // `require.main === module` (the canonical "is this script being run
+    // directly" check) resolves correctly for the entry script. Only the
+    // first writer wins — subsequent require()s of other files see the
+    // existing main and don't overwrite it.
+    JS::RootedValue existingMain(cx);
+    if (!JS_GetProperty(cx, global, "__require_main_module__", &existingMain))
+        return false;
+    if (existingMain.isUndefined()) {
+        JS::RootedValue mainV(cx, JS::ObjectValue(*module));
+        if (!JS_DefineProperty(cx, global, "__require_main_module__", mainV, 0))
+            return false;
+    }
+
     // Bind this module into the cache EARLY so circular requires resolve.
     // We store the MODULE wrapper (not the exports object) so the cache
     // sees user-side `module.exports = X` reassignments through .exports
@@ -629,9 +697,7 @@ static bool ResolveNative(JSContext* cx, unsigned argc, JS::Value* vp) {
 
     char abs[PATH_MAX];
     if (!ResolveModule(specB.ptr(), dirB.ptr(), abs, sizeof abs)) {
-        JS_ReportError(cx, "MODULE_NOT_FOUND: cannot find module '%s' from '%s'",
-                       specB.ptr(), dirB.ptr());
-        return false;
+        return ThrowModuleNotFound(cx, specB.ptr(), dirB.ptr());
     }
     JS::RootedString outS(cx, JS_NewStringCopyZ(cx, abs));
     if (!outS) return false;
@@ -655,9 +721,7 @@ static bool RequireNative(JSContext* cx, unsigned argc, JS::Value* vp) {
 
     char abs[PATH_MAX];
     if (!ResolveModule(specB.ptr(), dirB.ptr(), abs, sizeof abs)) {
-        JS_ReportError(cx, "require: cannot find module '%s' from '%s'",
-                       specB.ptr(), dirB.ptr());
-        return false;
+        return ThrowModuleNotFound(cx, specB.ptr(), dirB.ptr());
     }
 
     JS::RootedObject global(cx, JS::CurrentGlobalOrNull(cx));
@@ -690,13 +754,79 @@ bool InstallRequire(JSContext* cx, JS::HandleObject global) {
     if (!JS_DefineProperty(cx, global, "__require_cache__", cv, 0))
         return false;
 
+    // __require_extensions__ is a shared stub object exposed on every
+    // require()'s .extensions. Node's `require.extensions` is deprecated
+    // but a handful of older packages still poke at it; the keys '.js',
+    // '.json', '.node' must at least be readable. Writes are accepted but
+    // don't affect loading — we don't honour custom extension handlers.
+    JS::RootedObject extensions(cx, JS_NewPlainObject(cx));
+    if (!extensions) return false;
+    JS::RootedValue noopV(cx);
+    {
+        static const char kNoopSrc[] = "(function () { return undefined; })";
+        JS::CompileOptions opts(cx);
+        opts.setFileAndLine("<ionpower-node internal>", 1);
+        if (!JS::Evaluate(cx, opts, kNoopSrc, sizeof(kNoopSrc) - 1, &noopV))
+            return false;
+    }
+    if (!JS_DefineProperty(cx, extensions, ".js",   noopV, JSPROP_ENUMERATE))
+        return false;
+    if (!JS_DefineProperty(cx, extensions, ".json", noopV, JSPROP_ENUMERATE))
+        return false;
+    if (!JS_DefineProperty(cx, extensions, ".node", noopV, JSPROP_ENUMERATE))
+        return false;
+    JS::RootedValue extV(cx, JS::ObjectValue(*extensions));
+    if (!JS_DefineProperty(cx, global, "__require_extensions__", extV, 0))
+        return false;
+
     // Install the JS-level factory: __make_require__(dir) => require(spec).
     // We compile the JS inline so no external file is needed.
+    //
+    // Properties attached here must ALSO be forwarded in the rewrap layer
+    // in globals.cpp (search for "wrapped.resolve = req.resolve;") —
+    // otherwise user code only sees the wrapped require and never sees
+    // the property. This bit pass 15: require.cache wasn't forwarded.
     static const char kFactorySrc[] =
         "function __make_require__(dir) {\n"
         "  var f = function (spec) { return __require_native__(dir, spec); };\n"
-        "  f.resolve = function (spec) { return dir + '/' + spec; };\n"
+        // require.resolve(spec) returns the absolute path the same call to
+        // require(spec) would load — and throws MODULE_NOT_FOUND if no
+        // such module exists. We route through __resolve_native__ (a
+        // C++ entry point that runs the full resolver without loading)
+        // so the throw shape matches require's exactly.
+        "  f.resolve = function (spec) { return __resolve_native__(dir, spec); };\n"
+        // resolve.paths(spec): ancestor walk of node_modules dirs from `dir`,
+        // or null for builtins (matches Node 10's contract).
+        "  f.resolve.paths = function (spec) {\n"
+        "    if (typeof spec === 'string'\n"
+        "        && spec.length > 0\n"
+        "        && spec.charAt(0) !== '/'\n"
+        "        && spec.charAt(0) !== '.'\n"
+        "        && __require_cache__.hasOwnProperty(spec)) {\n"
+        "      return null;\n"  // builtins (pre-seeded by short name)
+        "    }\n"
+        "    var out = [];\n"
+        "    var d = dir;\n"
+        "    while (d && d.length > 0) {\n"
+        "      out.push(d + '/node_modules');\n"
+        "      var i = d.lastIndexOf('/');\n"
+        "      if (i <= 0) break;\n"
+        "      d = d.slice(0, i);\n"
+        "    }\n"
+        "    return out;\n"
+        "  };\n"
         "  f.cache = __require_cache__;\n"
+        "  f.extensions = __require_extensions__;\n"
+        // .main is a getter so it reads the global lazily — the entry
+        // module isn't stashed until LoadModuleFile runs, which is AFTER
+        // __make_require__ has already returned its closure.
+        "  Object.defineProperty(f, 'main', {\n"
+        "    configurable: true, enumerable: true,\n"
+        "    get: function () {\n"
+        "      return (typeof __require_main_module__ !== 'undefined'\n"
+        "              && __require_main_module__) ? __require_main_module__ : null;\n"
+        "    }\n"
+        "  });\n"
         "  return f;\n"
         "}\n";
     JS::CompileOptions opts(cx);

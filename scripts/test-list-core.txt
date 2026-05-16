@@ -24,3 +24,8 @@ test/require_subpath_json_smoke.js
 test/babel_lazy_parse_fallback_smoke.js
 test/http2_stub_smoke.js
 test/require_cache_smoke.js
+test/require_main_smoke.js
+test/require_extensions_smoke.js
+test/require_resolve_paths_smoke.js
+test/require_module_not_found_smoke.js
+test/lumo_asks_smoke.js

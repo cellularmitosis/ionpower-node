@@ -342,7 +342,7 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
         if (!versions) return false;
         if (!DefineStringProp(cx, versions, "node",          "10.24.1")) return false;
         // 'ionpower-node' uses bracket access on the JS side because of the dash.
-        if (!DefineStringProp(cx, versions, "ionpower-node", "1.0"))     return false;
+        if (!DefineStringProp(cx, versions, "ionpower-node", "1.1"))     return false;
         if (!JS_DefineProperty(cx, process, "versions", versions, JSPROP_ENUMERATE))
             return false;
     }
@@ -400,8 +400,20 @@ bool InstallProcess(JSContext* cx, JS::HandleObject global,
             "    return name || ('UV_UNKNOWN(' + code + ')');\n"
             "  }\n"
             "  var UV_BINDING = { errname: uvErrname };\n"
+            // process.binding('util') exposes Node-internal sigint-watchdog
+            // hooks. Lumo's cljs.js wraps vm.runInThisContext with these to
+            // support breakOnSigint. SM45 has no equivalent — no-ops are
+            // the right semantics (REPL-interrupt won't actually fire, but
+            // the wrapper code calls these unconditionally and only branches
+            // on watchdogHasPendingSigint, which we always return false).
+            "  var UTIL_BINDING = {\n"
+            "    startSigintWatchdog: function () {},\n"
+            "    stopSigintWatchdog: function () { return false; },\n"
+            "    watchdogHasPendingSigint: function () { return false; }\n"
+            "  };\n"
             "  return function (name) {\n"
             "    if (name === 'uv') return UV_BINDING;\n"
+            "    if (name === 'util') return UTIL_BINDING;\n"
             "    return {};\n"
             "  };\n"
             "})()";

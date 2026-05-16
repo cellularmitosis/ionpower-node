@@ -6958,7 +6958,12 @@ static const char kBootstrapJS[] =
     "  __require_cache__['v8'] = {\n"
     "    serialize:   function (o) { return Buffer.from(JSON.stringify(o)); },\n"
     "    deserialize: function (b) { return JSON.parse(b.toString()); },\n"
-    "    getHeapStatistics: function () { return {}; }\n"
+    "    getHeapStatistics: function () { return {}; },\n"
+    // Lumo and others call v8.setFlagsFromString('--use_strict') at boot
+    // and pass other --foo flags around the Closure-compiler hand-off.
+    // SM45's flag plumbing is unrelated to V8's; a no-op is the right
+    // semantics (strict mode is enabled per-script via 'use strict' anyway).
+    "    setFlagsFromString: function () {}\n"
     "  };\n"
     // timers/promises — promise-returning variants of setTimeout /
     // setImmediate. setInterval would need an async iterator, which we
@@ -9691,6 +9696,11 @@ static const char kBootstrapJS[] =
     "    opts = opts || {};\n"
     "    this._input  = opts.input  || process.stdin;\n"
     "    this._output = opts.output || null;\n"
+    // Public aliases — some libs read `rl.input` / `rl.output` directly
+    // (Node exposes both shapes). Lumo's bundle.js redraws via `rl.output`
+    // and would otherwise crash with `rl.output is undefined`.
+    "    this.input  = this._input;\n"
+    "    this.output = this._output;\n"
     "    this._buffer = '';\n"
     "    this._closed = false;\n"
     "    var self = this;\n"
@@ -9716,8 +9726,16 @@ static const char kBootstrapJS[] =
     "    };\n"
     "    this._input.on('data', this._onData);\n"
     "    this._input.on('end',  this._onEnd);\n"
-    // Hook into existing readable stdin: calling on('data') is itself\n"
-    // what kicks off draining (see stdin setup in globals).\n"
+    // Real Node's readline auto-resumes the underlying readable after
+    // attaching its data listener so it actually starts firing. Without
+    // this, pty stdin sits paused: the user types, the kernel buffers,
+    // but the 'data' event never fires (caught for lumo session 007).
+    // Cheap fix: kick the stream into flowing mode here. Wrapped in
+    // try/catch because not every readable exposes .resume() (a fake
+    // stream in tests, for instance).
+    "    if (this._input && typeof this._input.resume === 'function') {\n"
+    "      try { this._input.resume(); } catch (_) {}\n"
+    "    }\n"
     "  }\n"
     "  util.inherits(_ReadlineInterface, events.EventEmitter);\n"
     "  _ReadlineInterface.prototype.close = function () {\n"
@@ -9750,6 +9768,18 @@ static const char kBootstrapJS[] =
     "    if (this._output && typeof this._output.write === 'function' && this._prompt)\n"
     "      this._output.write(this._prompt);\n"
     "  };\n"
+    // _setRawMode(mode): suspend / restore raw mode around eval-from-input
+    // forms. Lumo calls this around every eval to give the running form
+    // cooked-mode stdin. Returns the previous value (Node contract) so
+    // callers can restore it.
+    "  _ReadlineInterface.prototype._setRawMode = function (mode) {\n"
+    "    if (this._input && typeof this._input.setRawMode === 'function') {\n"
+    "      var prev = !!this._input.isRaw;\n"
+    "      try { this._input.setRawMode(mode); } catch (_) {}\n"
+    "      return prev;\n"
+    "    }\n"
+    "    return false;\n"
+    "  };\n"
     "  var readline = {\n"
     "    Interface:       _ReadlineInterface,\n"
     "    createInterface: function (opts) { return new _ReadlineInterface(opts); },\n"
@@ -9774,6 +9804,15 @@ static const char kBootstrapJS[] =
     "    clearScreenDown: function (stream) {\n"
     "      if (!stream || !stream.isTTY || !stream.write) return;\n"
     "      stream.write('\\x1b[0J');\n"
+    "    },\n"
+    // emitKeypressEvents(stream, [rl]): in real Node this attaches an
+    // ANSI-escape decoder that emits 'keypress' events on the stream.
+    // No-op is acceptable when the consumer's fallback path is line-by-
+    // line reading — the basic 'line' event still fires. Interactive
+    // REPLs with paredit-style keybindings lose them (gracefully).
+    "    emitKeypressEvents: function (stream, rl) {\n"
+    "      // No-op stub. A real impl would parse \\x1b[A etc. into\n"
+    "      // {name:'up',ctrl:false,...} objects and emit('keypress', s, key).\n"
     "    }\n"
     "  };\n"
     "  __require_cache__['readline']       = readline;\n"
@@ -10467,8 +10506,22 @@ static const char kBootstrapJS[] =
     "        throw e;\n"
     "      }\n"
     "    };\n"
+    // Forward inner-factory properties to the wrapper. Anything attached
+    // to `f` inside __make_require__ in require.cpp must be re-exposed
+    // here, or user code (which only sees `wrapped`) never sees it.
+    // resolve carries .paths for free — it's the SAME function object.
     "    wrapped.resolve = req.resolve;\n"
     "    wrapped.cache = req.cache;\n"
+    "    wrapped.extensions = req.extensions;\n"
+    // req.main is a getter that reads __require_main_module__ lazily.
+    // Plain copy (`wrapped.main = req.main`) would fire it now and freeze
+    // the value to whatever's stashed (usually null at rewrap time —
+    // rewrap runs at bootstrap, before any module loads). Use a getter
+    // here too so each access re-reads.
+    "    Object.defineProperty(wrapped, 'main', {\n"
+    "      configurable: true, enumerable: true,\n"
+    "      get: function () { return req.main; }\n"
+    "    });\n"
     "    return wrapped;\n"
     "  };\n"
 
