@@ -1,0 +1,59 @@
+=== Round-1 wave-3 retry (G3 v1.2 round-1 binary) ===
+=== Source: ssh ibookg37; cd /Users/macuser/tmp/survey-050/pkgs/<pkg>; /opt/ionpower-node-1.2/bin/ionpower-node _require_test.js
+
+=== pg ===
+REQUIRE_FAIL this.buffer.writeInt32BE is not a function
+join@/Users/macuser/tmp/survey-050/pkgs/pg/node_modules/pg-protocol/dist/buffer-writer.js:68:13
+flush@/Users/macuser/tmp/survey-050/pkgs/pg/node_modules/pg-protocol/dist/buffer-writer.js:73:24
+@/Users/macuser/tmp/survey-050/pkgs/pg/node_modules/pg-protocol/dist/serializer.js:146:27
+__make_require__/f@<ionpower-node internal>:2:36
+__make_require__/wrapped@<ionpower-node bootstrap>:9147:20
+=== redis ===
+REQUIRE_OK typeof=object first_keys=["createClient","createCluster","commandOptions","defineScript","GeoReplyWith","RedisFlushModes","AbortError","WatchError"]
+=== figlet ===
+REQUIRE_OK typeof=function fnName=me
+
+=== Round-2 wave-3 retry (G3 v1.2 round-2 binary, with writeInt32BE) ===
+
+=== pg ===
+REQUIRE_OK typeof=object first_keys=["defaults","Client","Query","Pool","_pools","Connection","types","DatabaseError"]
+=== redis ===
+REQUIRE_OK typeof=object first_keys=["createClient","createCluster","commandOptions","defineScript","GeoReplyWith","RedisFlushModes","AbortError","WatchError"]
+=== figlet ===
+REQUIRE_OK typeof=function fnName=me
+
+=== Extended retry (other v1.1 REQUIRE_FAILs) ===
+
+=== update-notifier ===
+REQUIRE_FAIL util.promisify: fn must be a function
+util.promisify@<ionpower-node bootstrap>:851:1
+@/Users/macuser/tmp/survey-050/pkgs/update-notifier/node_modules/stubborn-fs/dist/index.js:21:49
+(stubborn-fs polyfill bug; not ours)
+
+=== boxen ===
+REQUIRE_FAIL Intl is not defined
+@/Users/macuser/tmp/survey-050/pkgs/boxen/node_modules/string-width/index.js:14:5
+(engine gap; SM45 libjs_static.a built without Intl)
+
+=== chalk ===
+REQUIRE_FAIL Cannot find module '#ansi-styles' from '/Users/macuser/tmp/survey-050/pkgs/chalk/node_modules/chalk/source'
+(package.json "imports" map gap)
+
+=== jose ===
+REQUIRE_FAIL import declarations may only appear at top level of a module
+@/Users/macuser/tmp/survey-050/pkgs/jose/node_modules/jose/dist/webapi/jwe/flattened/decrypt.js:12:23
+(ESM declaration in a CJS dist file)
+
+=== archiver ===
+REQUIRE_FAIL Cannot find module 'compress-commons' from '/Users/macuser/tmp/survey-050/pkgs/archiver/node_modules/zip-stream'
+@/Users/macuser/tmp/survey-050/pkgs/archiver/node_modules/zip-stream/index.js:8:24
+(PROGRESS — the pass-16 "async functions are not enabled" parse error is gone;
+ the for-in / for-of preempt heuristic must have lowered the relevant file via
+ babel. New blocker is a transitive dep npm-6 didn't pull deeply enough.)
+
+=== tar ===
+REQUIRE_FAIL missing : after property id
+@/Users/macuser/tmp/survey-050/pkgs/tar/_require_test.js:2:13
+(unchanged from v1.1; parse error in a file that doesn't match the
+ 'for (let|const)' heuristic, so pre-empt didn't fire; the parse-error
+ fallback also didn't fire — pass-19 §A material)
